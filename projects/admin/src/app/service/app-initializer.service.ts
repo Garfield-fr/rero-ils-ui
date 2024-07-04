@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,9 +19,6 @@ import { TranslateService } from '@rero/ng-core';
 import { AppSettingsService, User, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { LibrarySwitchMenuStorageService } from '../menu/service/library-switch-menu-storage.service';
-import { LibrarySwitchMenuService } from '../menu/service/library-switch-menu.service';
-import { LibrarySwitchService } from '../menu/service/library-switch.service';
 import { AppConfigService } from './app-config.service';
 import { OrganisationService } from './organisation.service';
 import { TypeaheadFactoryService } from './typeahead-factory.service';
@@ -37,22 +34,16 @@ export class AppInitializerService {
    * @param _appConfigService - AppConfigService
    * @param _translateService - TranslateService
    * @param _organisationService - OrganisationService
-   * @param _librarySwitchService - LibrarySwitchService
-   * @param _librarySwitchMenuService - LibrarySwitchMenuService
    * @param _typeaheadFactoryService - TypeaheadFactoryService
    * @param _appSettingsService - AppSettingsService
-   * @param _librarySwitchMenuStorageService - LibrarySwitchMenuStorageService
    */
   constructor(
     private _userService: UserService,
     private _appConfigService: AppConfigService,
     private _translateService: TranslateService,
     private _organisationService: OrganisationService,
-    private _librarySwitchService: LibrarySwitchService,
-    private _librarySwitchMenuService: LibrarySwitchMenuService,
     private _typeaheadFactoryService: TypeaheadFactoryService,
     private _appSettingsService: AppSettingsService,
-    private _librarySwitchMenuStorageService: LibrarySwitchMenuStorageService
   ) { }
 
   /**
@@ -63,16 +54,12 @@ export class AppInitializerService {
       tap((user: User) => {
         this._typeaheadFactoryService.init();
         if (user.hasAdminUiAccess) {
-          this._librarySwitchMenuService.init();
           // Set current library and organisation for librarian or system_librarian roles
           const library = user.patronLibrarian.libraries[0];
           user.currentLibrary = library.pid;
           user.currentOrganisation = user.patronLibrarian.organisation.pid;
           user.currentBudget = user.patronLibrarian.organisation.budget.pid;
           this._organisationService.loadOrganisationByPid(user.currentOrganisation);
-          this._librarySwitchService.switch(
-            this._librarySwitchMenuStorageService.getCurrentLibrary()
-          );
         }
       }),
       switchMap(() => this.initTranslateService())

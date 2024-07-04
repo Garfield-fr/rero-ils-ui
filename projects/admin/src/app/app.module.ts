@@ -26,7 +26,6 @@ import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-im
 import { HotkeysModule, HotkeysService } from '@ngneat/hotkeys';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldSelect } from '@ngx-formly/primeng/select';
-import { FileUploadModule } from 'primeng/fileupload';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
 import {
@@ -34,11 +33,10 @@ import {
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
   FilesService,
-  LocalStorageService,
   RecordModule, RemoteTypeaheadService,
   TranslateLoader, TranslateService, TruncateTextPipe
 } from '@rero/ng-core';
-import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
+import { AppSettingsService, ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule, UserService } from '@rero/shared';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -47,6 +45,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from "primeng/table";
 import {
   SelectAccountEditorWidgetComponent
@@ -65,15 +64,8 @@ import { TabOrderDirective } from './directives/tab-order.directive';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
-import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
-import { MenuLanguageComponent } from './menu/menu-language/menu-language.component';
-import { MenuMobileComponent } from './menu/menu-mobile/menu-mobile.component';
-import { SubMenuComponent } from './menu/menu-mobile/sub-menu/sub-menu.component';
-import { MenuSwitchLibraryComponent } from './menu/menu-switch-library/menu-switch-library.component';
-import { MenuUserServicesComponent } from './menu/menu-user-services/menu-user-services.component';
-import { MenuUserComponent } from './menu/menu-user/menu-user.component';
-import { MenuComponent } from './menu/menu.component';
-import { LibrarySwitchService } from './menu/service/library-switch.service';
+import { MenuModule } from './menu-module/menu.module';
+import { MenuComponent } from './menu.component';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { DocumentProvisionActivityPipe } from './pipe/document-provision-activity.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
@@ -127,6 +119,7 @@ import { DocumentDetailViewComponent } from './record/detail-view/document-detai
 import { DocumentDetailComponent } from './record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
 import { FilesCollectionsComponent } from './record/detail-view/document-detail-view/files-collections/files-collections.component';
+import { UploadFilesComponent } from './record/detail-view/document-detail-view/files-collections/upload-files/upload-files.component';
 import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
 import {
   HoldingOrganisationComponent
@@ -218,7 +211,6 @@ import { PreviewEmailModule } from './shared/preview-email/preview-email.module'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { UploadFilesComponent } from './record/detail-view/document-detail-view/files-collections/upload-files/upload-files.component';
 
 /** Init application factory */
 export function appInitFactory(appInitializerService: AppInitializerService): () => Promise<any> {
@@ -289,14 +281,7 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     IllRequestDetailViewComponent,
     CustomShortcutHelpComponent,
     HoldingItemNoteComponent,
-    MenuSwitchLibraryComponent,
     LocalFieldComponent,
-    MenuUserServicesComponent,
-    MenuLanguageComponent,
-    MenuUserComponent,
-    MenuDashboardComponent,
-    MenuMobileComponent,
-    SubMenuComponent,
     HoldingItemTemporaryItemTypeComponent,
     OperationLogsComponent,
     HoldingSharedViewComponent,
@@ -412,7 +397,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
     LoadingBarHttpClientModule,
     PrimengImportModule,
     PreviewEmailModule,
-    FileUploadModule
+    FileUploadModule,
+    MenuModule
   ],
   providers: [
     {
@@ -429,9 +415,8 @@ export function appInitFactory(appInitializerService: AppInitializerService): ()
         AppConfigService,
         TranslateService,
         OrganisationService,
-        LocalStorageService,
-        LibrarySwitchService,
         TypeaheadFactoryService,
+        AppSettingsService
       ],
       multi: true,
     },

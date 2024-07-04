@@ -409,7 +409,7 @@ pre {
   width: 80%;
 }
 
-// ENTITIES ====================================================================
+// ENTITIES ===================================================================
 .entity-fields {
   @extend .row;
   @extend .mb-0;
@@ -428,4 +428,13 @@ pre {
       @extend .mb-0
     }
   }
+}
+
+// LIST RECORD ================================================================
+.list-record {
+  padding: 0.5rem;
+}
+
+.list-record:nth-child(even) {
+  background: #F5F5F5;
 }

@@ -17,16 +17,16 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { LibrarySwitchService } from '@app/admin/menu/service/library-switch.service';
-import { MenuService } from '@app/admin/menu/service/menu.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { CoreModule, LocalStorageService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { LoanFixedDateService } from './loan-fixed-date.service';
+import { MenuService } from '@app/admin/menu-module/service/menu.service';
+import { ISwitchLibrary, LibraryService } from '@app/admin/menu-module/service/library.service';
 
 describe('LoanFixedDateService', () => {
   let service: LoanFixedDateService;
-  let librarySwitchService: LibrarySwitchService;
+  let libraryService: LibraryService;
 
   const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
   userServiceSpy.user = {
@@ -39,6 +39,12 @@ describe('LoanFixedDateService', () => {
     }
   }
 
+  const librarySwitchData: ISwitchLibrary = {
+    pid: '1',
+    code: '[Foo] Bar',
+    name: 'Bar'
+  }
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -47,14 +53,14 @@ describe('LoanFixedDateService', () => {
         CoreModule
       ],
       providers: [
-        LibrarySwitchService,
+        LibraryService,
         LocalStorageService,
         MenuService,
         { provide: UserService, useValue: userServiceSpy }
       ]
     });
     service = TestBed.inject(LoanFixedDateService);
-    librarySwitchService = TestBed.inject(LibrarySwitchService);
+    libraryService = TestBed.inject(LibraryService);
   });
 
   it('should be created', () => {
@@ -80,14 +86,16 @@ describe('LoanFixedDateService', () => {
 
   it('should delete the value in the localeStorage if the library changes', () => {
     // Set default library to 2
-    librarySwitchService.switch('2');
+    librarySwitchData.pid = '2';
+    libraryService.switch(librarySwitchData);
     // Set a new date with offset
     const date = new Date();
     date.setTime(date.getTime() + 600000000);
     const dateString = date.toLocaleDateString('en');
     service.set(dateString);
     expect(service.get()).toEqual(dateString);
-    librarySwitchService.switch('1');
+    librarySwitchData.pid = '1';
+    libraryService.switch(librarySwitchData);
     expect(service.get()).toBeUndefined();
   });
 });

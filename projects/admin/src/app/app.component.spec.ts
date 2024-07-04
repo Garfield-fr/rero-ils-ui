@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { SharedModule } from '@rero/shared';
 import { AppComponent } from './app.component';
-import { MenuComponent } from './menu/menu.component';
+import { MenuComponent } from './menu.component';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
