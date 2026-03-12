@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DOCUMENT, Location } from '@angular/common';
-import { Component, ElementRef, inject, Input } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, ElementRef, inject, Input, DOCUMENT } from '@angular/core';
 import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DOCUMENT } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+
+import { Component, inject, Input, OnDestroy, OnInit, DOCUMENT } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
 import { IRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
