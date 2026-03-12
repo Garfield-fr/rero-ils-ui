@@ -6,10 +6,6 @@
     "declaration": true,
     "inlineSources": true,
     "types": [],
-    "lib": [
-      "dom",
-      "es2022"
-    ],
     "paths": {
       "@rero/ng-core": [
         "./node_modules/@rero/ng-core"
