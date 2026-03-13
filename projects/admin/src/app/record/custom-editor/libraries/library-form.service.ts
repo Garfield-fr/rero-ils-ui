@@ -99,10 +99,10 @@ export class LibraryFormService {
     const notificationSchema$ = this.recordService.getSchemaForm('notifications');
     const librarySchema$ = this.recordService.getSchemaForm('libraries');
     forkJoin([librarySchema$, notificationSchema$]).subscribe(([libSchema, notifSchema]) => {
-      this.availableCommunicationLanguages = libSchema.schema.properties.communication_language.enum;
-      this.countryList = libSchema.schema.properties.acquisition_settings.properties.shipping_informations.
+      this.availableCommunicationLanguages = (libSchema as any).schema.properties.communication_language.enum;
+      this.countryList = (libSchema as any).schema.properties.acquisition_settings.properties.shipping_informations.
         properties.address.properties.country.enum;
-      this.rolloverAccountTransferOptions = libSchema.schema.properties.rollover_settings.properties.
+      this.rolloverAccountTransferOptions = (libSchema as any).schema.properties.rollover_settings.properties.
         account_transfer.enum;
 
       // DEV NOTES :: Why remove `acquisition_order` an `claim_issue`
@@ -113,7 +113,7 @@ export class LibraryFormService {
       //      - related vendor email
       //      - library (serial) acquisition setting email
       //      - custom email
-      this.notificationTypes = notifSchema.schema.properties.notification_type.enum
+      this.notificationTypes = (notifSchema as any).schema.properties.notification_type.enum
         .filter(type => type != NotificationType.ACQUISITION_ORDER)
         .filter(type => type != NotificationType.CLAIM_ISSUE);
 

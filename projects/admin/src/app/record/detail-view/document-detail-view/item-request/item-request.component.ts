@@ -20,7 +20,6 @@ import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
 import { User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -257,11 +256,11 @@ export class ItemRequestComponent implements OnInit {
    * @param barcode - string
    * @return observable
    */
-  private getPatron(barcode: string): Observable<Record | Error> {
+  private getPatron(barcode: string): Observable<any[] | Error> {
     const query = `barcode:${barcode}`;
-    return this.recordService.getRecords('patrons', query, 1, 1).pipe(
+    return this.recordService.getRecords('patrons', { query, page: 1, itemsPerPage: 1 }).pipe(
       debounceTime(500),
-      map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+      map((result: any) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
       shareReplay(1)
     );
   }

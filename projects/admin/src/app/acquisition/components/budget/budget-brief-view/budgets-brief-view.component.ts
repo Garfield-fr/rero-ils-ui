@@ -18,7 +18,6 @@
 
 import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ResultItem } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-budgets-brief-view',
@@ -34,7 +33,7 @@ import { ResultItem } from '@rero/ng-core';
   `,
     standalone: false
   })
-export class BudgetsBriefViewComponent implements ResultItem {
+export class BudgetsBriefViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
 

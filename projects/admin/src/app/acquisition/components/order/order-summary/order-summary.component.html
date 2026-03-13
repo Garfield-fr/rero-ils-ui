@@ -15,8 +15,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@let vendor = order.vendor.pid | getRecord : "vendors" | async;
 @if (order) {
+@let vendor = (order.vendor.$ref || order.vendor.pid) | getRecord : "vendors" | async;
 <section class="ui:grid ui:grid-cols-12 ui:gap-4">
   <div class="ui:md:col-span-8 ui:px-3">
     <dl class="metadata">

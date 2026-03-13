@@ -49,8 +49,9 @@ export class RequestedItemComponent implements OnInit {
   /** OnInit hook */
   ngOnInit() {
     if (this.item) {
-      this.recordService.getRecord('documents', this.item.loan.document_pid, 1, {
-        Accept: 'application/rero+json, application/json'
+      this.recordService.getRecord('documents', this.item.loan.document_pid, {
+        resolve: 1,
+        headers: { Accept: 'application/rero+json, application/json' }
       }).subscribe(document => this.document = document.metadata);
     }
   }

@@ -42,7 +42,7 @@ export abstract class AbstractCanAddGuard {
    * @returns Observable boolean
    */
   protected canAdd(resource: string, pid: string): Observable<boolean> {
-    return this.recordService.getRecord(resource, pid, 0, BaseApi.reroJsonheaders).pipe(
+    return this.recordService.getRecord(resource, pid, { resolve: 0, headers: BaseApi.reroJsonheaders }).pipe(
       map((record: any) => record.metadata),
       map((record: any) => {
         if (!('is_current_budget' in record) || !record.is_current_budget) {

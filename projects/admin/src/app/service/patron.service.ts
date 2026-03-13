@@ -17,7 +17,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
+import type { EsResult } from '@rero/ng-core';
 import { User } from '@rero/shared';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -51,9 +51,9 @@ export class PatronService {
    */
   getPatron(barcode: string): Observable<any> {
     return this.recordService
-      .getRecords('patrons', `barcode:${barcode}`, 1, 1)
+      .getRecords('patrons', { query: `barcode:${barcode}`, page: 1, itemsPerPage: 1 })
       .pipe(
-        switchMap((response: Record) => {
+        switchMap((response: EsResult) => {
           switch (this.recordService.totalHits(response.hits.total)) {
             case 0: {
               this.currentPatron.next(undefined);
@@ -61,7 +61,7 @@ export class PatronService {
             }
             case 1: {
               const patron = response.hits.hits[0].metadata;
-              this.currentPatron.next(patron);
+              this.currentPatron.next(patron as any);
               break;
             }
             default: {
@@ -206,10 +206,10 @@ export class PatronService {
    */
   private getLoans(query: string, sort?: string) {
     return this.recordService.getRecords(
-      'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, {Accept: 'application/rero+json'}, sort
+      'loans', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, aggregationsFilters: [], preFilters: {}, headers: {Accept: 'application/rero+json'}, sort }
     ).pipe(
-      map((data: Record) => data.hits),
-      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
+      map((data: EsResult) => data.hits as any),
+      map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
     );
   }
 

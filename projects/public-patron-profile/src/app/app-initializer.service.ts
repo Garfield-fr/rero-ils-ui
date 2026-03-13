@@ -16,7 +16,7 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { NgCoreTranslateService } from '@rero/ng-core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
 import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
@@ -30,7 +30,7 @@ export class AppInitializerService {
 
   private userService: UserService = inject(UserService);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private translateService: TranslateService = inject(TranslateService);
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
   private appConfigService: AppConfigService = inject(AppConfigService);
 
@@ -50,6 +50,7 @@ export class AppInitializerService {
       language = browserLang.match(this.appConfigService.languages.join('|')) ?
         browserLang : this.appConfigService.defaultLanguage;
     }
+    this.translateService.initialize();
     return this.translateService.use(language);
   }
 }

@@ -42,7 +42,7 @@ export class AcqOrderLineGuard extends LibraryGuard {
     return this.recordService.getRecord('acq_orders', orderPid).pipe(
       map(data => data.metadata || {}),
       map(metadata => metadata.library || {}),
-      map(library => extractIdOnRef(library.$ref))
+      map(library => extractIdOnRef((library as any)?.$ref))
     );
   }
 }

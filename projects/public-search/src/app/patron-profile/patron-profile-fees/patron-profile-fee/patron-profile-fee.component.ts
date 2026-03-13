@@ -16,7 +16,7 @@
  */
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { IOrganisation } from '@rero/shared/public-api';
+import { IOrganisation } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
@@ -62,6 +62,6 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   }
 
   getPatronTransaction(pid: string): Observable<T> {
-    return this.recordService.getRecord('patron_transactions', pid, 1);
+    return this.recordService.getRecord('patron_transactions', pid, { resolve: 1 });
   }
 }

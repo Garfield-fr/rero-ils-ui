@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { DetailRecord, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -29,7 +29,7 @@ import { DocumentApiService } from '../../../api/document-api.service';
     templateUrl: './document-detail-view.component.html',
     standalone: false
 })
-export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class DocumentDetailViewComponent implements OnInit, OnDestroy {
 
   private translateService: TranslateService = inject(TranslateService);
   private activatedRouter: ActivatedRoute = inject(ActivatedRoute);
@@ -38,7 +38,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   private permissionsService: PermissionsService = inject(PermissionsService);
 
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
 
   /** Observable of the imported record in marc format */
   marc$: Observable<any>;
@@ -47,7 +47,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   private _recordObs: Subscription;
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /** Document record */
   record: any;
@@ -101,15 +101,16 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   /** On init hook */
   ngOnInit(): void {
     this.activateLink = !this.activatedRouter.snapshot.params.type.startsWith('import_');
-    this._recordObs = this.record$.pipe(
+    this._recordObs = this.record$().pipe(
       switchMap((record: any) => {
         this.record = record;
         this.relatedResources = this.processRelatedResources(record);
         this.recordMessage = this.message(record);
         if (record != null && record.metadata != null && this.record.metadata.pid == null) {
           this.marc$ = this.recordService.getRecord(
-            this.activatedRouter.snapshot.params.type, this.pid, 0, {
-            Accept: 'application/marc+json, application/json'
+            this.activatedRouter.snapshot.params.type, this.pid, {
+            resolve: 0,
+            headers: { Accept: 'application/marc+json, application/json' }
           });
         } else {
           this.marc$ = of(null);

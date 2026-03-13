@@ -16,7 +16,7 @@
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { _ } from "@ngx-translate/core";
-import { Error, Record } from '@rero/ng-core';
+import type { Error, EsResult } from '@rero/ng-core';
 import { BaseApi, Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../../api/ill-request-api.service';
@@ -56,7 +56,7 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
       );
     this._subscription.add(
       this.paginator.more$.subscribe((page: number) => {
-        this._illRequestQuery(page).subscribe((response: Record) => {
+        this._illRequestQuery(page).subscribe((response: EsResult) => {
           this.records = this.records.concat(response.hits.hits);
         });
       })
@@ -67,7 +67,7 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
           if (event.count === 0) {
             this.loaded = true;
           } else {
-            this._illRequestQuery(1).subscribe((response: Record) => {
+            this._illRequestQuery(1).subscribe((response: EsResult) => {
               this.paginator.setRecordsCount(response.hits.total.value);
               this.records = response.hits.hits;
               this.loaded = true;
@@ -96,7 +96,7 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
    * @param page - number
    * @return Observable
    */
-  private _illRequestQuery(page: number): Observable<Record | Error> {
+  private _illRequestQuery(page: number): Observable<EsResult | Error> {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     return this.illRequestApiService
       .getPublicIllRequest(

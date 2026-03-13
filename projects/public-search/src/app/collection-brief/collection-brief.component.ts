@@ -16,14 +16,13 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
 
 @Component({
     selector: 'public-search-collection-brief',
     templateUrl: './collection-brief.component.html',
     standalone: false
 })
-export class CollectionBriefComponent implements ResultItem {
+export class CollectionBriefComponent {
 
   @Input() record: any;
 

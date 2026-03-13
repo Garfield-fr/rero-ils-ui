@@ -16,7 +16,7 @@
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { _ } from "@ngx-translate/core";
-import { Error, Record } from '@rero/ng-core';
+import type { Error, EsResult } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
@@ -77,7 +77,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
     this._subscription = new Subscription();
     this._subscription.add(
       this.paginator.more$.subscribe((page: number) => {
-        this._loanQuery(page).subscribe((response: Record) => {
+        this._loanQuery(page).subscribe((response: EsResult) => {
           this.records = this.records.concat(response.hits.hits);
           this.page = page;
         });
@@ -92,7 +92,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
 
   /** Initial records load */
   private _initialLoad(): void {
-    this._loanQuery(1).subscribe((response: Record) => {
+    this._loanQuery(1).subscribe((response: EsResult) => {
       this.paginator.setRecordsCount(response.hits.total.value);
       this.records = response.hits.hits;
       this.loaded = true;
@@ -104,7 +104,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
    * @param page - number
    * @return Observable
    */
-  private _loanQuery(page: number): Observable<Record | Error> {
+  private _loanQuery(page: number): Observable<EsResult | Error> {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     return this.loanApiService
       .getOnLoan(patronPid, page, this.paginator.getRecordsPerPage(), undefined, this.sortCriteria);
@@ -112,7 +112,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
 
   /** Reset paginator when patron profile menu has changed */
   private _resetPaginator(){
-    this._loanQuery(1).subscribe((response: Record) => {
+    this._loanQuery(1).subscribe((response: EsResult) => {
       this.paginator
         .setPage(1)
         .setRecordsCount(response.hits.total.value);
@@ -131,7 +131,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
     this.sortCriteria = sortCriteria;
     this.paginator.setRecordsPerPage(this.page * this.nRecords);
 
-    this._loanQuery(1).subscribe((response: Record) => {
+    this._loanQuery(1).subscribe((response: EsResult) => {
       this.records = response.hits.hits;
       this.paginator.setRecordsPerPage(this.nRecords);
       this.loaded = true;

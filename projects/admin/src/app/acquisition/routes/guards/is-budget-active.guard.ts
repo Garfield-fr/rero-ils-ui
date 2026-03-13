@@ -39,7 +39,7 @@ export class IsBudgetActiveGuard  {
     if (!type || !pid) {
       return of(false);
     }
-    return this.recordService.getRecord(type, pid, 0, BaseApi.reroJsonheaders).pipe(
+    return this.recordService.getRecord(type, pid, { resolve: 0, headers: BaseApi.reroJsonheaders }).pipe(
       map(record => ('metadata' in record) ? record.metadata : record),
       map(record => {
         if (!('is_current_budget' in record) || !record.is_current_budget) {

@@ -40,7 +40,7 @@ export class PatronProfileDocumentComponent {
   document = toSignal(
     toObservable(this.record).pipe(
       switchMap(record => this.recordService
-        .getRecord('documents', record.metadata.document.pid, 1, { Accept: 'application/rero+json, application/json' })
+        .getRecord('documents', record.metadata.document.pid, { resolve: 1, headers: { Accept: 'application/rero+json, application/json' } })
         .pipe(
           catchError(() => of({ metadata: {} })),
           map(doc => doc.metadata)

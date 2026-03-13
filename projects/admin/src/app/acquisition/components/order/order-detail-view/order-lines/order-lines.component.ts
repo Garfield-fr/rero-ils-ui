@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
 import { UserService } from '@rero/shared';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
@@ -35,7 +35,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   /** Acquisition order pid */
   @Input() order: IAcqOrder;
   /** Acquisition order lines to display */
-  orderLines: IAcqOrderLine[] = undefined;
+  readonly orderLines = signal<IAcqOrderLine[] | undefined>(undefined);
 
   /** all component subscription */
   private subscriptions = new Subscription();
@@ -47,7 +47,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
       this.acqOrderApiService
         .deletedOrderLineSubject$
         .subscribe(
-          (orderLine: IAcqOrderLine) => this.orderLines = this.orderLines.filter((line: IAcqOrderLine) => line.pid !== orderLine.pid)
+          (orderLine: IAcqOrderLine) => this.orderLines.update(lines => lines?.filter((line: IAcqOrderLine) => line.pid !== orderLine.pid))
         )
     );
   }
@@ -82,6 +82,6 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   private loadOrderLines(): void {
     this.acqOrderApiService
       .getOrderLines(this.order.pid)
-      .subscribe((lines: IAcqOrderLine[]) => this.orderLines = lines);
+      .subscribe((lines: IAcqOrderLine[]) => this.orderLines.set(lines));
   }
 }

@@ -17,7 +17,7 @@
 
 import { Component, inject, Input, OnDestroy, OnInit, DOCUMENT } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
-import { IRecordType } from '@rero/ng-core';
+import type { AutoCompleteRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
 import { UserService } from '../../service/user.service';
 import { RemoteSearchConfig } from './remote-search-config.service';
@@ -50,7 +50,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
 
   admin: boolean;
   hideSearchElement = false;
-  recordTypes: IRecordType[] = [];
+  recordTypes: AutoCompleteRecordType[] = [];
   value: string | undefined;
 
   /** Resources involved in hiding the search area */

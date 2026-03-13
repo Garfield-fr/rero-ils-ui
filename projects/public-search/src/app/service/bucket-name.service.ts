@@ -17,13 +17,12 @@
  */
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { IBucketNameService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BucketNameService implements IBucketNameService {
+export class BucketNameService {
 
   private translateService: TranslateService = inject(TranslateService);
 

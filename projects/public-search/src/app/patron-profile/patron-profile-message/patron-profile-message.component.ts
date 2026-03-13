@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ToastMessageOptions } from 'primeng/api/toastmessage';
+import type { ToastMessageOptions } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { Message, PatronApiService } from '../../api/patron-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';

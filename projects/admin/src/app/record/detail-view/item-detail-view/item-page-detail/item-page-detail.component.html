@@ -15,9 +15,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div>
-  @if (record) {
+  @if (record()) {
     <ng-core-detail-button
-    [record]="record"
+    [record]="record()"
     [type]="type"
     [adminMode]="adminMode"
     [useStatus]="useStatus"
@@ -27,7 +27,7 @@
     (deleteMessageEvent)="showDeleteMessage($event)"
   >
     <ng-container beforeButton>
-      @if (record) {
+      @if (record()) {
         @if (recordPermissions?.update?.can && isIssue && isClaimAllowed) {
             <p-button
               outlined
@@ -36,14 +36,14 @@
               [label]="'Add a claim' | translate"
             />
         }
-        @if (isEnabledOperationLog && record.metadata.pid) {
-          <shared-operation-logs-dialog resourceType="items" [resourcePid]="record.metadata.pid" />
+        @if (isEnabledOperationLog && record()?.metadata.pid) {
+          <shared-operation-logs-dialog resourceType="items" [resourcePid]="record()?.metadata.pid" />
         }
       }
     </ng-container>
   </ng-core-detail-button>
   }
-  <admin-item-detail-view ngCoreRecordDetail [record]="record" [recordPermissions]="recordPermissions" />
+  <admin-item-detail-view ngCoreRecordDetail [record]="record()" [recordPermissions]="recordPermissions" />
   @if (error) {
     <ng-core-error [error]="error" />
   }

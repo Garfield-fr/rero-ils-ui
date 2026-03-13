@@ -27,7 +27,6 @@
 @use "../circulation/patron/card/card.component";
 @use "../components/items/switch-location/item-switch-location/item-switch-location.component";
 
-@import "tailwindcss/preflight.css" layer(base);
 @import "@rero/ng-core/assets/scss/ng-core";
 
 :root {

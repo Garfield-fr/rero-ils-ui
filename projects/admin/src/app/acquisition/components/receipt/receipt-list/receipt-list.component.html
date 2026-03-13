@@ -31,17 +31,17 @@
         [queryParams]="{ order: order.pid }"
         [pTooltip]="tooltipContent"
         tooltipPosition="top"
-        [disabled]="!recordPermissions?.create?.can"
-        [tooltipDisabled]="recordPermissions?.create?.can"
+        [disabled]="!recordPermissions()?.create?.can"
+        [tooltipDisabled]="recordPermissions()?.create?.can"
       />
       <ng-template #tooltipContent>
         <span [innerHTML]="createInfoMessage | nl2br"></span>
       </ng-template>
     </div>
   </ng-template>
-  @if (receipts) {
-    @if (receipts.length > 0) {
-        @for (receipt of receipts; track receipt.pid) {
+  @if (receipts() !== undefined) {
+    @if (receipts()!.length > 0) {
+        @for (receipt of receipts()!; track receipt.pid) {
           <div class="ui:odd:bg-surface-50">
             <admin-receipt-summary [receiptPid]="receipt.pid" [allowActions]="true" />
           </div>

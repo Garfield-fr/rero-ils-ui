@@ -105,8 +105,8 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
       this.eventForm = this.libraryForm.getBuildEvent().subscribe((buildEvent: any) => {
         if (params && params.pid) {
           this.recordService.getRecord('libraries', params.pid).subscribe(record => {
-            this.library = new Library(record.metadata);
-            this.libraryForm.populate(record.metadata);
+            this.library = new Library(record.metadata as any);
+            this.libraryForm.populate(record.metadata as any);
             this.libForm = this.libraryForm.form;
             this.setAsyncValidator();
           });
@@ -162,7 +162,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
     this.library.update(this.libraryForm.getValues());
     if (this.library.pid) {
       this.recordService
-        .update('libraries', this.library.pid, cleanDictKeys(this.library))
+        .update('libraries', this.library.pid, cleanDictKeys(this.library as any))
         .subscribe({
           next: () => {
             this.messageService.add({
@@ -184,7 +184,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
     } else {
       this.library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid) };
       this.recordService
-        .create('libraries', cleanDictKeys(this.library))
+        .create('libraries', cleanDictKeys(this.library as any))
         .subscribe({
           next: (record) => {
             this.messageService.add({

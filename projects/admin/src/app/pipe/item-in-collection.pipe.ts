@@ -39,16 +39,10 @@ export class ItemInCollectionPipe implements PipeTransform {
     }
     return this.recordService.getRecords(
       'collections',
-      `items.pid:${itemPid} AND published:true`,
-      1,
-      RecordService.MAX_REST_RESULTS_SIZE,
-      undefined,
-      undefined,
-      undefined,
-      'title'
+      { query: `items.pid:${itemPid} AND published:true`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'title' }
     ).pipe(
       map((result: any) => {
-        return (this.recordService.totalHits(result.hits.total) === 0)
+        return (+this.recordService.totalHits(result.hits.total) === 0)
           ? []
           : result.hits.hits;
       })

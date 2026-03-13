@@ -18,7 +18,7 @@ import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, extractIdOnRef, RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
+import type { EsResult } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Observable } from 'rxjs';

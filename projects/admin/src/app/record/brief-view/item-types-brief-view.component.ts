@@ -16,7 +16,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+
 
 
 @Component({
@@ -32,7 +32,7 @@ import { ResultItem } from '@rero/ng-core';
     styles: [],
     standalone: false
 })
-export class ItemTypesBriefViewComponent implements ResultItem {
+export class ItemTypesBriefViewComponent {
 
   @Input() record: any;
 

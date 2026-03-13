@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from "@angular/common/http";
-import { Component, inject, OnDestroy, OnInit, viewChild } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { AppConfigService } from "@app/admin/service/app-config.service";
 import { TranslateService } from "@ngx-translate/core";
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
@@ -26,17 +26,17 @@ import { Observable, Subscription } from 'rxjs';
     templateUrl: "./statistics-cfg-detail-view.component.html",
     standalone: false
 })
-export class StatisticsCfgDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class StatisticsCfgDetailViewComponent implements OnInit, OnDestroy {
 
   private httpClient: HttpClient = inject(HttpClient);
   private appConfigService: AppConfigService = inject(AppConfigService);
   private translateService: TranslateService = inject(TranslateService);
 
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /** the api response record */
   record: any;
@@ -52,7 +52,7 @@ export class StatisticsCfgDetailViewComponent implements DetailRecord, OnInit, O
 
   /** OnInit hook */
   ngOnInit() {
-    this.subscriptions = this.record$.subscribe((record) => {
+    this.subscriptions = this.record$().subscribe((record) => {
       this.record = record;
     });
   }

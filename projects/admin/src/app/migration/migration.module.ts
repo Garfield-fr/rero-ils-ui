@@ -16,10 +16,10 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
+import { ErrorComponent, ExportButtonComponent, ListFiltersComponent, MenuSortComponent, PaginatorComponent as NgCorePaginatorComponent, RecordSearchAggregationComponent, SearchFiltersComponent, SearchInputComponent, SearchTabsComponent } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { AutoFocusModule } from 'primeng/autofocus';
@@ -57,12 +57,21 @@ import { MigrationDetailComponent } from './record/brief-view/migration/migratio
     FormsModule,
     InplaceModule,
     MigrationRoutingModule,
-    RecordModule,
+    ErrorComponent,
+    ExportButtonComponent,
+    ListFiltersComponent,
+    MenuSortComponent,
+    NgCorePaginatorComponent,
+    RecordSearchAggregationComponent,
+    SearchFiltersComponent,
+    SearchInputComponent,
+    SearchTabsComponent,
     SharedModule,
     TableModule,
     ToastModule,
     TranslateModule.forChild(),
   ],
+  schemas: [NO_ERRORS_SCHEMA],
   providers: [MessageService],
 })
 export class MigrationModule {}

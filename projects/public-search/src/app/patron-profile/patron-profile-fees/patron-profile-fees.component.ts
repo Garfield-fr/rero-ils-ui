@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
@@ -53,8 +54,8 @@ export class PatronProfileFeesComponent implements OnInit {
     const queryOverdue = this.patronApiService.getOverduePreviewByPatronPid(patronPid);
 
     forkJoin([queryFees, queryOverdue]).subscribe({
-      next: ([feesResponse, overdueResponse]: [Record, overdueFee[]]) => {
-        feesResponse.hits.hits.map(record => {
+      next: ([feesResponse, overdueResponse]: [EsResult, overdueFee[]]) => {
+        feesResponse.hits.hits.map((record: any) => {
           if (record.metadata?.loan) {
             const result = this.records.filter((fee: fee) => record.metadata?.loan?.pid === fee.loan?.pid);
             if (result.length === 1) {

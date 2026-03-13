@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { APP_BASE_HREF, Location, ViewportScroller } from '@angular/common';
-import { Component, inject, model, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, model, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
@@ -25,7 +25,7 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { TranslateService } from '@ngx-translate/core';
 import { extractIdOnRef } from '@rero/ng-core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, merge, Observable, Subscription } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
@@ -41,7 +41,7 @@ import { OrderEmailFormComponent } from '../order-email-form/order-email-form.co
     templateUrl: './order-detail-view.component.html',
     standalone: false
 })
-export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class OrderDetailViewComponent implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);
   private scroller: ViewportScroller = inject(ViewportScroller);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
@@ -55,9 +55,9 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
   /** the order corresponding to the record */
   order: IAcqOrder;
   /** Is order notes are collapsed */
@@ -105,13 +105,13 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
     this.tabActiveIndex.set(this.route.snapshot.queryParamMap.get('tab') || 'order');
     this.subscriptions.add(this.tabActiveIndex.subscribe(tabName => this.addTabToUrl(tabName)));
     this.subscriptions.add(
-      this.record$.pipe(
+      this.record$().pipe(
         tap((record: any) => this.order = record.metadata),
         switchMap(() => {
           const obs = [
             // history
             this.acqOrderService.getOrderHistory(this.order.pid).pipe(
-              map((versions) => this.historyVersions = versions.map((version) => new AcqOrderHistoryVersion(version)))
+              map((versions) => this.historyVersions = versions.filter(Boolean).map((version) => new AcqOrderHistoryVersion(version)))
             ),
             // permissions
             this.recordPermissionService.getPermission('acq_orders', this.order.pid).pipe(

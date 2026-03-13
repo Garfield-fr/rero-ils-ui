@@ -77,7 +77,7 @@ export class RouteService {
       // should be at the last
       .addRoute(new ImportDocumentsRoute())
     ;
-    this.routeCollectionService.getRoutes().map((route: any) => {
+    this.routeCollectionService.routes().map((route: any) => {
       this.router.config.push(route);
     });
     this.router.config.push(...[

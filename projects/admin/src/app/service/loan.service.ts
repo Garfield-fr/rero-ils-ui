@@ -19,7 +19,6 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
 import { UserService } from '@rero/shared';
 import { Confirmation, ConfirmationService } from 'primeng/api';
 import { Observable } from 'rxjs';
@@ -60,7 +59,7 @@ export class LoanService {
   borrowedBy$(itemPid: string): Observable<any> {
     return this.loans$(itemPid, LoanService.borrowStatuses)
       .pipe(
-        map((results: Record) => results.hits.hits)
+        map((results: any) => results.hits.hits)
       );
   }
 
@@ -72,7 +71,7 @@ export class LoanService {
   requestedBy$(itemPid: string): Observable<any> {
     return this.loans$(itemPid, LoanService.requestStatuses)
       .pipe(
-        map((results: Record) => results.hits.hits)
+        map((results: any) => results.hits.hits)
     );
   }
 
@@ -179,6 +178,6 @@ export class LoanService {
       const states = statuses.join(' OR state:');
       query +=  ` AND (state:${states})`;
     }
-    return this.recordService.getRecords('loans', query, 1, 100, [], undefined, undefined, 'created');
+    return this.recordService.getRecords('loans', { query, page: 1, itemsPerPage: 100, aggregationsFilters: [], sort: 'created' });
   }
 }

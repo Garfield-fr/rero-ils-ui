@@ -73,9 +73,9 @@ export class UserIdEditorComponent implements OnInit {
       tap(
         schema => {
           if (schema != null) {
-            schema = processJsonSchema(schema.schema);
+            const processedSchema: any = processJsonSchema((schema as any).schema);
             this.fields = [
-              this.formlyJsonschema.toFieldConfig(schema, {
+              this.formlyJsonschema.toFieldConfig(processedSchema, {
 
                 // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
@@ -141,7 +141,7 @@ export class UserIdEditorComponent implements OnInit {
       this.model = {};
       return;
     }
-    this.recordService.getRecords('users', query).pipe(
+    this.recordService.getRecords('users', { query }).pipe(
       map((res: any) => {
         if (res.hits.hits.length === 0) {
           this.messageService.add({
@@ -242,7 +242,7 @@ export class UserIdEditorComponent implements OnInit {
         if (value == null || value.length === 0) {
           return of(true);
         }
-        return this.recordService.getRecords('users', `${fieldName}:${value}`).pipe(
+        return this.recordService.getRecords('users', { query: `${fieldName}:${value}` }).pipe(
           debounceTime(1000),
           map((res: any) => {
             const id = this.loadedUserID || this.userID;

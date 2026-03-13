@@ -17,7 +17,8 @@
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, Record } from '@rero/ng-core';
+import { CoreConfigService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 import { PERMISSION_OPERATOR, PermissionsService, UserService } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { Observable, map, of } from 'rxjs';
@@ -90,7 +91,7 @@ export class MenuService {
       return of(undefined);
     }
     return this.libraryApiService.findByLibrariesPidAndOrderBy$(librariesPid).pipe(
-      map((results: Record) => results.hits.total.value > 0 ? results.hits.hits : []),
+      map((results: EsResult) => results.hits.total.value > 0 ? results.hits.hits : []),
       map((libraries: any) => {
         let libraryActive = undefined;
         if (!this.librarySwitchDataStorage.has()) {

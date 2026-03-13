@@ -19,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { ApiService, Record } from '@rero/ng-core';
+import { ApiService } from '@rero/ng-core';
 import { of, switchMap } from 'rxjs';
 
 @Component({
@@ -47,7 +47,7 @@ export class MigrationDataDetailComponent {
           return of(null);
         }
         // get the record from the backend
-        return this.http.get<Record>(
+        return this.http.get<any>(
           `${this.apiService.getEndpointByType(docType, true)}/${id}?migration=${migrationId}`
         );
       })

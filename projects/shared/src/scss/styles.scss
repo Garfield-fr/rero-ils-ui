@@ -17,8 +17,7 @@
 
 @use "easymde/dist/easymde.min";
 @use "@rero/ng-core/assets/scss/ng-core-tailwind";
-@import "tailwindcss/theme.css" layer(theme) prefix(ui);
-@import "tailwindcss/utilities.css" layer(utilities) prefix(ui);
+@import "tailwindcss" layer(tailwind) prefix(ui);
 
 @plugin "tailwindcss-primeui";
 

@@ -16,7 +16,7 @@
  */
 import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ResultItem } from '@rero/ng-core';
+
 
 @Component({
     selector: 'admin-statistics-cfg-brief-view',
@@ -43,7 +43,7 @@ import { ResultItem } from '@rero/ng-core';
   `,
     standalone: false
 })
-export class StatisticsCfgBriefViewComponent implements ResultItem {
+export class StatisticsCfgBriefViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
 

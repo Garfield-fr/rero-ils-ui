@@ -18,7 +18,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/prime/remote-autocomplete/remote-autocomplete.interface';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
 import { AppSettingsService, Entity } from '@rero/shared';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';

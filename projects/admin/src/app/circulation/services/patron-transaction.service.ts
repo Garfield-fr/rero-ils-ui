@@ -23,7 +23,8 @@ import {
 } from '@app/admin/classes/patron-transaction';
 import { RouteToolService } from '@app/admin/routes/route-tool.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG, Record, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { CONFIG, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -79,17 +80,11 @@ export class PatronTransactionService {
   private _loadPatronTransactions(query: string, sort = '-creation_date'): Observable<PatronTransaction[]> {
     return this.recordService.getRecords(
       'patron_transactions',
-      query,
-      1,
-      RecordService.MAX_REST_RESULTS_SIZE,
-      undefined,
-      undefined,
-      undefined,
-      sort
+      { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort }
     ).pipe(
-      map((data: Record) => data.hits),
-      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
-      map(hits => hits.map( hit => new PatronTransaction(hit.metadata)))
+      map((data: EsResult) => data.hits as any),
+      map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: any[]) => hits.map( (hit: any) => new PatronTransaction(hit.metadata)))
     );
   }
 
@@ -102,10 +97,10 @@ export class PatronTransactionService {
    */
   patronTransactionsByLoan$(loanPid: string, type?: string, status?: string): Observable<PatronTransaction[]> {
     const query = this._buildQuery(undefined, loanPid, type, status);
-    return this.recordService.getRecords('patron_transactions', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
-      map((data: Record) => data.hits),
-      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
-      map(hits => hits.map(hit => new PatronTransaction(hit.metadata)))
+    return this.recordService.getRecords('patron_transactions', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE }).pipe(
+      map((data: EsResult) => data.hits as any),
+      map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: any[]) => hits.map((hit: any) => new PatronTransaction(hit.metadata)))
     );
   }
 
@@ -139,10 +134,10 @@ export class PatronTransactionService {
    */
   loadTransactionHistory(transaction: PatronTransaction): Observable<any> {
     const query = `parent.pid:${transaction.pid}`;
-    return this.recordService.getRecords('patron_transaction_events', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
-      map((data: Record) => data.hits),
-      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
-      map(hits => hits.map(hit => new PatronTransactionEvent(hit.metadata)))
+    return this.recordService.getRecords('patron_transaction_events', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE }).pipe(
+      map((data: EsResult) => data.hits as any),
+      map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: any[]) => hits.map((hit: any) => new PatronTransactionEvent(hit.metadata)))
     );
   }
 

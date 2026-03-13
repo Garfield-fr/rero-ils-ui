@@ -17,7 +17,7 @@
  */
 
 import { AfterViewInit, Component, inject, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+
 import { Entity, EntityType } from '../../../class/entity';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { BriefViewTag } from '../../core/brief-view/brief-view.component';
@@ -46,7 +46,7 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
   `,
     standalone: false
 })
-export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewInit {
+export class EntityBriefViewComponent implements OnInit, AfterViewInit {
 
   protected extractedSourceFieldPipe: ExtractSourceFieldPipe = inject(ExtractSourceFieldPipe);
 

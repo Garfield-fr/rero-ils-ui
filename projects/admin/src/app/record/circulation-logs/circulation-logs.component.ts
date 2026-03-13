@@ -18,7 +18,7 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { _, TranslateService } from "@ngx-translate/core";
-import { Record } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 import { OperationLogsApiService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -85,7 +85,7 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.formGroup.valueChanges.pipe(
         switchMap(() => this.circulationLogsQuery(1))
-      ).subscribe((response: Record) => {
+      ).subscribe((response: EsResult) => {
         this.page.set(1);
         this.recordsTotal.set(response.hits.total.value);
         this.records.set(response.hits.hits);
@@ -112,7 +112,7 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
   showMore(): void {
     this.page.update(page => page + 1);
     this.circulationLogsQuery(this.page())
-      .subscribe((response: Record) => {
+      .subscribe((response: EsResult) => {
         this.records.update(records => records.concat(response.hits.hits));
       });
   }

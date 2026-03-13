@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RecordService } from '@rero/ng-core';
 import { Observable, of, Subscription } from 'rxjs';
@@ -30,13 +30,13 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
   private recordService: RecordService = inject(RecordService);
 
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
 
   /** Observable of the imported record in marc format */
   marc$: Observable<any>;
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /** Document record */
   record: any;
@@ -51,13 +51,14 @@ export class TemplateDetailViewComponent implements OnInit, OnDestroy {
 
   /** On init hook */
   ngOnInit(): void {
-    this.recordSubscription = this.record$.subscribe((record: any) => {
+    this.recordSubscription = this.record$().subscribe((record: any) => {
       this.record = record;
       // only for imported record
       if (record != null && record.metadata != null && this.record.metadata.pid == null) {
         this.marc$ = this.recordService.getRecord(
-          this.router.snapshot.params.type, this.pid, 0, {
-          Accept: 'application/marc+json, application/json'
+          this.router.snapshot.params.type, this.pid, {
+          resolve: 0,
+          headers: { Accept: 'application/marc+json, application/json' }
         });
       } else {
         this.marc$ = of(null);

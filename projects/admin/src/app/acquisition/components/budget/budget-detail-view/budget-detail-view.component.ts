@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
@@ -27,16 +27,16 @@ import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
     templateUrl: './budget-detail-view.component.html',
     standalone: false
 })
-export class BudgetDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class BudgetDetailViewComponent implements OnInit, OnDestroy {
 
   private budgetApiService: AcqBudgetApiService = inject(AcqBudgetApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Record observable */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
   /** Record type */
-  type: string;
+  readonly type = input<string>('');
   /** Budget total allocated amount */
   totalAmount = 0;
 
@@ -52,7 +52,7 @@ export class BudgetDetailViewComponent implements DetailRecord, OnInit, OnDestro
   /** OnInit hook */
   ngOnInit() {
     this._subscriptions.add(
-      this.record$
+      this.record$()
         .pipe(switchMap((record: any) => this.budgetApiService.getBudgetTotalAmount(record.metadata.pid)))
         .subscribe(total => this.totalAmount = total));
   }

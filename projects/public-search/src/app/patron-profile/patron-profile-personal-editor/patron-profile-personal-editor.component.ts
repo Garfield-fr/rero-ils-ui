@@ -71,7 +71,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   /** Init hook */
   ngOnInit(): void {
     const schemaForm = this.recordService.getSchemaForm('users').pipe(
-      tap(schema => {
+      tap((schema: any) => {
         if (schema) {
           const disabledFields = this.appSettingsService.settings.userProfile.readOnlyFields;
           this.fields = [
@@ -231,7 +231,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
         const { value } = control;
         return (value == null || value.length === 0)
           ? of(true)
-          : this.recordService.getRecords('users', `${fieldName}:${value}`).pipe(
+          : this.recordService.getRecords('users', { query: `${fieldName}:${value}` }).pipe(
               debounceTime(1000),
               map((res: any) => {
                 return (res.hits.hits.length === 0) ||

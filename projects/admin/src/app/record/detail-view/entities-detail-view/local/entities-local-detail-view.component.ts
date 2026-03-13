@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OperationLogsService } from '@rero/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Observable } from 'rxjs';
+
 import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
 
 @Component({
@@ -27,17 +28,17 @@ import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
     templateUrl: './entities-local-detail-view.component.html',
     standalone: false
 })
-export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
+export class EntitiesLocalDetailViewComponent implements OnInit {
 
   private translateService: TranslateService = inject(TranslateService);
   private router: Router = inject(Router);
   private operationLogsService: OperationLogsService = inject(OperationLogsService);
 
   /** Observable resolving record data */
-  record$: any;
+  readonly record$ = input.required<Observable<any>>();
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /** Enum of type of Entity */
   entityType = EntityType;

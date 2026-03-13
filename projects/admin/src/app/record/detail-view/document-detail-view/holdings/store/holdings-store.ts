@@ -18,7 +18,7 @@ import { computed, inject } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { Record, RecordUiService } from "@rero/ng-core";
+import { RecordUiService } from "@rero/ng-core";
 import { EsRecord, nonNullable, setFulfilled, setPending, UserService, withRequestStatus } from "@rero/shared";
 import { MultiSelectChangeEvent } from "primeng/multiselect";
 import { pipe, switchMap, tap } from "rxjs";
@@ -109,7 +109,7 @@ export const HoldingsStore = signalStore(
       pipe(
         tap(() => patchState(store, setPending())),
         switchMap(() => store.holdingsApiService.getHoldingsByDocumentPid(store.document().metadata.pid)),
-        tap((result: Record) => patchState(store, { holdings: result.hits.hits, total: result.hits.total.value }, setFulfilled()))
+        tap((result: any) => patchState(store, { holdings: result.hits.hits, total: result.hits.total.value }, setFulfilled()))
       )
     ),
     delete: rxMethod<EsRecord>(

@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
+import { ErrorComponent, ExportButtonComponent, ListFiltersComponent, MenuSortComponent, PaginatorComponent as NgCorePaginatorComponent, RecordSearchAggregationComponent, SearchFiltersComponent, SearchInputComponent, SearchTabsComponent } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
@@ -121,7 +121,15 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         FormsModule,
         MenuModule,
         ReactiveFormsModule,
-        RecordModule,
+        ErrorComponent,
+    ExportButtonComponent,
+    ListFiltersComponent,
+    MenuSortComponent,
+    NgCorePaginatorComponent,
+    RecordSearchAggregationComponent,
+    SearchFiltersComponent,
+    SearchInputComponent,
+    SearchTabsComponent,
         RippleModule,
         ScrollPanelModule,
         SharedModule,
@@ -132,6 +140,7 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         ToggleSwitchModule,
         TranslateModule.forChild(),
       ],
+    schemas: [NO_ERRORS_SCHEMA],
     providers: [
       CurrencyPipe,
     ]

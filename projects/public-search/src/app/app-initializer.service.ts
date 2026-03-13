@@ -21,7 +21,7 @@ import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
 import { RouteCollectionService } from './routes/route-collection.service';
-import { TranslateService } from '@ngx-translate/core';
+import { NgCoreTranslateService } from '@rero/ng-core';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +31,7 @@ export class AppInitializerService {
   private routeCollectionService: RouteCollectionService = inject(RouteCollectionService);
   private userService: UserService = inject(UserService);
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
-  private translateService: TranslateService = inject(TranslateService);
+  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private appConfigService: AppConfigService = inject(AppConfigService);
 
   load(): Observable<any> {
@@ -50,6 +50,7 @@ export class AppInitializerService {
       language = browserLang.match(this.appConfigService.languages.join('|')) ?
         browserLang : this.appConfigService.defaultLanguage;
     }
+    this.translateService.initialize();
     return this.translateService.use(language);
   }
 }

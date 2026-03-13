@@ -16,7 +16,6 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-vendor-brief-view',
@@ -42,7 +41,7 @@ import { ResultItem } from '@rero/ng-core';
     styleUrls: [],
     standalone: false
 })
-export class VendorBriefViewComponent implements ResultItem, OnInit {
+export class VendorBriefViewComponent implements OnInit {
 
   /** Record  data */
   @Input() record: any;

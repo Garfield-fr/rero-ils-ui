@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Component, input, OnInit } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 
@@ -25,18 +25,18 @@ import { Observable } from 'rxjs';
     templateUrl: './collection-detail-view.component.html',
     standalone: false
 })
-export class CollectionDetailViewComponent implements DetailRecord, OnInit {
+export class CollectionDetailViewComponent implements OnInit {
 
   /** The observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
 
   /** The resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /** The record */
   record: any;
 
   ngOnInit(): void {
-    this.record$.subscribe((record: any) => this.record = record);
+    this.record$().subscribe((record: any) => this.record = record);
   }
 }

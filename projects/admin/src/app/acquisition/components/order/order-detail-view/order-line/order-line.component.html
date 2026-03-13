@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-  @if (orderLine && account) {
+  @if (orderLine && account()) {
     <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2 ui:border-t ui:border-b ui:border-surface ui:ui:rounded-md">
       <div class="ui:col-span-8 ui:flex ui:gap-4 ui:py-2 ui:pl-2 ui:border-l ui:border-surface">
         <shared-open-close-button (status)="isCollapsed = $event" />
@@ -33,9 +33,9 @@
         <div class="ui:flex ui:items-start ui:flex-col ui:w-full">
           <div class="ui:flex ui:w-full ui:justify-between">
             <div class="ui:flex">
-              @if (document) {
-                <shared-document-brief-view [record]="document.metadata" />
-              } @else if (document === null) {
+              @if (document()) {
+                <shared-document-brief-view [record]="document().metadata" />
+              } @else if (document() === null) {
                 <span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ orderLine.document.pid }})</span>
               }
             </div>
@@ -56,13 +56,13 @@
               }
             </div>
           </div>
-          <div [hidden]="!isCollapsed">{{ account.metadata.number }}</div>
+          <div [hidden]="!isCollapsed">{{ account().metadata.number }}</div>
           <div class="ui:mt-2" [hidden]="isCollapsed">
             <dl class="metadata">
               <dt translate>Account</dt>
               <dd>
-                {{ account.metadata.name }}
-                <span>{{ account.metadata.number }}</span>
+                {{ account().metadata.name }}
+                <span>{{ account().metadata.number }}</span>
               </dd>
               <dt translate>Status</dt>
               <dd>{{ orderLine.status | translate }}</dd>
@@ -86,19 +86,19 @@
         </div>
       </div>
       <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end ui:py-2 ui:pr-2 ui:border-r ui:border-surface">
-        @if (recordPermissions?.update?.can) {
+        @if (recordPermissions()?.update?.can) {
           <shared-action-button
             icon="fa fa-pencil"
             [title]="'Edit'|translate"
             [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'edit', orderLine.pid]"
           />
         }
-        @if (recordPermissions) {
+        @if (recordPermissions()) {
           <shared-action-button
             icon="fa fa-trash"
             [title]="'Delete'|translate"
             severity="danger"
-            [disabled]="!recordPermissions.delete.can"
+            [disabled]="!recordPermissions().delete.can"
             [message]="deleteInfoMessage"
             (btnClick)="deleteOrderLine()"
           />

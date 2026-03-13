@@ -19,7 +19,7 @@ import {
 } from '@app/admin/components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
 import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -293,18 +293,19 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
           const { user } = this.routeToolService.userService;
-          const { apiService, recordService } = this.routeToolService;
+          const apiService: any = this.routeToolService.apiService;
+          const recordService: RecordService = this.routeToolService.recordService as RecordService;
           const libraryPid = user.currentLibrary;
           const query = `library.pid:${libraryPid}`;
           f.props.options = recordService
-            .getRecords('locations', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'name')
+            .getRecords('locations', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
             .pipe(
-              map((result: Record) => this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-              map((hits: Record[]) =>
+              map((result: any) => +recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+              map((hits: any[]) =>
                 hits.map((hit: any) => {
                   return {
                     label: hit.metadata.name,
-                    value: apiService.getRefEndpoint('locations',hit.metadata.pid)
+                    value: apiService.getRefEndpoint('locations', hit.metadata.pid)
                   };
                 })
               )
@@ -344,12 +345,12 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     record.issue.expected_date = this.routeToolService.getRouteQueryParam('expected_date', today);
     record.issue.received_date = this.routeToolService.getRouteQueryParam('received_date', today);
 
-    this.routeToolService.recordService.getRecord('holdings', holdingPid).subscribe(
-      (holdingData) => {
+    (this.routeToolService.recordService as RecordService).getRecord('holdings', holdingPid).subscribe(
+      (holdingData: any) => {
         record.item_type = holdingData.metadata.circulation_category;
         record.location = holdingData.metadata.location;
         record.document = holdingData.metadata.document;
-        record.holding = { $ref: this.routeToolService.apiService.getRefEndpoint('holdings', holdingPid) };
+        record.holding = { $ref: (this.routeToolService.apiService as any).getRefEndpoint('holdings', holdingPid) };
       }
     );
   }

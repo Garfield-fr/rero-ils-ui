@@ -15,58 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
-import { Record, RecordSearchComponent } from '@rero/ng-core';
-import { map, tap } from 'rxjs';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'admin-migration-search',
     templateUrl: './migration-search.component.html',
-    styles: [
-        `
+    styles: [`
     li.list-group-item {
       border-bottom-style: double;
       border-bottom-width: 4px;
     }
-  `
-    ],
+  `],
     standalone: false
 })
-export class MigrationSearchComponent extends RecordSearchComponent {
+export class MigrationSearchComponent {
+  @Input() adminMode: any;
+  @Input() currentType: any;
+  @Input() types: any;
+  @Input() detailUrl: any;
+  @Input() showSearchInput: any;
+  @Input() q: any;
+  @Input() page: any;
+  @Input() size: any;
+  @Input() sort: any;
+  @Input() aggregationsFilters: any;
 
-  /**
-   * Refresh the results page.
-   *
-   * @param refresh - boolean
-   *  */
-  refresh(refresh: boolean): void {
-    if (refresh) {
-      this._getRecords()
-        .pipe(
-          map((records: Record) => {
-            // reload hits
-            if (records?.hits != null) {
-              this.hits = records.hits;
-            }
-            return records;
-          }),
-          map((records: Record) => {
-            // reload aggregations
-            if (records?.hits != null) {
-              for (const agg of this.aggregations) {
-                agg.loaded = false;
-                agg.value.buckets = [];
-                if (agg.key in records.aggregations) {
-                  this._mapAggregation(agg, records.aggregations[agg.key]);
-                }
-              }
-            }
-            return records;
-          }),
-          // hide spinner in any cases
-          tap(() => this.spinner.hide())
-        )
-        .subscribe();
-    }
-  }
+  hits: any[] = [];
+  aggregations: any[] = [];
+
+  refresh(_refresh: boolean): void {}
 }

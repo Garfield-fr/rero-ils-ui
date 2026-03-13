@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
 import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -48,9 +48,9 @@ export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
   @Input() collapsable = true;
   @Input() isCollapsed = true;
   /** Record permissions */
-  recordPermissions?: RecordPermissions;
+  readonly recordPermissions = signal<RecordPermissions | undefined>(undefined);
   /** Receipt object */
-  receipt: IAcqReceipt = undefined;
+  readonly receipt = signal<IAcqReceipt | undefined>(undefined);
   validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED];
  /** all component subscription */
   private subscriptions = new Subscription();
@@ -61,8 +61,8 @@ export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get deleteInfoMessage(): string {
-    return (!this.recordPermissions.delete.can)
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.delete.reasons, 'delete')
+    return (!this.recordPermissions()?.delete?.can)
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.delete?.reasons, 'delete')
       : '';
   }
 
@@ -96,7 +96,7 @@ export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
         tap((receipt: IAcqReceipt) => {
           receipt.receipt_lines = receipt.receipt_lines.map((line:IAcqReceiptLine) => ({...line, ...{acq_receipt:{pid: this.receiptPid}}}))
         }),
-        tap((receipt: IAcqReceipt)=> this.receipt = receipt),
+        tap((receipt: IAcqReceipt) => this.receipt.set(receipt)),
         switchMap(():Observable<any> => {
           // Load permissions only if we need to display the action buttons
           if (this.allowActions) {
@@ -109,20 +109,20 @@ export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   updatePermissions() {
-    const order$ = this.acqOrderApiService.getOrder(this.receipt.acq_order.pid);
-    const permissions$ = this.recordPermissionService.getPermission('acq_receipts', this.receipt.pid);
+    const order$ = this.acqOrderApiService.getOrder(this.receipt().acq_order.pid);
+    const permissions$ = this.recordPermissionService.getPermission('acq_receipts', this.receipt().pid);
     return forkJoin([order$, permissions$]).pipe(
       tap(([order, permissions]) => {
         // modify permissions in place
-        this.currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
-        this.recordPermissions = this.receivedOrderPermissionValidator.validate(permissions, order);
+        this.currentLibraryPermissionValidator.validate(permissions, this.receipt().library.pid);
+        this.recordPermissions.set(this.receivedOrderPermissionValidator.validate(permissions, order));
       })
     );
   }
 
   /** Delete a receipt */
   deleteReceipt(): void {
-    this.acqReceiptApiService.delete(this.receipt);
+    this.acqReceiptApiService.delete(this.receipt());
   }
 
 }

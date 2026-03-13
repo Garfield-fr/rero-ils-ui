@@ -44,7 +44,7 @@ export class PendingItemComponent implements OnInit {
   ngOnInit() {
     if (this.loan) {
       const item$ = this.itemService.getItem(this.loan.metadata.item.barcode, this.loan.metadata.paton_pid);
-      const doc$ = this.recordService.getRecord('documents', this.loan.metadata.item.document.pid, 1, {Accept: 'application/rero+json'});
+      const doc$ = this.recordService.getRecord('documents', this.loan.metadata.item.document.pid, { resolve: 1, headers: { Accept: 'application/rero+json' } });
       forkJoin([item$, doc$]).subscribe(
         ([itemData, documentData]) => {
           this.item = itemData;

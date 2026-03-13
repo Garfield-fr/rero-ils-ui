@@ -18,7 +18,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from "@ngx-translate/core";
 import {
   ComponentCanDeactivateGuard,
-  DetailComponent, EditorComponent, JSONSchema7, Record,
+  DetailComponent, EditorComponent, JSONSchema7,
   RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR, Tools, User } from '@rero/shared';
@@ -162,19 +162,15 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
         const {user} = this.routeToolService.userService;
-        const { apiService, recordService } = this.routeToolService;
+        const apiService = this.routeToolService.apiService;
+        const recordService: RecordService = this.routeToolService.recordService as RecordService;
         const query = `organisation.pid:${user.currentOrganisation}`;
         f.props.options = recordService.getRecords(
           'libraries',
-          query, 1,
-          RecordService.MAX_REST_RESULTS_SIZE,
-          undefined,
-          undefined,
-          undefined,
-          'name'
+          { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' }
         ).pipe(
-          map((result: Record) =>
-            this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+          map((result: any) =>
+            +recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
           map((hits: any) => {
             return hits.map((hit: any) => {
               return {

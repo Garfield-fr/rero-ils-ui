@@ -17,7 +17,6 @@
  */
 
 import { NgModule } from '@angular/core';
-import { NgCoreFormlyRemoteAutocompleteModule } from '@rero/ng-core';
 import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AutoFocusModule } from 'primeng/autofocus';

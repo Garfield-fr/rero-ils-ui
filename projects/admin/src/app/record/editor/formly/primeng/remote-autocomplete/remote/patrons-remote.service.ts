@@ -17,7 +17,7 @@
 import { inject, Injectable } from '@angular/core';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/ng-core/lib/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.interface';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { PatronService } from '@app/admin/service/patron.service';
 
@@ -41,9 +41,7 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
 
     return this.recordService.getRecords(
       this.getName(),
-      query,
-      1,
-      queryOptions.maxOfResult
+      { query, page: 1, itemsPerPage: queryOptions.maxOfResult }
     ).pipe(
       map((result: any) => {
         const patrons = [];
@@ -66,7 +64,7 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
     const pid = url.pop();
 
     return this.recordService
-      .getRecord(queryOptions.type, pid, 1)
+      .getRecord(queryOptions.type, pid, { resolve: 1 })
       .pipe(
         map((data: any) =>
           `<span class="ui:p-2 ui:font-bold">${this.patronService.getFormattedName(data.metadata)}</span>`

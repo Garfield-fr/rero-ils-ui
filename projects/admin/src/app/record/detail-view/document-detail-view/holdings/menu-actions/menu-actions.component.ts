@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input, resource } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { EsRecord } from 'projects/shared/src/public-api';
-import { firstValueFrom, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'admin-menu-actions',
@@ -34,19 +34,20 @@ export class MenuActionsComponent {
 
   document = input.required<EsRecord>();
 
-  permissions = resource({
-    request: () => this.document(),
-    loader: () =>
-      firstValueFrom(
-        forkJoin([
-          this.recordPermissionService.getPermission('holdings'),
-          this.recordPermissionService.getPermission('items'),
-        ])
-      )
-  });
+  permissions = signal<[any, any] | null>(null);
+
+  constructor() {
+    effect(() => {
+      this.document(); // track document changes
+      forkJoin([
+        this.recordPermissionService.getPermission('holdings'),
+        this.recordPermissionService.getPermission('items'),
+      ]).subscribe(p => this.permissions.set(p));
+    });
+  }
 
   canAdd = computed(() => {
-    const p = this.permissions.value();
+    const p = this.permissions();
     if (!p) return false;
 
     const [hold, item] = p;
@@ -57,7 +58,7 @@ export class MenuActionsComponent {
   protected perms: IPermissions = PERMISSIONS;
 
   protected options = computed(() => {
-    const perms = this.permissions.value();
+    const perms = this.permissions();
     if (!perms) return [];
     return [
         {

@@ -17,14 +17,13 @@
  */
 import { Component, inject, Input } from '@angular/core';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
-import { ResultItem } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-documents-brief-view',
     templateUrl: './documents-brief-view.component.html',
     standalone: false
 })
-export class DocumentsBriefViewComponent implements ResultItem {
+export class DocumentsBriefViewComponent {
 
   public documentApiService: DocumentApiService = inject(DocumentApiService);
 

@@ -21,11 +21,11 @@ import {
   DetailComponent,
   EditorComponent,
   JSONSchema7,
-  Record,
   RecordSearchPageComponent,
   RecordService,
   RouteInterface,
 } from "@rero/ng-core";
+import type { EsResult } from "@rero/ng-core";
 import {
   PERMISSIONS,
   PERMISSION_OPERATOR,
@@ -169,16 +169,10 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
           f.props.options = recordService
             .getRecords(
               "libraries",
-              "",
-              1,
-              RecordService.MAX_REST_RESULTS_SIZE,
-              undefined,
-              undefined,
-              undefined,
-              "name"
+              { query: "", page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: "name" }
             )
             .pipe(
-              map((result: Record) =>
+              map((result: EsResult) =>
                 this.routeToolService.recordService.totalHits(
                   result.hits.total
                 ) === 0

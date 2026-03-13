@@ -47,7 +47,7 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
         }
       });
     } else {
-      return this.recordService.getRecord('holdings', record.holding.pid, 1).pipe(map((data: any) => {
+      return this.recordService.getRecord('holdings', record.holding.pid, { resolve: 1 }).pipe(map((data: any) => {
         if (data && data.metadata && 'call_number' in data.metadata) {
           return {
             first: {

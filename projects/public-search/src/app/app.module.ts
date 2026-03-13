@@ -22,9 +22,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BucketNameService as CoreBucketNameService, CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordModule, TranslateLoader, TruncateTextPipe } from '@rero/ng-core';
+import { TranslateLoader as BaseCoreTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordSearchComponent, RecordSearchPageComponent, CoreTranslateLoader, TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe, RemoteSearchComponent, SharedModule } from '@rero/shared';
+// BucketNameService removed — no longer part of ng-core v21
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from "primeng/config";
 import { DividerModule } from 'primeng/divider';
 import { AppConfigService } from './app-config.service';
@@ -37,7 +39,7 @@ import { DocumentRecordSearchComponent } from './document-record-search/document
 import { ErrorPageComponent } from './error/error-page.component';
 import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
 import { MainComponent } from './main/main.component';
-import { BucketNameService } from './service/bucket-name.service';
+
 
 @NgModule({
     declarations: [
@@ -52,12 +54,13 @@ import { BucketNameService } from './service/bucket-name.service';
         BrowserModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        RecordModule,
+        RecordSearchComponent,
+        RecordSearchPageComponent,
         DividerModule,
         TranslateModule.forRoot({
             loader: {
-                provide: BaseTranslateLoader,
-                useClass: TranslateLoader,
+                provide: BaseCoreTranslateLoader,
+                useClass: CoreTranslateLoader,
                 deps: [CoreConfigService, HttpClient]
             },
             isolate: false
@@ -75,9 +78,10 @@ import { BucketNameService } from './service/bucket-name.service';
       { provide: TranslateService, useClass: NgCoreTranslateService },
       { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLang, deps: [TranslateService] },
       { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
-      { provide: CoreBucketNameService, useClass: BucketNameService },
       MainTitlePipe,
       TruncateTextPipe,
+      ConfirmationService,
+      MessageService,
       provideAnimationsAsync(),
       providePrimeNG(primeNGConfig),
       MainTitlePipe,

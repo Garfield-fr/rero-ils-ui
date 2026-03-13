@@ -22,7 +22,6 @@
 @layer rero-ils-ui {
   .rero-ils-ui {
     @import "@rero/ng-core/assets/scss/ng-core";
-    @import "tailwindcss/preflight.css" layer(base) prefix(ui);
   }
 }
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
@@ -43,14 +43,14 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   @Input() order: any;
 
   /** order line related account */
-  account: any;
+  readonly account = signal<any>(undefined);
   /** order line related document record */
-  document: any;
+  readonly document = signal<any>(undefined);
   /** Is the line is collapsed */
   isCollapsed = true;
   /** reference to AcqOrderLineStatus */
   orderLineStatus = AcqOrderLineStatus;
-  recordPermissions?: RecordPermissions;
+  readonly recordPermissions = signal<RecordPermissions | undefined>(undefined);
 
   /** all component subscription */
   private subscriptions = new Subscription();
@@ -61,8 +61,8 @@ export class OrderLineComponent implements OnInit, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get deleteInfoMessage(): string {
-    return !this.recordPermissions.delete.can
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.delete.reasons, 'delete')
+    return !this.recordPermissions()?.delete?.can
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.delete?.reasons, 'delete')
       : null;
   }
 
@@ -76,9 +76,9 @@ export class OrderLineComponent implements OnInit, OnDestroy {
       catchError(() => of(null))
     );
     forkJoin([permissions$, account$, document$]).subscribe(([permissions, account, document]) => {
-      this.recordPermissions = permissions;
-      this.account = account;
-      this.document = document;
+      this.recordPermissions.set(permissions);
+      this.account.set(account);
+      this.document.set(document);
     });
   }
 

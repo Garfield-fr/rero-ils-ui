@@ -17,7 +17,7 @@
  */
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { BaseApi, EsResult, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -47,7 +47,7 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
     .getRecords(
       'holdings', query, 1, 9999, undefined, { view: viewcode },
       BaseApi.reroJsonheaders, 'organisation_library_location'
-    ).pipe(map((response: Record) => response));
+    ).pipe(map((response: EsResult) => response));
   }
 
   /**
@@ -63,7 +63,7 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
       .getRecords(
         'holdings', query, page, itemsPerPage, undefined, { view: viewcode },
         BaseApi.reroJsonheaders, 'organisation_library_location'
-      ).pipe(map((response: Record) => response.hits));
+      ).pipe(map((response: EsResult) => response.hits));
     }
 
   /**

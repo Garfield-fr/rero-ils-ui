@@ -39,7 +39,7 @@ export class ItemsService {
    */
   getByPidFromEs(pid: string): Observable<any> {
     return this.recordService.getRecords(
-      'items', `pid:${pid}`, 1, 1, undefined, undefined, BaseApi.reroJsonheaders
+      'items', { query: `pid:${pid}`, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders }
     ).pipe(map((result: any) => result.hits.hits[0]));
   }
 
@@ -53,7 +53,7 @@ export class ItemsService {
     const url = `${itemApiUrl}/requested_loans/${libraryPid}`;
     return this.httpClient.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map(hits => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map(
         data => {
           const { item } = data;

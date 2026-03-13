@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService } from '@rero/ng-core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+
 import { Observable } from 'rxjs';
 
 @Component({
@@ -25,15 +25,15 @@ import { Observable } from 'rxjs';
     templateUrl: './ill-request-detail-view.component.html',
     standalone: false
 })
-export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
+export class IllRequestDetailViewComponent implements OnInit {
 
   private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** The observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
   /** The resource type */
-  type: string;
+  readonly type = input<string>('');
   /** The record */
   record: any;
 
@@ -45,7 +45,7 @@ export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.record$.subscribe((record) => {
+    this.record$().subscribe((record) => {
       this.record = record;
       this.tagSeverity = getTagSeverityFromStatus(record.metadata.status);
       this.loanTagSeverity = getTagSeverityFromStatus(record.metadata.loan_status);

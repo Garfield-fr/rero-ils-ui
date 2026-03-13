@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,18 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
-import { Observable } from 'rxjs';
-
-@Component({
-    selector: 'admin-item-type-detail-view',
-    templateUrl: './item-type-detail-view.component.html',
-    standalone: false
-})
-export class ItemTypeDetailViewComponent {
-
-  readonly record$ = input.required<Observable<any>>();
-
-  readonly type = input<string>('');
+@Pipe({ name: 'default', standalone: false })
+export class DefaultPipe implements PipeTransform {
+  transform(value: any, defaultValue: any = ''): any {
+    return (value === null || value === undefined) ? defaultValue : value;
+  }
 }

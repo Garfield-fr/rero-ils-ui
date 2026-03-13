@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+
 import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { roleTagSeverity } from '../../../utils/roles';
@@ -32,13 +32,13 @@ type PatronPhone = {
     templateUrl: './patron-detail-view.component.html',
     standalone: false
 })
-export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
+export class PatronDetailViewComponent implements OnInit,  OnDestroy {
 
   private permissionsService: PermissionsService = inject(PermissionsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Data from patron we received */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
   /** the api response record */
   record: any;
   /** Current displayed/used patron */
@@ -46,7 +46,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
   /** Patron phones */
   phones: PatronPhone[] = [];
   /** record type */
-  type: string;
+  readonly type = input<string>('');
   /** Load operation logs on show */
   showOperationLogs = false;
   /** collapsed sections */
@@ -69,7 +69,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
 
   /** OnInit hook */
   ngOnInit() {
-    this.subscription$ = this.record$.subscribe((record) => {
+    this.subscription$ = this.record$().subscribe((record) => {
       this.record = record;
       this.patron = record.metadata;
       this.phones = this.processPhones(record.metadata);

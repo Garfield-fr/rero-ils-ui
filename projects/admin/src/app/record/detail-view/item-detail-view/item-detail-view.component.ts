@@ -19,7 +19,7 @@ import { AfterViewInit, Component, inject, Input, OnChanges, OnDestroy, OnInit, 
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordService } from '@rero/ng-core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+
 import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, UserService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { Observable, Subscription } from 'rxjs';
@@ -91,7 +91,7 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes?.record?.currentValue != null) {
-      this.recordService.getRecord('locations', changes.record.currentValue.metadata.location.pid, 1).subscribe(data => this.location = data);
+      this.recordService.getRecord('locations', changes.record.currentValue.metadata.location.pid, { resolve: 1 }).subscribe(data => this.location = data);
     }
   }
   /** OnDestroy hook */
@@ -122,7 +122,7 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
 
   /** Update item status */
   updateItemStatus(): void {
-    this.recordService.getRecord('items', this.record.metadata.pid, 1)
+    this.recordService.getRecord('items', this.record.metadata.pid, { resolve: 1 })
       .subscribe((item: any) => this.record = item);
   }
 

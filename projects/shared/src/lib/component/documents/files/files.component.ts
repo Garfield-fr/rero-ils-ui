@@ -20,7 +20,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { ApiService, Record, RecordService } from '@rero/ng-core';
+import { ApiService, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
@@ -138,12 +139,12 @@ export class FilesComponent implements OnInit, OnDestroy {
     this.httpService
       .get(`${baseUrl}?q=${query}`)
       .pipe(
-        map((result: Record) => (this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+        map((result: EsResult) => (this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
         tap(hits => {
           const colls: string[] = [];
           hits.forEach(hit => {
             if (Array.isArray(hit.metadata.collections)) {
-              colls.push(...hit.metadata.collections);
+              colls.push(...(hit.metadata.collections as string[]));
             }
           });
           this.collections = Array.from(new Set(colls));

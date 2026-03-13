@@ -17,14 +17,15 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ApiService, RecordModule } from '@rero/ng-core';
+import { ApiService, ExportButtonComponent } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { AccordionModule } from 'primeng/accordion';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TabsModule } from 'primeng/tabs';
 import { TimelineModule } from 'primeng/timeline';
 import { TreeTableModule } from 'primeng/treetable';
 import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
@@ -114,14 +115,16 @@ import { ReceiptLineComponent } from './components/receipt/receipt-line/receipt-
     FormsModule,
     PreviewEmailModule,
     ReactiveFormsModule,
-    RecordModule,
+    ExportButtonComponent,
     SharedModule,
+    TabsModule,
     TimelineModule,
     TranslateModule,
     TreeTableModule,
     InputNumberModule,
     OverlayBadgeModule
   ],
+  schemas: [NO_ERRORS_SCHEMA],
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },
     OrderReceipt,

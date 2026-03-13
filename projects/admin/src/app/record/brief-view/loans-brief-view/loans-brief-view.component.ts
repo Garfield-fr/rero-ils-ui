@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+
 import { PermissionsService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -29,7 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
     templateUrl: './loans-brief-view.component.html',
     standalone: false
 })
-export class LoansBriefViewComponent implements ResultItem, OnInit {
+export class LoansBriefViewComponent implements OnInit {
 
   private dialogService: DialogService = inject(DialogService);
   private permissionsService: PermissionsService = inject(PermissionsService);

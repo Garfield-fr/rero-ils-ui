@@ -19,7 +19,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { _ } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG, Record, RecordService } from '@rero/ng-core';
+import { CONFIG, RecordService } from '@rero/ng-core';
 import { ItemStatus, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -237,11 +237,11 @@ export class CheckinComponent implements OnInit {
     const loggerOrg = this.loggedUser.currentOrganisation;
     const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
     const patronQuery = this.recordService
-      .getRecords('patrons', query, 1, 1, [])
-      .pipe(map((result: Record) => result.hits));
+      .getRecords('patrons', { query, page: 1, itemsPerPage: 1 })
+      .pipe(map((result: any) => result.hits));
     const itemQuery = this.recordService
-      .getRecords('items', `barcode:${barcode}`, 1, 1, [])
-      .pipe(map((result: Record) => result.hits));
+      .getRecords('items', { query: `barcode:${barcode}`, page: 1, itemsPerPage: 1 })
+      .pipe(map((result: any) => result.hits));
     forkJoin([patronQuery, itemQuery])
     .subscribe({
       next: ([patron, item]: any[]) => {

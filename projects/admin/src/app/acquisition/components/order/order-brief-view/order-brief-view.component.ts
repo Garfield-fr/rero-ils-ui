@@ -17,7 +17,6 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
 import { AcqNoteType } from '../../../classes/common';
 import { AcqOrderStatus, IAcqOrder, orderDefaultData } from '../../../classes/order';
 
@@ -26,7 +25,7 @@ import { AcqOrderStatus, IAcqOrder, orderDefaultData } from '../../../classes/or
     templateUrl: './order-brief-view.component.html',
     standalone: false
 })
-export class OrderBriefViewComponent implements ResultItem, OnInit {
+export class OrderBriefViewComponent implements OnInit {
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** the record to display */

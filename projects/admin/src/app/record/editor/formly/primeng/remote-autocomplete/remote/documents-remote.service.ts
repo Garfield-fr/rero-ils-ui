@@ -17,7 +17,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { inject, Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/prime/remote-autocomplete/remote-autocomplete.interface';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
 import { Entity, MainTitlePipe } from '@rero/shared';
 import { catchError, map, Observable, of } from 'rxjs';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
@@ -56,7 +56,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     }
 
     return this.recordService
-      .getRecords(this.getName(), queryString, 1, queryOptions.maxOfResult)
+      .getRecords(this.getName(), { query: queryString, page: 1, itemsPerPage: queryOptions.maxOfResult })
       .pipe(
         map((result: any) => {
           if (result.hits.total.value == 0) {
@@ -85,7 +85,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     const pid = url.pop();
 
     return this.recordService
-      .getRecord(queryOptions.type, pid, 1)
+      .getRecord(queryOptions.type, pid, { resolve: 1 })
       .pipe(
         map((data: any) =>
           `<span class="ui:p-2"><strong>${this.mainTitlePipe.transform(data.metadata.title)}</strong></span>`

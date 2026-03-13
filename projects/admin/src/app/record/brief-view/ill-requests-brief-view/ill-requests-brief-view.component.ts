@@ -17,14 +17,14 @@
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
-import { RecordService, ResultItem } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-ill-requests-brief-view',
     templateUrl: './ill-requests-brief-view.component.html',
     standalone: false
 })
-export class IllRequestsBriefViewComponent  implements ResultItem, OnInit {
+export class IllRequestsBriefViewComponent  implements OnInit {
 
   private recordService: RecordService = inject(RecordService);
 

@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Record } from '@rero/ng-core/lib/record/record';
+
+import type { EsResult } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { Library } from '../../../classes/library';
@@ -28,16 +28,16 @@ import { Library } from '../../../classes/library';
     templateUrl: './library-detail-view.component.html',
     standalone: false
 })
-export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class LibraryDetailViewComponent implements OnInit, OnDestroy {
 
   private recordService: RecordService = inject(RecordService);
   private userService: UserService = inject(UserService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
   /** the library record as `Library` */
   record: Library = null;
   /** linked locations */
@@ -50,14 +50,14 @@ export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestr
 
   /** OnInit hook */
   ngOnInit() {
-   this.recordObs = this.record$.subscribe((data: any) => {
+   this.recordObs = this.record$().subscribe((data: any) => {
       const libraryPid = data.metadata.pid;
       this.record = new Library(data.metadata);
       this.isUserCanAddLocation = this.userService.user.currentLibrary === libraryPid;
       // Load linked locations
       this.recordService
-        .getRecords('locations', `library.pid:${libraryPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, 'name')
-        .subscribe((record: Record) => this.locations = record.hits.hits || []);
+        .getRecords('locations', { query: `library.pid:${libraryPid}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
+        .subscribe((record: any) => this.locations = record.hits.hits || []);
    });
   }
 

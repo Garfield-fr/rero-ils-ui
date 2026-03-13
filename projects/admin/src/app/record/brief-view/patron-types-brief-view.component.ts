@@ -16,7 +16,7 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+
 
 @Component({
     selector: 'admin-patron-types-brief-view',
@@ -31,7 +31,7 @@ import { ResultItem } from '@rero/ng-core';
     styles: [],
     standalone: false
 })
-export class PatronTypesBriefViewComponent implements ResultItem {
+export class PatronTypesBriefViewComponent {
 
   @Input() record: any;
 

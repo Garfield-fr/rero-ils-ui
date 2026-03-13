@@ -19,7 +19,7 @@ import { _ } from "@ngx-translate/core";
 import {
   ComponentCanDeactivateGuard,
   DetailComponent, EditorComponent,
-  JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface
+  JSONSchema7, RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
@@ -182,7 +182,8 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
         const { user } = this.routeToolService.userService;
-        const { apiService, recordService } = this.routeToolService;
+        const apiService: any = this.routeToolService.apiService;
+        const recordService: RecordService = this.routeToolService.recordService as RecordService;
 
         // Extract libraries from patron > libraries
         const libraries = [];
@@ -194,14 +195,9 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
 
         f.props.options = recordService.getRecords(
           'libraries',
-          `pid:${libraries.join(' OR pid:')}`, 1,
-          RecordService.MAX_REST_RESULTS_SIZE,
-          undefined,
-          undefined,
-          undefined,
-          'name'
+          { query: `pid:${libraries.join(' OR pid:')}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' }
         ).pipe(
-          map((result: Record) => result.hits.total === 0 ? [] : result.hits.hits),
+          map((result: any) => +recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
           map((hits: any) => {
             return hits.map((hit: any) => {
               return {

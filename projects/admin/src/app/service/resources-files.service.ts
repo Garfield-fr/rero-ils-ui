@@ -17,7 +17,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { ApiService, File, Record, RecordService } from '@rero/ng-core';
+import { ApiService, File, RecordService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
@@ -93,7 +93,7 @@ export class ResourcesFilesService {
    * @param type
    * @param pid
    */
-  createParentRecord(docPid: string): Observable<Record> {
+  createParentRecord(docPid: string): Observable<any> {
     // get the current library pid
     const libPid = this.userService.user.currentLibrary;
     // create the file record attached to the current library pid and the given

@@ -91,7 +91,7 @@ export class IssueEmailComponent implements OnInit {
           life: CONFIG.MESSAGE_LIFE
         });
         this.recordService
-          .getRecord('items', this.record.metadata.pid, 1, {Accept: 'application/rero+json'})
+          .getRecord('items', this.record.metadata.pid, { resolve: 1, headers: { Accept: 'application/rero+json' } })
           .subscribe((record: any) => this.closeDialog(record));
       } else {
         this.messageService.add({

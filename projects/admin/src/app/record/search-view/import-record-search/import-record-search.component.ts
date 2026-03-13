@@ -14,15 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, OnInit, signal } from '@angular/core';
-import { RecordSearchPageComponent } from '@rero/ng-core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'admin-import-record-search',
   templateUrl: './import-record-search.component.html',
   standalone: false
 })
-export class ImportRecordSearchComponent extends RecordSearchPageComponent implements OnInit {
+export class ImportRecordSearchComponent implements OnInit {
+  private _route = inject(ActivatedRoute);
 
   options: maxRecordSize[] = [
     { name: "10", size: 10 },
@@ -32,27 +33,10 @@ export class ImportRecordSearchComponent extends RecordSearchPageComponent imple
 
   maxRecordsSelected = signal(undefined);
 
-  constructor() {
-    super();
-    effect(() => {
-      this.router.navigate(
-        ['/records', this.route.snapshot.params.type],
-        {
-          queryParams: {
-            q: this.route.snapshot.queryParams.q,
-            page: 1,
-            size: this.maxRecordsSelected().size
-          }
-        }
-      );
-    });
-  }
-
   ngOnInit(): void {
-      super.ngOnInit();
-      this.maxRecordsSelected.set(this.options.find(
-        (option: maxRecordSize) => option.size === parseInt(this.route.snapshot.queryParams.size)
-      ));
+    this.maxRecordsSelected.set(this.options.find(
+      (option: maxRecordSize) => option.size === parseInt(this._route.snapshot.queryParams.size)
+    ));
   }
 }
 

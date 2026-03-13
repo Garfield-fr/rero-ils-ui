@@ -17,7 +17,8 @@
 import { APP_BASE_HREF, KeyValue } from '@angular/common';
 import { afterNextRender, Component, inject, model, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 import { IPatron, UserService } from '@rero/shared';
 import JsBarcode from 'jsbarcode';
 import { forkJoin, of, Subscription } from 'rxjs';
@@ -211,22 +212,22 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
           });
           forkJoin([loanQuery, requestQuery, feeQuery, overdueQuery, historyQuery, illRequestQuery]).subscribe(
             ([loanResponse, requestResponse, feeResponse, overdueResponse, historyResponse, illRequestResponse]: [
-              Record,
-              Record,
-              Record,
+              EsResult,
+              EsResult,
+              EsResult,
               overdueFee[],
-              Record,
-              Record
+              EsResult,
+              EsResult
             ]) => {
               this.activeTab.set('loan');
               Object.values(this.tabs).map(tab => tab.loaded = false);
-              this.tabs.loan.count = this.recordService.totalHits(loanResponse.hits.total);
-              this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
+              this.tabs.loan.count = +this.recordService.totalHits(loanResponse.hits.total);
+              this.tabs.fee.feeTotal = (feeResponse.aggregations as any).total.value;
               overdueResponse.map((fee: overdueFee) => this.tabs.fee.feeTotal += +fee.fees.total);
-              this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
-              this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
+              this.tabs.request.count = +this.recordService.totalHits(requestResponse.hits.total);
+              this.tabs.illRequest.count = +this.recordService.totalHits(illRequestResponse.hits.total);
               if (historyResponse?.hits?.total) {
-                this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
+                this.tabs.history.count = +this.recordService.totalHits(historyResponse.hits.total);
               }
             }
           );
@@ -238,11 +239,11 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
           this.tabs.request.count--;
           if (keepHistory) {
             this.tabs.history.loaded = false;
-            this.operationLogsApiService.getHistory(this._patronPid, 1, 1).subscribe((historyResponse: Record) => {
+            this.operationLogsApiService.getHistory(this._patronPid, 1, 1).subscribe((historyResponse: EsResult) => {
               this.tabs.history = {
                 ...this.tabs.history,
                 loaded: false,
-                count: this.recordService.totalHits(historyResponse.hits.total),
+                count: +this.recordService.totalHits(historyResponse.hits.total),
               };
             });
           }

@@ -68,8 +68,8 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const { selectedType, searchTerm } = this.dynamicDialogConfig.data;
     this.form = new FormGroup({});
-    this.subscriptions.add(this.recordService.getSchemaForm('local_entities').subscribe((schema) => {
-      schema = processJsonSchema(schema.schema);
+    this.subscriptions.add(this.recordService.getSchemaForm('local_entities').subscribe((schemaResult) => {
+      let schema: any = processJsonSchema((schemaResult as any).schema);
       // Transfer the selected oneOf to the root schema
       schema = schema.oneOf.find((element: any) => element.properties.type.const === this.translatedType(selectedType));
       // Deleting the oneOf key from the schema

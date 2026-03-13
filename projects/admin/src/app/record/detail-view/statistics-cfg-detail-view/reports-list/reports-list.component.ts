@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from "@angular/core";
-import { ApiService, Record, RecordService } from "@rero/ng-core";
+import { ApiService, RecordService } from "@rero/ng-core";
 import { map } from "rxjs/operators";
 
 @Component({
@@ -47,9 +47,9 @@ export class ReportsListComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     this.recordService
-      .getRecords("stats", `config.pid:${this.pid}`, 1, 100)
+      .getRecords("stats", { query: `config.pid:${this.pid}`, page: 1, itemsPerPage: 100 })
       .pipe(
-        map((result: Record) =>
+        map((result: any) =>
           this.recordService.totalHits(result.hits.total) === 0
             ? []
             : result.hits.hits

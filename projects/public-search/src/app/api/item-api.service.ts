@@ -17,7 +17,7 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { BaseApi, EsRecord, EsResult, esResultInitialState, IAvailability, IAvailabilityService, IssueItemStatus } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -56,7 +56,7 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
       .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders, sort)
       .pipe(
         catchError(() => of(esResultInitialState)),
-        map((response: Record) => response)
+        map((response: EsResult) => response)
       );
   }
 

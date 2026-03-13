@@ -66,8 +66,8 @@
       <p-tab value="history" translate>History</p-tab>
     </p-tablist>
     <p-tabpanels>
-      <p-tabpanel #tabOrder value="order">
-        @if (tabOrder.active()) {
+      <p-tabpanel value="order">
+        @if (tabActiveIndex() === 'order') {
           <div class="ui:flex ui:flex-col ui:gap-2">
             <p-accordion [multiple]="true" [value]="['lines']">
               <p-accordion-panel value="lines">
@@ -114,21 +114,25 @@
           </div>
         }
       </p-tabpanel>
-      <p-tabpanel #tabReceipt value="reception">
-        @if(tabReceipt.active()) {
+      <p-tabpanel value="reception">
+        @if (tabActiveIndex() === 'reception') {
           <admin-receipt-list [order]="order" />
         }
       </p-tabpanel>
-      <p-tabpanel #tabHistory value="history">
-        @if (tabHistory.active()) {
+      <p-tabpanel value="history">
+        @if (tabActiveIndex() === 'history') {
           <p-timeline [value]="historyVersions">
             <ng-template #opposite let-event>
-              <a [routerLink]="['/acquisition', 'records', 'acq_orders', 'detail', event.pid]">{{
-                event.label
-              }}</a>
+              @if (event) {
+                <a [routerLink]="['/acquisition', 'records', 'acq_orders', 'detail', event.pid]">{{
+                  event.label
+                }}</a>
+              }
             </ng-template>
             <ng-template #content let-event>
-              <small>{{ event.description }}</small>
+              @if (event) {
+                <small>{{ event.description }}</small>
+              }
             </ng-template>
           </p-timeline>
         }

@@ -17,7 +17,8 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { _ } from "@ngx-translate/core";
-import { NgCoreTranslateService, Record } from '@rero/ng-core';
+import { NgCoreTranslateService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
@@ -113,6 +114,6 @@ export class OperationLogsComponent implements OnInit {
   private _operationLogsQuery(page: number, action: 'create' | 'update'): Observable<any> {
     return this.operationLogsApiService
       .getLogs(this.resourceKey, this.resourcePid, action, page, this.itemsPerPage)
-      .pipe(map((response: Record) => response.hits));
+      .pipe(map((response: EsResult) => response.hits));
   }
 }

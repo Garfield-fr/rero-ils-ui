@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Component, input, OnDestroy, OnInit } from '@angular/core';
+
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
@@ -24,13 +24,13 @@ import { Observable, Subscription } from 'rxjs';
     templateUrl: './location-detail-view.component.html',
     standalone: false
 })
-export class LocationDetailViewComponent implements OnInit, OnDestroy, DetailRecord {
+export class LocationDetailViewComponent implements OnInit, OnDestroy {
 
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /** Record */
   record: any;
@@ -40,7 +40,7 @@ export class LocationDetailViewComponent implements OnInit, OnDestroy, DetailRec
 
   /** On init hook */
   ngOnInit() {
-    this._recordObs = this.record$.subscribe(record => {
+    this._recordObs = this.record$().subscribe(record => {
       this.record = record;
     });
   }

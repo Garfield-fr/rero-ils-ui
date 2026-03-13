@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 
@@ -31,9 +31,9 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES ======================================================
   /** The observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
   /** The resource type */
-  type: string;
+  readonly type = input<string>('');
   /** The record */
   record: any;
   /** Reminders */
@@ -61,7 +61,7 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
 
   /** On init hook */
   ngOnInit() {
-    this._recordObs = this.record$.subscribe(record => {
+    this._recordObs = this.record$().subscribe(record => {
       this.record = record;
       if (record.metadata.settings) {
         record.metadata.settings.forEach(setting => {

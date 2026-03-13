@@ -19,7 +19,8 @@ import { CommonModule } from '@angular/common';
 import { NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { CoreModule, Nl2brPipe, RecordModule } from '@rero/ng-core';
+import { CallbackArrayFilterPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, SearchAutocompleteComponent, TranslateLanguagePipe, TruncateTextPipe, UpperCaseFirstPipe } from '@rero/ng-core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ActionButtonComponent } from './component/action-button/action-button.component';
 import { BriefViewComponent } from './component/core/brief-view/brief-view.component';
 import { DocumentBriefViewComponent } from './component/documents/document-brief-view/document-brief-view.component';
@@ -117,6 +118,7 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     AvailabilityComponent,
     CommonModule,
     ContributionComponent,
+    DateTranslatePipe,
     DescriptionZoneComponent,
     DocumentBriefViewComponent,
     DocumentDescriptionComponent,
@@ -125,6 +127,7 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     EntityLinkComponent,
     ExtractSourceFieldPipe,
     FilesComponent,
+    GetRecordPipe,
     GetTranslatedLabelPipe,
     IdAttributePipe,
     InheritedCallNumberComponent,
@@ -148,19 +151,29 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     SafeUrlPipe,
     ShowMorePagerComponent,
     ThumbnailComponent,
+    TranslateLanguagePipe,
+    TruncateTextPipe,
+    UpperCaseFirstPipe,
     UrlActivePipe,
     OperationLogsComponent,
     OperationLogsDialogComponent,
     JournalVolumePipe
   ],
   imports: [
+    CallbackArrayFilterPipe,
     CommonModule,
-    CoreModule,
-    RecordModule,
-    RouterModule,
-    PrimeNgImportModule,
+    DateTranslatePipe,
     FormsModule,
-    ReactiveFormsModule
+    GetRecordPipe,
+    Nl2brPipe,
+    PrimeNgImportModule,
+    ReactiveFormsModule,
+    RouterModule,
+    SearchAutocompleteComponent,
+    TranslateLanguagePipe,
+    TranslateModule,
+    TruncateTextPipe,
+    UpperCaseFirstPipe,
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

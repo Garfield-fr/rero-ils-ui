@@ -18,25 +18,49 @@
 
 import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { CUSTOM_ELEMENTS_SCHEMA, inject, LOCALE_ID, NgModule, provideAppInitializer } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, inject, LOCALE_ID, NgModule, NO_ERRORS_SCHEMA, provideAppInitializer } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PrimengImportModule } from '@app/admin/shared/primeng-import/primeng-import.module';
-import { FormlyModule } from '@ngx-formly/core';
+import { FORMLY_CONFIG, FormlyModule, provideFormlyCore } from '@ngx-formly/core';
 import { FormlyFieldSelect } from '@ngx-formly/primeng/select';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
-  BucketNameService as CoreBucketNameService,
+  CallbackArrayFilterPipe,
+  ComponentCanDeactivateGuard,
   CoreConfigService,
-  RecordHandleErrorService as CoreRecordHandleErrorService,
+  CoreTranslateLoader,
+  DetailButtonComponent,
+  EditorComponent,
+  ErrorComponent,
+  ExportButtonComponent,
+    FilesizePipe,
+  ListFiltersComponent,
+    MarkdownPipe,
+  MenuSortComponent,
   NgCoreTranslateService,
+  PaginatorComponent as NgCorePaginatorComponent,
   primeNGConfig,
-  RecordModule, RemoteAutocompleteService,
-  TranslateLoader, TruncateTextPipe
+  ReadMoreComponent,
+  RecordHandleErrorService as CoreRecordHandleErrorService,
+  RecordSearchAggregationComponent,
+  RecordSearchComponent,
+  RecordSearchPageComponent,
+  registerNgCoreFormlyExtension,
+  RemoteAutocompleteService,
+  withNgCoreFormly,
+  SearchFiltersComponent,
+  SearchInputComponent,
+  SearchTabsComponent,
+    TranslateLanguagePipe,
+  TruncateTextPipe,
+  UpperCaseFirstPipe
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe, Paginator, PaginatorComponent, SharedModule } from '@rero/shared';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
@@ -53,6 +77,7 @@ import { MenuAppComponent } from './menu/menu-app/menu-app.component';
 import { MenuDashboardComponent } from './menu/menu-dashboard/menu-dashboard.component';
 import { MenuUserComponent } from './menu/menu-user/menu-user.component';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
+import { DefaultPipe } from './pipe/default.pipe';
 import { ItemInCollectionPipe } from './pipe/item-in-collection.pipe';
 import { MarcPipe } from './pipe/marc.pipe';
 import { PatronNamePipe } from './pipe/patron-name.pipe';
@@ -169,7 +194,7 @@ import { PaymentDataPieComponent } from './record/search-view/patron-transaction
 import { PaymentsDataTableComponent } from './record/search-view/patron-transaction-event-search-view/payments-data/table/payments-data-table.component';
 import { AppConfigService } from './service/app-config.service';
 import { AppInitializerService } from './service/app-initializer.service';
-import { BucketNameService } from './service/bucket-name.service';
+
 import { RecordHandleErrorService } from './service/record.handle-error.service';
 import { PreviewEmailModule } from './shared/preview-email/preview-email.module';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
@@ -317,17 +342,36 @@ import { ImportRecordSearchComponent } from './record/search-view/import-record-
     ImportRecordSearchComponent,
     CirculationLogRecordTypePipe,
     CirculationItemScanComponent,
+    DefaultPipe,
     MenuActionsComponent
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    RecordModule,
+    CallbackArrayFilterPipe,
+    DetailButtonComponent,
+    EditorComponent,
+    ErrorComponent,
+    ExportButtonComponent,
+    FilesizePipe,
+    ListFiltersComponent,
+    MarkdownPipe,
+    MenuSortComponent,
+    ReadMoreComponent,
+    RecordSearchAggregationComponent,
+    RecordSearchComponent,
+    RecordSearchPageComponent,
+    SearchFiltersComponent,
+    SearchInputComponent,
+    SearchTabsComponent,
+    TruncateTextPipe,
+    UpperCaseFirstPipe,
+    TranslateLanguagePipe,
     TableModule,
     HotkeysShortcutPipe,
     FormlyModule.forRoot({
@@ -346,7 +390,7 @@ import { ImportRecordSearchComponent } from './record/search-view/import-record-
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
-        useClass: TranslateLoader,
+        useClass: CoreTranslateLoader,
         deps: [CoreConfigService, HttpClient],
       },
     }),
@@ -399,9 +443,19 @@ import { ImportRecordSearchComponent } from './record/search-view/import-record-
     // @ngneat/hotkeys library
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
-    { provide: CoreBucketNameService, useClass: BucketNameService },
     { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService },
     provideHttpClient(withInterceptorsFromDi()),
+    provideFormlyCore(withNgCoreFormly()),
+    {
+      provide: FORMLY_CONFIG,
+      multi: true,
+      useFactory: registerNgCoreFormlyExtension,
+      deps: [TranslateService],
+    },
+    ComponentCanDeactivateGuard,
+    ConfirmationService,
+    MessageService,
+    DialogService,
     provideAnimationsAsync(),
     providePrimeNG(primeNGConfig),
   ]

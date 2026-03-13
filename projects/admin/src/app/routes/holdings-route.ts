@@ -16,7 +16,7 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, JSONSchema7, RecordService, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -141,19 +141,15 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
           const { user } = this.routeToolService.userService;
-          const { apiService, recordService } = this.routeToolService;
+          const apiService: any = this.routeToolService.apiService;
+          const recordService: RecordService = this.routeToolService.recordService as RecordService;
           const libraryPid = user.currentLibrary;
           const query = `library.pid:${libraryPid}`;
           f.props.options = recordService.getRecords(
             'locations',
-            query, 1,
-            RecordService.MAX_REST_RESULTS_SIZE,
-            undefined,
-            undefined,
-            undefined,
-            'name'
+            { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' }
           ).pipe(
-            map((result: Record) => this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+            map((result: any) => +recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
             map((hits: any) => {
               return hits.map((hit: any) => {
                 return {

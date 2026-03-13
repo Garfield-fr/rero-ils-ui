@@ -18,7 +18,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
-import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -57,8 +58,8 @@ export class AcqOrderApiService extends BaseApi {
    * @return: the corresponding AcqOrder
    */
   getOrder(orderPid: string, resolve=0): Observable<IAcqOrder> {
-    return this.recordService.getRecord('acq_orders', orderPid, resolve, BaseApi.reroJsonheaders).pipe(
-        map(data => ({...orderDefaultData, ...data.metadata}) )
+    return this.recordService.getRecord('acq_orders', orderPid, { resolve, headers: BaseApi.reroJsonheaders }).pipe(
+        map((data: any) => ({...orderDefaultData, ...data.metadata}) as IAcqOrder)
       );
   }
 
@@ -101,9 +102,14 @@ export class AcqOrderApiService extends BaseApi {
       query += ` ${extraQuery}`;
     }
     return this.recordService
-      .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority')
+      .getRecords('acq_order_lines', {
+        query,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+        sort: 'priority'
+      })
       .pipe(
-        map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...orderLineDefaultData, ...hit.metadata})))
       );
   }

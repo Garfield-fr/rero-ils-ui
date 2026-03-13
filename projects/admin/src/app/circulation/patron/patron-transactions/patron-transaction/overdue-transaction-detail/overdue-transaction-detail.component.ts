@@ -38,9 +38,9 @@ export class OverdueTransactionDetailComponent implements OnInit {
   /** Load item information's if the transaction is linked to a loan */
   ngOnInit(): void {
     if (this.transaction && this.transaction.loan && this.transaction.loan.pid) {
-      this.recordService.getRecord('loans', this.transaction.loan.pid).pipe(
+      this.recordService.getRecord('loans', this.transaction.loan.pid, {}).pipe(
         map(data => data.metadata),
-        mergeMap( data => this.recordService.getRecord('items', data.item_pid.value)),
+        mergeMap( data => this.recordService.getRecord('items', (data as any).item_pid.value, {})),
         map(data => new Item(data.metadata))
       ).subscribe((data) => this.item = data);
     }

@@ -17,7 +17,7 @@
 import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG, Record } from '@rero/ng-core';
+import { CONFIG } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
@@ -47,7 +47,7 @@ export class UploadFilesComponent implements OnInit {
   // filtered array of files
   filteredFiles = [];
   // A file record as used by rero-invenio-files.
-  parentRecord: Record = null;
+  parentRecord: any = null;
 
   // the primeng file upload component
   @ViewChild('fileUpload')
@@ -288,7 +288,7 @@ export class UploadFilesComponent implements OnInit {
    */
   private getFiles(): void {
     this.fileService.getParentRecord(this.pid).pipe(
-      map((record: Record) => (this.parentRecord = record)),
+      map((record: any) => (this.parentRecord = record)),
       switchMap(() => {
         if(this.parentRecord == null) {
           return of([]);

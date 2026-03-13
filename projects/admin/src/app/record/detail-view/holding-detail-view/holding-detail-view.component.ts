@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
@@ -24,15 +24,15 @@ import { Observable, Subscription } from 'rxjs';
     templateUrl: './holding-detail-view.component.html',
     standalone: false
 })
-export class HoldingDetailViewComponent implements OnInit , OnDestroy, DetailRecord {
+export class HoldingDetailViewComponent implements OnInit , OnDestroy {
 
   private router: Router = inject(Router);
 
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /** Record */
   record: any;
@@ -44,7 +44,7 @@ export class HoldingDetailViewComponent implements OnInit , OnDestroy, DetailRec
    * Init hook
    */
   ngOnInit() {
-    this.recordObs = this.record$.subscribe(record => {
+    this.recordObs = this.record$().subscribe(record => {
       this.record = record;
       // TODO : At this time, only 'serial' holding should be displayed. Then redirect user to the document detail view
       if (this.record.metadata.holdings_type !== 'serial') {

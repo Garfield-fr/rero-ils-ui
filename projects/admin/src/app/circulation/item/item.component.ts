@@ -108,15 +108,15 @@ export class ItemComponent implements OnChanges {
           }
         );
         this.notifications$ = this.recordService.getRecords(
-          'notifications', `context.loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE,
-          [], {}, null, 'mostrecent'
+          'notifications', { query: `context.loan.pid:${loanPid}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'mostrecent' }
         ).pipe(
           map((results: any) => results.hits.hits)
         );
       }
       if (this.item?.document?.pid) {
-        this.recordService.getRecord('documents', this.item.document.pid, 1, {
-          Accept: 'application/rero+json, application/json'
+        this.recordService.getRecord('documents', this.item.document.pid, {
+          resolve: 1,
+          headers: { Accept: 'application/rero+json, application/json' }
         }).subscribe(document => this.document = document.metadata);
       }
     }

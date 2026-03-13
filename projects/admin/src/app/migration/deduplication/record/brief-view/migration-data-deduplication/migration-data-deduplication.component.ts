@@ -110,7 +110,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
         this.updateIlsPid();
       } else {
         // retrieve from the backend
-        this.recordService.getRecords('documents', `pid:${ilsPid}`, 1, 1).subscribe((results: any) => {
+        this.recordService.getRecords('documents', { query: `pid:${ilsPid}`, page: 1, itemsPerPage: 1 }).subscribe((results: any) => {
           if (results.hits.hits.length == 1) {
             const record = results.hits.hits[0].metadata;
             // add to the candidate list at the first position

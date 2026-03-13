@@ -16,7 +16,6 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circ-policies-brief-view',
@@ -39,7 +38,7 @@ import { ResultItem } from '@rero/ng-core';
   `,
     standalone: false
 })
-export class CircPoliciesBriefViewComponent implements ResultItem {
+export class CircPoliciesBriefViewComponent {
 
   @Input() record: any;
 

@@ -44,12 +44,12 @@ export class ItemPageDetailComponent extends DetailComponent implements OnInit, 
     this.subscription.add(
       this.record$
         .pipe(
-          switchMap((record) =>
-            this.recordPermissionService.getPermission('items', record.metadata.pid).pipe(
+          switchMap((record: any) =>
+            this.recordPermissionService.getPermission('items', record?.metadata?.pid || record()?.metadata?.pid).pipe(
               tap((permission) => {
                 this.recordPermissions = this.recordPermissionService.membership(
                   this.userService.user,
-                  record.metadata.library.pid,
+                  record?.metadata?.library?.pid || record()?.metadata?.library?.pid,
                   permission
                 );
               })
@@ -68,12 +68,12 @@ export class ItemPageDetailComponent extends DetailComponent implements OnInit, 
    * @return True if the record is an issue ; false otherwise
    */
   get isIssue(): boolean {
-    return this.record.metadata.type === 'issue';
+    return (this.record as any)()?.metadata?.type === 'issue';
   }
 
   /** Allow claim (show button) */
   get isClaimAllowed(): boolean {
-    return this.issueService.isClaimAllowed(this.record.metadata.issue.status);
+    return this.issueService.isClaimAllowed((this.record as any)()?.metadata?.issue?.status);
   }
 
   /**
@@ -86,11 +86,11 @@ export class ItemPageDetailComponent extends DetailComponent implements OnInit, 
 
   /** Open claim dialog */
   openClaimEmailDialog(): void {
-    const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.record);
+    const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog((this.record as any)());
     this.subscription.add(
       ref.onClose.subscribe((record: any) => {
         if (record) {
-          this.record$.subscribe((record: any) => (this.record = record));
+          this.record$.subscribe((record: any) => (this.record as any).set(record));
         }
       })
     );

@@ -23,9 +23,10 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
 import { FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordModule, TranslateLoader } from '@rero/ng-core';
+import { TranslateLoader as BaseCoreTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
 import { providePrimeNG } from 'primeng/config';
 import { MenuModule } from 'primeng/menu';
@@ -90,14 +91,13 @@ import { patronProfileRoutes } from 'projects/public-search/src/app/routes/patro
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    RecordModule,
     RouterLink,
     RouterLinkActive,
     RouterModule.forRoot(patronProfileRoutes),
     TranslateModule.forRoot({
       loader: {
-        provide: BaseTranslateLoader,
-        useClass: TranslateLoader,
+        provide: BaseCoreTranslateLoader,
+        useClass: CoreTranslateLoader,
         deps: [CoreConfigService, HttpClient],
       },
       isolate: false,
@@ -125,6 +125,8 @@ import { patronProfileRoutes } from 'projects/public-search/src/app/routes/patro
     },
     { provide: TranslateService, useClass: NgCoreTranslateService },
     { provide: CoreConfigService, useClass: AppConfigService },
+    ConfirmationService,
+    MessageService,
     provideAnimationsAsync(),
     providePrimeNG(primeNGConfig)
   ],

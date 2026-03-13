@@ -30,6 +30,7 @@ export class DocumentBriefComponent {
   public documentApiService: DocumentApiService = inject(DocumentApiService);
   private _record: any;
 
+  @Input() type: string;
   @Input() detailUrl: { link: string, external: boolean };
   @Input() viewcode = this.pathArray[1];
   @Input() set record(value) {

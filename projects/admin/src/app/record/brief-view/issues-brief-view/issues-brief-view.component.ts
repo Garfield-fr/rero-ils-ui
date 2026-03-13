@@ -16,7 +16,7 @@
  */
 
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { RecordUiService, ResultItem } from '@rero/ng-core';
+import { RecordUiService } from '@rero/ng-core';
 import { IssueItemStatus } from '@rero/shared';
 
 @Component({
@@ -24,7 +24,7 @@ import { IssueItemStatus } from '@rero/shared';
     templateUrl: './issues-brief-view.component.html',
     standalone: false
 })
-export class IssuesBriefViewComponent implements ResultItem, OnInit {
+export class IssuesBriefViewComponent implements OnInit {
 
   protected recordUiService: RecordUiService = inject(RecordUiService);
 

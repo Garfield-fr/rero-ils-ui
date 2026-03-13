@@ -28,7 +28,7 @@ import { ResultItem  } from '@rero/ng-core';
   `,
     standalone: false
 })
-export class LibrariesBriefViewComponent implements ResultItem {
+export class LibrariesBriefViewComponent {
 
   /** Record data */
   @Input() record: any;

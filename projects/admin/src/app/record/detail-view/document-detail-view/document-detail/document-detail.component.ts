@@ -17,10 +17,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
 import { OperationLogsService } from '@rero/shared';
-import {
-  DetailComponent,
-  Record
-} from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { DetailComponent } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -164,8 +162,8 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         warning = true;
       }
       this.recordService.getRecords(
-        'documents', query, 1, undefined, undefined, undefined, { accept: 'application/rero+json' }
-      ).subscribe((response: Record) => {
+        'documents', { query, page: 1, headers: { accept: 'application/rero+json' } }
+      ).subscribe((response: any) => {
         if (this.recordService.totalHits(response.hits.total) === 0 && !warning) {
           this.router.navigate(route, { queryParams: data });
         } else {

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from "@angular/core";
-import { IRecordType, NgCoreTranslateService, TruncateTextPipe } from "@rero/ng-core";
+import { AutoCompleteRecordType, NgCoreTranslateService, TruncateTextPipe } from "@rero/ng-core";
 import { MainTitlePipe } from "../../pipe/main-title.pipe";
 import { AppSettingsService } from "../../service/app-settings.service";
 import { Entity } from "../../class/entity";
@@ -36,7 +36,7 @@ export class RemoteSearchConfig {
 
   private maxLengthSuggestion: number;
 
-  getConfig(isAdmin: boolean, viewCode?: string, maxLengthSuggestion?: number): IRecordType[] {
+  getConfig(isAdmin: boolean, viewCode?: string, maxLengthSuggestion?: number): AutoCompleteRecordType[] {
     this.isAdmin = isAdmin;
     this.viewCode = viewCode;
     this.maxLengthSuggestion = maxLengthSuggestion || 100;

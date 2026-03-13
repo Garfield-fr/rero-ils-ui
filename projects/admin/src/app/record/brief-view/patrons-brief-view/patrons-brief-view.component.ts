@@ -16,7 +16,7 @@
  */
 
 import { Component, inject, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
 
@@ -25,7 +25,7 @@ import { roleTagSeverity } from '../../../utils/roles';
     templateUrl: './patrons-brief-view.component.html',
     standalone: false
 })
-export class PatronsBriefViewComponent implements ResultItem {
+export class PatronsBriefViewComponent {
 
   private permissionsService: PermissionsService = inject(PermissionsService);
 

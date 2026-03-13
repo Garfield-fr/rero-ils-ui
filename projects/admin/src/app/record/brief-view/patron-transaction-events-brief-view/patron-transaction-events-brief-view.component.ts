@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, computed, inject, Input, OnInit, signal, WritableSignal } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { Organisation } from '@app/admin/classes/core';
@@ -27,7 +27,7 @@ import { PatronTransactionsService } from '../../../service/patron-transactions.
     templateUrl: './patron-transaction-events-brief-view.component.html',
     standalone: false
 })
-export class PatronTransactionEventsBriefViewComponent implements ResultItem, OnInit {
+export class PatronTransactionEventsBriefViewComponent implements OnInit {
 
   private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionsService = inject(PatronTransactionsService);

@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -24,15 +23,15 @@ import { Observable } from 'rxjs';
     templateUrl: './vendor-detail-view.component.html',
     standalone: false
 })
-export class VendorDetailViewComponent implements DetailRecord {
+export class VendorDetailViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
 
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /**
    * Get Current language interface

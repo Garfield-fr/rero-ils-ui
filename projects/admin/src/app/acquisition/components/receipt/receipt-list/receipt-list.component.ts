@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, signal, SimpleChanges } from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { Subscription } from 'rxjs';
@@ -41,9 +41,9 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
   /** the order for which we want to display receipts */
   @Input() order: IAcqOrder;
   /** AcqReceipt to display */
-  receipts: IAcqReceipt[] = undefined;
+  readonly receipts = signal<IAcqReceipt[] | undefined>(undefined);
 
-  public recordPermissions: any;
+  readonly recordPermissions = signal<any>(undefined);
 
   /** all component subscription */
   private subscriptions = new Subscription();
@@ -54,7 +54,7 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get createInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'create');
+    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.create?.reasons, 'create');
   }
 
   canAdd(): boolean {
@@ -66,7 +66,7 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
    * @return: the number of loaded receipts
    */
   get numberOfReceipt(): number {
-    return (this.receipts) ? this.receipts.length : 0;
+    return this.receipts()?.length ?? 0;
   }
 
   /** OnChanges hook */
@@ -87,7 +87,7 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
   private _loadReceipts(): void {
     this.acqReceiptApiService
       .getReceiptsForOrder(this.order.pid)
-      .subscribe((receipts: IAcqReceipt[]) => this.receipts = receipts);
+      .subscribe((receipts: IAcqReceipt[]) => this.receipts.set(receipts));
   }
 
   /**
@@ -100,6 +100,6 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
       .pipe(
         map(permissions => this.currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
         map(permissions => this.receivedOrderPermissionValidator.validate(permissions, this.order))
-      ).subscribe((permissions: any) => this.recordPermissions = permissions));
+      ).subscribe((permissions: any) => this.recordPermissions.set(permissions)));
   }
 }

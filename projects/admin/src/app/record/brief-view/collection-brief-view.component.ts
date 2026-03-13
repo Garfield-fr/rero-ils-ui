@@ -16,7 +16,6 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-collection-brief',
@@ -50,7 +49,7 @@ import { ResultItem } from '@rero/ng-core';
   `,
     standalone: false
 })
-export class CollectionBriefViewComponent implements ResultItem {
+export class CollectionBriefViewComponent {
 
   @Input() record: any;
 

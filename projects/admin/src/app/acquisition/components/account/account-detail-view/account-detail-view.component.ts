@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../../service/organisation.service';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
@@ -28,18 +27,18 @@ import { IAcqAccount } from '../../../classes/account';
     templateUrl: './account-detail-view.component.html',
     standalone: false
 })
-export class AccountDetailViewComponent implements OnInit, DetailRecord {
+export class AccountDetailViewComponent implements OnInit {
 
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record$ = input.required<Observable<any>>();
   /** metadata from ES - much more complete than DB stored record */
   esRecord$: Observable<IAcqAccount>;
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   // GETTER & SETTER ============================================================
   /** Get the current budget pid for the organisation */
@@ -49,7 +48,7 @@ export class AccountDetailViewComponent implements OnInit, DetailRecord {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.record$.subscribe((data: any) => {
+    this.record$().subscribe((data: any) => {
       this.esRecord$ = this.acqAccountApiService.getAccount(data.metadata.pid);
     });
   }

@@ -189,7 +189,7 @@
               <tr>
                 @for (itemType of itemTypes; track $index) {
                   <th class="ui:text-center">
-                    <span id="itty-{{itemType}}">{{ itemType | getRecord: 'item_types' : 'field' : 'name' | async }}</span>
+                    <span id="itty-{{itemType}}">{{ $any(itemType) | getRecord: 'item_types' : 'field' : 'name' | async }}</span>
                   </th>
                 }
               </tr>

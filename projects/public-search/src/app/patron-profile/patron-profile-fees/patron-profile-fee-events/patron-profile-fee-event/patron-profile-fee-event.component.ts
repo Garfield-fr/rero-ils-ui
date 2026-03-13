@@ -19,7 +19,7 @@ import { PatronTransactionEventApiService } from '../../../../api/patron-transac
 import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
 import { Subscription } from 'rxjs';
 import { IOrganisation } from '@rero/shared';
-import { Record } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 
 @Component({
   selector: 'public-search-patron-profile-fee-event',
@@ -42,7 +42,7 @@ export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
       this.subscription.add(
-        this.patronTransactionEventApiService.getEvents(this.event.metadata.pid).subscribe((response: Record) =>
+        this.patronTransactionEventApiService.getEvents(this.event.metadata.pid).subscribe((response: EsResult) =>
         this.transactionEvents = response.hits.hits
       ));
     }

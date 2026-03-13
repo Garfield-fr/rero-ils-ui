@@ -17,7 +17,7 @@
 
 import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
+import type { EsResult } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 
 @Injectable({
