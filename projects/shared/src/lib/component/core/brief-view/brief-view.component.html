@@ -27,18 +27,18 @@
       @if (titleTemplate) {
         <ng-container
           [ngTemplateOutlet]="titleTemplate"
-          [ngTemplateOutletContext]="{ title:title, link:link }"
+          [ngTemplateOutletContext]="{ title:title(), link:link() }"
         />
       } @else {
         <h5>
-          @if (link) {
-            @if (isArray(link)) {
-              <a [routerLink]="link">{{ title }}</a>
+          @if (link()) {
+            @if (isArray(link())) {
+              <a [routerLink]="link()">{{ title() }}</a>
             } @else {
-              <a [href]="link">{{ title }}</a>
+              <a [href]="link()">{{ title() }}</a>
             }
           } @else {
-            {{ title }}
+            {{ title() }}
           }
         </h5>
       }
@@ -52,12 +52,12 @@
       @if (tagsTemplate) {
         <ng-container
           [ngTemplateOutlet]="tagsTemplate"
-          [ngTemplateOutletContext]="{ $implicit: tags }"
+          [ngTemplateOutletContext]="{ $implicit: tags() }"
         />
       } @else {
-        @if (tags) {
+        @if (tags()) {
           <div id="subject" class="ui:flex ui:gap-1 ui:flex-wrap">
-            @for (tag of tags; track $index) {
+            @for (tag of tags(); track $index) {
               <p-tag severity="success" [value]="tag.label"/>
             }
           </div>

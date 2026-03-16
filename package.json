@@ -1,6 +1,6 @@
 {
   "name": "@rero/rero-ils-ui",
-  "version": "19.3.0",
+  "version": "19.2.1",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "RERO",
@@ -82,15 +82,9 @@
     "@ngx-loading-bar/core": "^7.0.0",
     "@ngx-loading-bar/http-client": "^7.0.0",
     "@ngx-loading-bar/router": "^7.0.0",
-<<<<<<< HEAD
-    "@ngx-translate/core": "^16.0.0",
-    "@primeng/themes": "^19.0.7",
-    "@rero/ng-core": "^19.3.1",
-=======
     "@ngx-translate/core": "^17.0.0",
-    "@primeng/themes": "^21.0.4",
+    "@primeuix/themes": "^2.0.3",
     "@rero/ng-core": "file:../ng-core/dist/rero/ng-core",
->>>>>>> 5222d94d (angular 21)
     "chart.js": "^4.4.7",
     "crypto-js": "^4.2.0",
     "easymde": "^2.20.0",
@@ -118,12 +112,14 @@
     "@ngx-formly/schematics": "^7.1.0",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/jasmine": "^5.1.4",
+    "@types/lodash-es": "^4.17.12",
     "@vendure/ngx-translate-extract": "^10.1.0",
     "angular-eslint": "^21.2.0",
     "bootstrap": "^5.3.7",
     "eslint": "^9.39.0",
     "jasmine-core": "^5.6.0",
     "jasmine-spec-reporter": "~7.0.0",
+    "jsdom": "^29.0.0",
     "karma": "~6.4.2",
     "karma-chrome-launcher": "~3.2.0",
     "karma-jasmine": "~5.1.0",
@@ -135,7 +131,8 @@
     "tailwindcss": "^4.1.0",
     "tailwindcss-primeui": "^0.6.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.0"
+    "typescript-eslint": "^8.48.0",
+    "vitest": "^4.1.0"
   },
   "files": [
     "dist"

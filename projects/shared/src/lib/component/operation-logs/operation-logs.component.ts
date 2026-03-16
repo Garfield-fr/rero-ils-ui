@@ -16,19 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
-import { NgCoreTranslateService } from '@rero/ng-core';
+import { _, TranslatePipe } from "@ngx-translate/core";
+import { NgCoreTranslateService, DateTranslatePipe } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { OperationLogsService } from '../../service/operation-logs.service';
+import { Bind } from 'primeng/bind';
+import { TableModule } from 'primeng/table';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'shared-operation-logs',
     templateUrl: './operation-logs.component.html',
-    standalone: false
+    imports: [Bind, TableModule, Button, DateTranslatePipe, TranslatePipe]
 })
 export class OperationLogsComponent implements OnInit {
 

@@ -41,8 +41,7 @@ describe('Pipe: ExtractFieldSource', () => {
 
   const field = 'authorized_access_point';
 
-  const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['']);
-  translateServiceSpy.currentLang = 'en';
+  const translateServiceSpy = { currentLang: 'en' };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -66,21 +65,21 @@ describe('Pipe: ExtractFieldSource', () => {
   });
 
   it('transform data with french language', () => {
-    translateService.currentLang = 'fr';
+    (translateService as any).currentLang = 'fr';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('idref-access-point');
   });
 
   it('transform data with deutsch language', () => {
-    translateService.currentLang = 'de';
+    (translateService as any).currentLang = 'de';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('gnd-access-point');
   });
 
   it('transform data with it language (fallback)', () => {
-    translateService.currentLang = 'it';
+    (translateService as any).currentLang = 'it';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('idref-access-point');

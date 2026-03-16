@@ -22,9 +22,10 @@ import { LinkPermissionsDirective } from './link-permissions.directive';
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'link-permissions-testing-component',
+    standalone: true,
+    imports: [LinkPermissionsDirective],
     template: `
-  <a href="#" id="link-perm" [linkPermissions]="linkPermissions">Link text</a>`,
-    standalone: false
+  <a href="#" id="link-perm" [linkPermissions]="linkPermissions">Link text</a>`
 })
 class LinkPermissionsTestingComponent {
   @Input() linkPermissions: string[] | string = [];
@@ -38,11 +39,8 @@ describe('LinkPermissionsDirective', () => {
 
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
-      declarations: [
-        LinkPermissionsDirective,
-        LinkPermissionsTestingComponent
-      ]
-    })
+    imports: [LinkPermissionsTestingComponent]
+})
     .createComponent(LinkPermissionsTestingComponent);
 
     component = fixture.componentInstance;

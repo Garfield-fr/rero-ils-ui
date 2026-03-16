@@ -16,12 +16,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer (when availability) {
-  <div [class]="class">
+  <div [class]="class()">
     <i
       class="fa fa-circle ui:mr-1"
       [ngClass]="{'text-success': availability.available, 'text-error': !availability.available}"
     ></i>
-    @switch (recordType) {
+    @switch (recordType()) {
       @case('item') {
         @switch(availability.status) {
           @case('on_loan') {

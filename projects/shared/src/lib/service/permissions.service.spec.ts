@@ -44,15 +44,15 @@ describe('PermissionService', () => {
   });
 
   it('should return the access according to the permission(s), operator OR', () => {
-    expect(service.canAccess(PERMISSIONS.VNDR_CREATE)).toBeFalse();
-    expect(service.canAccess(PERMISSIONS.DOC_CREATE)).toBeTrue();
-    expect(service.canAccess([PERMISSIONS.VNDR_CREATE, PERMISSIONS.VNDR_SEARCH])).toBeFalse();
-    expect(service.canAccess([PERMISSIONS.CIPO_CREATE, PERMISSIONS.DOC_CREATE])).toBeTrue();
+    expect(service.canAccess(PERMISSIONS.VNDR_CREATE)).toBe(false);
+    expect(service.canAccess(PERMISSIONS.DOC_CREATE)).toBe(true);
+    expect(service.canAccess([PERMISSIONS.VNDR_CREATE, PERMISSIONS.VNDR_SEARCH])).toBe(false);
+    expect(service.canAccess([PERMISSIONS.CIPO_CREATE, PERMISSIONS.DOC_CREATE])).toBe(true);
   });
 
   it('should return the access according to the permission(s), operator AND', () => {
-    expect(service.canAccess([PERMISSIONS.CIPO_CREATE, PERMISSIONS.CIPO_SEARCH], PERMISSION_OPERATOR.AND)).toBeTrue();
-    expect(service.canAccess([PERMISSIONS.ITEM_CREATE, PERMISSIONS.DOC_CREATE], PERMISSION_OPERATOR.AND)).toBeFalse();
+    expect(service.canAccess([PERMISSIONS.CIPO_CREATE, PERMISSIONS.CIPO_SEARCH], PERMISSION_OPERATOR.AND)).toBe(true);
+    expect(service.canAccess([PERMISSIONS.ITEM_CREATE, PERMISSIONS.DOC_CREATE], PERMISSION_OPERATOR.AND)).toBe(false);
   });
 
   it('should return an exception if the operator is not correct', () => {
@@ -61,10 +61,10 @@ describe('PermissionService', () => {
   });
 
   it('should return access to the debug mode', () => {
-    expect(service.canAccessDebugMode()).toBeFalse();
+    expect(service.canAccessDebugMode()).toBe(false);
     const perms = cloneDeep(userPermissions);
     perms.push(PERMISSIONS.DEBUG_MODE);
     service.setPermissions(perms);
-    expect(service.canAccessDebugMode()).toBeTrue();
+    expect(service.canAccessDebugMode()).toBe(true);
   });
 });

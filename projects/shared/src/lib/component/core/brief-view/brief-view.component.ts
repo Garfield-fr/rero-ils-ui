@@ -15,8 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterContentInit, Component, ContentChildren, Input, QueryList, TemplateRef } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, QueryList, TemplateRef, input } from '@angular/core';
 import { ReroTemplateDirective } from '../../../directive/rero-template.directive';
+import { NgTemplateOutlet } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
 
 export type BriefViewTag = {
   label: string
@@ -26,13 +30,13 @@ export type BriefViewTag = {
 @Component({
     selector: 'shared-brief-view',
     templateUrl: './brief-view.component.html',
-    standalone: false
+    imports: [NgTemplateOutlet, RouterLink, Bind, Tag]
 })
 export class BriefViewComponent implements AfterContentInit {
 
-  @Input() link: any;
-  @Input() title: any;
-  @Input() tags: BriefViewTag[];
+  readonly link = input<any>();
+  readonly title = input<any>(undefined);
+  readonly tags = input<BriefViewTag[]>();
 
   @ContentChildren(ReroTemplateDirective) templates: QueryList<ReroTemplateDirective> | null;
 

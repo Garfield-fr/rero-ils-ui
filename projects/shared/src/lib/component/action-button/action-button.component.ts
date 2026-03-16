@@ -16,6 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, input, output } from '@angular/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
+import { RouterLink } from '@angular/router';
+import { NgClass } from '@angular/common';
+import { Nl2brPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'shared-action-button',
@@ -65,7 +71,7 @@ import { Component, input, output } from '@angular/core';
       </ng-template>
     }
   `,
-    standalone: false
+    imports: [Bind, Button, Tooltip, RouterLink, NgClass, Nl2brPipe]
 })
 export class ActionButtonComponent {
   label = input<string>();

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, input, OnChanges, output, SimpleChanges } from '@angular/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'shared-open-close-button',
@@ -28,7 +30,7 @@ import { Component, input, OnChanges, output, SimpleChanges } from '@angular/cor
     (onClick)="updateStatus()"
   />
   `,
-    standalone: false
+    imports: [Bind, Button]
 })
 export class OpenCloseButtonComponent implements OnChanges {
 

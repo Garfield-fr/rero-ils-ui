@@ -44,10 +44,7 @@ import { TranslateService } from '@ngx-translate/core';
  * output will be : "default label - part1_es - part2"
  *
  */
-@Pipe({
-    name: 'entityLabel',
-    standalone: false
-})
+@Pipe({ name: 'entityLabel' })
 export class EntityLabelPipe implements PipeTransform {
 
   protected translateService: TranslateService = inject(TranslateService);

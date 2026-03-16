@@ -16,7 +16,8 @@ This project is migrating incrementally — do not assume it is fully on Angular
 
 - NgModules are still present — do not remove them unless explicitly asked
 - Zone.js is still active — do not apply zoneless patterns
-- Karma + Jasmine are still used — do not introduce Vitest
+- `shared` uses Vitest (`@angular/build:unit-test`) — use Vitest API (`vi.fn()`, `vi.spyOn()`) for new specs in shared
+- Other projects (`admin`, `public-search`, etc.) still use Karma + Jasmine — do not introduce Vitest there yet
 
 ## Important constraints for new code
 
@@ -30,7 +31,8 @@ This project is migrating incrementally — do not assume it is fully on Angular
 
 ## Testing
 
-Use Karma + Jasmine. Do not introduce Vitest.
+- `shared`: Vitest via `@angular/build:unit-test` — run with `ng test shared`
+- Other projects: Karma + Jasmine (not yet migrated)
 
 ## Development commands
 

@@ -17,13 +17,24 @@
 
 import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Carousel } from 'primeng/carousel';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { Paginator } from 'primeng/paginator';
+import { Dialog } from 'primeng/dialog';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { FaIconClassPipe } from '../../../pipe/fa-icon-class.pipe';
 
 // file interface
 export type File = {
@@ -41,7 +52,7 @@ export type File = {
 @Component({
     selector: 'shared-doc-files',
     templateUrl: './files.component.html',
-    standalone: false
+    imports: [Bind, Tag, RouterLink, FormsModule, Carousel, NgClass, Paginator, Dialog, InputGroup, InputGroupAddon, AsyncPipe, TranslatePipe, FaIconClassPipe]
 })
 export class FilesComponent implements OnInit, OnDestroy {
 
@@ -54,9 +65,9 @@ export class FilesComponent implements OnInit, OnDestroy {
   protected dialogService: DialogService = inject(DialogService);
 
   // input document pid
-  @Input() documentPid: string;
-  @Input({ required: true }) routerPath: string[];
-  @Input() useHref = false;
+  readonly documentPid = input<string>(undefined);
+  readonly routerPath = input.required<string[]>();
+  readonly useHref = input(false);
 
   // list of files
   files: File[] = [];
@@ -134,7 +145,7 @@ export class FilesComponent implements OnInit, OnDestroy {
   getFiles(): void {
     const baseUrl = this.apiService.getEndpointByType('records');
     // retrieve all records files linked to a given document pid
-    const query = `metadata.document.pid:${this.documentPid}`;
+    const query = `metadata.document.pid:${this.documentPid()}`;
     this.loading = true;
     this.httpService
       .get(`${baseUrl}?q=${query}`)
@@ -215,7 +226,7 @@ export class FilesComponent implements OnInit, OnDestroy {
   getHref(collection: string): string {
     const params = this.getQueryParams(collection);
     const queryString = new URLSearchParams(params).toString();
-    const routerPath = [...this.routerPath];
+    const routerPath = [...this.routerPath()];
     if (routerPath[0] === '/') {
       routerPath[0] = '';
     }

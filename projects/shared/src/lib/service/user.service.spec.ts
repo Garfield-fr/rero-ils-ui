@@ -36,8 +36,9 @@ describe('UserService', () => {
   dataStorage.currentLibrary = '1';
   dataStorage.currentOrganisation = 'org1';
 
-  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
-  userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep((testUserLibrarianWithSettings))));
+  const userApiServiceSpy = {
+    getLoggedUser: vi.fn().mockReturnValue(of(cloneDeep(testUserLibrarianWithSettings)))
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -66,7 +67,7 @@ describe('UserService', () => {
       expect(user.currentLibrary === testUserLibrarianWithSettings.patrons[0].libraries[0].pid);
       expect(user.currentOrganisation === testUserLibrarianWithSettings.patrons[0].libraries[0].organisation.pid);
       // Check to see if the permissions service is set up
-      expect(permissionsService.canAccess(PERMISSIONS.UI_ACCESS)).toBeTrue();
+      expect(permissionsService.canAccess(PERMISSIONS.UI_ACCESS)).toBe(true);
     });
   });
 });

@@ -56,3 +56,4 @@ Thumbs.db
 
 # test proxy
 dev.proxy.conf.json
+MIGRATION.md

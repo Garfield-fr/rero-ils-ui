@@ -19,10 +19,7 @@ import { RecordService } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-@Pipe({
-    name: 'itemHoldingsCallNumber',
-    standalone: false
-})
+@Pipe({ name: 'itemHoldingsCallNumber' })
 export class ItemHoldingsCallNumberPipe implements PipeTransform {
 
   protected recordService: RecordService = inject(RecordService);

@@ -22,9 +22,10 @@ import { PermissionsDirective } from './permissions.directive';
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'permissions-testing-component',
+    standalone: true,
+    imports: [PermissionsDirective],
     template: `
-  <div id="perm" [permissions]="permissions">Permissions testing</div>`,
-    standalone: false
+  <div id="perm" [permissions]="permissions">Permissions testing</div>`
 })
 class PermissionsTestingComponent {
   @Input() permissions: string[] | string = [];
@@ -38,11 +39,8 @@ describe('PermissionDirective', () => {
 
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
-      declarations: [
-        PermissionsDirective,
-        PermissionsTestingComponent
-      ]
-    })
+    imports: [PermissionsTestingComponent]
+})
     .createComponent(PermissionsTestingComponent);
 
     component = fixture.componentInstance;

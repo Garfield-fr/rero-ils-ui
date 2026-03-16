@@ -16,40 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ContributionComponent } from '../../../view/contribution/contribution.component';
+import { TruncateTextPipe } from '@rero/ng-core';
+import { IdentifiedByLabelPipe } from '../../../pipe/identifiedby-label.pipe';
+import { JoinPipe } from '../../../pipe/join.pipe';
+import { MainTitlePipe } from '../../../pipe/main-title.pipe';
 
 @Component({
     selector: 'shared-document-brief-view',
     templateUrl: './document-brief-view.component.html',
-    standalone: false
+    imports: [RouterLink, ContributionComponent, TruncateTextPipe, IdentifiedByLabelPipe, JoinPipe, MainTitlePipe]
 })
 export class DocumentBriefViewComponent {
 
   /** Record */
-  @Input() set record(record) {
-    this._record = record;
-    this.processProvisionActivityPublications();
-  }
+  readonly record = input<any>();
 
-  /** Provision activities */
-  provisionActivityPublications: any[] = [];
-
-  /** Record */
-  private _record: any;
-
-  /** Get current record */
-  get record(): any {
-    return this._record;
-  }
-
-  /** process provision activity publications */
-  private processProvisionActivityPublications() {
-    if (this.record?.provisionActivity) {
-      this.record.provisionActivity.forEach(provision => {
+  /** Provision activities (derived from record) */
+  readonly provisionActivityPublications = computed<any[]>(() => {
+    const publications: any[] = [];
+    if (this.record()?.provisionActivity) {
+      this.record().provisionActivity.forEach(provision => {
         if (provision.type === 'bf:Publication' && '_text' in provision) {
-          this.provisionActivityPublications.push(...provision._text.map(text => text.value));
+          publications.push(...provision._text.map(text => text.value));
         }
       });
     }
-  }
+    return publications;
+  });
 }

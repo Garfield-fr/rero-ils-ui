@@ -20,8 +20,7 @@ import { AppSettingsService } from '../service/app-settings.service';
 
 @Pipe({
     name: 'extractSourceField',
-    pure: false,
-    standalone: false
+    pure: false
 })
 export class ExtractSourceFieldPipe implements PipeTransform {
 

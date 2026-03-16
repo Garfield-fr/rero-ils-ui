@@ -25,10 +25,10 @@
       @for (collection of collections; track collection) {
         <p-tag severity="info" [title]="'Digital collection' | translate">
           <i class="fa fa-bookmark"></i>
-          @if (useHref) {
+          @if (useHref()) {
             <a role="link" tabindex="0" [href]="getHref(collection)">{{ collection }}</a>
           } @else {
-            <a role="link" tabindex="0" [routerLink]="routerPath" [queryParams]="getQueryParams(collection)">{{ collection }}</a>
+            <a role="link" tabindex="0" [routerLink]="routerPath()" [queryParams]="getQueryParams(collection)">{{ collection }}</a>
           }
         </p-tag>
       }

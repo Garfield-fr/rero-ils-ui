@@ -15,33 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, inject, OnChanges, OnInit, input } from '@angular/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { IAvailability } from '../../interface/i-availability';
 import { IAvailabilityService } from '../../service/i-availability.service';
+import { NgClass } from '@angular/common';
+import { DateTranslatePipe } from '@rero/ng-core';
+import { GetTranslatedLabelPipe } from '../../pipe/get-translated-label.pipe';
 
 @Component({
     selector: 'shared-availability',
     templateUrl: './availability.component.html',
-    standalone: false
+    imports: [NgClass, DateTranslatePipe, TranslatePipe, GetTranslatedLabelPipe]
 })
 export class AvailabilityComponent implements OnInit, OnChanges {
 
   protected translateService: TranslateService = inject(TranslateService);
 
   /** Record Type */
-  @Input() recordType: string;
+  readonly recordType = input<string>(undefined);
 
   /** Record pid */
-  @Input() record: any;
+  readonly record = input<any>(undefined);
 
   /** Resource api service */
-  @Input() apiService: IAvailabilityService;
+  readonly apiService = input<IAvailabilityService>(undefined);
 
   /** View code */
-  @Input() viewcode?: string = null;
+  readonly viewcode = input<string>(null);
 
-  @Input() class = 'ui:justify-top';
+  readonly class = input('ui:justify-top');
 
   /** Availability data */
   availability: IAvailability;
@@ -56,8 +59,8 @@ export class AvailabilityComponent implements OnInit, OnChanges {
 
   /** OnChanges hook */
   ngOnChanges(): void {
-    this.apiService
-    .getAvailability(this.record.metadata.pid, this.viewcode)
+    this.apiService()
+    .getAvailability(this.record().metadata.pid, this.viewcode())
     .subscribe((availability: IAvailability) => this.availability = availability);
   }
 }

@@ -15,19 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnDestroy, OnInit, DOCUMENT } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, DOCUMENT, input } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
 import type { AutoCompleteRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
 import { UserService } from '../../service/user.service';
 import { RemoteSearchConfig } from './remote-search-config.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { SearchAutocompleteComponent, UpperCaseFirstPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'shared-remote-search',
     templateUrl: './remote-search.component.html',
     providers: [RemoteSearchConfig],
-    standalone: false
+    imports: [SearchAutocompleteComponent, TranslatePipe, UpperCaseFirstPipe]
 })
 export class RemoteSearchComponent implements OnInit, OnDestroy {
 
@@ -40,13 +41,13 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
 
   // You must use lowercase variable names for this to work in a web component.
   // Use @Input in this case, as the web component does not work with input (signal).
-  @Input() maxlengthsuggestion: number | string = 100;
-  @Input() placeholder = 'search';
-  @Input() viewcode: string | undefined;
-  @Input() language;
-  @Input() inputstyleclass: string;
-  @Input() styleclass: string;
-  @Input() internalRoutingBaseURL: string | undefined;
+  readonly maxlengthsuggestion = input<number | string>(100);
+  readonly placeholder = input('search');
+  readonly viewcode = input<string | undefined>(undefined);
+  readonly language = input(undefined);
+  readonly inputstyleclass = input<string>(undefined);
+  readonly styleclass = input<string>(undefined);
+  readonly internalRoutingBaseURL = input<string | undefined>(undefined);
 
   admin: boolean;
   hideSearchElement = false;
@@ -59,15 +60,16 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
-    if (this.language) {
-      this.translateService.use(this.language);
+    const language = this.language();
+    if (language) {
+      this.translateService.use(language);
     }
-    this.admin = Boolean(this.internalRoutingBaseURL);
+    this.admin = Boolean(this.internalRoutingBaseURL());
     this.subscription.add(this.route.queryParamMap.subscribe((params: any) => {this.value = params.get('q')}));
     this.recordTypes = this.remoteSearchBarConfig.getConfig(
       this.admin,
-      this.viewcode,
-      +this.maxlengthsuggestion
+      this.viewcode(),
+      +this.maxlengthsuggestion()
     );
     this.subscription.add(
       this.router.events
@@ -84,15 +86,16 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
     if (!(typeof query === 'string')) {
       query = query.originalLabel;
     }
-    if (this.internalRoutingBaseURL) {
-      this.router.navigate([this.internalRoutingBaseURL], {
+    const internalRoutingBaseURL = this.internalRoutingBaseURL();
+    if (internalRoutingBaseURL) {
+      this.router.navigate([internalRoutingBaseURL], {
         queryParams: {
           ...{ page: '1', size: '10', organisation: this.userService.user.currentOrganisation },
           q: query
         }
       });
     } else {
-      this.document.location.href = `/${this.viewcode}/search/documents?q=${query}&page=1&size=10&sort=bestmatch`;
+      this.document.location.href = `/${this.viewcode()}/search/documents?q=${query}&page=1&size=10&sort=bestmatch`;
     }
   }
 

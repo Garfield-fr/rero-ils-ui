@@ -16,13 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AfterViewInit, Component, inject, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild, ViewContainerRef, input } from '@angular/core';
 
 import { Entity, EntityType } from '../../../class/entity';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
-import { BriefViewTag } from '../../core/brief-view/brief-view.component';
+import { BriefViewTag, BriefViewComponent } from '../../core/brief-view/brief-view.component';
 import { EntityBriefViewRemoteOrganisationComponent } from './entity-brief-view.organisation';
 import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person';
+import { ReroTemplateDirective } from '../../../directive/rero-template.directive';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'shared-entity-brief-view',
@@ -30,7 +34,7 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
     template: `
     <shared-brief-view [title]="entityTitle" [link]="routerLink" [tags]="tags">
       <ng-template rTemplate="icon">
-        <i class="fa fa-2x" [class]="entityIcon" [title]="record.metadata.type | translate"></i>
+        <i class="fa fa-2x" [class]="entityIcon" [title]="record().metadata.type | translate"></i>
       </ng-template>
       <ng-template rTemplate="content">
         <ng-container #contentTemplate></ng-container>
@@ -44,7 +48,7 @@ import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person
       </ng-template>
     </shared-brief-view>
   `,
-    standalone: false
+    imports: [BriefViewComponent, ReroTemplateDirective, Bind, Tag, TranslatePipe]
 })
 export class EntityBriefViewComponent implements OnInit, AfterViewInit {
 
@@ -52,11 +56,14 @@ export class EntityBriefViewComponent implements OnInit, AfterViewInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The entity record to display */
-  @Input() record: any;
+  readonly record = input<any>(undefined);
   /** The entity record type */
-  @Input() type: string;
+  readonly type = input<string>(undefined);
   /** URL to access detail view of the entity. */
-  @Input() detailUrl: { link: string, external: boolean };
+  readonly detailUrl = input<{
+    link: string;
+    external: boolean;
+}>(undefined);
 
   /** The entity body content container */
   @ViewChild('contentTemplate', {static: false, read: ViewContainerRef}) entityContent: ViewContainerRef;
@@ -75,12 +82,13 @@ export class EntityBriefViewComponent implements OnInit, AfterViewInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    switch (this.record.metadata.resource_type) {
+    const record = this.record();
+    switch (record.metadata.resource_type) {
       case 'remote': this._buildRemoteEntityData(); break;
       case 'local': this._buildLocalEntityData(); break;
       default: throw new Error('Unknown entity resource type !')
     }
-    this.entityIcon = Entity.getIcon(this.record.metadata.type);
+    this.entityIcon = Entity.getIcon(record.metadata.type);
   }
 
   /** AfterViewInit hook */
@@ -88,7 +96,7 @@ export class EntityBriefViewComponent implements OnInit, AfterViewInit {
     if (this.contentComponent) {
       setTimeout(() => {  // To be run at next macro task and avoid `NG100` error into console.
         const componentRef: any = this.entityContent.createComponent(this.contentComponent);
-        componentRef.instance.record = this.record;
+        componentRef.instance.record = this.record();
       });
     }
   }
@@ -96,16 +104,17 @@ export class EntityBriefViewComponent implements OnInit, AfterViewInit {
   // PRIVATE COMPONENT METHODS ================================================
   /** Set data used to display a remote entity. */
   private _buildRemoteEntityData(): void {
-    if (this.detailUrl.external) {
-      this.routerLink = this.detailUrl.link.replace('entities', 'entities/remote');
+    const detailUrl = this.detailUrl();
+    if (detailUrl.external) {
+      this.routerLink = detailUrl.link.replace('entities', 'entities/remote');
     } else {
-      this.routerLink = ['/records', 'remote_entities', 'detail', this.record.metadata.pid];
-      this.tags = [{label: this.record.metadata.resource_type, type: 'remote'}];
-      this.record.metadata.sources.forEach((source: string) => this.tags.push({label: source.toUpperCase()}));
+      this.routerLink = ['/records', 'remote_entities', 'detail', this.record().metadata.pid];
+      this.tags = [{label: this.record().metadata.resource_type, type: 'remote'}];
+      this.record().metadata.sources.forEach((source: string) => this.tags.push({label: source.toUpperCase()}));
     }
-    this.entityTitle = this.extractedSourceFieldPipe.transform(this.record.metadata, 'authorized_access_point');
+    this.entityTitle = this.extractedSourceFieldPipe.transform(this.record().metadata, 'authorized_access_point');
 
-    switch (this.record.metadata.type) {
+    switch (this.record().metadata.type) {
       case EntityType.ORGANISATION: this.contentComponent = EntityBriefViewRemoteOrganisationComponent; break;
       case EntityType.PERSON: this.contentComponent = EntityBriefViewRemotePersonComponent; break;
     }
@@ -113,17 +122,19 @@ export class EntityBriefViewComponent implements OnInit, AfterViewInit {
 
   /** Set data used to display a local entity. */
   private _buildLocalEntityData(): void {
-    if (this.detailUrl.external) {
-      this.routerLink = this.detailUrl.link.replace('entities', 'entities/local');
+    const record = this.record();
+    const detailUrl = this.detailUrl();
+    if (detailUrl.external) {
+      this.routerLink = detailUrl.link.replace('entities', 'entities/local');
     } else {
-      this.routerLink = ['/records', 'local_entities', 'detail', this.record.metadata.pid];
+      this.routerLink = ['/records', 'local_entities', 'detail', this.record().metadata.pid];
       this.tags = [
-        {label: this.record.metadata.resource_type, type: 'local'},
+        {label: this.record().metadata.resource_type, type: 'local'},
       ];
-      if (this.record.metadata.source_catalog) {
-        this.tags.push({label: this.record.metadata.source_catalog});
+      if (record.metadata.source_catalog) {
+        this.tags.push({label: record.metadata.source_catalog});
       }
     }
-    this.entityTitle = this.record.metadata.authorized_access_point;
+    this.entityTitle = record.metadata.authorized_access_point;
   }
 }

@@ -54,8 +54,8 @@ describe('OperationLogsService', () => {
   });
 
   it('should return a boolean for log operation visibility', () => {
-    expect(service.isLogVisible('documents')).toBeTrue();
-    expect(service.isLogVisible('items')).toBeFalse();
+    expect(service.isLogVisible('documents')).toBe(true);
+    expect(service.isLogVisible('items')).toBe(false);
   });
 
   it('Should return an exception if the resource does not exist', () => {
