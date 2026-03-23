@@ -15,19 +15,20 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, testUserPatronWithSettings, User, UserApiService } from '@rero/shared';
-import { AppInitializerService } from './app-initializer.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { of } from 'rxjs';
+import { AppInitializerService } from './app-initializer.service';
 
 describe('AppInitializerService', () => {
   let appInitializerService: AppInitializerService;
 
-  const UserApiServiceSpy = jasmine.createSpyObj(UserApiService, ['getLoggedUser']);
-  UserApiServiceSpy.getLoggedUser.and.returnValue(of(testUserPatronWithSettings));
+  const userApiServiceSpy = {
+    getLoggedUser: vi.fn().mockReturnValue(of(testUserPatronWithSettings))
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -39,7 +40,7 @@ describe('AppInitializerService', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         AppInitializerService,
-        { provide: UserApiService, useValue: UserApiServiceSpy }
+        { provide: UserApiService, useValue: userApiServiceSpy }
       ]
     });
     appInitializerService = TestBed.inject(AppInitializerService);

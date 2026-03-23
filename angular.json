@@ -139,7 +139,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "allowedCommonJsDependencies": [
               "crypto-js",
@@ -202,7 +202,21 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/public-holdings-items/tsconfig.spec.json",
+            "setupFiles": [
+              "projects/public-holdings-items/src/vitest.setup.ts"
+            ]
           }
         },
         "serve": {
@@ -387,7 +401,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "allowedCommonJsDependencies": [
               "crypto-js",
@@ -449,15 +463,21 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "projects/search-bar/src/test.ts",
             "tsConfig": "projects/search-bar/tsconfig.spec.json",
-            "karmaConfig": "projects/search-bar/karma.conf.js"
+            "setupFiles": [
+              "projects/search-bar/src/vitest.setup.ts"
+            ]
           }
         },
         "serve": {
@@ -545,7 +565,7 @@
       "prefix": "public-patron-profile",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "allowedCommonJsDependencies": [
               "crypto-js",
@@ -615,9 +635,23 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": ""
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/public-patron-profile/tsconfig.spec.json",
+            "setupFiles": [
+              "projects/public-patron-profile/src/vitest.setup.ts"
+            ]
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

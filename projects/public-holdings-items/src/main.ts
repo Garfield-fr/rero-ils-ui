@@ -15,15 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { enableProdMode, provideZoneChangeDetection } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { createCustomElement } from '@angular/elements';
+import { createApplication } from '@angular/platform-browser';
+import { DocumentDetailViewComponent } from 'projects/public-search/src/app/document-detail/document-detail-view/document-detail-view.component';
+import { appConfig } from './app/app.config';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-
-if (environment.production) {
-  enableProdMode();
-}
-
-platformBrowserDynamic().bootstrapModule(AppModule, { applicationProviders: [provideZoneChangeDetection()], })
-  .catch(err => console.error(err));
+createApplication(appConfig).then(appRef => {
+  const injector = appRef.injector;
+  if (!customElements.get('public-search-document')) {
+    const documentDetail = createCustomElement(DocumentDetailViewComponent, { injector });
+    customElements.define('public-search-document', documentDetail);
+  }
+}).catch(err => console.error(err));
