@@ -53,7 +53,7 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
       query += ` AND (enumerationAndChronology.analyzed:"${filter}" OR call_numbers:(*${filter}*) OR barcode:(*${filter}*))`;
     }
     return this.recordService
-      .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders, sort)
+      .getRecords('items', { query, page, itemsPerPage, preFilters: { view: viewcode }, headers: BaseApi.reroJsonheaders, sort })
       .pipe(
         catchError(() => of(esResultInitialState)),
         map((response: EsResult) => response)

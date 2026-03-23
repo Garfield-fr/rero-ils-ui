@@ -14,13 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { AsyncPipe } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
+import { TranslateDirective } from '@ngx-translate/core';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
+import { ContributionComponent } from '@rero/shared';
+import { TagModule } from 'primeng/tag';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
     selector: 'public-search-patron-profile-history',
     templateUrl: './patron-profile-history.component.html',
-    standalone: false
+    standalone: true,
+    imports: [AsyncPipe, TranslateDirective, DateTranslatePipe, GetRecordPipe, ContributionComponent, TagModule]
 })
 export class PatronProfileHistoryComponent {
 

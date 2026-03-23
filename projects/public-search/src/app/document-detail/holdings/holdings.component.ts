@@ -17,7 +17,6 @@
 import { I18nPluralPipe, NgClass } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { CoreModule } from '@rero/ng-core';
 import { HoldingsNoteType, SharedModule, UserService } from '@rero/shared';
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { ButtonDirective } from 'primeng/button';
@@ -32,7 +31,7 @@ import { MultiSelect } from 'primeng/multiselect';
 @Component({
     selector: 'public-search-holdings',
     templateUrl: './holdings.component.html',
-    imports: [Message, Accordion, AccordionPanel, Ripple, AccordionHeader, SharedModule, TranslateDirective, AccordionContent, ItemsComponent, HoldingsRequestComponent, NgClass, ButtonDirective, I18nPluralPipe, TranslatePipe, CoreModule, MultiSelect],
+    imports: [Message, Accordion, AccordionPanel, Ripple, AccordionHeader, SharedModule, TranslateDirective, AccordionContent, ItemsComponent, HoldingsRequestComponent, NgClass, ButtonDirective, I18nPluralPipe, TranslatePipe, MultiSelect],
     providers: [HoldingsStore]
 })
 export class HoldingsComponent implements OnInit {

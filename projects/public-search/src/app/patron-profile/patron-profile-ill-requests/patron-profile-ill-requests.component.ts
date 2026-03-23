@@ -15,18 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
+import { _, TranslateDirective } from "@ngx-translate/core";
 import type { Error, EsResult } from '@rero/ng-core';
-import { BaseApi, Paginator } from '@rero/shared';
+import { BaseApi, Paginator, ShowMorePagerComponent } from '@rero/shared';
+import { PanelModule } from 'primeng/panel';
 import { Observable, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../../api/ill-request-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
+import { PatronProfileIllRequestComponent } from './patron-profile-ill-request/patron-profile-ill-request.component';
 
 @Component({
     selector: 'public-search-patron-profile-ill-requests',
     templateUrl: './patron-profile-ill-requests.component.html',
-    standalone: false
+    standalone: true,
+    imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileIllRequestComponent]
 })
 export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
 

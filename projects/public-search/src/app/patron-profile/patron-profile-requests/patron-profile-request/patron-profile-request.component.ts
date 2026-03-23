@@ -14,18 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
+import { OpenCloseButtonComponent } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileService } from '../../patron-profile.service';
+import { PatronProfileDocumentComponent } from '../../patron-profile-document/patron-profile-document.component';
 
 @Component({
     selector: 'public-search-patron-profile-request',
     templateUrl: './patron-profile-request.component.html',
-    standalone: false
+    standalone: true,
+    imports: [NgClass, NgTemplateOutlet, TranslateDirective, TranslatePipe, DateTranslatePipe, OpenCloseButtonComponent, ButtonModule, PatronProfileDocumentComponent]
 })
 export class PatronProfileRequestComponent {
 

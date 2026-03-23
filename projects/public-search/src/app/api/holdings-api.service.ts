@@ -44,10 +44,12 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
     documentPid: string, viewcode: string): Observable<EsResult> {
     const query = `document.pid:${documentPid} AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial) NOT _masked:true`;
     return this.recordService
-    .getRecords(
-      'holdings', query, 1, 9999, undefined, { view: viewcode },
-      BaseApi.reroJsonheaders, 'organisation_library_location'
-    ).pipe(map((response: EsResult) => response));
+    .getRecords('holdings', {
+      query, page: 1, itemsPerPage: 9999,
+      preFilters: { view: viewcode },
+      headers: BaseApi.reroJsonheaders,
+      sort: 'organisation_library_location'
+    }).pipe(map((response: EsResult) => response));
   }
 
   /**
@@ -60,10 +62,12 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
       documentPid: string, viewcode: string, page: number, itemsPerPage = 5): Observable<QueryResponse> {
       const query = `document.pid:${documentPid} AND  holdings_type:electronic NOT _masked:true`;
       return this.recordService
-      .getRecords(
-        'holdings', query, page, itemsPerPage, undefined, { view: viewcode },
-        BaseApi.reroJsonheaders, 'organisation_library_location'
-      ).pipe(map((response: EsResult) => response.hits));
+      .getRecords('holdings', {
+        query, page, itemsPerPage,
+        preFilters: { view: viewcode },
+        headers: BaseApi.reroJsonheaders,
+        sort: 'organisation_library_location'
+      }).pipe(map((response: EsResult) => response.hits));
     }
 
   /**

@@ -15,17 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
+import { FormsModule } from '@angular/forms';
+import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import type { Error, EsResult } from '@rero/ng-core';
-import { Paginator } from '@rero/shared';
+import { Paginator, ShowMorePagerComponent } from '@rero/shared';
+import { PanelModule } from 'primeng/panel';
+import { Select } from 'primeng/select';
 import { Observable, Subscription } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileLoanComponent } from './patron-profile-loan/patron-profile-loan.component';
 
 @Component({
     selector: 'public-search-patron-profile-loans',
     templateUrl: './patron-profile-loans.component.html',
-    standalone: false
+    standalone: true,
+    imports: [FormsModule, TranslateDirective, TranslatePipe, Select, PanelModule, ShowMorePagerComponent, PatronProfileLoanComponent]
 })
 export class PatronProfileLoansComponent implements OnInit, OnDestroy {
 
@@ -43,6 +48,12 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
 
   /** sort criteria */
   sortCriteria = 'duedate';
+
+  /** sort options */
+  sortOptions = [
+    { value: 'duedate', label: 'Due date (earliest)' },
+    { value: '-duedate', label: 'Due date (latest)' }
+  ];
 
   /** paginator page */
   page = 1;

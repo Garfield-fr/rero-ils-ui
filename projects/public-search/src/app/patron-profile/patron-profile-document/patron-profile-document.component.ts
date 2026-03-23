@@ -16,15 +16,18 @@
  */
 import { Component, computed, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { TranslateDirective } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { EsRecord } from '@rero/shared';
+import { ContributionComponent, EsRecord, MainTitlePipe } from '@rero/shared';
+import { TagModule } from 'primeng/tag';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
     selector: 'public-search-patron-profile-document',
     templateUrl: './patron-profile-document.component.html',
-    standalone: false
+    standalone: true,
+    imports: [TranslateDirective, ContributionComponent, MainTitlePipe, TagModule]
 })
 export class PatronProfileDocumentComponent {
 

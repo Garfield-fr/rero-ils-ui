@@ -17,11 +17,12 @@
  */
 import { Component, inject, Input } from '@angular/core';
 import { DocumentApiService } from '../api/document-api.service';
+import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
 
 @Component({
     selector: 'public-search-document-brief',
     templateUrl: './document-brief.component.html',
-    standalone: false
+    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe]
 })
 export class DocumentBriefComponent {
 

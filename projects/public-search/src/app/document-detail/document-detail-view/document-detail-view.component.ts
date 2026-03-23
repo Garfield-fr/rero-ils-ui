@@ -19,7 +19,6 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateDirective, TranslateService } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
 import { AppSettingsService, SharedModule } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { Ripple } from 'primeng/ripple';
@@ -30,7 +29,7 @@ import { ElectronicHoldingsComponent } from './holdings/electronic-holdings/elec
 @Component({
     selector: 'public-search-document-detail-vew',
     templateUrl: './document-detail-view.component.html',
-    imports: [LoadingBarModule, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, SharedModule, HoldingsComponent, ElectronicHoldingsComponent, NgClass, AsyncPipe, RecordModule]
+    imports: [LoadingBarModule, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, SharedModule, HoldingsComponent, ElectronicHoldingsComponent, NgClass, AsyncPipe]
 })
 export class DocumentDetailViewComponent implements OnInit {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);

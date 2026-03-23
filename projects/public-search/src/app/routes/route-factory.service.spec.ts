@@ -16,10 +16,9 @@
  */
 
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { AppRoutingModule } from '../app-routing.module';
-import { ErrorPageComponent } from '../error/error-page.component';
-import { MainComponent } from '../main/main.component';
+import { APP_ROUTES } from '../app.routes';
 import { RouteFactoryService } from './route-factory.service';
 
 describe('RouteFactoryService', () => {
@@ -28,15 +27,13 @@ describe('RouteFactoryService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        MainComponent,
-        ErrorPageComponent
-      ],
-      imports: [
-        AppRoutingModule,
+    imports: [
         TranslateModule.forRoot()
-      ]
-    });
+    ],
+    providers: [
+        provideRouter(APP_ROUTES)
+    ]
+});
     service = TestBed.inject(RouteFactoryService);
   });
 

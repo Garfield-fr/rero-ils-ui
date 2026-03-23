@@ -17,9 +17,9 @@
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
+
 import { SharedModule } from '@rero/shared';
 import { DocumentBriefComponent } from './document-brief.component';
 
@@ -39,22 +39,20 @@ describe('DocumentBriefComponent', () => {
     }
   };
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          DocumentBriefComponent
-      ],
-      imports: [
-        RecordModule,
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+    imports: [
+        
         TranslateModule.forRoot(),
-        SharedModule
-      ],
-      providers: [
+        SharedModule,
+        DocumentBriefComponent
+    ],
+    providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
-  }));
+    ]
+}).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentBriefComponent);

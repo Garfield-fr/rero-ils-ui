@@ -17,7 +17,6 @@
  */
 import { Component, inject, Input } from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CoreModule } from '@rero/ng-core';
 import { SharedModule, UserService } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
 import { ItemRequestComponent } from './item-request.component';
@@ -26,7 +25,7 @@ import { PickupLocationComponent } from '../request/pickup-location/pickup-locat
 @Component({
     selector: 'public-search-item',
     templateUrl: './item.component.html',
-    imports: [TranslateDirective, SharedModule, TranslatePipe, CoreModule, ItemRequestComponent, PickupLocationComponent]
+    imports: [TranslateDirective, SharedModule, TranslatePipe, ItemRequestComponent, PickupLocationComponent]
 })
 export class ItemComponent {
 

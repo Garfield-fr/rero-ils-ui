@@ -14,17 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { CurrencyPipe, NgClass } from '@angular/common';
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
-import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
-import { Subscription } from 'rxjs';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared';
 import type { EsResult } from '@rero/ng-core';
+import { TagModule } from 'primeng/tag';
+import { TimelineModule } from 'primeng/timeline';
+import { Subscription } from 'rxjs';
+import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
+import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
 
 @Component({
   selector: 'public-search-patron-profile-fee-event',
   templateUrl: './patron-profile-fee-event.component.html',
-  standalone: false
+  standalone: true,
+  imports: [CurrencyPipe, NgClass, TranslateDirective, TranslatePipe, DateTranslatePipe, TagModule, TimelineModule]
 })
 export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
     private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);

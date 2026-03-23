@@ -15,17 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
+import { _, TranslateDirective } from "@ngx-translate/core";
 import type { Error, EsResult } from '@rero/ng-core';
-import { Paginator } from '@rero/shared';
+import { Paginator, ShowMorePagerComponent } from '@rero/shared';
+import { PanelModule } from 'primeng/panel';
 import { Observable, Subscription } from 'rxjs';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { ITabEvent, PatronProfileService } from '../patron-profile.service';
+import { PatronProfileHistoryComponent } from './patron-profile-history/patron-profile-history.component';
+
 @Component({
     selector: 'public-search-patron-profile-histories',
     templateUrl: './patron-profile-histories.component.html',
-    standalone: false
+    standalone: true,
+    imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileHistoryComponent]
 })
 export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
 

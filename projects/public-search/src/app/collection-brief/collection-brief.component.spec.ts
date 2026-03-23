@@ -15,12 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { formatDate, registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule, DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
+import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 import { CollectionBriefComponent } from './collection-brief.component';
+import localeEnGb from '@angular/common/locales/en-GB';
+
+registerLocaleData(localeEnGb);
+
+@Pipe({ name: 'dateTranslate', standalone: true })
+class MockDateTranslatePipe implements PipeTransform {
+  transform(value: any, format = 'mediumDate', timezone?: string): string | null {
+    if (value === null || value === undefined) return null;
+    try {
+      return formatDate(value, format, 'en-GB', timezone);
+    } catch {
+      return null;
+    }
+  }
+}
+
+@Pipe({ name: 'nl2br', standalone: true })
+class MockNl2brPipe implements PipeTransform {
+  transform(value: string): string { return value ?? ''; }
+}
 
 
 describe('CollectionBriefComponent', () => {
@@ -41,23 +63,23 @@ describe('CollectionBriefComponent', () => {
     }
   };
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          CollectionBriefComponent,
-          DateTranslatePipe,
-          Nl2brPipe
-      ],
-      imports: [
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+    imports: [
         TranslateModule.forRoot(),
-        CoreModule
-      ],
-      providers: [
+        CollectionBriefComponent
+    ],
+    providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
-  }));
+    ]
+})
+    .overrideComponent(CollectionBriefComponent, {
+      remove: { imports: [DateTranslatePipe, Nl2brPipe] },
+      add: { imports: [MockDateTranslatePipe, MockNl2brPipe] }
+    })
+    .compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CollectionBriefComponent);

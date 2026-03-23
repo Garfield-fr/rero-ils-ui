@@ -57,7 +57,7 @@
         <p-tabpanel [value]="tab.key">
           @switch(tab.key) {
             @case ('loan') {
-              <public-search-patron-profile-loans [count]="tab.value.count" />
+              <public-search-patron-profile-loans />
             }
             @case ('request') {
               <public-search-patron-profile-requests />

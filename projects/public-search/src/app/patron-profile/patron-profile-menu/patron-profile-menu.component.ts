@@ -15,12 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
 import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service';
 
 @Component({
     selector: 'public-search-patron-profile-menu',
     templateUrl: './patron-profile-menu.component.html',
-    standalone: false
+    standalone: true,
+    imports: [FormsModule, SelectModule]
 })
 export class PatronProfileMenuComponent {
 

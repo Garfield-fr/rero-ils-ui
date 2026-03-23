@@ -14,14 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { APP_BASE_HREF, KeyValue } from '@angular/common';
+import { APP_BASE_HREF, CurrencyPipe, KeyValue, KeyValuePipe } from '@angular/common';
 import { afterNextRender, Component, inject, model, OnDestroy, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
 import { IPatron, UserService } from '@rero/shared';
 import JsBarcode from 'jsbarcode';
 import { forkJoin, of, Subscription } from 'rxjs';
+import { BadgeModule } from 'primeng/badge';
+import { TabsModule } from 'primeng/tabs';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
@@ -30,6 +34,14 @@ import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
 import { PatronProfileService } from './patron-profile.service';
 import { PatronApiService } from '../api/patron-api.service';
 import { overdueFee } from './patron-profile-fees/types';
+import { PatronProfileMenuComponent } from './patron-profile-menu/patron-profile-menu.component';
+import { PatronProfileMessageComponent } from './patron-profile-message/patron-profile-message.component';
+import { PatronProfileLoansComponent } from './patron-profile-loans/patron-profile-loans.component';
+import { PatronProfileRequestsComponent } from './patron-profile-requests/patron-profile-requests.component';
+import { PatronProfileFeesComponent } from './patron-profile-fees/patron-profile-fees.component';
+import { PatronProfileHistoriesComponent } from './patron-profile-histories/patron-profile-histories.component';
+import { PatronProfileIllRequestsComponent } from './patron-profile-ill-requests/patron-profile-ill-requests.component';
+import { PatronProfilePersonalComponent } from './patron-profile-personal/patron-profile-personal.component';
 
 type Tab = {
   loaded?: boolean;
@@ -53,7 +65,25 @@ type Tabs = {
 @Component({
     selector: 'public-search-patron-profile',
     templateUrl: './patron-profile.component.html',
-    standalone: false
+    standalone: true,
+    imports: [
+      CurrencyPipe,
+      KeyValuePipe,
+      TranslateDirective,
+      TranslatePipe,
+      BadgeModule,
+      TabsModule,
+      ToastModule,
+      TooltipModule,
+      PatronProfileMenuComponent,
+      PatronProfileMessageComponent,
+      PatronProfileLoansComponent,
+      PatronProfileRequestsComponent,
+      PatronProfileFeesComponent,
+      PatronProfileHistoriesComponent,
+      PatronProfileIllRequestsComponent,
+      PatronProfilePersonalComponent,
+    ]
 })
 export class PatronProfileComponent implements OnInit, OnDestroy {
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);

@@ -16,11 +16,12 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'public-search-collection-brief',
     templateUrl: './collection-brief.component.html',
-    standalone: false
+    imports: [DateTranslatePipe, Nl2brPipe]
 })
 export class CollectionBriefComponent {
 

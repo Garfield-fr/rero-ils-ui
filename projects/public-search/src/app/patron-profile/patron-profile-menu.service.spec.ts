@@ -27,7 +27,7 @@ describe('Service: PatronProfileMenu', () => {
   let patronProfileMenuService: PatronProfileMenuService;
   let userService: UserService;
 
-  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  const userApiServiceSpy = { getLoggedUser: vi.fn() };
 
   const menu = [
     {
@@ -51,7 +51,7 @@ describe('Service: PatronProfileMenu', () => {
     ]
 });
     service = TestBed.inject(PatronProfileMenuService);
-    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronMultipleOrganisationsWithSettings)));
+    userApiServiceSpy.getLoggedUser.mockReturnValue(of(cloneDeep(testUserPatronMultipleOrganisationsWithSettings)));
     userService = TestBed.inject(UserService);
     userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);

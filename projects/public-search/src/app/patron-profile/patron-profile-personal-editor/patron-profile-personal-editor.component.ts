@@ -16,21 +16,27 @@
  */
 import { Location } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { _ } from "@ngx-translate/core";
+import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { TranslateService } from '@ngx-translate/core';
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
+import { _ } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { CONFIG, RecordService, processJsonSchema, removeEmptyValues, resolve$ref } from '@rero/ng-core';
 import { AppSettingsService, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
 import { Subscription, forkJoin, of } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'public-search-patron-profile-personal-editor',
     templateUrl: './patron-profile-personal-editor.component.html',
-    standalone: false
+    standalone: true,
+    imports: [ReactiveFormsModule, FormlyModule, FormlyPrimeNGModule, TranslatePipe, LoadingBarModule, ButtonModule, ToastModule]
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 

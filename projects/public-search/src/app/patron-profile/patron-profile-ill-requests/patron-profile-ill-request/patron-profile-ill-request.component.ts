@@ -15,11 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Nl2brPipe, TruncateTextPipe } from '@rero/ng-core';
+import { ArrayTranslatePipe, JoinPipe, JournalVolumePipe, NotesFilterPipe, OpenCloseButtonComponent } from '@rero/shared';
+import { TagModule } from 'primeng/tag';
+import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
 
 @Component({
     selector: 'public-search-patron-profile-ill-request',
     templateUrl: './patron-profile-ill-request.component.html',
-    standalone: false
+    standalone: true,
+    imports: [
+      TranslateDirective,
+      TranslatePipe,
+      Nl2brPipe,
+      TruncateTextPipe,
+      ArrayTranslatePipe,
+      JoinPipe,
+      JournalVolumePipe,
+      NotesFilterPipe,
+      OpenCloseButtonComponent,
+      TagModule,
+      LoanStatusBadgePipe,
+    ]
 })
 export class PatronProfileIllRequestComponent {
 

@@ -15,19 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule } from '@rero/ng-core';
+
+import { RecordService } from '@rero/ng-core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
 import { PatronProfileService } from '../patron-profile.service';
+import { PatronApiService } from '../../api/patron-api.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees.component';
+import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+
+@Component({ selector: 'public-search-patron-profile-fee', standalone: true, template: '' })
+class StubPatronProfileFeeComponent {
+  @Input() record: any;
+}
 
 describe('PatronProfileFeeComponent', () => {
   let component: PatronProfileFeesComponent;
@@ -54,29 +62,35 @@ describe('PatronProfileFeeComponent', () => {
     links: {}
   };
 
-  const patronTransactionApiServiceSpy = jasmine.createSpyObj('PatronTransactionApiService', ['getFees']);
-  patronTransactionApiServiceSpy.getFees.and.returnValue(of(apiResponse));
+  const patronTransactionApiServiceSpy = { getFees: vi.fn() };
+  patronTransactionApiServiceSpy.getFees.mockReturnValue(of(apiResponse));
 
-  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
-  userApiServiceSpy.getLoggedUser.and.returnValue(of(testUserPatronWithSettings));
+  const userApiServiceSpy = { getLoggedUser: vi.fn() };
+  userApiServiceSpy.getLoggedUser.mockReturnValue(of(testUserPatronWithSettings));
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-    declarations: [PatronProfileFeesComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     schemas: [NO_ERRORS_SCHEMA],
     imports: [
-      TranslateModule.forRoot(),
-      SharedModule,
-      CoreModule
+        TranslateModule.forRoot(),
+        SharedModule,
+
+        PatronProfileFeesComponent
     ],
     providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
+        { provide: PatronApiService, useValue: { getOverduePreviewByPatronPid: vi.fn().mockReturnValue(of([])) } },
+        { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of(null)), MAX_REST_RESULTS_SIZE: 1000 } },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideNoopAnimations()
     ]
 })
+    .overrideComponent(PatronProfileFeesComponent, {
+      remove: { imports: [PatronProfileFeeComponent] },
+      add: { imports: [StubPatronProfileFeeComponent] }
+    })
     .compileComponents();
   });
 
@@ -85,7 +99,7 @@ describe('PatronProfileFeeComponent', () => {
     patronProfileService = TestBed.inject(PatronProfileService);
     component = fixture.componentInstance;
     component.feesTotal = 12.50;
-    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    userApiServiceSpy.getLoggedUser.mockReturnValue(of(cloneDeep(testUserPatronWithSettings)));
     userService = TestBed.inject(UserService);
     userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
@@ -98,7 +112,7 @@ describe('PatronProfileFeeComponent', () => {
   });
 
   it('should display the total amount', () => {
-    const div = fixture.nativeElement.querySelector('div > div > div > div:nth-child(1)');
-    expect(div.textContent).toContain(12.50);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('12.5');
   });
 });

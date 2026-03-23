@@ -19,11 +19,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { AppConfigService } from '../app-config.service';
+import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'public-search-document-record-search',
     templateUrl: './document-record-search.component.html',
-    standalone: false
+    imports: [RecordSearchPageComponent]
 })
 export class DocumentRecordSearchComponent implements OnInit {
 

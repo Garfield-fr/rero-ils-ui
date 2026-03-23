@@ -14,21 +14,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { I18nPluralPipe, NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
-import { IOrganisation } from '@rero/shared';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
+import { ArrayTranslatePipe, IOrganisation, JoinPipe, OpenCloseButtonComponent } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { finalize } from 'rxjs/operators';
 import { CanExtend, LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileService } from '../../patron-profile.service';
+import { PatronProfileDocumentComponent } from '../../patron-profile-document/patron-profile-document.component';
 
 @Component({
     selector: 'public-search-patron-profile-loan',
     templateUrl: './patron-profile-loan.component.html',
-    standalone: false
+    standalone: true,
+    imports: [
+      NgClass,
+      TranslateDirective,
+      TranslatePipe,
+      DateTranslatePipe,
+      I18nPluralPipe,
+      ArrayTranslatePipe,
+      JoinPipe,
+      OpenCloseButtonComponent,
+      ButtonModule,
+      TagModule,
+      TooltipModule,
+      PatronProfileDocumentComponent,
+      NgTemplateOutlet,
+    ]
 })
 export class PatronProfileLoanComponent implements OnInit {
 

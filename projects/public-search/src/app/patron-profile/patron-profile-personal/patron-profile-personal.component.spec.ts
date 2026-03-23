@@ -14,17 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate, registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CoreModule, DateTranslatePipe } from '@rero/ng-core';
+import { DateTranslatePipe } from '@rero/ng-core';
 import { AppSettingsService, SharedModule, testUserPatronWithSettings } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { ButtonModule } from 'primeng/button';
 import { PatronProfilePersonalComponent } from './patron-profile-personal.component';
+import localeEnGb from '@angular/common/locales/en-GB';
+
+registerLocaleData(localeEnGb);
+
+@Pipe({ name: 'dateTranslate', standalone: true })
+class MockDateTranslatePipe implements PipeTransform {
+  transform(value: any, format = 'mediumDate', timezone?: string): string | null {
+    if (value === null || value === undefined) return null;
+    try {
+      return formatDate(value, format, 'en-GB', timezone);
+    } catch {
+      return null;
+    }
+  }
+}
 
 describe('PatronProfilePersonalComponent', () => {
   let component: PatronProfilePersonalComponent;
@@ -36,7 +52,7 @@ describe('PatronProfilePersonalComponent', () => {
     country_sw: 'switzerland'
   };
 
-  const appSettingsServiceSpy = jasmine.createSpyObj('AppSettingsService', ['']);
+  const appSettingsServiceSpy: any = {};
   appSettingsServiceSpy.settings = {
     userProfile: {
       readOnly: false
@@ -47,26 +63,26 @@ describe('PatronProfilePersonalComponent', () => {
     snapshot: { data:{}, paramMap: { get: function(key) { return key; }} }
   } as ActivatedRoute;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-    declarations: [
-      PatronProfilePersonalComponent,
-      DateTranslatePipe
-    ],
-    imports: [CoreModule,
-      CommonModule,
-      RouterModule.forRoot([]),
-      TranslateModule.forRoot(),
-      SharedModule,
-      ButtonModule
-    ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+    imports: [
+        PatronProfilePersonalComponent,
+        CommonModule,
+        RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
+        SharedModule,
+        ButtonModule],
     providers: [
-      { provide: ActivatedRoute, useValue: fakeActivatedRoute },
-      { provide: AppSettingsService, useValue: appSettingsServiceSpy },
-      provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClientTesting()
+        { provide: ActivatedRoute, useValue: fakeActivatedRoute },
+        { provide: AppSettingsService, useValue: appSettingsServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
     ]
 })
+    .overrideComponent(PatronProfilePersonalComponent, {
+      remove: { imports: [DateTranslatePipe] },
+      add: { imports: [MockDateTranslatePipe] }
+    })
     .compileComponents();
   });
 

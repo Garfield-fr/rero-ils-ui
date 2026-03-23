@@ -16,7 +16,8 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { _ as marker } from "@ngx-translate/core";
+import { _ as marker, TranslateDirective } from "@ngx-translate/core";
+import { MessageModule } from 'primeng/message';
 import { map } from 'rxjs/operators';
 
 export function _(str: string) {
@@ -35,7 +36,7 @@ export function _(str: string) {
       </div>
     </p-message>
   `,
-    standalone: false
+    imports: [TranslateDirective, MessageModule]
 })
 
 export class ErrorPageComponent implements OnInit {

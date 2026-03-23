@@ -19,9 +19,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import { LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
 
@@ -38,34 +41,38 @@ describe('PatronProfileRequestComponent', () => {
         pid: '1',
         title: [{ type: 'bf:Title', _text: 'Document title' }]
       },
+      item: {},
       pickup_name: 'Pickup name',
       state: 'ITEM_AT_DESK',
       rank: 3
     }
   };
 
-  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  const userApiServiceSpy = { getLoggedUser: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PatronProfileRequestComponent],
-      schemas: [NO_ERRORS_SCHEMA],
-      imports: [
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [
         TranslateModule.forRoot(),
-        SharedModule
-      ],
-      providers: [
+        SharedModule,
+        PatronProfileRequestComponent
+    ],
+    providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
+        { provide: LoanApiService, useValue: { cancel: vi.fn().mockReturnValue(of(null)) } },
+        { provide: MessageService, useValue: { add: vi.fn() } },
+        { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of({ metadata: {} })), MAX_REST_RESULTS_SIZE: 1000 } },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PatronProfileRequestComponent);
     component = fixture.componentInstance;
-    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
+    userApiServiceSpy.getLoggedUser.mockReturnValue(of(cloneDeep(testUserPatronWithSettings)));
     userService = TestBed.inject(UserService);
     userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);

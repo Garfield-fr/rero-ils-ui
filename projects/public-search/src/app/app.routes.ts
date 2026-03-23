@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
-import { LoadingBarModule } from '@ngx-loading-bar/core';
-import { RouterOutlet } from '@angular/router';
+import { Routes } from '@angular/router';
+import { ErrorPageComponent } from './error/error-page.component';
+import { MainComponent } from './main/main.component';
 
-@Component({
-    selector: 'public-search-root',
-    templateUrl: './app.component.html',
-    imports: [LoadingBarModule, RouterOutlet]
-})
-export class AppComponent {
-
-}
+export const APP_ROUTES: Routes = [
+  {
+    path: '',
+    component: MainComponent,
+    pathMatch: 'full'
+  },
+  { path: 'errors/:status_code', component: ErrorPageComponent }
+];

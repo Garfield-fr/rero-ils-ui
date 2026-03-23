@@ -14,17 +14,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { CurrencyPipe } from '@angular/common';
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { IOrganisation } from '@rero/shared';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe, RecordService } from '@rero/ng-core';
+import { MainTitlePipe, OpenCloseButtonComponent, IOrganisation } from '@rero/shared';
+import { PanelModule } from 'primeng/panel';
+import { TagModule } from 'primeng/tag';
+import { TimelineModule } from 'primeng/timeline';
 import { Observable, Subscription } from 'rxjs';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileFeeEventsComponent } from '../patron-profile-fee-events/patron-profile-fee-events.component';
 
 @Component({
     selector: 'public-search-patron-profile-fee',
     templateUrl: './patron-profile-fee.component.html',
     styleUrl: './patron-profile-fee.component.scss',
-    standalone: false
+    standalone: true,
+    imports: [
+      CurrencyPipe,
+      TranslateDirective,
+      TranslatePipe,
+      DateTranslatePipe,
+      MainTitlePipe,
+      OpenCloseButtonComponent,
+      PanelModule,
+      TagModule,
+      TimelineModule,
+      PatronProfileFeeEventsComponent,
+    ]
 })
 export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
 

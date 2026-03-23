@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { CollectionAccessGuard } from './collection-access.guard';
 import { ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
 import { AppConfigService } from '../app-config.service';
@@ -27,7 +27,7 @@ describe('CollectionAccessGuard', () => {
   let activatedRouteSnapshot: ActivatedRouteSnapshot;
   let router: Router;
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy: any = {};
   activatedRouteSnapshotSpy.data = {
     types: [
       {
@@ -64,18 +64,17 @@ describe('CollectionAccessGuard', () => {
     expect(guard).toBeTruthy();
   }));
 
-  it('should not allow access', inject([CollectionAccessGuard], fakeAsync((guard: CollectionAccessGuard) => {
-    guard.canActivate(activatedRouteSnapshot).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  })));
+  it('should not allow access', inject([CollectionAccessGuard], (guard: CollectionAccessGuard) => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    guard.canActivate(activatedRouteSnapshot).subscribe();
+    expect(navigateSpy).toHaveBeenCalledWith(['/errors/403'], { skipLocationChange: true });
+  }));
 
-  it('should allow access', inject([CollectionAccessGuard], fakeAsync((guard: CollectionAccessGuard) => {
+  it('should allow access', inject([CollectionAccessGuard], (guard: CollectionAccessGuard) => {
     const routeSnapshot = cloneDeep(activatedRouteSnapshot) as ActivatedRouteSnapshot;
     routeSnapshot.data.types[0].preFilters.view = 'foo';
     guard.canActivate(routeSnapshot).subscribe((access: boolean) => {
-      expect(access).toBeTrue();
-    })
-  })));
+      expect(access).toBe(true);
+    });
+  }));
 });

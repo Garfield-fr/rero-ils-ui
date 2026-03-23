@@ -16,6 +16,7 @@
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import type { ToastMessageOptions } from 'primeng/api';
+import { MessageModule } from 'primeng/message';
 import { Subscription } from 'rxjs';
 import { Message, PatronApiService } from '../../api/patron-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
@@ -32,7 +33,8 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
       />
     }
   `,
-    standalone: false
+    standalone: true,
+    imports: [MessageModule]
 })
 export class PatronProfileMessageComponent implements OnInit, OnDestroy {
   private patronApiService: PatronApiService = inject(PatronApiService);

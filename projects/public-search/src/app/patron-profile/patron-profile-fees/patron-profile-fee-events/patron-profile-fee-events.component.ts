@@ -15,11 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { PatronProfileFeeEventComponent } from './patron-profile-fee-event/patron-profile-fee-event.component';
 
 @Component({
   selector: 'public-search-patron-profile-fee-events',
   templateUrl: './patron-profile-fee-events.component.html',
-  standalone: false
+  standalone: true,
+  imports: [PatronProfileFeeEventComponent]
 })
 export class PatronProfileFeeEventsComponent<T> {
   @Input() events: T;

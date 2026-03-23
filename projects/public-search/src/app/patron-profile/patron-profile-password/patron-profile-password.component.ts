@@ -15,14 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Location } from '@angular/common';
-import { Component, ElementRef, inject, Input, DOCUMENT } from '@angular/core';
-import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { _ } from "@ngx-translate/core";
+import { Component, ElementRef, inject, input, DOCUMENT } from '@angular/core';
+import { AbstractControl, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
+import { _, TranslatePipe } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { CONFIG } from '@rero/ng-core';
-import { AppSettingsService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { of } from 'rxjs';
 import { catchError, debounceTime, map } from 'rxjs/operators';
 import { UserApiService } from '../../api/user-api.service';
@@ -45,7 +48,8 @@ export function fieldPasswordMatchValidator(control: AbstractControl) {
 @Component({
     selector: 'public-search-patron-profile-password',
     templateUrl: './patron-profile-password.component.html',
-    standalone: false
+    standalone: true,
+    imports: [ReactiveFormsModule, FormlyModule, FormlyPrimeNGModule, TranslatePipe, LoadingBarModule, ButtonModule]
 })
 export class PatronProfilePasswordComponent {
 
@@ -56,7 +60,7 @@ export class PatronProfilePasswordComponent {
   private messageService: MessageService = inject(MessageService);
 
   /** Request referer */
-  @Input() referer: string | null;
+  referer = input<string | null>(null);
 
   /** angular form group for ngx-formly */
   form: UntypedFormGroup = new UntypedFormGroup({});

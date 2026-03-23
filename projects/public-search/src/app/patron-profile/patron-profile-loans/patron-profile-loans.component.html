@@ -17,14 +17,13 @@
 <!-- Due date dropdown menu -->
 @if (paginator.getRecordsCount() > 0) {
   <section class="ui:flex ui:justify-end">
-    <ng-core-menu-sort
-      [config]="[
-        {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa fa-sort-numeric-asc'},
-        {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa fa-sort-numeric-desc'}
-      ]"
-      selectedValue="duedate"
-      (onChange)="selectingSortCriteria($event)">
-    </ng-core-menu-sort>
+    <p-select
+      [options]="sortOptions"
+      [(ngModel)]="sortCriteria"
+      optionLabel="label"
+      optionValue="value"
+      (onChange)="selectingSortCriteria($event.value)">
+    </p-select>
   </section>
 }
 

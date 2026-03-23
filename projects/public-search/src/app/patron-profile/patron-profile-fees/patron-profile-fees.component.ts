@@ -14,19 +14,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { CurrencyPipe } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
+import { PanelModule } from 'primeng/panel';
 import { forkJoin } from 'rxjs';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
 import { fee, overdueFee } from './types';
 
 @Component({
     selector: 'public-search-patron-profile-fees',
     templateUrl: './patron-profile-fees.component.html',
-    standalone: false
+    standalone: true,
+    imports: [CurrencyPipe, TranslateDirective, TranslatePipe, PanelModule, PatronProfileFeeComponent]
 })
 export class PatronProfileFeesComponent implements OnInit {
 

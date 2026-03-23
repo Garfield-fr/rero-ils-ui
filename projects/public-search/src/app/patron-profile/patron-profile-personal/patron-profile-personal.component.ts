@@ -14,13 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { NgClass } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { AppSettingsService, IPatron } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
+import { AppSettingsService, IPatron, JoinPipe } from '@rero/shared';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'public-search-patron-profile-personal',
     templateUrl: './patron-profile-personal.component.html',
-    standalone: false
+    standalone: true,
+    imports: [NgClass, RouterLink, TranslateDirective, TranslatePipe, DateTranslatePipe, JoinPipe, ButtonModule]
 })
 export class PatronProfilePersonalComponent {
 
