@@ -15,11 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ApplicationConfig, inject, LOCALE_ID, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, inject, LOCALE_ID, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NavigationStart, provideRouter, Router } from '@angular/router';
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { TranslateLoader as BaseCoreTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig, TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe } from '@rero/shared';
@@ -39,6 +37,16 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection(),
     provideRouter(APP_ROUTES),
     provideHttpClient(withInterceptorsFromDi()),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: BaseCoreTranslateLoader,
+          useClass: CoreTranslateLoader,
+          deps: [CoreConfigService, HttpClient],
+        },
+        isolate: false,
+      })
+    ),
     provideAnimationsAsync(),
     providePrimeNG(primeNGConfig),
     provideAppInitializer(() => {
