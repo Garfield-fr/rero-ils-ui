@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { _ } from "@ngx-translate/core";
 import { PERMISSIONS } from '@rero/shared';
 import { PermissionGuard } from '../guard/permission.guard';
@@ -32,7 +31,7 @@ import { PendingComponent } from './patron/pending/pending.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
 
-const routes: Routes = [
+export const CIRCULATION_ROUTES: Routes = [
   {
     path: '',
     component: CirculationMainComponent,
@@ -137,9 +136,3 @@ const routes: Routes = [
     ]
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class CirculationRoutingModule { }

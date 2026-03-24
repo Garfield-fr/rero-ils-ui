@@ -1,4 +1,8 @@
 import { enableProdMode, provideZoneChangeDetection, provideAppInitializer, inject, LOCALE_ID, importProvidersFrom } from '@angular/core';
+import { registerFormlyExtension } from './app/acquisition/formly/extension';
+import { OrderLineTypeComponent } from './app/acquisition/formly/type/field-order-line.type';
+import { ReceiptLinesTypeComponent } from './app/acquisition/formly/type/receipt-lines.type';
+import { InputNoLabelWrapperComponent } from './app/acquisition/formly/wrapper/input-no-label.wrapper';
 
 
 
@@ -102,6 +106,12 @@ bootstrapApplication(AppComponent, {
         useFactory: registerNgCoreFormlyExtension,
         deps: [TranslateService],
     },
+    {
+        provide: FORMLY_CONFIG,
+        multi: true,
+        useFactory: registerFormlyExtension,
+        deps: [TranslateService],
+    },
     ComponentCanDeactivateGuard,
     ConfirmationService,
     MessageService,
@@ -111,6 +121,15 @@ bootstrapApplication(AppComponent, {
     provideZoneChangeDetection(),
     importProvidersFrom(
       AppRoutingModule,
+      FormlyModule.forChild({
+        types: [
+          { name: 'receipt-lines', component: ReceiptLinesTypeComponent },
+          { name: 'order-line', component: OrderLineTypeComponent },
+        ],
+        wrappers: [
+          { name: 'input-no-label', component: InputNoLabelWrapperComponent }
+        ]
+      }),
       TranslateModule.forRoot({
         loader: {
           provide: BaseTranslateLoader,

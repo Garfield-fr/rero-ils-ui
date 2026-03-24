@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NgModule } from '@angular/core';
-import { RouterModule, ROUTES, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { _ } from "@ngx-translate/core";
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { PermissionGuard } from '../guard/permission.guard';
@@ -32,58 +31,42 @@ import { ReceiptLinesRoute } from './routes/receipt-lines-route';
 import { ReceiptsRoute } from './routes/receipts-route';
 import { VendorsRoute } from './routes/vendors-route';
 
-const initializeRoutes = () => {
-  const routes: Routes = [
-    {
-      path: '',
-      component: AcquisitionMainComponent,
-      children: [
-        {
-          path: '',
-          redirectTo: 'accounts',
-          pathMatch: 'full'
+export const ACQUISITION_ROUTES: Routes = [
+  {
+    path: '',
+    component: AcquisitionMainComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'accounts',
+        pathMatch: 'full'
+      },
+      {
+        path: 'accounts/transfer',
+        component: AccountTransferComponent,
+        title: _('Accounts'),
+        canActivate: [PermissionGuard],
+        data: {
+          permissions: [PERMISSIONS.ACAC_TRANSFER]
         },
-        {
-          path: 'accounts/transfer',
-          component: AccountTransferComponent,
-          title: _('Accounts'),
-          canActivate: [PermissionGuard],
-          data: {
-            permissions: [PERMISSIONS.ACAC_TRANSFER]
-          },
+      },
+      {
+        path: 'accounts',
+        component: AccountListComponent,
+        title: _('Accounts'),
+        canActivate: [PermissionGuard],
+        data: {
+          permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH],
+          operator: PERMISSION_OPERATOR.AND
         },
-        {
-          path: 'accounts',
-          component: AccountListComponent,
-          title: _('Accounts'),
-          canActivate: [PermissionGuard],
-          data: {
-            permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH],
-            operator: PERMISSION_OPERATOR.AND
-          },
-        },
-        new AccountsRoute().getConfiguration(),
-        new BudgetsRoute().getConfiguration(),
-        new OrderLinesRoute().getConfiguration(),
-        new OrdersRoute().getConfiguration(),
-        new ReceiptsRoute().getConfiguration(),
-        new ReceiptLinesRoute().getConfiguration(),
-        new VendorsRoute().getConfiguration()
-      ],
-    },
-  ];
-  return routes;
-};
-
-@NgModule({
-  imports: [RouterModule.forChild([])],
-  exports: [RouterModule],
-  providers: [
-    {
-      provide: ROUTES,
-      useFactory: () => initializeRoutes(),
-      multi: true
-    }
-  ]
-})
-export class AcquisitionRoutingModule {}
+      },
+      new AccountsRoute().getConfiguration(),
+      new BudgetsRoute().getConfiguration(),
+      new OrderLinesRoute().getConfiguration(),
+      new OrdersRoute().getConfiguration(),
+      new ReceiptsRoute().getConfiguration(),
+      new ReceiptLinesRoute().getConfiguration(),
+      new VendorsRoute().getConfiguration()
+    ],
+  },
+];

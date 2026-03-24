@@ -26,7 +26,7 @@ import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 const routes: Routes = [
   {
     path: 'migrations',
-    loadChildren: () => import('./migration/migration.module').then(m => m.MigrationModule)
+    loadChildren: () => import('./migration/migration-routing.module').then(m => m.MIGRATION_ROUTES)
   },
   {
     path: '',
@@ -35,10 +35,10 @@ const routes: Routes = [
   },
   {
     path: 'circulation',
-    loadChildren: () => import('./circulation/circulation.module').then(m => m.CirculationModule)
+    loadChildren: () => import('./circulation/circulation-routing.module').then(m => m.CIRCULATION_ROUTES)
   }, {
     path: 'acquisition',
-    loadChildren: () => import('./acquisition/acquisition.module').then(m => m.AcquisitionModule)
+    loadChildren: () => import('./acquisition/acquisition-routing.module').then(m => m.ACQUISITION_ROUTES)
   },
   {
     path: 'permissions/matrix',

@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes, UrlSegment } from '@angular/router';
+import { Routes, UrlSegment } from '@angular/router';
 import { _ } from "@ngx-translate/core";
 import { RecordSearchPageComponent } from '@rero/ng-core';
 import { of } from 'rxjs';
@@ -27,7 +26,7 @@ import { MigrationDataDetailComponent } from './conversion/record/detail-view/mi
 import { MigrationDataDeduplicationBriefComponent } from './deduplication/record/brief-view/migration-data-deduplication/migration-data-deduplication.component';
 import { MigrationSearchPageComponent } from './deduplication/record/search/migration-search-page.component';
 
-const routes: Routes = [
+export const MIGRATION_ROUTES: Routes = [
   {
     matcher: (url) => {
       if (url.length == 2 && url[0].path === 'records' && url[1].path === 'migrations') {
@@ -190,9 +189,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class MigrationRoutingModule {}
