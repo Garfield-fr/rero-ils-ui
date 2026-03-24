@@ -17,19 +17,23 @@
  */
 
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Error, extractIdOnRef } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService, SelectItemGroup } from 'primeng/api';
 import { finalize, map } from 'rxjs/operators';
+import { Bind } from 'primeng/bind';
+import { Card } from 'primeng/card';
+import { Select } from 'primeng/select';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-item-switch-location',
     templateUrl: './item-switch-location.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, Bind, Card, Select, Button, TranslatePipe]
 })
 export class ItemSwitchLocationComponent implements OnInit {
 

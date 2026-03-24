@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
+import { _, TranslatePipe } from "@ngx-translate/core";
 import { FieldWrapper } from '@ngx-formly/core';
 import { RecordService } from '@rero/ng-core';
 import issn from 'issn';
@@ -23,6 +23,8 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { isbn } from 'simple-isbn';
 import { IdentifierTypes } from '../../../classes/identifiers';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-identifiedby-value',
@@ -43,7 +45,7 @@ import { IdentifierTypes } from '../../../classes/identifiers';
     }
   `,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [RouterLink, AsyncPipe, TranslatePipe]
 })
 export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
 

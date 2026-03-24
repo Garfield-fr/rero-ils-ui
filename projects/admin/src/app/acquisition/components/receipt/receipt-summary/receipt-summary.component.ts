@@ -25,11 +25,21 @@ import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
+import { OpenCloseButtonComponent, ActionButtonComponent } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { RouterLink } from '@angular/router';
+import { ReceiptLineComponent } from '../receipt-line/receipt-line.component';
+import { NotesComponent } from '../../notes/notes.component';
+import { CurrencyPipe, I18nPluralPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { NoteBadgeColorPipe } from '../../../pipes/note-badge-color.pipe';
+import { ReceptionDatesPipe } from '../../../pipes/reception-dates.pipe';
 
 @Component({
     selector: 'admin-receipt-summary',
     templateUrl: './receipt-summary.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, Bind, Tag, ActionButtonComponent, RouterLink, ReceiptLineComponent, NotesComponent, CurrencyPipe, I18nPluralPipe, TranslatePipe, NoteBadgeColorPipe, ReceptionDatesPipe]
 })
 export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
 

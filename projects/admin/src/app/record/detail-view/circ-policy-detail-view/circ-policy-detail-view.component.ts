@@ -18,11 +18,17 @@
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { TableModule } from 'primeng/table';
+import { NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe } from '@angular/common';
+import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circ-policy-detail-view',
     templateUrl: './circ-policy-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Panel, TableModule, NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe, TranslatePipe, GetRecordPipe]
 })
 
 export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {

@@ -18,11 +18,20 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Tools } from '@rero/shared';
 import { ITypeEmail } from '../../IPreviewInterface';
+import { NgTemplateOutlet } from '@angular/common';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { Tag } from 'primeng/tag';
+import { Draggable, Droppable } from 'primeng/dragdrop';
+import { AutoComplete } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-preview-email',
     templateUrl: './preview-email.component.html',
-    standalone: false
+    imports: [NgTemplateOutlet, TranslateDirective, Bind, Panel, Tag, Draggable, AutoComplete, Droppable, FormsModule, Button, TranslatePipe]
 })
 export class PreviewEmailComponent {
 

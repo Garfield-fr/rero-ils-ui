@@ -25,10 +25,10 @@ import { MenuService } from "@app/admin/menu/service/menu.service";
 describe('LoanFixedDateService', () => {
   let service: LoanFixedDateService;
 
-  const libraryServiceSpy = jasmine.createSpyObj('LibraryService', ['']);
+  const libraryServiceSpy = { } as any;
   libraryServiceSpy.switch$ = of({});
 
-  const menuServiceSpy = jasmine.createSpyObj('MenuService', ['']);
+  const menuServiceSpy = { } as any;
   menuServiceSpy.logout$ = of({});
 
   beforeEach(() => {
@@ -49,7 +49,7 @@ describe('LoanFixedDateService', () => {
   });
 
   it('should return the date as a string', () => {
-    expect(service.hasValue()).toBeFalse();
+    expect(service.hasValue()).toBe(false);
 
     const dateString = new Date().toISOString();
     service.set(dateString);
@@ -61,7 +61,7 @@ describe('LoanFixedDateService', () => {
     const d = new Date();
     d.setDate(d.getDate() - 5);
     service.set(d.toISOString());
-    expect(service.hasValue()).toBeTrue();
+    expect(service.hasValue()).toBe(true);
     expect(service.get()).toBeUndefined();
   });
 });

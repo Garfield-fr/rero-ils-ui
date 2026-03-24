@@ -18,22 +18,41 @@
 import { AfterViewInit, Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 
-import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, UserService } from '@rero/shared';
+import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, UserService, InheritedCallNumberComponent, AvailabilityComponent, PermissionsDirective, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { Observable, Subscription } from 'rxjs';
 import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
 import { OperationLogsService } from '@rero/shared';
 import { OrganisationService } from '../../../service/organisation.service';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { RecordMaskedComponent } from '../record-masked/record-masked.component';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass, NgPlural, NgPluralCase, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
+import { Tooltip } from 'primeng/tooltip';
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { Ripple } from 'primeng/ripple';
+import { CirculationLogsDialogComponent } from '../../circulation-logs/circulation-logs-dialog.component';
+import { ItemTransactionsComponent } from './item-transactions/item-transactions.component';
+import { ItemFeesComponent } from './item-fees/item-fees.component';
+import { LocalFieldComponent } from '../local-field/local-field.component';
+import { ItemInCollectionPipe } from '../../../pipe/item-in-collection.pipe';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
+import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../shared/src/lib/pipe/safe-url.pipe';
+import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
+import { KeyExistsPipe as KeyExistsPipe_1 } from '../../../../../../shared/src/lib/pipe/key-exists.pipe';
+import { Badge } from 'primeng/badge';
 
 @Component({
     selector: 'admin-item-detail-view',
     templateUrl: './item-detail-view.component.html',
     providers: [IssueService],
     styles: ['dl * { margin-bottom: 0; }'],
-    standalone: false
+    imports: [Bind, Button, RouterLink, RecordMaskedComponent, TranslateDirective, InheritedCallNumberComponent, AvailabilityComponent, NgClass, Tooltip, Tabs, TabList, Ripple, Tab, NgPlural, NgPluralCase, TabPanels, TabPanel, CirculationLogsDialogComponent, ItemTransactionsComponent, ItemFeesComponent, PermissionsDirective, LocalFieldComponent, AsyncPipe, JsonPipe, CurrencyPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, MainTitlePipe_1, SafeUrlPipe_1, ItemHoldingsCallNumberPipe_1, KeyExistsPipe_1, Badge]
 })
 export class ItemDetailViewComponent implements OnChanges, OnDestroy {
 

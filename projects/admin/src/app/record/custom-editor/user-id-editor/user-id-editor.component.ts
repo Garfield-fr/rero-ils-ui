@@ -15,20 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { CONFIG, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
+import { CONFIG, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues, SearchInputComponent } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { of } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { Bind } from 'primeng/bind';
+import { Divider } from 'primeng/divider';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-user-id-editor',
     templateUrl: './user-id-editor.component.html',
-    standalone: false
+    imports: [SearchInputComponent, Bind, Divider, FormsModule, ReactiveFormsModule, Button, FormlyModule, TranslatePipe]
 })
 export class UserIdEditorComponent implements OnInit {
 

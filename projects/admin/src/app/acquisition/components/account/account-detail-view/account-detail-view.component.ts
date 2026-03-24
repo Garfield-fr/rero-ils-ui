@@ -21,11 +21,18 @@ import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../../service/organisation.service';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { GetRecordPipe } from '@rero/ng-core';
+import { NegativeAmountPipe } from '../../../pipes/negative-amount.pipe';
+import { MessageModule } from 'primeng/message';
+import { PanelModule } from 'primeng/panel';
 
 @Component({
     selector: 'admin-acquisition-account-detail-view',
     templateUrl: './account-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, RouterLink, NgClass, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, NegativeAmountPipe, MessageModule, PanelModule]
 })
 export class AccountDetailViewComponent implements OnInit {
 

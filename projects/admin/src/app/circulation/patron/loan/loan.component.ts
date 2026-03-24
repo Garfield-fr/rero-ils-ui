@@ -18,8 +18,8 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
 import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
-import { TranslateService } from '@ngx-translate/core';
-import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { CONFIG, DateTranslatePipe, SearchInputComponent } from '@rero/ng-core';
 import { ItemStatus, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -28,12 +28,25 @@ import { delay, forkJoin, Subscription, switchMap, tap } from 'rxjs';
 import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
 import { CirculationStatsService } from '../service/circulation-stats.service';
 import { CirculationSettingsService, ICirculationSetting } from './circulation-settings/circulation-settings.service';
+import { CirculationSettingsComponent } from './circulation-settings/circulation-settings.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { ItemsListComponent } from '../../items-list/items-list.component';
+import { SelectModule } from 'primeng/select';
 
 @Component({
-  selector: 'admin-loan',
-  templateUrl: './loan.component.html',
-  providers: [DateTranslatePipe, LoanFixedDateService],
-  standalone: false,
+    selector: 'admin-loan',
+    templateUrl: './loan.component.html',
+    providers: [DateTranslatePipe, LoanFixedDateService],
+    imports: [
+        SearchInputComponent,
+        CirculationSettingsComponent,
+        Bind,
+        Tag,
+        ItemsListComponent,
+        TranslatePipe,
+        SelectModule,
+    ],
 })
 export class LoanComponent implements OnInit, OnDestroy {
   private itemsService: ItemsService = inject(ItemsService);

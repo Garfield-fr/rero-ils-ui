@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { ApiService, CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { finalize, tap } from 'rxjs/operators';
@@ -26,11 +26,13 @@ import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { AcqReceiptAmountAdjustment, IAcqReceipt } from '../../../classes/receipt';
 import { IAcqReceiptModel, ICreateLineMessage, OrderReceipt } from './order-receipt';
 import { OrderReceiptForm } from './order-receipt-form';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-order-receipt-view',
     templateUrl: './order-receipt-view.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, TranslateDirective, Bind, Button, FormlyModule, TranslatePipe]
 })
 export class OrderReceiptViewComponent implements OnInit {
 

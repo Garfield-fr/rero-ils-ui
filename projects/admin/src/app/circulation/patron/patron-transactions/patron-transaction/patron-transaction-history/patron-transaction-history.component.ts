@@ -17,12 +17,17 @@
 import { Component, inject, input } from '@angular/core';
 import { PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Timeline } from 'primeng/timeline';
+import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { Tag } from 'primeng/tag';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-patron-transaction-history',
     templateUrl: './patron-transaction-history.component.html',
-    standalone: false
+    imports: [Bind, Timeline, NgClass, Tag, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe]
 })
 export class PatronTransactionHistoryComponent {
 

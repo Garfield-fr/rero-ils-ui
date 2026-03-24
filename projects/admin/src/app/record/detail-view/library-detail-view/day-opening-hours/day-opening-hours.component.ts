@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-day-opening-hours',
@@ -42,7 +44,7 @@ import { Component, Input } from '@angular/core';
       </dd>
     </dl>
   `,
-    standalone: false
+    imports: [NgClass, TranslateDirective, TranslatePipe]
 })
 export class DayOpeningHoursComponent {
   @Input() day: any;

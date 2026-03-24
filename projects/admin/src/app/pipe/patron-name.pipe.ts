@@ -20,10 +20,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PatronService } from '../service/patron.service';
 
-@Pipe({
-    name: 'patronName',
-    standalone: false
-})
+@Pipe({ name: 'patronName' })
 export class PatronNamePipe implements PipeTransform {
 
   private patronService: PatronService = inject(PatronService);

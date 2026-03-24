@@ -17,12 +17,16 @@
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, DateTranslatePipe } from '@rero/ng-core';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-ill-requests-brief-view',
     templateUrl: './ill-requests-brief-view.component.html',
-    standalone: false
+    imports: [RouterLink, Bind, Tag, TranslateDirective, TranslatePipe, DateTranslatePipe]
 })
 export class IllRequestsBriefViewComponent  implements OnInit {
 

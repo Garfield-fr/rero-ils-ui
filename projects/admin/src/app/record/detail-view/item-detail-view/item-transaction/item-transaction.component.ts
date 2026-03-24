@@ -17,16 +17,23 @@
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
-import { SelectChangeEvent } from 'primeng/select';
+import { SelectChangeEvent, Select } from 'primeng/select';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { FormsModule } from '@angular/forms';
+import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
+import { AsyncPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-item-transaction',
     templateUrl: './item-transaction.component.html',
-    standalone: false
+    imports: [RouterLink, Bind, Select, FormsModule, Button, Tooltip, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe]
 })
 export class ItemTransactionComponent implements OnInit, OnDestroy {
 

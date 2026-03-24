@@ -15,13 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { Ripple } from 'primeng/ripple';
+import { AddressTypeComponent } from '../../address-type/address-type.component';
+import { AsyncPipe } from '@angular/common';
+import { TranslateLanguagePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-vendor-detail-view',
     templateUrl: './vendor-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, AddressTypeComponent, AsyncPipe, TranslateLanguagePipe, TranslatePipe]
 })
 export class VendorDetailViewComponent {
 

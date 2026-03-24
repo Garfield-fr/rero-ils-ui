@@ -34,15 +34,15 @@ describe('AcqOrderLineGuard', () => {
     }
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord']);
-  recordServiceSpy.getRecord.and.returnValue(of(acqOrder));
+  const recordServiceSpy = { getRecord: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(acqOrder));
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.queryParams = {
     order: 1
   };
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const userServiceSpy = { } as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

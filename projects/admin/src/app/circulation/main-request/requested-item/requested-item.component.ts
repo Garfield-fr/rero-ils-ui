@@ -17,12 +17,20 @@
 
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { LoanState } from '@app/admin/classes/loans';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, DateTranslatePipe } from '@rero/ng-core';
+import { NgClass } from '@angular/common';
+import { OpenCloseButtonComponent, ContributionComponent, InheritedCallNumberComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
+import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../../shared/src/lib/pipe/id-attribute.pipe';
 
 @Component({
     selector: 'admin-requested-item',
     templateUrl: './requested-item.component.html',
-    standalone: false
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, Bind, Button, TranslateDirective, DateTranslatePipe, IdAttributePipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1, IdAttributePipe_1]
 })
 export class RequestedItemComponent implements OnInit {
 

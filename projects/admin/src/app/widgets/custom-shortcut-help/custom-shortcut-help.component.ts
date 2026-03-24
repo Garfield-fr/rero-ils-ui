@@ -16,14 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject } from '@angular/core';
-import { HotkeysService } from '@ngneat/hotkeys';
+import { HotkeysService, HotkeysShortcutPipe } from '@ngneat/hotkeys';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
     selector: 'admin-custom-shortcut-help',
     templateUrl: './custom-shortcut-help.component.html',
     styleUrls: ['./custom-shortcut-help.component.scss'],
-    standalone: false
+    imports: [HotkeysShortcutPipe]
 })
 export class CustomShortcutHelpComponent {
 

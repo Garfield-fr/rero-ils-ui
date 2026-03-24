@@ -16,6 +16,7 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
@@ -29,7 +30,7 @@ import { Component, Input } from '@angular/core';
   }
   `,
     styles: [],
-    standalone: false
+    imports: [RouterLink]
 })
 export class PatronTypesBriefViewComponent {
 

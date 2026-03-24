@@ -17,11 +17,15 @@
 import { Component, input } from '@angular/core';
 
 import { Observable } from 'rxjs';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
 
 @Component({
     selector: 'admin-item-type-detail-view',
     templateUrl: './item-type-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, TranslatePipe]
 })
 export class ItemTypeDetailViewComponent {
 

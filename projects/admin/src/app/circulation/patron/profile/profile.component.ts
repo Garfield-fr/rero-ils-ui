@@ -20,12 +20,19 @@ import { Subscription, switchMap, tap } from 'rxjs';
 import { PatronService } from '../../../service/patron.service';
 import { RecordPermissionService } from '../../../service/record-permission.service';
 import { ChangePasswordFormComponent } from '../change-password-form/change-password-form.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass, NgPlural, NgPluralCase, AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
+import { JoinPipe } from '@rero/shared';
+import { JoinPipe as JoinPipe_1 } from '../../../../../../shared/src/lib/pipe/join.pipe';
 
 @Component({
     selector: 'admin-profile',
     templateUrl: './profile.component.html',
-    standalone: false
+    imports: [TranslateDirective, NgClass, NgPlural, NgPluralCase, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, JoinPipe, TranslatePipe, JoinPipe_1]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 

@@ -16,11 +16,14 @@
  */
 
 import { Component, Input } from "@angular/core";
+import { Bind } from "primeng/bind";
+import { TableModule } from "primeng/table";
+import { TranslateDirective } from "@ngx-translate/core";
 
 @Component({
     selector: "admin-report-data",
     templateUrl: "./report-data.component.html",
-    standalone: false
+    imports: [Bind, TableModule, TranslateDirective]
 })
 export class ReportDataComponent {
 

@@ -16,18 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RecordService, CallbackArrayFilterPipe } from '@rero/ng-core';
+import { IPermissions, PERMISSIONS, PermissionsService, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { DocumentApiService } from '../../../api/document-api.service';
+import { RelatedResourceComponent } from './related-resource/related-resource.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { RecordMaskedComponent } from '../record-masked/record-masked.component';
+import { ButtonDirective } from 'primeng/button';
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { Ripple } from 'primeng/ripple';
+import { HoldingsComponent } from './holdings/holdings.component';
+import { EntitiesRelatedComponent } from './entities-related/entities-related.component';
+import { LocalFieldComponent } from '../local-field/local-field.component';
+import { UploadFilesComponent } from './files-collections/upload-files/upload-files.component';
+import { TableModule } from 'primeng/table';
+import { AsyncPipe, I18nPluralPipe, KeyValuePipe } from '@angular/common';
+import { MarcPipe } from '../../../pipe/marc.pipe';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
+import { DocumentProvisionActivityPipe as DocumentProvisionActivityPipe_1 } from '../../../../../../shared/src/lib/pipe/document-provision-activity.pipe';
+import { Message } from 'primeng/message';
+import { ReadMoreComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-document-detail-view',
     templateUrl: './document-detail-view.component.html',
-    standalone: false
+    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, RelatedResourceComponent, Bind, Tag, EntityLinkComponent, RecordMaskedComponent, ButtonDirective, RouterLink, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, FilesComponent, HoldingsComponent, DocumentDescriptionComponent, EntitiesRelatedComponent, LocalFieldComponent, UploadFilesComponent, TableModule, AsyncPipe, I18nPluralPipe, KeyValuePipe, CallbackArrayFilterPipe, TranslatePipe, DocumentProvisionActivityPipe, MainTitlePipe, MarcPipe, MainTitlePipe_1, DocumentProvisionActivityPipe_1, Message, ReadMoreComponent]
 })
 export class DocumentDetailViewComponent implements OnInit, OnDestroy {
 

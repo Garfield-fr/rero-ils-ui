@@ -15,13 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject } from '@angular/core';
-import { DetailComponent } from '@rero/ng-core';
+import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { AppSettingsService, Entity } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-remote-page-detail',
     templateUrl: './remote-page-detail.component.html',
-    standalone: false
+    imports: [DetailButtonComponent, Bind, Button, ErrorComponent, TranslatePipe]
 })
 export class RemotePageDetailComponent extends DetailComponent {
 

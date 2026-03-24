@@ -22,11 +22,17 @@ import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../classes/order';
 import { IAcqReceipt } from '../../../classes/receipt';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { NgTemplateOutlet, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-order-summary',
     templateUrl: './order-summary.component.html',
-    standalone: false
+    imports: [TranslateDirective, RouterLink, Bind, Tag, NgTemplateOutlet, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe]
 })
 export class OrderSummaryComponent implements OnInit, OnDestroy {
 

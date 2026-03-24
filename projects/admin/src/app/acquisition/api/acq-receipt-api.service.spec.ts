@@ -61,13 +61,13 @@ describe('AcqReceiptApiService', () => {
     }
   }
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['create', 'update', 'getRecord','getRecords', 'totalHits']);
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { create: vi.fn(), update: vi.fn(), getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
-  const httpClientSpy = jasmine.createSpyObj('httpClient', ['get', 'post']);
+  const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
-  const recordUiServiceSpy = jasmine.createSpyObj('RecordUiService', ['deleteRecord']);
-  recordUiServiceSpy.deleteRecord.and.returnValue(of(true));
+  const recordUiServiceSpy = { deleteRecord: vi.fn() };
+  recordUiServiceSpy.deleteRecord.mockReturnValue(of(true));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -91,47 +91,47 @@ describe('AcqReceiptApiService', () => {
 
   it('should return a receipt', () => {
     const data = {...receiptDefaultData, ...receipt.metadata};
-    recordServiceSpy.getRecord.and.returnValue(of(receipt));
+    recordServiceSpy.getRecord.mockReturnValue(of(receipt));
     service.getReceipt('1').subscribe((result: IAcqReceipt) => expect(result).toEqual(data));
   });
 
   it('should return a list of receptions depending on whether a query', () => {
     const data = [{...receiptDefaultData, ...receipt.metadata}];
     apiResponse.hits.hits = [receipt];
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.searchReceipts('pid:1').subscribe((result: IAcqReceipt[]) => expect(result).toEqual(data));
   });
 
   it('should return a list of receptions for an order', () => {
     const data = [{...receiptDefaultData, ...receipt.metadata}];
     apiResponse.hits.hits = [receipt];
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getReceiptsForOrder('1').subscribe((result: IAcqReceipt[]) => expect(result).toEqual(data));
   });
 
   it('should return a list of receptions', () => {
     const data = [{...receiptLineDefaultData, ...receiptLine.metadata}];
     apiResponse.hits.hits = [receiptLine];
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getReceiptLines('1').subscribe((result: IAcqReceiptLine[]) => expect(result).toEqual(data));
   });
 
   it('should return the reception line created', () => {
     const data = {...receiptDefaultData, ...receipt.metadata};
-    recordServiceSpy.create.and.returnValue(of(receipt));
+    recordServiceSpy.create.mockReturnValue(of(receipt));
     service.createReceipt(receipt.metadata).subscribe((result: IAcqReceipt) => expect(result).toEqual(data));
   });
 
   it('should return success when creating lines', () => {
     const data = {success: true};
-    httpClientSpy.post.and.returnValue(of({ response: [receiptLine]}));
+    httpClientSpy.post.mockReturnValue(of({ response: [receiptLine]}));
     service.createReceiptLines('1', [receiptLine.metadata])
       .subscribe((result: ICreateLineMessage) => expect(result).toEqual(data));
   });
 
   it('should return the updated receipt', () => {
     const data = {...receiptDefaultData, ...receipt.metadata};
-    recordServiceSpy.update.and.returnValue(of(receipt));
+    recordServiceSpy.update.mockReturnValue(of(receipt));
     service.updateReceipt('1', receipt.metadata)
       .subscribe((result: any) => expect(result).toEqual(data));
   });

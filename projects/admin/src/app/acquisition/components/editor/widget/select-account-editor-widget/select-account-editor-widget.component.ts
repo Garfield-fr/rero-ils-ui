@@ -19,18 +19,21 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit }
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FieldType } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
+import { FormsModule } from '@angular/forms';
+import { NgTemplateOutlet, CurrencyPipe } from '@angular/common';
+import { SelectModule } from 'primeng/select';
 
 @Component({
     selector: 'admin-select-account-editor-widget',
     templateUrl: './select-account-editor-widget.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
-    standalone: false
+    imports: [FormsModule, NgTemplateOutlet, CurrencyPipe, TranslatePipe, SelectModule]
 })
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {
   // services

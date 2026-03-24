@@ -16,18 +16,22 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
-import { OperationLogsService } from '@rero/shared';
+import { OperationLogsService, OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
 import type { EsResult } from '@rero/ng-core';
-import { DetailComponent } from '@rero/ng-core';
+import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-document-detail',
     templateUrl: './document-detail.component.html',
-    standalone: false
+    imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe]
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
 

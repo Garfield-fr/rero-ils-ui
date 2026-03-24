@@ -17,11 +17,13 @@
  */
 import { Component, Input } from '@angular/core';
 import { PredictionIssue } from '@app/admin/service/holdings.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-expected-issue',
     templateUrl: './expected-issue.component.html',
-    standalone: false
+    imports: [TranslatePipe, DateTranslatePipe]
 })
 export class ExpectedIssueComponent {
 

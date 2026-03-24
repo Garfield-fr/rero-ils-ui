@@ -15,19 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, model, ModelSignal, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { HotkeysService } from '@ngneat/hotkeys';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription, switchMap, tap } from 'rxjs';
 import { CirculationStatsService } from '../service/circulation-stats.service';
+import { CardComponent } from '../card/card.component';
+import { Bind } from 'primeng/bind';
+import { Tabs, TabList, Tab } from 'primeng/tabs';
+import { Ripple } from 'primeng/ripple';
+import { CurrencyPipe } from '@angular/common';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
     selector: 'admin-main',
     templateUrl: './main.component.html',
-    standalone: false
+    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CurrencyPipe, TranslatePipe, BadgeModule]
 })
 export class MainComponent implements OnInit, OnDestroy {
 

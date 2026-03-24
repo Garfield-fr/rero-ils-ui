@@ -15,6 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { TruncateTextPipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-templates-brief-view',
@@ -45,7 +49,7 @@ import { Component, Input } from '@angular/core';
       }
     </ul>
   `,
-    standalone: false
+    imports: [RouterLink, TranslateDirective, AsyncPipe, TruncateTextPipe, TranslatePipe, GetRecordPipe]
 })
 export class TemplatesBriefViewComponent {
 

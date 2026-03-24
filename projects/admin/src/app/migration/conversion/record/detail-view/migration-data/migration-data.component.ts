@@ -19,13 +19,19 @@ import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { ApiService } from '@rero/ng-core';
+import { ApiService, DateTranslatePipe } from '@rero/ng-core';
 import { of, switchMap } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { JsonPipe } from '@angular/common';
+import { HighlightJsonPipe } from '../pipes/highlight-json.pipe';
+import { Message } from 'primeng/message';
 
 @Component({
     selector: 'admin-migration-data',
     templateUrl: './migration-data.component.html',
-    standalone: false
+    imports: [Bind, Tag, TranslateDirective, JsonPipe, DateTranslatePipe, TranslatePipe, HighlightJsonPipe, Message]
 })
 export class MigrationDataDetailComponent {
 

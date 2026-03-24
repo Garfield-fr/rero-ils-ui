@@ -16,12 +16,19 @@
  */
 
 import { Component, inject, Input } from '@angular/core';
-import { ProvisionActivityType, OperationLogsApiService } from '@rero/shared';
+import { ProvisionActivityType, OperationLogsApiService, OpenCloseButtonComponent, ContributionComponent } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Timeline } from 'primeng/timeline';
+import { NgClass, NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-history-log',
     templateUrl: './history-log.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, Timeline, NgClass, NgTemplateOutlet, AsyncPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe]
 })
 export class HistoryLogComponent {
 

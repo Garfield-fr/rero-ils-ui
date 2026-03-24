@@ -20,11 +20,15 @@ import { IllRequestApiService } from '@app/admin/api/ill-request-api.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { TranslateDirective } from '@ngx-translate/core';
+import { IllRequestItemComponent } from './ill-request-item/ill-request-item.component';
+import { AsyncPipe } from '@angular/common';
+import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'admin-ill-request',
     templateUrl: './ill-request.component.html',
-    standalone: false
+    imports: [TranslateDirective, IllRequestItemComponent, AsyncPipe, CardModule]
 })
 export class IllRequestComponent implements OnInit {
 

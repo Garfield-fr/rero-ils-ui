@@ -15,16 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { APP_BASE_HREF, Location, ViewportScroller } from '@angular/common';
+import { APP_BASE_HREF, Location, ViewportScroller, NgClass, I18nPluralPipe } from '@angular/common';
 import { Component, inject, input, model, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { TranslateService } from '@ngx-translate/core';
-import { extractIdOnRef } from '@rero/ng-core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { extractIdOnRef, Nl2brPipe } from '@rero/ng-core';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, merge, Observable, Subscription } from 'rxjs';
@@ -35,11 +35,26 @@ import {
   IAcqOrder
 } from '../../../classes/order';
 import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { OrderSummaryComponent } from '../order-summary/order-summary.component';
+import { Tag } from 'primeng/tag';
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { Ripple } from 'primeng/ripple';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { OrderLinesComponent } from './order-lines/order-lines.component';
+import { NotesComponent } from '../../notes/notes.component';
+import { ReceiptListComponent } from '../../receipt/receipt-list/receipt-list.component';
+import { Timeline } from 'primeng/timeline';
+import { NoteBadgeColorPipe } from '../../../pipes/note-badge-color.pipe';
+import { TooltipModule } from 'primeng/tooltip';
+import { Message } from 'primeng/message';
+import { Badge } from 'primeng/badge';
 
 @Component({
     selector: 'admin-acquisition-order-detail-view',
     templateUrl: './order-detail-view.component.html',
-    standalone: false
+    imports: [NgClass, Bind, Button, OrderSummaryComponent, TranslateDirective, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Accordion, AccordionPanel, AccordionHeader, RouterLink, AccordionContent, OrderLinesComponent, NotesComponent, ReceiptListComponent, Timeline, I18nPluralPipe, Nl2brPipe, TranslatePipe, NoteBadgeColorPipe, TooltipModule, Message, Badge]
 })
 export class OrderDetailViewComponent implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);

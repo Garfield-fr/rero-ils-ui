@@ -16,9 +16,11 @@
  */
 
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { _ } from "@ngx-translate/core";
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { _, TranslatePipe } from "@ngx-translate/core";
 import { map } from 'rxjs/operators';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-error-page',
@@ -46,7 +48,7 @@ import { map } from 'rxjs/operators';
       </div>
     </section>
   `,
-    standalone: false
+    imports: [Bind, Button, RouterLink, TranslatePipe]
 })
 
 export class ErrorPageComponent implements OnInit {

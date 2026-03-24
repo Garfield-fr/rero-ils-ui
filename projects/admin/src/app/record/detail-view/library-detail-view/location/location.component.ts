@@ -17,11 +17,16 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordUiService } from '@rero/ng-core';
+import { RouterLink } from '@angular/router';
+import { Tooltip } from 'primeng/tooltip';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-location',
     templateUrl: './location.component.html',
-    standalone: false
+    imports: [RouterLink, Tooltip, Bind, Button, TranslatePipe]
 })
 export class LocationComponent implements OnInit {
 

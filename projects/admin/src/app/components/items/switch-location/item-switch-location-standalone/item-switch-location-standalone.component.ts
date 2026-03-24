@@ -21,11 +21,12 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { extractIdOnRef } from '@rero/ng-core';
 import { switchMap } from 'rxjs/operators';
+import { ItemSwitchLocationComponent } from '../item-switch-location/item-switch-location.component';
 
 @Component({
     selector: 'admin-item-switch-location-standalone',
     templateUrl: './item-switch-location-standalone.component.html',
-    standalone: false
+    imports: [ItemSwitchLocationComponent]
 })
 export class ItemSwitchLocationStandaloneComponent implements OnInit {
 

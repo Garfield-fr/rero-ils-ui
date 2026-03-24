@@ -15,11 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component } from '@angular/core';
+import { TranslateDirective } from '@ngx-translate/core';
+import { MenuDashboardComponent } from '../../menu/menu-dashboard/menu-dashboard.component';
 
 @Component({
     selector: 'admin-frontpage',
     templateUrl: './frontpage.component.html',
-    standalone: false
+    imports: [TranslateDirective, MenuDashboardComponent]
 })
 export class FrontpageComponent {
 }

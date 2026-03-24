@@ -15,11 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { CirculationLogComponent } from '../circulation-log.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-circulation-item-scan',
-  templateUrl: './circulation-item-scan.component.html',
-  standalone: false
+    selector: 'admin-circulation-item-scan',
+    templateUrl: './circulation-item-scan.component.html',
+    imports: [CirculationLogComponent, Bind, Tag, TranslateDirective, AsyncPipe, TranslatePipe, GetRecordPipe]
 })
 export class CirculationItemScanComponent {
 

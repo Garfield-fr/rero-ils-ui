@@ -27,7 +27,7 @@ describe('RecordPermissionService', () => {
   let service: RecordPermissionService;
   let translateService: TranslateService;
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+  const httpClientSpy = { get: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -51,14 +51,14 @@ describe('RecordPermissionService', () => {
   });
 
   it('should return the list of permissions', () => {
-    httpClientSpy.get.and.returnValue(of(testRecordPermission));
+    httpClientSpy.get.mockReturnValue(of(testRecordPermission));
     service.getPermission('documents')
       .subscribe((result: RecordPermissions) => expect(result).toEqual(testRecordPermission))
     expect(service).toBeTruthy();
   });
 
   it('should return permission roles', () => {
-    httpClientSpy.get.and.returnValue(of(testRolesPermissions));
+    httpClientSpy.get.mockReturnValue(of(testRolesPermissions));
     service.getRolesManagementPermissions()
       .subscribe((result: any) => expect(result).toEqual(testRolesPermissions));
   });

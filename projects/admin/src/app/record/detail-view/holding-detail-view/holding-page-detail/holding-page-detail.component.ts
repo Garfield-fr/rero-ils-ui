@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject } from '@angular/core';
-import { OperationLogsService } from '@rero/shared';
-import { DetailComponent } from '@rero/ng-core';
+import { OperationLogsService, OperationLogsDialogComponent } from '@rero/shared';
+import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-holding-page-detail',
     templateUrl: './holding-page-detail.component.html',
-    standalone: false
+    imports: [DetailButtonComponent, OperationLogsDialogComponent, ErrorComponent]
 })
 export class HoldingPageDetailComponent extends DetailComponent {
 

@@ -18,11 +18,17 @@
 
 import { Component } from '@angular/core';
 import { PatronTransactionEventDefaultComponent } from './patron-transaction-event-default.component';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { PatronNamePipe } from '../../../pipe/patron-name.pipe';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-patron-transaction-event-overdue',
     templateUrl: './patron-transaction-event-overdue.component.html',
-    standalone: false
+    imports: [TranslateDirective, InheritedCallNumberComponent, RouterLink, AsyncPipe, TranslatePipe, MainTitlePipe, PatronNamePipe, MainTitlePipe_1]
 })
 export class PatronTransactionEventOverdueComponent extends PatronTransactionEventDefaultComponent {
 

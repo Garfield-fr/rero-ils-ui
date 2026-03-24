@@ -16,13 +16,19 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { User } from '@rero/shared';
+import { User, OpenCloseButtonComponent, IdAttributePipe } from '@rero/shared';
 import { ItemAction } from '../../classes/items';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { ItemComponent } from '../item/item.component';
+import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../shared/src/lib/pipe/id-attribute.pipe';
+import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'admin-circulation-items-list',
     templateUrl: './items-list.component.html',
-    standalone: false
+    imports: [TranslateDirective, OpenCloseButtonComponent, Bind, Button, ItemComponent, IdAttributePipe, TranslatePipe, IdAttributePipe_1, CardModule]
 })
 export class ItemsListComponent implements OnInit{
 

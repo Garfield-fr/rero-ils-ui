@@ -27,8 +27,8 @@ describe('PatronTransactionsService', () => {
   let service: PatronTransactionsService;
 
   const response = {...apiResponse};
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -48,7 +48,7 @@ describe('PatronTransactionsService', () => {
   it('should return the patron transaction', () => {
     const transaction = {...patronTransaction};
     response.hits.hits = [transaction];
-    recordServiceSpy.getRecords.and.returnValue(of(response));
+    recordServiceSpy.getRecords.mockReturnValue(of(response));
 
     service.getPatronTransaction('1').subscribe((result: any) => {
       expect(result).toBeInstanceOf(PatronTransaction);

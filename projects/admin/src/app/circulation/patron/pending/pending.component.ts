@@ -18,11 +18,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
 import { CirculationStatsService } from '../service/circulation-stats.service';
+import { TranslateDirective } from '@ngx-translate/core';
+import { PendingItemComponent } from './pending-item/pending-item.component';
+import { Card } from 'primeng/card';
 
 @Component({
     selector: 'admin-pending',
     templateUrl: './pending.component.html',
-    standalone: false
+    imports: [TranslateDirective, PendingItemComponent, Card]
 })
 export class PendingComponent implements OnInit {
 

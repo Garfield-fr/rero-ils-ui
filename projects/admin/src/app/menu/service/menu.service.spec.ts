@@ -125,8 +125,7 @@ describe('MenuService', () => {
           translateLabel: 'My library',
           id: MENU_IDS.APP.ADMIN.MY_LIBRARY,
           icon: 'fa fa-university',
-          routerLink: ['/', 'records', 'libraries', 'detail', '1'],
-        },
+          routerLink: ['/', 'records', 'libraries', 'detail', '1'] },
       ]
     }
   ];
@@ -143,7 +142,7 @@ describe('MenuService', () => {
     'ui_language_fr': 'Français'
   };
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const userServiceSpy = { } as any;
   userServiceSpy.user = {
     id: 1,
     currentLibrary: '1',
@@ -152,22 +151,22 @@ describe('MenuService', () => {
     }
   }
 
-  const libraryApiServiceSpy = jasmine.createSpyObj('libraryApiService', ['findByLibrariesPidAndOrderBy$']);
-  libraryApiServiceSpy.findByLibrariesPidAndOrderBy$.and.returnValue(of(librariesResponse));
+  const libraryApiServiceSpy = { findByLibrariesPidAndOrderBy$: vi.fn() };
+  libraryApiServiceSpy.findByLibrariesPidAndOrderBy$.mockReturnValue(of(librariesResponse));
 
-  const libraryServiceSpy = jasmine.createSpyObj('LibraryService', ['']);
+  const libraryServiceSpy = { } as any;
 
-  const localStorageServiceSpy = jasmine.createSpyObj('LocalStorageService', ['has', 'set']);
-  localStorageServiceSpy.has.and.returnValue(false);
+  const localStorageServiceSpy = { has: vi.fn(), set: vi.fn() };
+  localStorageServiceSpy.has.mockReturnValue(false);
 
-  const librarySwitchDataStorageSpy = jasmine.createSpyObj('LibrarySwitchStorageService', ['has']);
-  librarySwitchDataStorageSpy.has.and.returnValue(false);
+  const librarySwitchDataStorageSpy = { has: vi.fn() };
+  librarySwitchDataStorageSpy.has.mockReturnValue(false);
 
-  const configServiceSpy = jasmine.createSpyObj('configService', ['']);
+  const configServiceSpy = { } as any;
   configServiceSpy.languages = ['fr','en', 'de'];
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
-  httpClientSpy.post.and.returnValue(of({}));
+  const httpClientSpy = { post: vi.fn() };
+  httpClientSpy.post.mockReturnValue(of({}));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -201,7 +200,7 @@ describe('MenuService', () => {
     expect(languages[0].label).toEqual(translations.ui_language_de);
     expect(languages[0].translateLabel).toEqual('ui_language_de');
     expect(languages[0].id).toEqual('lang-de');
-    expect(typeof languages[0].command === 'function').toBeTrue();
+    expect(typeof languages[0].command === 'function').toBe(true);
 
     expect(languages[1].label).toEqual(translations.ui_language_en);
     expect(languages[2].label).toEqual(translations.ui_language_fr);
@@ -217,7 +216,7 @@ describe('MenuService', () => {
       expect(menu.menu.items[0].code).toEqual('lib-1');
       expect(menu.menu.items[0].label).toEqual('[lib-1] Library 1');
       expect(menu.menu.items[0].pid).toEqual('1');
-      expect(typeof menu.menu.items[0].command === 'function').toBeTrue()
+      expect(typeof menu.menu.items[0].command === 'function').toBe(true)
     });
   });
 
@@ -241,7 +240,7 @@ describe('MenuService', () => {
   });
 
   it('should return true on the logout event', () => {
-    service.logout$.subscribe((event: boolean) => expect(event).toBeTrue());
+    service.logout$.subscribe((event: boolean) => expect(event).toBe(true));
     service.logout();
   });
 });

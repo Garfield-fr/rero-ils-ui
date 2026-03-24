@@ -18,11 +18,18 @@ import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, s
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
 import { CirculationStatsService } from '../service/circulation-stats.service';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe } from '@rero/ng-core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'admin-circulation-patron-detailed',
     templateUrl: './card.component.html',
-    standalone: false
+    imports: [NgClass, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe, TranslatePipe, MessageModule]
 })
 export class CardComponent implements OnChanges, OnDestroy {
 

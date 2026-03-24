@@ -16,13 +16,17 @@
  */
 
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { RecordUiService } from '@rero/ng-core';
-import { IssueItemStatus } from '@rero/shared';
+import { RecordUiService, DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
+import { IssueItemStatus, InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgPlural, NgPluralCase, NgClass, AsyncPipe, JsonPipe } from '@angular/common';
+import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
 
 @Component({
     selector: 'admin-issues-brief-view',
     templateUrl: './issues-brief-view.component.html',
-    standalone: false
+    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, NgPlural, NgPluralCase, NgClass, AsyncPipe, JsonPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1]
 })
 export class IssuesBriefViewComponent implements OnInit {
 

@@ -15,12 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { TranslateDirective } from '@ngx-translate/core';
+import { Nl2brPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-holding-shared-view',
     templateUrl: './holding-shared-view.component.html',
-    standalone: false,
-    styles: ['dl.metadata > dd { font-weight: normal; }']
+    styles: ['dl.metadata > dd { font-weight: normal; }'],
+    imports: [TranslateDirective, Nl2brPipe]
 })
 export class HoldingSharedViewComponent {
 

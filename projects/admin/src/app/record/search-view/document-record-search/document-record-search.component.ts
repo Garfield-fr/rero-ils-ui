@@ -17,11 +17,12 @@
  */
 
 import { Component } from '@angular/core';
+import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-document-record-search',
     templateUrl: './document-record-search.component.html',
-    standalone: false
+    imports: [RecordSearchPageComponent]
 })
 export class DocumentRecordSearchComponent {
 }

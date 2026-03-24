@@ -18,12 +18,15 @@ import { Component, inject, Input } from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { ExceptionDateComponent } from '../../../detail-view/library-detail-view/exception-date/exception-date.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-libraries-exception-dates-list',
     templateUrl: './exception-dates-list.component.html',
-    standalone: false
+    imports: [ExceptionDateComponent, Bind, Button, TranslatePipe]
 })
 export class ExceptionDatesListComponent {
 

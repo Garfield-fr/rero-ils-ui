@@ -36,7 +36,7 @@ describe('LibraryService', () => {
     name : 'Library name'
   };
 
-  const librarySwitchStorageServiceSpy = jasmine.createSpyObj('LibrarySwitchStorageService', ['save']);
+  const librarySwitchStorageServiceSpy = { save: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

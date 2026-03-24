@@ -18,11 +18,18 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { PatronTransactionApiService } from '@app/admin/api/patron-transaction-api.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { tap } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { TranslateDirective } from '@ngx-translate/core';
+import { Tag } from 'primeng/tag';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-item-fees',
     templateUrl: './item-fees.component.html',
-    standalone: false
+    imports: [Bind, Panel, TranslateDirective, Tag, RouterLink, AsyncPipe, CurrencyPipe, GetRecordPipe]
 })
 export class ItemFeesComponent implements OnInit {
 

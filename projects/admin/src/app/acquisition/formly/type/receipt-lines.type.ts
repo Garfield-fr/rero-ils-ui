@@ -15,7 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component } from '@angular/core';
-import { FieldArrayType } from '@ngx-formly/core';
+import { FieldArrayType, FormlyModule } from '@ngx-formly/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { PanelModule } from 'primeng/panel';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
     selector: 'admin-formly-receipt-lines',
@@ -49,6 +52,6 @@ import { FieldArrayType } from '@ngx-formly/core';
       }
     </p-panel>
   `,
-    standalone: false
+    imports: [FormlyModule, TranslatePipe, PanelModule, CheckboxModule]
 })
 export class ReceiptLinesTypeComponent extends FieldArrayType {}

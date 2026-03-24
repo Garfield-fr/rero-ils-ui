@@ -16,11 +16,12 @@
  */
 
 import { Component } from '@angular/core';
+import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-migration-search-page',
     template: `<ng-core-record-search-page />`,
-    standalone: false
+    imports: [RecordSearchPageComponent]
 })
 export class MigrationSearchPageComponent {
 }

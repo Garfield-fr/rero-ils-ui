@@ -20,13 +20,19 @@ import { Item } from '@app/admin/classes/items';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
+import { OpenCloseButtonComponent, InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective } from '@ngx-translate/core';
+import { PatronTransactionHistoryComponent } from '../patron-transaction/patron-transaction-history/patron-transaction-history.component';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-overdue-transaction',
     templateUrl: './overdue-transaction.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, RouterLink, TranslateDirective, InheritedCallNumberComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe, MainTitlePipe_1]
 })
 export class OverdueTransactionComponent implements OnInit {
 

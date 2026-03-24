@@ -16,6 +16,7 @@
  */
 import { Component, Input } from '@angular/core';
 import { ItemNote } from '@app/admin/classes/items';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-holding-item-note',
@@ -27,7 +28,7 @@ import { ItemNote } from '@app/admin/classes/items';
       </dl>
     }
   `,
-    standalone: false
+    imports: [TranslatePipe]
 })
 export class HoldingItemNoteComponent {
   /** the item note */

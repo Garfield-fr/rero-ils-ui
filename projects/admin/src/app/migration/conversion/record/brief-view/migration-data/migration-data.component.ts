@@ -16,11 +16,18 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
+import { MainTitlePipe } from '@rero/shared';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-migration-data',
     templateUrl: './migration-data.component.html',
-    standalone: false
+    imports: [RouterLink, Bind, Tag, TranslateDirective, DateTranslatePipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1]
 })
 export class MigrationDataBriefComponent {
   // current record

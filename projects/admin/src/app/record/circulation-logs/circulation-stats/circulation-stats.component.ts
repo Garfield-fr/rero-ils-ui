@@ -17,11 +17,16 @@
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { ItemApiService } from '../../../api/item-api.service';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { UpperCaseFirstPipe } from '@rero/ng-core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DefaultPipe } from '../../../pipe/default.pipe';
 
 @Component({
     selector: 'admin-circulation-stats',
     templateUrl: './circulation-stats.component.html',
-    standalone: false
+    imports: [Bind, Panel, UpperCaseFirstPipe, TranslatePipe, DefaultPipe]
 })
 export class CirculationStatsComponent implements OnInit {
 

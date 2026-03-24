@@ -18,16 +18,17 @@ import { TestBed } from '@angular/core/testing';
 
 import { PatronService } from '@app/admin/service/patron.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from '@rero/shared';
+
 import { of } from 'rxjs';
 import { CirculationStatsService } from './circulation-stats.service';
 import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 describe('CirculationStatsService', () => {
   let service: CirculationStatsService;
 
-  const patronServiceSpy = jasmine.createSpyObj('PatronService', ['getCirculationInformations']);
-  patronServiceSpy.getCirculationInformations.and.returnValue(of({
+  const patronServiceSpy = { getCirculationInformations: vi.fn() };
+  patronServiceSpy.getCirculationInformations.mockReturnValue(of({
     statistics: {
       PENDING: 2,
       ITEM_IN_TRANSIT_FOR_PICKUP: 2,
@@ -50,16 +51,16 @@ describe('CirculationStatsService', () => {
     ill: 3
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+  const httpClientSpy = { get: vi.fn() };
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        SharedModule,
         TranslateModule.forRoot()
       ],
       providers: [
         { provide: PatronService, useValue: patronServiceSpy },
-        { provide: HttpClient, useValue: httpClientSpy }
+        { provide: HttpClient, useValue: httpClientSpy },
+        MessageService
       ]
     });
     service = TestBed.inject(CirculationStatsService);

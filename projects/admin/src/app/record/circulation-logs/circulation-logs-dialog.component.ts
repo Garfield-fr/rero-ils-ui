@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
 import { CirculationLogsComponent } from './circulation-logs.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-circulation-logs-dialog',
@@ -34,7 +36,7 @@ import { CirculationLogsComponent } from './circulation-logs.component';
       (onClick)="openDialog()"
     />
   `,
-    standalone: false
+    imports: [Bind, Button, PermissionsDirective, TranslatePipe]
 })
 export class CirculationLogsDialogComponent {
 

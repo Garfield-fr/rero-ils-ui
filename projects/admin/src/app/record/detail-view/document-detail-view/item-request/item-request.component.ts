@@ -16,11 +16,11 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, inject, OnInit } from '@angular/core';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { AbstractControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { User, UserService } from '@rero/shared';
+import { User, UserService, PatronBlockedMessagePipe } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, of } from 'rxjs';
@@ -28,11 +28,18 @@ import { catchError, debounceTime, map, shareReplay, tap } from 'rxjs/operators'
 import { HoldingsService } from '../../../../service/holdings.service';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { Card } from 'primeng/card';
+import { AsyncPipe } from '@angular/common';
+import { PatronBlockedMessagePipe as PatronBlockedMessagePipe_1 } from '../../../../../../../shared/src/lib/pipe/patron-blocked-message.pipe';
+import { Message } from 'primeng/message';
 
 @Component({
     selector: 'admin-item-request',
     templateUrl: './item-request.component.html',
-    standalone: false
+    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, AsyncPipe, TranslatePipe, PatronBlockedMessagePipe, PatronBlockedMessagePipe_1, Message]
 })
 export class ItemRequestComponent implements OnInit {
 

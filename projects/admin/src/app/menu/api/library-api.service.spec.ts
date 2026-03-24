@@ -32,8 +32,8 @@ describe('LibraryApiService', () => {
       }
     }
   ];
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords']);
-  recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+  const recordServiceSpy = { getRecords: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -45,7 +45,7 @@ describe('LibraryApiService', () => {
 
     service = TestBed.inject(LibraryApiService);
     apiResponse.hits.hits = [library];
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
   });
 
   it('should be created', () => {

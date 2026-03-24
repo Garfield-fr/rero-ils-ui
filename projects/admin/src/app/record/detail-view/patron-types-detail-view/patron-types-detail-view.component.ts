@@ -18,11 +18,16 @@ import { Component, inject, input } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
+import { TranslateDirective } from '@ngx-translate/core';
+import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-patron-types-detail-view',
     templateUrl: './patron-types-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, CurrencyPipe, GetRecordPipe]
 })
 export class PatronTypesDetailViewComponent {
 

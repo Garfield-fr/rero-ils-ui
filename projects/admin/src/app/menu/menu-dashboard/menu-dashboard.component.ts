@@ -18,11 +18,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MenuService } from '../service/menu.service';
 import { MenuItem } from 'primeng/api';
+import { Bind } from 'primeng/bind';
+import { Card } from 'primeng/card';
+import { Ripple } from 'primeng/ripple';
+import { RouterLink } from '@angular/router';
+import { TieredMenu } from 'primeng/tieredmenu';
 
 @Component({
     selector: 'admin-menu-dashboard',
     templateUrl: './menu-dashboard.component.html',
-    standalone: false
+    imports: [Bind, Card, Ripple, RouterLink, TieredMenu]
 })
 export class MenuDashboardComponent implements OnInit {
 

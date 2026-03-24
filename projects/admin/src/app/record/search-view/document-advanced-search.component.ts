@@ -20,7 +20,9 @@ import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-form/document-advanced-search-form.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-document-advanced-search',
@@ -35,7 +37,7 @@ import { TranslateService } from '@ngx-translate/core';
       />
     }
   `,
-    standalone: false
+    imports: [Bind, Button, TranslatePipe]
 })
 export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
 

@@ -17,18 +17,22 @@
  */
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
+import { IPermissions, PERMISSIONS, UserService, PermissionsDirective } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { forkJoin, Subscription } from 'rxjs';
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { ItemTransactionComponent } from '../item-transaction/item-transaction.component';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-item-transactions',
     templateUrl: './item-transactions.component.html',
-    standalone: false
+    imports: [Bind, Panel, PermissionsDirective, TranslateDirective, ItemTransactionComponent, Button, TranslatePipe]
 })
 export class ItemTransactionsComponent implements OnInit, OnDestroy {
 
@@ -87,6 +91,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
     this.subscription.add(
       ref.onClose.subscribe((value: boolean) => {
         if (value) {
+          // TODO: The 'emit' function requires a mandatory any argument
           this.requestEvent.emit();
           this._refreshRequestList();
         }
@@ -108,6 +113,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
           detail: this.translateService.instant('The pending request has been cancelled.'),
           life: CONFIG.MESSAGE_LIFE
         });
+        // TODO: The 'emit' function requires a mandatory any argument
         this.requestEvent.emit();
         this._refreshRequestList();
       });

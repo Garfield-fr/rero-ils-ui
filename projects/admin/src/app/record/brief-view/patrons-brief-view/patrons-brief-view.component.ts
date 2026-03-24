@@ -19,11 +19,17 @@ import { Component, inject, Input } from '@angular/core';
 
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Tag } from 'primeng/tag';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-patrons-brief-view',
     templateUrl: './patrons-brief-view.component.html',
-    standalone: false
+    imports: [RouterLink, Bind, Button, Tag, TranslatePipe, DateTranslatePipe]
 })
 export class PatronsBriefViewComponent {
 

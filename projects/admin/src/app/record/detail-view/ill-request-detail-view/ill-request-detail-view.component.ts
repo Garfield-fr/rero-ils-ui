@@ -16,14 +16,20 @@
  */
 import { Component, inject, input, OnInit } from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, TruncateTextPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 
 import { Observable } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { Tag } from 'primeng/tag';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-ill-request-detail-view',
     templateUrl: './ill-request-detail-view.component.html',
-    standalone: false
+    imports: [Bind, Panel, TranslateDirective, RouterLink, Tag, AsyncPipe, TruncateTextPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe]
 })
 export class IllRequestDetailViewComponent implements OnInit {
 

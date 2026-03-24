@@ -18,6 +18,8 @@
 
 import { Component, inject, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'admin-budgets-brief-view',
@@ -31,8 +33,8 @@ import { TranslateService } from '@ngx-translate/core';
       <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
     </h5>
   `,
-    standalone: false
-  })
+    imports: [NgClass, RouterLink]
+})
 export class BudgetsBriefViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);

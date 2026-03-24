@@ -47,28 +47,26 @@ describe('MaskedComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
+    imports: [
+        TranslateModule.forRoot(),
         RecordMaskedComponent,
         KeyExistsPipe
-      ],
-      imports: [
-        TranslateModule.forRoot()
-      ],
-      schemas: [
+    ],
+    schemas: [
         CUSTOM_ELEMENTS_SCHEMA
-      ]
-    })
+    ]
+})
     .compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RecordMaskedComponent);
     component = fixture.componentInstance;
-    component.record = recordMasked;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    component.record = recordMasked;
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 

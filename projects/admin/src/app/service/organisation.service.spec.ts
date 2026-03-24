@@ -24,8 +24,8 @@ import { RecordService } from "@rero/ng-core";
 describe('OrganisationService', () => {
   let service: OrganisationService;
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord']);
-  recordServiceSpy.getRecord.and.returnValue(of({...organisation}));
+  const recordServiceSpy = { getRecord: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of({...organisation}));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

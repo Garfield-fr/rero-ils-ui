@@ -15,13 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from "@angular/core";
-import { ApiService, RecordService } from "@rero/ng-core";
+import { ApiService, RecordService, DateTranslatePipe } from "@rero/ng-core";
 import { map } from "rxjs/operators";
+import { Bind } from "primeng/bind";
+import { TableModule } from "primeng/table";
+import { ButtonDirective } from "primeng/button";
+import { TranslateDirective } from "@ngx-translate/core";
 
 @Component({
     selector: "admin-reports-list",
     templateUrl: "./reports-list.component.html",
-    standalone: false
+    imports: [Bind, TableModule, ButtonDirective, TranslateDirective, DateTranslatePipe]
 })
 export class ReportsListComponent implements OnInit {
 

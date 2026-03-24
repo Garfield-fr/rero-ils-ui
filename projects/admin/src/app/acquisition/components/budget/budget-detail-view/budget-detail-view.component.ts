@@ -21,11 +21,14 @@ import { OrganisationService } from '@app/admin/service/organisation.service';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'admin-budget-detail-view',
     templateUrl: './budget-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, AsyncPipe, CurrencyPipe, TranslatePipe, MessageModule]
 })
 export class BudgetDetailViewComponent implements OnInit, OnDestroy {
 

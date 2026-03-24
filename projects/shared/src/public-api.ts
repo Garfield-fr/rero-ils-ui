@@ -41,7 +41,7 @@ export * from './lib/directive/permissions.directive';
 export * from './lib/directive/rero-template.directive';
 export * from './lib/interface/i-availability';
 export * from './lib/model/es-result-model';
-export * from './lib/modules/prime-ng-import/prime-ng-import.module';
+
 export { Paginator } from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
 export * from './lib/pipe/array-translate.pipe';
@@ -67,7 +67,7 @@ export * from './lib/service/i-availability.service';
 export * from './lib/service/operation-logs.service';
 export * from './lib/service/permissions.service';
 export * from './lib/service/user.service';
-export * from './lib/shared.module';
+
 export * from './lib/store/paginator-feature';
 export * from './lib/store/request-status-feature';
 export * from './lib/store/viewcode-feature';

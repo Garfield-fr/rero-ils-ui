@@ -16,6 +16,7 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 
 
@@ -30,7 +31,7 @@ import { Component, Input } from '@angular/core';
   }
   `,
     styles: [],
-    standalone: false
+    imports: [RouterLink]
 })
 export class ItemTypesBriefViewComponent {
 

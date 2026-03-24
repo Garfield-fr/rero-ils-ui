@@ -24,11 +24,19 @@ import { forkJoin, of, Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
+import { OpenCloseButtonComponent, DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
+import { NgClass, CurrencyPipe } from '@angular/common';
+import { Bind } from 'primeng/bind';
+import { OverlayBadge } from 'primeng/overlaybadge';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NotesComponent } from '../../../notes/notes.component';
+import { RouterLink } from '@angular/router';
+import { NoteBadgeColorPipe } from '../../../../pipes/note-badge-color.pipe';
 
 @Component({
     selector: 'admin-order-line',
     templateUrl: './order-line.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, OverlayBadge, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, TranslatePipe, NoteBadgeColorPipe]
 })
 export class OrderLineComponent implements OnInit, OnDestroy {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);

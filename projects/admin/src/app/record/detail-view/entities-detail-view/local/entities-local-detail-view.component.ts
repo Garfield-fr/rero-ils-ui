@@ -18,15 +18,24 @@
 import { Component, inject, input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OperationLogsService } from '@rero/shared';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
 import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Panel } from 'primeng/panel';
+import { LocalOrganisationDetailViewComponent } from './local-organisation-detail-view/local-organisation-detail-view.component';
+import { LocalPersonDetailViewComponent } from './local-person-detail-view/local-person-detail-view.component';
+import { LocalPlaceDetailViewComponent } from './local-place-detail-view/local-place-detail-view.component';
+import { LocalTopicDetailViewComponent } from './local-topic-detail-view/local-topic-detail-view.component';
+import { LocalWorkDetailViewComponent } from './local-work-detail-view/local-work-detail-view.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-entities-local-detail-view',
     templateUrl: './entities-local-detail-view.component.html',
-    standalone: false
+    imports: [Bind, Tag, Panel, TranslateDirective, LocalOrganisationDetailViewComponent, LocalPersonDetailViewComponent, LocalPlaceDetailViewComponent, LocalTopicDetailViewComponent, LocalWorkDetailViewComponent, AsyncPipe, TranslatePipe]
 })
 export class EntitiesLocalDetailViewComponent implements OnInit {
 

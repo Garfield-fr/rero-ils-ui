@@ -15,20 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Tools } from '@rero/shared';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { Button } from 'primeng/button';
+import { CurrencyPipe } from '@angular/common';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 
 @Component({
     selector: 'admin-patron-transaction-form',
     templateUrl: './patron-transaction-event-form.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, ScrollPanel, TranslateDirective, Button, CurrencyPipe, DateTranslatePipe, TranslatePipe, Panel]
 })
 export class PatronTransactionEventFormComponent implements OnInit {
 

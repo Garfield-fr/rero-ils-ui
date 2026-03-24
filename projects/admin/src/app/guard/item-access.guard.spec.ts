@@ -47,21 +47,21 @@ describe('ItemAccessGuard', () => {
       }
     }
   };
-  const userServiceSpy = jasmine.createSpyObj('userService', ['']);
+  const userServiceSpy = { } as any;
   userServiceSpy.user = {
     currentLibrary: '10'
   }
 
-  const recordServiceSpy = jasmine.createSpyObj('recordService', ['getRecord', 'getRecords', 'totalHits']);
-  recordServiceSpy.getRecord.and.returnValue(of(item));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(item));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.params = {
     pid: '1'
   };
 
-  const routerStateSnapshotSpy = jasmine.createSpyObj('RouterStateSnapshot', ['']);
+  const routerStateSnapshotSpy = { } as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -84,7 +84,7 @@ describe('ItemAccessGuard', () => {
     messageService = TestBed.inject(MessageService);
 
     apiResponse.hits.hits = [holdings];
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
   });
 
   it('should be created', () => {

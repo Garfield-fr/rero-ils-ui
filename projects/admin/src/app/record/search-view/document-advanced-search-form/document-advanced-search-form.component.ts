@@ -16,20 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FormlyFieldConfig, FormlyFormBuilder, FormlyFormOptions } from '@ngx-formly/core';
+import { FormlyFieldConfig, FormlyFormBuilder, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { LocalStorageService } from '@rero/ng-core';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdvancedSearchService } from './advanced-search.service';
 import { IFieldsData, IFieldsType, ISearchModel } from './i-advanced-search-config-interface';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-document-advanced-search-form',
     templateUrl: './document-advanced-search-form.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe]
 })
 export class DocumentAdvancedSearchFormComponent implements OnInit {
 

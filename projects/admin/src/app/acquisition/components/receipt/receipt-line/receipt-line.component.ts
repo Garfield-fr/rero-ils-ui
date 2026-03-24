@@ -23,13 +23,27 @@ import { IAcqReceipt, IAcqReceiptLine } from '@app/admin/acquisition/classes/rec
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, GetRecordPipe } from '@rero/ng-core';
 import { catchError, map, of, switchMap } from 'rxjs';
+import { DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ReceiptLineTotalAmountPipe } from '../../../pipes/receipt-line-total-amount.pipe';
 
 @Component({
-  selector: 'admin-receipt-line',
-  standalone: false,
-  templateUrl: './receipt-line.component.html',
+    selector: 'admin-receipt-line',
+    templateUrl: './receipt-line.component.html',
+    imports: [
+        DocumentBriefViewComponent,
+        ActionButtonComponent,
+        RouterLink,
+        AsyncPipe,
+        CurrencyPipe,
+        GetRecordPipe,
+        TranslatePipe,
+        ReceiptLineTotalAmountPipe,
+    ],
 })
 export class ReceiptLineComponent {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);

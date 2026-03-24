@@ -18,13 +18,18 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { Item } from '@app/admin/classes/items';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
 import { map, mergeMap } from 'rxjs/operators';
+import { TranslateDirective } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { MainTitlePipe } from '@rero/shared';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-overdue-transaction-detail',
     templateUrl: './overdue-transaction-detail.component.html',
-    standalone: false
+    imports: [TranslateDirective, RouterLink, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe, MainTitlePipe_1]
 })
 export class OverdueTransactionDetailComponent implements OnInit {
 

@@ -17,6 +17,7 @@
 
 import { Component, Input } from '@angular/core';
 import { ResultItem  } from '@rero/ng-core';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'admin-libraries-brief-view',
@@ -26,7 +27,7 @@ import { ResultItem  } from '@rero/ng-core';
   </h5>
   <small> {{ record.metadata.code }}</small>
   `,
-    standalone: false
+    imports: [RouterLink]
 })
 export class LibrariesBriefViewComponent {
 

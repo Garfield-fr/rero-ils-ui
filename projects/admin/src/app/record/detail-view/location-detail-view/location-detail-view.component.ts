@@ -18,11 +18,14 @@
 import { Component, input, OnDestroy, OnInit } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
+import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-location-detail-view',
     templateUrl: './location-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, NgClass, NgStyle, AsyncPipe, TranslatePipe, GetRecordPipe]
 })
 export class LocationDetailViewComponent implements OnInit, OnDestroy {
 

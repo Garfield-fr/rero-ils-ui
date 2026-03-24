@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-entities-local-global',
@@ -37,7 +38,7 @@ import { Component, Input } from '@angular/core';
     }
   </dl>
   `,
-    standalone: false
+    imports: [TranslateDirective, TranslatePipe]
 })
 export class EntitiesLocalGlobalComponent {
   @Input() record: any;

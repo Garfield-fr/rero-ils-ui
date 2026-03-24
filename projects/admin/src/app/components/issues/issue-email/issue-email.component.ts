@@ -22,11 +22,14 @@ import { Tools } from '@app/admin/shared/preview-email/utils/tools';
 import { CONFIG, NgCoreTranslateService, RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { PreviewEmailComponent } from '../../../shared/preview-email/component/preview-email/preview-email.component';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Message } from 'primeng/message';
 
 @Component({
     selector: 'admin-issue-email',
     templateUrl: './issue-email.component.html',
-    standalone: false
+    imports: [PreviewEmailComponent, TranslateDirective, TranslatePipe, Message]
 })
 export class IssueEmailComponent implements OnInit {
 

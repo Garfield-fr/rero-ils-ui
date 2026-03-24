@@ -17,11 +17,12 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-remote-entities-organisation-detail-view',
     templateUrl: './remote-entities-organisation-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, TranslatePipe]
 })
 export class RemoteEntitiesOrganisationDetailViewComponent {
 

@@ -17,11 +17,11 @@
  */
 
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { CONFIG, GetRecordPipe } from '@rero/ng-core';
 import { Tools, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { SelectChangeEvent } from 'primeng/select';
@@ -29,11 +29,19 @@ import { Subscription } from 'rxjs';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
 import { orderAccountsAsTree } from '../../../utils/account';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { SelectModule } from 'primeng/select';
+import { CardModule } from 'primeng/card';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @Component({
     selector: 'admin-account-transfer',
     templateUrl: './account-transfer.component.html',
-    standalone: false
+    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, RouterLink, Bind, Button, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, SelectModule, CardModule, RadioButtonModule, InputGroupModule, InputGroupAddonModule]
 })
 export class AccountTransferComponent implements OnInit, OnDestroy {
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);

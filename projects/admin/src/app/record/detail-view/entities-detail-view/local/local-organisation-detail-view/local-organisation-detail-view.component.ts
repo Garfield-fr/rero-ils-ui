@@ -16,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { EntitiesLocalGlobalComponent } from '../entities-local-global.component';
+import { TranslateDirective } from '@ngx-translate/core';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'admin-local-organisation-detail-view',
     templateUrl: './local-organisation-detail-view.component.html',
-    standalone: false
+    imports: [EntitiesLocalGlobalComponent, TranslateDirective, NgClass]
 })
 export class LocalOrganisationDetailViewComponent {
   /** the current record */

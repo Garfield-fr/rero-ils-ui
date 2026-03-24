@@ -19,11 +19,13 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { OrganisationService } from '../../../../../service/organisation.service';
 import { PaymentData } from '../../interfaces';
+import { Bind } from 'primeng/bind';
+import { UIChart } from 'primeng/chart';
 
 @Component({
     selector: 'admin-payments-data-pie',
     templateUrl: './payment-data-pie.component.html',
-    standalone: false
+    imports: [Bind, UIChart]
 })
 export class PaymentDataPieComponent implements OnInit {
   private organisationService: OrganisationService = inject(OrganisationService);

@@ -16,19 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { _, TranslateService } from "@ngx-translate/core";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { _, TranslateService, TranslatePipe } from "@ngx-translate/core";
 import type { EsResult } from '@rero/ng-core';
 import { OperationLogsApiService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { CirculationStatsComponent } from './circulation-stats/circulation-stats.component';
+import { Bind } from 'primeng/bind';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { CirculationLogNotificationComponent } from './circulation-log/circulation-log-notification/circulation-log-notification.component';
+import { CirculationItemScanComponent } from './circulation-log/circulation-item-scan/circulation-item-scan.component';
+import { CirculationLogLoanComponent } from './circulation-log/circulation-log-loan/circulation-log-loan.component';
+import { Button } from 'primeng/button';
+import { TitleCasePipe } from '@angular/common';
+import { DateTranslatePipe } from '@rero/ng-core';
+import { CirculationLogRecordTypePipe } from './pipe/circulation-log-record-type.pipe';
 
 @Component({
     selector: 'admin-circulation-logs',
     templateUrl: './circulation-logs.component.html',
-    standalone: false
+    imports: [CirculationStatsComponent, FormsModule, ReactiveFormsModule, Bind, ToggleSwitch, CirculationLogNotificationComponent, CirculationItemScanComponent, CirculationLogLoanComponent, Button, TitleCasePipe, TranslatePipe, DateTranslatePipe, CirculationLogRecordTypePipe]
 })
 export class CirculationLogsComponent implements OnInit, OnDestroy {
 

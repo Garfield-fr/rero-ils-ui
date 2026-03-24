@@ -18,11 +18,15 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Item } from '@app/admin/classes/items';
 import { LoanState } from '@app/admin/classes/loans';
+import { OpenCloseButtonComponent } from '@rero/shared';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RequestedItemComponent } from '../requested-item/requested-item.component';
+import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'admin-circulation-requested-items-list',
     templateUrl: './requested-items-list.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, TranslateDirective, RequestedItemComponent, TranslatePipe, CardModule]
 })
 export class RequestedItemsListComponent implements OnChanges {
 

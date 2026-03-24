@@ -36,6 +36,22 @@ describe('AppMenuUserComponent', () => {
   let libraryService: LibraryService;
   let translateService: TranslateService;
 
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+  });
+
   const menuItems: MenuItem[] = [
     {
       name: 'library',
@@ -45,8 +61,7 @@ describe('AppMenuUserComponent', () => {
         {
           name: 'library name',
           code: 'library-code',
-          pid: '1',
-        }
+          pid: '1' }
       ]
     },
     {
@@ -68,15 +83,12 @@ describe('AppMenuUserComponent', () => {
               code: 'en',
               id: 'lang-en'
             },
-          ],
-        },
+          ] },
         {
           label: 'logout',
           id: MENU_IDS.USER.LOGOUT,
-          command: () => {},
-        },
-      ],
-    },
+          command: () => {} },
+      ] },
   ];
 
   const librarySwitch: ISwitchLibrary = {
@@ -85,32 +97,30 @@ describe('AppMenuUserComponent', () => {
     name: 'library name'
   };
 
-  const menuServiceSpy = jasmine.createSpyObj('MenuService', ['generateMenuLibrary$', 'generateMenuLanguages', 'updateLibraryQueryParams', 'logout']);
-  menuServiceSpy.generateMenuLibrary$.and.returnValue(of([]));
+  const menuServiceSpy = { generateMenuLibrary$: vi.fn(), generateMenuLanguages: vi.fn(), updateLibraryQueryParams: vi.fn(), logout: vi.fn() };
+  menuServiceSpy.generateMenuLibrary$.mockReturnValue(of([]));
 
-  const menuTranslateServiceSpy = jasmine.createSpyObj('MenuTranslateService', ['process']);
-  menuTranslateServiceSpy.process.and.returnValue(menuItems);
+  const menuTranslateServiceSpy = { process: vi.fn() };
+  menuTranslateServiceSpy.process.mockReturnValue(menuItems);
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const userServiceSpy = { } as any;
   userServiceSpy.user = {
     id: 1,
     currentLibrary: 'foo'
   };
 
-  const librarySwitchStorageServiceSpy = jasmine.createSpyObj('LibrarySwitchStorageService', ['save']);
+  const librarySwitchStorageServiceSpy = { save: vi.fn() };
 
-  const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+  const routerSpy = { navigate: vi.fn() };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        MenuUserComponent
-      ],
-      imports: [
+    imports: [
         TranslateModule.forRoot(),
         MenubarModule,
-      ],
-      providers: [
+        MenuUserComponent,
+    ],
+    providers: [
         { provide: MenuService, useValue: menuServiceSpy },
         { provide: MenuTranslateService, useValue: menuTranslateServiceSpy },
         { provide: UserService, useValue: userServiceSpy },
@@ -118,8 +128,8 @@ describe('AppMenuUserComponent', () => {
         { provide: Router, useValue: routerSpy },
         LibraryService,
         TranslateService
-      ]
-    })
+    ]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(MenuUserComponent);
@@ -142,7 +152,6 @@ describe('AppMenuUserComponent', () => {
   it('should change the library menu', () => {
     expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toBeUndefined();
     libraryService.switch(librarySwitch);
-    fixture.detectChanges();
     expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toEqual('ui:font-bold');
   });
 

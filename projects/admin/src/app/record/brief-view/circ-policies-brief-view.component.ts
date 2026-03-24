@@ -16,6 +16,11 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Nl2brPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circ-policies-brief-view',
@@ -36,7 +41,7 @@ import { Component, Input } from '@angular/core';
     <span [innerHtml]="record.metadata.description | nl2br"></span>
   }
   `,
-    standalone: false
+    imports: [RouterLink, Bind, Tag, TranslatePipe, Nl2brPipe]
 })
 export class CircPoliciesBriefViewComponent {
 

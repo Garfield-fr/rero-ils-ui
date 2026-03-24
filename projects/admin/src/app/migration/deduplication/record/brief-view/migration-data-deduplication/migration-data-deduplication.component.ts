@@ -16,14 +16,23 @@
  */
 
 import { Component, computed, inject, input, OnInit, output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RecordService, DateTranslatePipe } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
+import { Bind } from 'primeng/bind';
+import { Inplace } from 'primeng/inplace';
+import { FormsModule } from '@angular/forms';
+import { AutoFocus } from 'primeng/autofocus';
+import { Button } from 'primeng/button';
+import { Tag } from 'primeng/tag';
+import { MigrationMetadataBriefComponent } from '../migration-metadata/migration-metadata.component';
+import { DecimalPipe } from '@angular/common';
+import { Message } from 'primeng/message';
 
 @Component({
     selector: 'admin-migration-data-deduplication',
     templateUrl: './migration-data-deduplication.component.html',
-    standalone: false
+    imports: [Bind, Inplace, FormsModule, AutoFocus, Button, Tag, TranslateDirective, MigrationMetadataBriefComponent, DecimalPipe, DateTranslatePipe, TranslatePipe, Message]
 })
 export class MigrationDataDeduplicationBriefComponent implements OnInit {
   // services

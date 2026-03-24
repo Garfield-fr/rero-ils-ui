@@ -15,19 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
+import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
+import { CONFIG, SearchInputComponent } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { interval, Subscription } from 'rxjs';
 import { ItemsService } from '../../service/items.service';
+import { Bind } from 'primeng/bind';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { FormsModule } from '@angular/forms';
+import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
+import { SelectModule } from 'primeng/select';
 
 @Component({
     selector: 'admin-circulation-main-request',
     templateUrl: './main-request.component.html',
-    standalone: false
+    imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, SelectModule]
 })
 export class MainRequestComponent implements OnInit, OnDestroy {
 

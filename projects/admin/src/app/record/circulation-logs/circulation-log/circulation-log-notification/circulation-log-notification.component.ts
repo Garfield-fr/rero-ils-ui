@@ -17,11 +17,17 @@
  */
 import { Component, inject, Input } from '@angular/core';
 import { NotificationApiService } from '@app/admin/api/notification-api.service';
+import { CirculationLogComponent } from '../circulation-log.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circulation-log-notification',
     templateUrl: './circulation-log-notification.component.html',
-    standalone: false
+    imports: [CirculationLogComponent, Bind, Tag, TranslateDirective, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe]
 })
 export class CirculationLogNotificationComponent {
 

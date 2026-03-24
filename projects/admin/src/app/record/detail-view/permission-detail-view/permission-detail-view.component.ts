@@ -17,11 +17,15 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { IRolePermission, PermissionApiService } from '../../../api/permission-api.service';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { InputText } from 'primeng/inputtext';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'admin-permission-detail-view',
     templateUrl: './permission-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, InputText, NgClass, TranslatePipe]
 })
 export class PermissionDetailViewComponent implements OnInit {
 

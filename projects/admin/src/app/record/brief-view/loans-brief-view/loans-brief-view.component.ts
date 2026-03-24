@@ -17,17 +17,24 @@
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
 
-import { PermissionsService } from '@rero/shared';
+import { PermissionsService, InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { DialogService } from 'primeng/dynamicdialog';
 import { LoanState } from '../../../classes/loans';
 import { CirculationLogsComponent } from '../../circulation-logs/circulation-logs.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { Tag } from 'primeng/tag';
+import { NgClass, JsonPipe, DatePipe } from '@angular/common';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-loans-brief-view',
     templateUrl: './loans-brief-view.component.html',
-    standalone: false
+    imports: [Bind, Button, TranslateDirective, InheritedCallNumberComponent, RouterLink, Tag, NgClass, ScrollPanel, JsonPipe, DatePipe, TranslatePipe, MainTitlePipe, MainTitlePipe_1]
 })
 export class LoansBriefViewComponent implements OnInit {
 

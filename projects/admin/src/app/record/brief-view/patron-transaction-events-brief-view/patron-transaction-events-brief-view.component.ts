@@ -21,11 +21,17 @@ import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType }
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { Organisation } from '@app/admin/classes/core';
 import { PatronTransactionsService } from '../../../service/patron-transactions.service';
+import { PatronTransactionEventOverdueComponent } from './patron-transaction-event-overdue.component';
+import { PatronTransactionEventDefaultComponent } from './patron-transaction-event-default.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-patron-transaction-events-brief-view',
     templateUrl: './patron-transaction-events-brief-view.component.html',
-    standalone: false
+    imports: [PatronTransactionEventOverdueComponent, PatronTransactionEventDefaultComponent, Bind, Tag, CurrencyPipe, DatePipe, TranslatePipe]
 })
 export class PatronTransactionEventsBriefViewComponent implements OnInit {
 

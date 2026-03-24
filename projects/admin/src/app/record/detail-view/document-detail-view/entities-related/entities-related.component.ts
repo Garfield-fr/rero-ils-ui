@@ -15,14 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Entity } from '@rero/shared';
 import { IEntityRelated } from './entities-related.interface';
+import { RouterLink } from '@angular/router';
+import { KeyValuePipe } from '@angular/common';
+import { UpperCaseFirstPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-entities-related',
     templateUrl: './entities-related.component.html',
-    standalone: false
+    imports: [RouterLink, TranslateDirective, KeyValuePipe, UpperCaseFirstPipe, TranslatePipe]
 })
 export class EntitiesRelatedComponent implements OnInit {
 

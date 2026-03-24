@@ -16,10 +16,13 @@
  */
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
     selector: 'admin-cancel-request-button',
@@ -36,7 +39,7 @@ import { MessageService } from 'primeng/api';
       (onClick)="showCancelRequestDialog($event)"
     />
   `,
-    standalone: false
+    imports: [Bind, Button, TranslatePipe, TooltipModule]
 })
 export class CancelRequestButtonComponent {
 

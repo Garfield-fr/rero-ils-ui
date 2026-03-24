@@ -17,9 +17,21 @@
 
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 
-import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
+import { IPermissions, PERMISSIONS, PermissionsService, PermissionsDirective, LinkPermissionsDirective, JoinPipe } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { roleTagSeverity } from '../../../utils/roles';
+import { Bind } from 'primeng/bind';
+import { ButtonDirective } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Ripple } from 'primeng/ripple';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass, AsyncPipe, I18nPluralPipe } from '@angular/common';
+import { Tag } from 'primeng/tag';
+import { PatronPermissionsComponent } from './patron-permissions/patron-permissions.component';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
+import { JoinPipe as JoinPipe_1 } from '../../../../../../shared/src/lib/pipe/join.pipe';
+import { Message } from 'primeng/message';
 
 type PatronPhone = {
   value: string;
@@ -30,7 +42,7 @@ type PatronPhone = {
 @Component({
     selector: 'admin-patron-detail-view',
     templateUrl: './patron-detail-view.component.html',
-    standalone: false
+    imports: [Bind, ButtonDirective, PermissionsDirective, RouterLink, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, TranslateDirective, NgClass, Tag, LinkPermissionsDirective, PatronPermissionsComponent, AsyncPipe, I18nPluralPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, JoinPipe, Nl2brPipe, JoinPipe_1, Message]
 })
 export class PatronDetailViewComponent implements OnInit,  OnDestroy {
 

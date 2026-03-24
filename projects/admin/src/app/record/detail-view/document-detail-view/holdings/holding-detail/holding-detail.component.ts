@@ -16,13 +16,18 @@
  */
 
 import { Component, Input } from '@angular/core';
-import { HoldingsNoteType } from '@rero/shared';
+import { HoldingsNoteType, NotesFilterPipe } from '@rero/shared';
+import { HoldingSharedViewComponent } from '../holding-shared-view/holding-shared-view.component';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
+import { NotesFilterPipe as NotesFilterPipe_1 } from '../../../../../../../../shared/src/lib/pipe/notes-filter.pipe';
 
 @Component({
     selector: 'admin-holding-detail',
     templateUrl: './holding-detail.component.html',
-    standalone: false,
-    styles: ['dl.metadata > dd { font-weight: normal; }']
+    styles: ['dl.metadata > dd { font-weight: normal; }'],
+    imports: [HoldingSharedViewComponent, TranslateDirective, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, NotesFilterPipe, NotesFilterPipe_1]
 })
 export class HoldingDetailComponent {
 

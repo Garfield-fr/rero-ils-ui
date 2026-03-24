@@ -17,11 +17,15 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
     selector: 'admin-remote-topic-detail-view',
     templateUrl: './remote-topic-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Tag, NgTemplateOutlet, TranslatePipe]
 })
 export class RemoteTopicDetailViewComponent implements OnInit{
 

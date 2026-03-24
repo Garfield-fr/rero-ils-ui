@@ -19,16 +19,21 @@ import { NgCoreTranslateService } from '@rero/ng-core';
 import { MenuService } from '../service/menu.service';
 import { MenuTranslateService } from '../service/menu-translate.service';
 import { ISwitchLibrary, LibraryService } from '../service/library.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { MENU_IDS } from '../menu-definition/menu-ids';
 import { MENU_USER } from '../menu-definition/menu-user';
+import { Bind } from 'primeng/bind';
+import { Menubar } from 'primeng/menubar';
+import { Ripple } from 'primeng/ripple';
+import { NgClass } from '@angular/common';
+import { Badge } from 'primeng/badge';
 
 @Component({
     selector: 'admin-menu-user',
     templateUrl: './menu-user.component.html',
-    standalone: false
+    imports: [Bind, Menubar, Ripple, RouterLink, NgClass, Badge]
 })
 export class MenuUserComponent implements OnInit, OnDestroy {
 

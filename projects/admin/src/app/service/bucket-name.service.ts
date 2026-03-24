@@ -18,7 +18,6 @@
 import { inject, Injectable } from '@angular/core';
 import { _ } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
-import { IBucketNameService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LibraryApiService } from '../api/library-api.service';
@@ -27,7 +26,7 @@ import { OrganisationApiService } from '../api/organisation-api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class BucketNameService implements IBucketNameService {
+export class BucketNameService {
 
   private translateService: TranslateService = inject(TranslateService);
   private organisationApiService: OrganisationApiService = inject(OrganisationApiService);

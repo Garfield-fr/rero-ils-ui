@@ -16,11 +16,14 @@
  */
 import { Component, inject } from '@angular/core';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-checkin-action',
     templateUrl: './checkin-action.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Button, TranslatePipe]
 })
 export class CheckinActionComponent {
 

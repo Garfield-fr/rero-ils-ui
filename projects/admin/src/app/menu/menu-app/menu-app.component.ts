@@ -22,11 +22,17 @@ import { MENU_APP } from '../menu-definition/menu-app';
 import { ISwitchLibrary, LibraryService } from '../service/library.service';
 import { MenuTranslateService } from '../service/menu-translate.service';
 import { MenuService } from '../service/menu.service';
+import { Bind } from 'primeng/bind';
+import { Menubar } from 'primeng/menubar';
+import { Ripple } from 'primeng/ripple';
+import { RouterLink } from '@angular/router';
+import { NgClass } from '@angular/common';
+import { MenuUserComponent } from '../menu-user/menu-user.component';
 
 @Component({
     selector: 'admin-menu-app',
     templateUrl: './menu-app.component.html',
-    standalone: false
+    imports: [Bind, Menubar, Ripple, RouterLink, NgClass, MenuUserComponent]
 })
 export class MenuAppComponent implements OnInit, OnDestroy {
 

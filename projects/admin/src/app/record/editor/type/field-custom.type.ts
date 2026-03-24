@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnInit } from '@angular/core';
-import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
+import { FieldType, FieldTypeConfig, FormlyModule } from '@ngx-formly/core';
 
 @Component({
     selector: 'admin-field-custom-input',
@@ -32,7 +32,7 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
         }
       </div>
   `,
-    standalone: false
+    imports: [FormlyModule]
 })
 export class FieldCustomInputTypeComponent extends FieldType<FieldTypeConfig> implements OnInit {
 

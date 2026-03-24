@@ -34,8 +34,7 @@ describe('AdvancedSearchService', () => {
           search_type: [
             { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
             { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
-          ]},
-        },
+          ]} },
       {
         field: "provisionActivity.place.country",
         label: "Country",
@@ -44,8 +43,7 @@ describe('AdvancedSearchService', () => {
           search_type: [
             { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
           ]
-        },
-      }
+        } }
     ],
     fieldsData: {
       canton: [
@@ -62,8 +60,8 @@ describe('AdvancedSearchService', () => {
     }
   };
 
-  const documentApiServiceSpy = jasmine.createSpyObj('DocumentApiService', ['getAdvancedSearchConfig']);
-  documentApiServiceSpy.getAdvancedSearchConfig.and.returnValue(of(cloneDeep(apiResponse)));
+  const documentApiServiceSpy = { getAdvancedSearchConfig: vi.fn() };
+  documentApiServiceSpy.getAdvancedSearchConfig.mockReturnValue(of(cloneDeep(apiResponse)));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -135,7 +133,7 @@ describe('AdvancedSearchService', () => {
   it('Should return an error if the field does not exist', () => {
     service.load().subscribe(() => {
       expect(function() { service.fieldMapping('foo') })
-      .toThrowError(SyntaxError, 'Field mapping does not exist (foo)');
+      .toThrowError('Field mapping does not exist (foo)');
     });
   });
 
@@ -152,8 +150,7 @@ describe('AdvancedSearchService', () => {
           field: 'title',
           term: '',
           searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-        }],
-      }
+        }] }
       expect(service.generateQueryByModel(model)).toEqual(searchString);
 
       // CONTAINS: Test protect ( and )
@@ -167,8 +164,7 @@ describe('AdvancedSearchService', () => {
           field: 'title',
           term: '',
           searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-        }],
-      }
+        }] }
       expect(service.generateQueryByModel(model)).toEqual(searchString);
 
       // PHRASE
@@ -182,8 +178,7 @@ describe('AdvancedSearchService', () => {
           field: 'title',
           term: '',
           searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-        }],
-      }
+        }] }
       expect(service.generateQueryByModel(model)).toEqual(searchString);
 
       // PHRASE: Test protect "
@@ -197,8 +192,7 @@ describe('AdvancedSearchService', () => {
           field: 'title',
           term: '',
           searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-        }],
-      }
+        }] }
       expect(service.generateQueryByModel(model)).toEqual(searchString);
 
       // MULTIPLE SEARCH
@@ -220,8 +214,7 @@ describe('AdvancedSearchService', () => {
             term: 'abc',
             searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
           }
-        ],
-      }
+        ] }
       expect(service.generateQueryByModel(model)).toEqual(searchString);
     })
   });

@@ -22,11 +22,14 @@ import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FixedDateFormComponent } from '../fixed-date-form/fixed-date-form.component';
 import { CirculationSettingsService, ICirculationSetting } from './circulation-settings.service';
+import { Bind } from 'primeng/bind';
+import { Menu } from 'primeng/menu';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-circulation-settings',
     templateUrl: './circulation-settings.component.html',
-    standalone: false
+    imports: [Bind, Menu, Button]
 })
 export class CirculationSettingsComponent implements OnInit {
 

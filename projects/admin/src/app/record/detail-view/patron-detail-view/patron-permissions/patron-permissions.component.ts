@@ -17,11 +17,15 @@
  */
 import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { IPatronPermission, PermissionApiService } from 'projects/admin/src/app/api/permission-api.service';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { InputText } from 'primeng/inputtext';
+import { PatronPermissionComponent } from './patron-permission/patron-permission.component';
 
 @Component({
     selector: 'admin-patron-permissions',
     templateUrl: './patron-permissions.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, InputText, PatronPermissionComponent, TranslatePipe]
 })
 export class PatronPermissionsComponent implements OnChanges {
 

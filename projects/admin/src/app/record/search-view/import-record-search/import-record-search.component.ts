@@ -16,11 +16,12 @@
  */
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
-  selector: 'admin-import-record-search',
-  templateUrl: './import-record-search.component.html',
-  standalone: false
+    selector: 'admin-import-record-search',
+    templateUrl: './import-record-search.component.html',
+    imports: [RecordSearchPageComponent]
 })
 export class ImportRecordSearchComponent implements OnInit {
   private _route = inject(ActivatedRoute);

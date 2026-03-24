@@ -20,10 +20,15 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { DocumentBriefViewComponent } from '@rero/shared';
+import { NotesComponent } from '../../components/notes/notes.component';
+import { Bind } from 'primeng/bind';
+import { OverlayBadge } from 'primeng/overlaybadge';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-formly-order-line-type',
-  template: `
+    selector: 'admin-formly-order-line-type',
+    template: `
     @if (orderLine) {
       <div class="ui:flex ui:gap-2">
         <div class="ui:grow-1">
@@ -44,7 +49,13 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
       </div>
     }
   `,
-  standalone: false,
+    imports: [
+        DocumentBriefViewComponent,
+        NotesComponent,
+        Bind,
+        OverlayBadge,
+        TranslatePipe,
+    ],
 })
 export class OrderLineTypeComponent extends FieldType implements OnInit {
   private recordService: RecordService = inject(RecordService);

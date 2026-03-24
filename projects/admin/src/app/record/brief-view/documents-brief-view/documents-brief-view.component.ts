@@ -17,11 +17,14 @@
  */
 import { Component, inject, Input } from '@angular/core';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
+import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-documents-brief-view',
     templateUrl: './documents-brief-view.component.html',
-    standalone: false
+    imports: [ThumbnailComponent, RouterLink, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, MainTitlePipe_1]
 })
 export class DocumentsBriefViewComponent {
 

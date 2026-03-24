@@ -33,10 +33,10 @@ describe('LibraryService', () => {
   const response = {...apiResponse};
   response.hits.hits = [library];
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordServices', ['getRecords', 'getRecord', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(response));
-  recordServiceSpy.getRecord.and.returnValue(of(response.hits.hits[0]));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), getRecord: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(response));
+  recordServiceSpy.getRecord.mockReturnValue(of(response.hits.hits[0]));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

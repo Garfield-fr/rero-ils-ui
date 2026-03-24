@@ -24,16 +24,23 @@ import {
   PatronTransactionEventFormComponent
 } from '../patron-transaction-event-form/patron-transaction-event-form.component';
 import { DialogService } from 'primeng/dynamicdialog';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, NgClass, AsyncPipe } from '@angular/common';
 import { SelectChangeEvent } from 'primeng/select';
+import { OpenCloseButtonComponent } from '@rero/shared';
+import { FormsModule } from '@angular/forms';
+import { OverdueTransactionDetailComponent } from './overdue-transaction-detail/overdue-transaction-detail.component';
+import { DefaultTransactionDetailComponent } from './default-transaction-detail/default-transaction-detail.component';
+import { PatronTransactionHistoryComponent } from './patron-transaction-history/patron-transaction-history.component';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
+import { Select } from 'primeng/select';
 
 
 @Component({
     selector: 'admin-patron-transaction',
     templateUrl: './patron-transaction.component.html',
-    standalone: false
+    imports: [NgClass, OpenCloseButtonComponent, FormsModule, TranslateDirective, OverdueTransactionDetailComponent, DefaultTransactionDetailComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe, Select]
 })
 export class PatronTransactionComponent implements OnChanges {
 

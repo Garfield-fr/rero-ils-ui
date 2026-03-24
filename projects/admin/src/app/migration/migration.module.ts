@@ -20,7 +20,7 @@ import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ErrorComponent, ExportButtonComponent, ListFiltersComponent, MenuSortComponent, PaginatorComponent as NgCorePaginatorComponent, RecordSearchAggregationComponent, SearchFiltersComponent, SearchInputComponent, SearchTabsComponent } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+
 import { MessageService } from 'primeng/api';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { BadgeModule } from 'primeng/badge';
@@ -39,39 +39,36 @@ import { MigrationRoutingModule } from './migration-routing.module';
 import { MigrationDetailComponent } from './record/brief-view/migration/migration.component';
 
 @NgModule({
-  declarations: [
-    HighlightJsonPipe,
-    MigrationDataBriefComponent,
-    MigrationDataDeduplicationBriefComponent,
-    MigrationDataDetailComponent,
-    MigrationDetailComponent,
-    MigrationMetadataBriefComponent,
-    MigrationSearchComponent,
-    MigrationSearchPageComponent,
-  ],
-  imports: [
-    AutoFocusModule,
-    BadgeModule,
-    CommonModule,
-    DataViewModule,
-    FormsModule,
-    InplaceModule,
-    MigrationRoutingModule,
-    ErrorComponent,
-    ExportButtonComponent,
-    ListFiltersComponent,
-    MenuSortComponent,
-    NgCorePaginatorComponent,
-    RecordSearchAggregationComponent,
-    SearchFiltersComponent,
-    SearchInputComponent,
-    SearchTabsComponent,
-    SharedModule,
-    TableModule,
-    ToastModule,
-    TranslateModule.forChild(),
-  ],
-  schemas: [NO_ERRORS_SCHEMA],
-  providers: [MessageService],
+    imports: [
+        AutoFocusModule,
+        BadgeModule,
+        CommonModule,
+        DataViewModule,
+        FormsModule,
+        InplaceModule,
+        MigrationRoutingModule,
+        ErrorComponent,
+        ExportButtonComponent,
+        ListFiltersComponent,
+        MenuSortComponent,
+        NgCorePaginatorComponent,
+        RecordSearchAggregationComponent,
+        SearchFiltersComponent,
+        SearchInputComponent,
+        SearchTabsComponent,
+        TableModule,
+        ToastModule,
+        TranslateModule.forChild(),
+        HighlightJsonPipe,
+        MigrationDataBriefComponent,
+        MigrationDataDeduplicationBriefComponent,
+        MigrationDataDetailComponent,
+        MigrationDetailComponent,
+        MigrationMetadataBriefComponent,
+        MigrationSearchComponent,
+        MigrationSearchPageComponent,
+    ],
+    schemas: [NO_ERRORS_SCHEMA],
+    providers: [MessageService],
 })
 export class MigrationModule {}

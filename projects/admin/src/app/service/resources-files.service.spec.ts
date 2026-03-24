@@ -80,9 +80,9 @@ describe('ResourcesFilesService', () => {
     }
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['delete', 'get', 'post', 'put']);
+  const httpClientSpy = { delete: vi.fn(), get: vi.fn(), post: vi.fn(), put: vi.fn() };
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const userServiceSpy = { } as any;
   userServiceSpy.user = {
     currentLibrary: '1'
   }
@@ -121,7 +121,7 @@ describe('ResourcesFilesService', () => {
     const responseCopy = {...response};
     const parentWith$ref = {...responseCopy.hits.hits[0], ...parentTransform};
     // console.log('response', response);
-    httpClientSpy.get.and.returnValue(of({...response}));
+    httpClientSpy.get.mockReturnValue(of({...response}));
     service.currentParentRecord$.subscribe((result: any) => {
       if (result) {
         expect(result).toEqual(parentWith$ref);
@@ -146,7 +146,7 @@ describe('ResourcesFilesService', () => {
     };
     const responseCopy = {...response};
     const parentWith$ref = {...responseCopy.hits.hits[0], ...parentTransform};
-    httpClientSpy.post.and.returnValue(of(parentWith$ref));
+    httpClientSpy.post.mockReturnValue(of(parentWith$ref));
     service.currentParentRecord$.subscribe((result: any) => {
       if (result) {
         expect(result).toEqual(parentWith$ref);
@@ -158,7 +158,7 @@ describe('ResourcesFilesService', () => {
 
   it('should update the parent', () => {
     const responseCopy = {...response.hits.hits[0]};
-    httpClientSpy.put.and.returnValue(of(responseCopy));
+    httpClientSpy.put.mockReturnValue(of(responseCopy));
     service.updateParentRecordMetadata('1', {})
       .subscribe((result: any) => expect(result).toEqual(responseCopy))
   });
@@ -176,14 +176,14 @@ describe('ResourcesFilesService', () => {
     const result = {...response};
     result.entries[0].is_head = true;
     result.entries[0].metadata = { label: 'file_key' }
-    httpClientSpy.get.and.returnValue(of(response));
+    httpClientSpy.get.mockReturnValue(of(response));
     service.list('1')
       .subscribe((result: any) => expect(result).toEqual(result));
   });
 
   it('should return a new file', () => {
-    httpClientSpy.post.and.returnValue(of(file));
-    httpClientSpy.put.and.returnValue(of(file));
+    httpClientSpy.post.mockReturnValue(of(file));
+    httpClientSpy.put.mockReturnValue(of(file));
     service.create('1', 'file_key', { label: 'file label'})
       .subscribe((result: any) => expect(result).toEqual(file));
   });
@@ -198,22 +198,21 @@ describe('ResourcesFilesService', () => {
         }
       ]
     }
-    httpClientSpy.delete.and.returnValue(of({}));
-    httpClientSpy.get.and.returnValue(of(response));
-    service.delete('1', 'file_key').subscribe((result: any) => expect(result).toBeTrue());
+    httpClientSpy.delete.mockReturnValue(of({}));
+    httpClientSpy.get.mockReturnValue(of(response));
+    service.delete('1', 'file_key').subscribe((result: any) => expect(result).toBe(true));
 
     const responseBis = {
       entries: [
         {
           metadata: {
-            type: 'thumbnail',
-          },
+            type: 'thumbnail' },
           key: 'file_key',
           is_head: false
         }
       ]
     }
-    httpClientSpy.get.and.returnValue(of(responseBis));
+    httpClientSpy.get.mockReturnValue(of(responseBis));
     service.currentParentRecord$.subscribe((result: any) => {
       expect(result).toEqual(null);
     });

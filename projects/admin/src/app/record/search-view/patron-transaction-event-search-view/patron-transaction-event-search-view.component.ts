@@ -17,11 +17,12 @@
  */
 import { Component } from '@angular/core';
 import { PaymentData } from './interfaces';
+import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-patron-transaction-event-search-view',
     templateUrl: './patron-transaction-event-search-view.component.html',
-    standalone: false
+    imports: [RecordSearchPageComponent]
 })
 export class PatronTransactionEventSearchViewComponent {
   paymentData: PaymentData = { total: 0, subtypes: [] };

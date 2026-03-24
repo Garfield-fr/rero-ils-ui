@@ -15,7 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { TruncateTextPipe } from '@rero/ng-core';
 
 
 @Component({
@@ -41,7 +44,7 @@ import { TranslateService } from '@ngx-translate/core';
     </dl>
   </div>
   `,
-    standalone: false
+    imports: [NgClass, RouterLink, TranslateDirective, TruncateTextPipe, TranslatePipe]
 })
 export class StatisticsCfgBriefViewComponent {
 

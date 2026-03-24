@@ -24,7 +24,7 @@
       [pTooltip]="'Comma-separated list of digital collection names. Digital collections allow the searching/grouping of related documents containing files.'|translate"
       tooltipPosition="top"
       formControlName="collections"
-      [allowDuplicate]="false"
+      [unique]="true"
     >
       <ng-template let-collection pTemplate="selectedItem">
           <p-chip styleClass="p-autocomplete-chip" [removable]="true" (onRemove)="autocomplete.removeOption($event, getIndex(collection))">

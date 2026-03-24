@@ -15,7 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component } from '@angular/core';
-import { FieldArrayType } from '@ngx-formly/core';
+import { FieldArrayType, FormlyModule } from '@ngx-formly/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-repeat-section',
@@ -47,6 +49,6 @@ import { FieldArrayType } from '@ngx-formly/core';
       </div>
     }
   `,
-    standalone: false
+    imports: [FormlyModule, Bind, Button]
 })
 export class RepeatTypeComponent extends FieldArrayType { }

@@ -17,11 +17,13 @@
 
 import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { of, Subscription, switchMap } from 'rxjs';
 import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-id-editor.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-user-id',
@@ -40,7 +42,7 @@ import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-i
       }
     </div>
   `,
-    standalone: false
+    imports: [Bind, Button, TranslatePipe]
 })
 export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);

@@ -87,7 +87,7 @@ describe('PatronTransactionService', () => {
     }
   };
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const userServiceSpy = { } as any;
   userServiceSpy.user = {
     patronLibrarian: {
       pid: '1'
@@ -122,7 +122,7 @@ describe('PatronTransactionService', () => {
 
   it('should return a list of patron transactions', () => {
     apiResponse.hits.hits = [patronTransaction];
-    spyOn(recordService, 'getRecords').and.returnValue(of(apiResponse));
+    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
 
     service.patronTransactionsByLoan$('1')
       .subscribe((result: PatronTransaction[]) => {
@@ -134,7 +134,7 @@ describe('PatronTransactionService', () => {
 
   it('should return a list of patron transactions for a patron', () => {
     apiResponse.hits.hits = [patronTransaction];
-    spyOn(recordService, 'getRecords').and.returnValue(of(apiResponse));
+    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
     service.patronTransactionsByPatron$('1')
       .subscribe((result: PatronTransaction[]) => {
         expect(result[0]).toBeInstanceOf(PatronTransaction);
@@ -143,7 +143,7 @@ describe('PatronTransactionService', () => {
 
   it('should emit a list of patron transactions', () => {
     apiResponse.hits.hits = [patronTransaction];
-    spyOn(recordService, 'getRecords').and.returnValue(of(apiResponse));
+    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
     service.patronTransactionsSubject$.subscribe((result: PatronTransaction[]) => {
       expect(result).toBeInstanceOf(Array);
       if(result.length > 0) {
@@ -155,7 +155,7 @@ describe('PatronTransactionService', () => {
 
   it('should add events to a patron transaction', () => {
     apiResponse.hits.hits = [patronTransactionEvent];
-    spyOn(recordService, 'getRecords').and.returnValue(of(apiResponse));
+    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
     const transaction = new PatronTransaction(patronTransaction.metadata);
     expect(transaction.events.length).toEqual(0);
     service.loadTransactionHistory(transaction).subscribe(events => transaction.events = events);
@@ -182,8 +182,14 @@ describe('PatronTransactionService', () => {
 
   it('should add a dispute to a transaction and emit the transaction', () => {
     apiResponse.hits.hits = [patronTransaction];
-    spyOn(recordService, 'getRecords').and.returnValue(of(apiResponse));
-    spyOn(recordService, 'create').and.returnValue(of({}));
+    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
+    vi.spyOn(recordService, 'create').mockReturnValue(of({
+      created: '',
+      id: '1',
+      links: { self: '' },
+      metadata: {},
+      updated: ''
+    }));
 
     service.patronTransactionsSubject$.subscribe((result: any) => {
       if(result.length > 0) {

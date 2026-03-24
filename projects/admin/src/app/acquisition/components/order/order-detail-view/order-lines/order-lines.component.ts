@@ -20,11 +20,13 @@ import { UserService } from '@rero/shared';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
+import { OrderLineComponent } from '../order-line/order-line.component';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-order-lines',
     templateUrl: './order-lines.component.html',
-    standalone: false
+    imports: [OrderLineComponent, TranslateDirective, TranslatePipe]
 })
 export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
 

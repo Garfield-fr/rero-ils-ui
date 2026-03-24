@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
-import { TranslateService } from '@ngx-translate/core';
-import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, CONFIG, RecordService, removeEmptyValues, UniqueValidator } from '@rero/ng-core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, CONFIG, RecordService, removeEmptyValues, UniqueValidator, UpperCaseFirstPipe } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -29,11 +29,30 @@ import { Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
 import { LibraryFormService } from './library-form.service';
+import { Bind } from 'primeng/bind';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Ripple } from 'primeng/ripple';
+import { InputText } from 'primeng/inputtext';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { Select } from 'primeng/select';
+import { NgClass, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { Button } from 'primeng/button';
+import { ExceptionDatesListComponent } from './exception-dates-list/exception-dates-list.component';
+import { InputNumber } from 'primeng/inputnumber';
+import { Tooltip } from 'primeng/tooltip';
+import { Divider } from 'primeng/divider';
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { Fieldset } from 'primeng/fieldset';
+import { Tag } from 'primeng/tag';
+import { NotificationTypePipe } from './pipe/notificationType.pipe';
+import { Badge } from 'primeng/badge';
 
 @Component({
     selector: 'admin-libraries-library',
     templateUrl: './library.component.html',
-    standalone: false
+    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, InputText, InputGroup, InputGroupAddon, Select, NgClass, ToggleSwitch, Button, ExceptionDatesListComponent, InputNumber, Tooltip, Divider, Tabs, TabList, Tab, TabPanels, TabPanel, NgTemplateOutlet, Fieldset, Tag, TitleCasePipe, UpperCaseFirstPipe, TranslatePipe, NotificationTypePipe, Badge]
 })
 export class LibraryComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 

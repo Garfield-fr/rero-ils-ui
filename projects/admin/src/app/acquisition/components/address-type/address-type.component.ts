@@ -16,13 +16,14 @@
  */
 import { Component, input } from '@angular/core';
 import { AddressType } from '../../classes/address-type';
+import { TranslateDirective } from '@ngx-translate/core';
 
 
 @Component({
     selector: 'admin-address-type',
     templateUrl: './address-type.component.html',
     styleUrls: [],
-    standalone: false
+    imports: [TranslateDirective]
 })
 export class AddressTypeComponent {
 

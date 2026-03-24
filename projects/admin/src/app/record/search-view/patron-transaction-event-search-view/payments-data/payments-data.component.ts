@@ -17,11 +17,17 @@
  */
 import { Component, Input } from '@angular/core';
 import { PaymentData } from '../interfaces';
+import { Bind } from 'primeng/bind';
+import { Fieldset } from 'primeng/fieldset';
+import { TranslateDirective } from '@ngx-translate/core';
+import { Button } from 'primeng/button';
+import { PaymentsDataTableComponent } from './table/payments-data-table.component';
+import { PaymentDataPieComponent } from './pie/payment-data-pie.component';
 
 @Component({
     selector: 'admin-payments-data',
     templateUrl: './payments-data.component.html',
-    standalone: false
+    imports: [Bind, Fieldset, TranslateDirective, Button, PaymentsDataTableComponent, PaymentDataPieComponent]
 })
 export class PaymentsDataComponent {
 

@@ -22,16 +22,23 @@ import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService } from '@ngx-translate/core';
-import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ApiService, CONFIG, RecordService, ExportButtonComponent, Nl2brPipe } from '@rero/ng-core';
+import { IPermissions, PERMISSIONS, UserService, PermissionsDirective } from '@rero/shared';
 import { MessageService, TreeNode, TreeTableNode } from 'primeng/api';
 import { forkJoin, switchMap, tap } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { TreeTableModule } from 'primeng/treetable';
+import { CurrencyPipe } from '@angular/common';
+import { AccountAvailableAmountPipe } from '../../../pipes/account-available-amount.pipe';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
     selector: 'admin-account-list',
     templateUrl: './account-list.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule]
 })
 export class AccountListComponent implements OnInit {
   private userService: UserService = inject(UserService);

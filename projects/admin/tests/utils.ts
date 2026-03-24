@@ -17,25 +17,24 @@
 
 import { of } from 'rxjs';
 
-export const recordTestingService = jasmine.createSpyObj(
-  'RecordService', ['getRecords', 'getRecord']
-);
+export const recordTestingService = {
+  getRecords: vi.fn(),
+  getRecord: vi.fn()
+};
 
-recordTestingService.getRecords.and.returnValue(of({
+recordTestingService.getRecords.mockReturnValue(of({
   hits: {
     hits: [],
     total: 0
   }
 }));
 
-recordTestingService.getRecord.and.returnValue(of({
+recordTestingService.getRecord.mockReturnValue(of({
   metadata: {
   }
 }));
 
-export const userTestingService = jasmine.createSpyObj(
-  'UserService', ['']
-);
+export const userTestingService: any = { };
 userTestingService.user =  {
   first_name: 'John',
   last_name: 'Doe',
@@ -51,11 +50,10 @@ userTestingService.user =  {
   getCurrentLibrary: () => '1'
 };
 
-export const patronTestingService = jasmine.createSpyObj(
-  'PatronService', ['getItems', 'currentPatron$', 'getItemsPickup']
-);
-patronTestingService.getItems.and.returnValue(of([]));
-patronTestingService.currentPatron$ = of({
-  pid: '1'
-});
-patronTestingService.getItemsPickup.and.returnValue(of([]));
+export const patronTestingService = {
+  getItems: vi.fn(),
+  currentPatron$: of({ pid: '1' }),
+  getItemsPickup: vi.fn()
+};
+patronTestingService.getItems.mockReturnValue(of([]));
+patronTestingService.getItemsPickup.mockReturnValue(of([]));

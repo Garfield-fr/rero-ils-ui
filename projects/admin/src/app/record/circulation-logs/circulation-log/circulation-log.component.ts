@@ -16,12 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { PermissionsService } from '@rero/shared';
+import { PermissionsService, OpenCloseButtonComponent } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { JsonPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circulation-log',
     templateUrl: './circulation-log.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, Bind, Button, ScrollPanel, JsonPipe, TranslatePipe, DateTranslatePipe]
 })
 export class CirculationLogComponent {
 

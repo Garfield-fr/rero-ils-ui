@@ -16,17 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, UpperCaseFirstPipe } from '@rero/ng-core';
 
 import type { EsResult } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { Library } from '../../../classes/library';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Ripple } from 'primeng/ripple';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { LocationComponent } from './location/location.component';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { DayOpeningHoursComponent } from './day-opening-hours/day-opening-hours.component';
+import { ExceptionDateComponent } from './exception-date/exception-date.component';
+import { Divider } from 'primeng/divider';
+import { Fieldset } from 'primeng/fieldset';
+import { Tag } from 'primeng/tag';
+import { CountryCodeTranslatePipe } from '../../../pipe/country-code-translate.pipe';
+import { Badge } from 'primeng/badge';
 
 @Component({
     selector: 'admin-library-detail-view',
     templateUrl: './library-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, Button, RouterLink, AccordionContent, LocationComponent, NgClass, DayOpeningHoursComponent, ExceptionDateComponent, Divider, NgTemplateOutlet, Fieldset, Tag, UpperCaseFirstPipe, TranslatePipe, CountryCodeTranslatePipe, Badge]
 })
 export class LibraryDetailViewComponent implements OnInit, OnDestroy {
 

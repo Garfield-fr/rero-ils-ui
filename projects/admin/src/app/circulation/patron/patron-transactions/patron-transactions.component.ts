@@ -19,7 +19,7 @@ import { Component, computed, inject, model, ModelSignal, OnDestroy, OnInit, Wri
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -29,11 +29,20 @@ import { CirculationStatsService } from '../service/circulation-stats.service';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
 import { PatronService } from '@app/admin/service/patron.service';
+import { Bind } from 'primeng/bind';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Ripple } from 'primeng/ripple';
+import { Tag } from 'primeng/tag';
+import { Button } from 'primeng/button';
+import { SplitButton } from 'primeng/splitbutton';
+import { PatronTransactionComponent } from './patron-transaction/patron-transaction.component';
+import { OverdueTransactionComponent } from './overdue-transaction/overdue-transaction.component';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-patron-transactions',
     templateUrl: './patron-transactions.component.html',
-    standalone: false
+    imports: [Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, TranslateDirective, Tag, AccordionContent, Button, SplitButton, PatronTransactionComponent, OverdueTransactionComponent, CurrencyPipe, TranslatePipe]
 })
 export class PatronTransactionsComponent implements OnInit, OnDestroy {
 

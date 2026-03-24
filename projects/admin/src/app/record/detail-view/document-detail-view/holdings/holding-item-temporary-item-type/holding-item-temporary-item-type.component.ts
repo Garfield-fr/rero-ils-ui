@@ -17,6 +17,9 @@
 
 import { Component, Input } from '@angular/core';
 import { DateTime } from 'luxon';
+import { TranslateDirective } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-holding-item-temporary-item-type',
@@ -38,7 +41,7 @@ import { DateTime } from 'luxon';
       </dl>
     }
   `,
-    standalone: false
+    imports: [TranslateDirective, AsyncPipe, DateTranslatePipe, GetRecordPipe]
 })
 export class HoldingItemTemporaryItemTypeComponent {
 

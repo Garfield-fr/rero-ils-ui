@@ -16,15 +16,18 @@
  */
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService } from '@ngx-translate/core';
-import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { IPermissions, PERMISSIONS, PermissionsService, PermissionsDirective } from '@rero/shared';
 import { EsRecord } from 'projects/shared/src/public-api';
 import { forkJoin } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Menu } from 'primeng/menu';
 
 @Component({
-  selector: 'admin-menu-actions',
-  standalone: false,
-  templateUrl: './menu-actions.component.html'
+    selector: 'admin-menu-actions',
+    templateUrl: './menu-actions.component.html',
+    imports: [PermissionsDirective, Bind, Button, TranslatePipe, Menu]
 })
 export class MenuActionsComponent {
 

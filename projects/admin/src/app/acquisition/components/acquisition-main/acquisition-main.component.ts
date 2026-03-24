@@ -16,6 +16,9 @@
  */
 
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'admin-acquisition-main',
@@ -33,6 +36,6 @@ import { Component } from '@angular/core';
     </p-toast>
     <p-confirmDialog />
   `,
-    standalone: false
+    imports: [RouterOutlet, ToastModule, ConfirmDialogModule]
 })
 export class AcquisitionMainComponent { }

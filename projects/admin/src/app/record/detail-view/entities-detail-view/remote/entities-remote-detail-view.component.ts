@@ -16,15 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
-import { EntityType, EntityTypeIcon } from '@rero/shared';
+import { EntityType, EntityTypeIcon, ExtractSourceFieldPipe } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Panel } from 'primeng/panel';
+import { RemoteEntitiesPersonDetailViewComponent } from './remote-person-detail-view/remote-entities-person-detail-view.component';
+import { RemoteEntitiesOrganisationDetailViewComponent } from './remote-organisation-detail-view/remote-entities-organisation-detail-view.component';
+import { RemoteTopicDetailViewComponent } from './remote-topic-detail-view/remote-topic-detail-view.component';
+import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { ExtractSourceFieldPipe as ExtractSourceFieldPipe_1 } from '../../../../../../../shared/src/lib/pipe/extract-source-field.pipe';
 
 @Component({
     selector: 'admin-remote-entities-remote-detail-view',
     templateUrl: './entities-remote-detail-view.component.html',
-    standalone: false
+    imports: [Bind, Tag, Panel, RemoteEntitiesPersonDetailViewComponent, RemoteEntitiesOrganisationDetailViewComponent, RemoteTopicDetailViewComponent, TranslateDirective, AsyncPipe, UpperCasePipe, TranslatePipe, ExtractSourceFieldPipe, ExtractSourceFieldPipe_1]
 })
 export class RemoteEntitiesDetailViewComponent {
 

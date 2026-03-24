@@ -18,11 +18,15 @@
 import { Component, inject, Input } from '@angular/core';
 import { OrganisationService } from '../../../../../service/organisation.service';
 import { PaymentData } from '../../interfaces';
+import { Bind } from 'primeng/bind';
+import { Divider } from 'primeng/divider';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-payments-data-table',
     templateUrl: './payments-data-table.component.html',
-    standalone: false
+    imports: [Bind, Divider, TranslateDirective, CurrencyPipe, TranslatePipe]
 })
 export class PaymentsDataTableComponent {
 

@@ -17,9 +17,9 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { _ } from "@ngx-translate/core";
+import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG, RecordService } from '@rero/ng-core';
+import { CONFIG, RecordService, SearchInputComponent } from '@rero/ng-core';
 import { ItemStatus, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -29,11 +29,13 @@ import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
 import { CheckinActionComponent } from './checkin-action/checkin-action.component';
+import { CardComponent } from '../patron/card/card.component';
+import { ItemsListComponent } from '../items-list/items-list.component';
 
 @Component({
     selector: 'admin-circulation-checkout',
     templateUrl: './checkin.component.html',
-    standalone: false
+    imports: [TranslateDirective, SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe]
 })
 export class CheckinComponent implements OnInit {
 

@@ -15,14 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { ContributionComponent, MainTitlePipe } from '@rero/shared';
+import { CancelRequestButtonComponent } from '../../cancel-request-button.component';
+import { AsyncPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-pickup-item',
     templateUrl: './pickup-item.component.html',
-    standalone: false
+    imports: [RouterLink, Bind, Tag, ContributionComponent, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1]
 })
 export class PickupItemComponent implements OnInit {
 

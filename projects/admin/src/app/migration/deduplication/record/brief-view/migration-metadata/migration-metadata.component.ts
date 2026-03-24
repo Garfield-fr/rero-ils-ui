@@ -16,13 +16,16 @@
  */
 
 import { Component, computed, inject, input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { MainTitlePipe } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { TableModule } from 'primeng/table';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'admin-migration-metadata',
     templateUrl: './migration-metadata.component.html',
-    standalone: false
+    imports: [Bind, TableModule, TranslateDirective, RouterLink, TranslatePipe]
 })
 export class MigrationMetadataBriefComponent {
   // services

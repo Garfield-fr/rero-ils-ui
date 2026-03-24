@@ -20,10 +20,7 @@ import { RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-@Pipe({
-    name: 'itemInCollection',
-    standalone: false
-})
+@Pipe({ name: 'itemInCollection' })
 export class ItemInCollectionPipe implements PipeTransform {
 
   private recordService: RecordService = inject(RecordService);

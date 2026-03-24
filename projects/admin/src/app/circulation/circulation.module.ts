@@ -20,7 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { ErrorComponent, ExportButtonComponent, ListFiltersComponent, MenuSortComponent, PaginatorComponent as NgCorePaginatorComponent, RecordSearchAggregationComponent, SearchFiltersComponent, SearchInputComponent, SearchTabsComponent } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
@@ -74,7 +74,33 @@ import { ProfileComponent } from './patron/profile/profile.component';
 import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
 
 @NgModule({
-    declarations: [
+    imports: [
+        AccordionModule,
+        ButtonModule,
+        CirculationRoutingModule,
+        CommonModule,
+        DynamicDialogModule,
+        FormlyModule,
+        FormsModule,
+        MenuModule,
+        ReactiveFormsModule,
+        ErrorComponent,
+        ExportButtonComponent,
+        ListFiltersComponent,
+        MenuSortComponent,
+        NgCorePaginatorComponent,
+        RecordSearchAggregationComponent,
+        SearchFiltersComponent,
+        SearchInputComponent,
+        SearchTabsComponent,
+        RippleModule,
+        ScrollPanelModule,
+        SplitButtonModule,
+        TabsModule,
+        TagModule,
+        TimelineModule,
+        ToggleSwitchModule,
+        TranslateModule.forChild(),
         CancelRequestButtonComponent,
         CardComponent,
         ChangePasswordFormComponent,
@@ -111,38 +137,9 @@ import { GetLoanCipoPipe } from './pipe/get-loan-cipo.pipe';
         RequestedItemComponent,
         RequestedItemsListComponent,
     ],
-    imports: [
-        AccordionModule,
-        ButtonModule,
-        CirculationRoutingModule,
-        CommonModule,
-        DynamicDialogModule,
-        FormlyModule,
-        FormsModule,
-        MenuModule,
-        ReactiveFormsModule,
-        ErrorComponent,
-    ExportButtonComponent,
-    ListFiltersComponent,
-    MenuSortComponent,
-    NgCorePaginatorComponent,
-    RecordSearchAggregationComponent,
-    SearchFiltersComponent,
-    SearchInputComponent,
-    SearchTabsComponent,
-        RippleModule,
-        ScrollPanelModule,
-        SharedModule,
-        SplitButtonModule,
-        TabsModule,
-        TagModule,
-        TimelineModule,
-        ToggleSwitchModule,
-        TranslateModule.forChild(),
-      ],
     schemas: [NO_ERRORS_SCHEMA],
     providers: [
-      CurrencyPipe,
+        CurrencyPipe,
     ]
 })
 export class CirculationModule { }

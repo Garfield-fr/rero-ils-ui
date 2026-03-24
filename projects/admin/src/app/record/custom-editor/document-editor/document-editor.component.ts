@@ -18,7 +18,7 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { AbstractCanDeactivateComponent, CONFIG, RecordService } from '@rero/ng-core';
+import { AbstractCanDeactivateComponent, CONFIG, RecordService, EditorComponent } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { combineLatest } from 'rxjs';
 import { EditorService } from '../../../service/editor.service';
@@ -26,7 +26,7 @@ import { EditorService } from '../../../service/editor.service';
 @Component({
     selector: 'admin-document-editor',
     templateUrl: './document-editor.component.html',
-    standalone: false
+    imports: [EditorComponent]
 })
 
 /**

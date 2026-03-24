@@ -21,16 +21,17 @@ import { IAcqOrder } from '@app/admin/acquisition/classes/order';
 import { Notification } from '@app/admin/classes/notification';
 import { IPreview, ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { Tools } from '@app/admin/shared/preview-email/utils/tools';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
+import { PreviewEmailComponent } from '../../../../shared/preview-email/component/preview-email/preview-email.component';
 
 @Component({
     selector: 'admin-order-email-form',
     templateUrl: './order-email-form.component.html',
-    standalone: false
+    imports: [PreviewEmailComponent, TranslateDirective]
 })
 export class OrderEmailFormComponent implements OnInit, OnDestroy {
 

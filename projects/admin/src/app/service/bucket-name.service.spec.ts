@@ -17,11 +17,19 @@
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ApiService } from '@rero/ng-core';
 import { of } from 'rxjs';
+import { LibraryApiService } from '../api/library-api.service';
 import { OrganisationApiService } from '../api/organisation-api.service';
 import { BucketNameService } from './bucket-name.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+
+class FakeLoader implements TranslateLoader {
+  getTranslation() {
+    return of({});
+  }
+}
 
 describe('BucketNameService', () => {
   let service: BucketNameService;
@@ -31,18 +39,20 @@ describe('BucketNameService', () => {
     name: 'Organisation name'
   };
 
-  const organisationApiServiceSpy = jasmine.createSpyObj('OrganisationApiService', ['getByPid']);
-  organisationApiServiceSpy.getByPid.and.returnValue(of(response));
+  const organisationApiServiceSpy = { getByPid: vi.fn() };
+  organisationApiServiceSpy.getByPid.mockReturnValue(of(response));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [
       TranslateModule.forRoot({
-        loader: { provide: TranslateLoader, useClass: TranslateFakeLoader }
+        loader: { provide: TranslateLoader, useClass: FakeLoader }
       })
     ],
     providers: [
       { provide: OrganisationApiService, useValue: organisationApiServiceSpy },
+      { provide: LibraryApiService, useValue: {} },
+      { provide: ApiService, useValue: {} },
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting()
     ]
@@ -55,8 +65,7 @@ describe('BucketNameService', () => {
       lang_fre: 'french',
       'Organisation name': 'Organisation name translated',
       '{{count}} claim': '{{count}} claim',
-      '{{count}} claims': '{{count}} claims',
-    });
+      '{{count}} claims': '{{count}} claims' });
   });
 
   it('should be created', () => {

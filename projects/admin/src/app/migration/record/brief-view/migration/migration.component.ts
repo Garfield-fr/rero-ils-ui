@@ -16,11 +16,16 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-migration',
     templateUrl: './migration.component.html',
-    standalone: false
+    imports: [Bind, Tag, Button, RouterLink, TranslatePipe]
 })
 export class MigrationDetailComponent {
 

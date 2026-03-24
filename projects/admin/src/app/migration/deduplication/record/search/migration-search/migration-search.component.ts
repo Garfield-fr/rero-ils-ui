@@ -25,8 +25,7 @@ import { Component, Input } from '@angular/core';
       border-bottom-style: double;
       border-bottom-width: 4px;
     }
-  `],
-    standalone: false
+  `]
 })
 export class MigrationSearchComponent {
   @Input() adminMode: any;

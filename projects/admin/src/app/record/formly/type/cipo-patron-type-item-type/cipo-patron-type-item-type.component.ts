@@ -23,11 +23,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { Settings } from './class/settings';
+import { Bind } from 'primeng/bind';
+import { TableModule } from 'primeng/table';
 
 @Component({
     selector: 'admin-cipo-patron-type-item-type',
     templateUrl: './cipo-patron-type-item-type.component.html',
-    standalone: false
+    imports: [Bind, TableModule]
 })
 export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements OnInit {
 

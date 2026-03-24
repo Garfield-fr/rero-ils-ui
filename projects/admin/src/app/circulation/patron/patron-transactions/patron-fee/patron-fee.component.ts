@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
 import { Tools, UserService } from '@rero/shared';
 import { DateTime } from 'luxon';
@@ -27,11 +27,13 @@ import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-t
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
 import { CirculationStatsService } from '../../service/circulation-stats.service';
 import { switchMap } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
-  selector: 'admin-patron-fee',
-  templateUrl: './patron-fee.component.html',
-  standalone: false
+    selector: 'admin-patron-fee',
+    templateUrl: './patron-fee.component.html',
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe]
 })
 export class PatronFeeComponent implements OnInit {
 

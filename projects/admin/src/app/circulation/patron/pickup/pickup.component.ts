@@ -18,11 +18,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
 import { CirculationStatsService } from '../service/circulation-stats.service';
+import { TranslateDirective } from '@ngx-translate/core';
+import { PickupItemComponent } from './pickup-item/pickup-item.component';
+import { Card } from 'primeng/card';
 
 @Component({
     selector: 'admin-pickup',
     templateUrl: './pickup.component.html',
-    standalone: false
+    imports: [TranslateDirective, PickupItemComponent, Card]
 })
 export class PickupComponent implements OnInit {
 

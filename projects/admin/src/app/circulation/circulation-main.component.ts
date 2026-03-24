@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'admin-circulation-main',
@@ -32,7 +35,7 @@ import { Component } from '@angular/core';
     </p-toast>
     <p-confirmDialog />
   `,
-    standalone: false
+    imports: [RouterOutlet, ToastModule, ConfirmDialogModule]
 })
 export class CirculationMainComponent {
 }

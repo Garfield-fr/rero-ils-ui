@@ -53,12 +53,12 @@ export class ItemAccessGuard implements CanActivate {
       .subscribe({
         next: (holdingPid) => {
         const query = `pid:${holdingPid}`;
-        this.recordService.getRecords('holdings', query, 1, 1).pipe(
-          map((result: Record) => this.recordService.totalHits(result.hits.total) === 0
+        this.recordService.getRecords('holdings', { query, page: 1, itemsPerPage: 1 }).pipe(
+          map((result: EsResult) => this.recordService.totalHits(result.hits.total) === 0
             ? null
             : result.hits.hits[0]
           ),
-        ).subscribe(data => {
+        ).subscribe((data: any) => {
           if (null === data) {
             this.messageService.add({
               severity: 'warn',

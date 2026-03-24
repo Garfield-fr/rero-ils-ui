@@ -16,13 +16,15 @@
  */
 import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 import { Observable, of, Subscription } from 'rxjs';
+import { TranslateDirective } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-template-detail-view',
     templateUrl: './template-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, AsyncPipe, GetRecordPipe, Nl2brPipe]
 })
 export class TemplateDetailViewComponent implements OnInit, OnDestroy {
 

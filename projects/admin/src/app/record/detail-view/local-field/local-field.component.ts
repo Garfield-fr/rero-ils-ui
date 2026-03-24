@@ -20,12 +20,17 @@ import { LocalFieldApiService } from '@app/admin/api/local-field-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
 import { of, Subscription, switchMap } from 'rxjs';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { JoinPipe as JoinPipe_1 } from '../../../../../../shared/src/lib/pipe/join.pipe';
 
 @Component({
     selector: 'admin-local-field',
     templateUrl: './local-field.component.html',
     providers: [JoinPipe],
-    standalone: false
+    imports: [TranslateDirective, Bind, Button, RouterLink, TranslatePipe, JoinPipe, JoinPipe_1]
 })
 export class LocalFieldComponent implements OnInit {
 

@@ -23,16 +23,26 @@ import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/ite
 import { Loan, LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { RecordService } from '@rero/ng-core';
-import { ItemStatus, PermissionsService, UserService } from '@rero/shared';
+import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
+import { ItemStatus, PermissionsService, UserService, OpenCloseButtonComponent, InheritedCallNumberComponent, ContributionComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CirculationStatsService } from '../patron/service/circulation-stats.service';
+import { NgClass, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { ButtonDirective, Button } from 'primeng/button';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { GetLoanCipoPipe } from '../pipe/get-loan-cipo.pipe';
+import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../shared/src/lib/pipe/main-title.pipe';
+import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../shared/src/lib/pipe/id-attribute.pipe';
 
 @Component({
     selector: 'admin-item',
     templateUrl: './item.component.html',
-    standalone: false
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe, MainTitlePipe_1, IdAttributePipe_1]
 })
 export class ItemComponent implements OnChanges {
 

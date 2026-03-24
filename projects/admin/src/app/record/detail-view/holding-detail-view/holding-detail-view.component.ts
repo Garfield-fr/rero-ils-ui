@@ -18,11 +18,12 @@ import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Observable, Subscription } from 'rxjs';
+import { SerialHoldingDetailViewComponent } from './serial-holding-detail-view/serial-holding-detail-view.component';
 
 @Component({
     selector: 'admin-holding-detail-view',
     templateUrl: './holding-detail-view.component.html',
-    standalone: false
+    imports: [SerialHoldingDetailViewComponent]
 })
 export class HoldingDetailViewComponent implements OnInit , OnDestroy {
 

@@ -16,12 +16,13 @@
  */
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router, RouterModule } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { userTestingService } from 'projects/admin/tests/utils';
+import { filter, firstValueFrom } from 'rxjs';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { LibraryGuard } from './library.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -38,7 +39,7 @@ describe('LibraryGuard', () => {
     }
   ];
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.queryParams = { library: '1' };
 
   beforeEach(() => {
@@ -55,22 +56,27 @@ describe('LibraryGuard', () => {
     router = TestBed.inject(Router);
   });
 
+  async function waitForNavigation(): Promise<void> {
+    await firstValueFrom(
+      router.events.pipe(filter(e => e instanceof NavigationEnd))
+    );
+  }
+
   it('should be created', () => {
     expect(guard).toBeTruthy();
   });
 
-  it('should return true if the same library', () => {
-    guard.canActivate(activatedRouteSnapshotSpy).subscribe((access: boolean) => {
-      expect(access).toBeTruthy();
-    });
+  it('should return true if the same library', async () => {
+    const access = await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    expect(access).toBeTruthy();
   });
 
-  it('should return a 403 error if the type is not correct', fakeAsync(() => {
+  it('should return a 403 error if the type is not correct', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.queryParams = { library: '2' };
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  }));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(guard.canActivate(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/403');
+  });
 });

@@ -16,6 +16,9 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-collection-brief',
@@ -47,7 +50,7 @@ import { Component, Input } from '@angular/core';
         </div>
     </div>
   `,
-    standalone: false
+    imports: [NgClass, RouterLink, DateTranslatePipe, Nl2brPipe]
 })
 export class CollectionBriefViewComponent {
 

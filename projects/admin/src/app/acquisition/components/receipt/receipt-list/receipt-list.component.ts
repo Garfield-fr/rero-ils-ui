@@ -24,11 +24,21 @@ import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { IAcqReceipt } from '../../../classes/receipt';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { ReceiptSummaryComponent } from '../receipt-summary/receipt-summary.component';
+import { I18nPluralPipe } from '@angular/common';
+import { Nl2brPipe } from '@rero/ng-core';
+import { TooltipModule } from 'primeng/tooltip';
+import { Panel } from 'primeng/panel';
+import { Badge } from 'primeng/badge';
 
 @Component({
     selector: 'admin-receipt-list',
     templateUrl: './receipt-list.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Button, RouterLink, ReceiptSummaryComponent, I18nPluralPipe, Nl2brPipe, TranslatePipe, TooltipModule, Panel, Badge]
 })
 export class ReceiptListComponent implements OnChanges, OnDestroy {
 

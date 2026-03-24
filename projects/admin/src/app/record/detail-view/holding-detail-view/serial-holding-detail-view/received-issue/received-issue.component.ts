@@ -19,17 +19,24 @@ import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } fro
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService } from '@ngx-translate/core';
-import { IssueItemStatus, UserService } from '@rero/shared';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { IssueItemStatus, UserService, OpenCloseButtonComponent, InheritedCallNumberComponent } from '@rero/shared';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { HoldingsSerialStore } from '../../holdings-serial-store';
+import { NgClass, NgPlural, NgPluralCase } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-received-issue',
     templateUrl: './received-issue.component.html',
     providers: [IssueService],
-    standalone: false
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, Bind, Tag, InheritedCallNumberComponent, TranslateDirective, NgPlural, NgPluralCase, Button, Tooltip, TranslatePipe, DateTranslatePipe]
 })
 export class ReceivedIssueComponent implements OnInit, OnDestroy {
 

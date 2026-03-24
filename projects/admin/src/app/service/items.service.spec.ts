@@ -29,17 +29,17 @@ import { ItemsService } from "./items.service";
 describe('ItemsService', () => {
   let service: ItemsService;
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const userServiceSpy = { } as any;
   userServiceSpy.user = {
     patronLibrarian: {
       pid: '1'
     }
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('recordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   const item = {
     pid: '1',
@@ -92,7 +92,7 @@ describe('ItemsService', () => {
       ],
       providers: [
         ItemsService,
-        ApiService,
+        { provide: ApiService, useValue: { getEndpointByType: vi.fn().mockReturnValue('/api/') } },
         { provide: HttpClient, useValue: httpClientSpy },
         { provide: UserService, useValue: userServiceSpy },
         { provide: RecordService, useValue: recordServiceSpy }
@@ -109,7 +109,7 @@ describe('ItemsService', () => {
   it('should return a list of items', () => {
     const items = [{ pid: '1' }];
     apiResponse.hits.hits = items;
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getByPidFromEs('1')
       .subscribe((result: any) => expect(result).toEqual(items[0]))
   });
@@ -128,7 +128,7 @@ describe('ItemsService', () => {
         pid: '1'
       }
     }];
-    httpClientSpy.get.and.returnValue(of(apiResponse));
+    httpClientSpy.get.mockReturnValue(of(apiResponse));
     service.getRequestedLoans('1')
       .subscribe((result: any) => expect(result).toEqual(response));
   });
@@ -143,7 +143,7 @@ describe('ItemsService', () => {
         }
       }
     }
-    httpClientSpy.post.and.returnValue(of(response));
+    httpClientSpy.post.mockReturnValue(of(response));
     service.doValidateRequest(item, '1')
       .subscribe((result: any) => expect(result).toEqual({
         pid: '1',
@@ -155,7 +155,7 @@ describe('ItemsService', () => {
   });
 
   it('should return an item', () => {
-    httpClientSpy.get.and.returnValue(of({ metadata: { item: {...itemAll} } }));
+    httpClientSpy.get.mockReturnValue(of({ metadata: { item: {...itemAll} } }));
     service.getItem('1').subscribe((result: any) => {
       expect(result).toBeInstanceOf(Item);
       expect(result.loan.dueDate).toEqual('2025-04-22');
@@ -170,7 +170,7 @@ describe('ItemsService', () => {
         'validate': new Loan()
       }
     };
-    httpClientSpy.post.and.returnValue(of(response))
+    httpClientSpy.post.mockReturnValue(of(response))
     service.checkin('B1112234', '1').subscribe((result: any) => {
       expect(result).toBeInstanceOf(Item);
       expect(result.actionDone).toEqual('checkin');
@@ -186,7 +186,7 @@ describe('ItemsService', () => {
         'validate': new Loan()
       }
     };
-    httpClientSpy.post.and.returnValue(of(response));
+    httpClientSpy.post.mockReturnValue(of(response));
 
     const additionalParams = {
       endDate: '2025-04-22'
@@ -198,40 +198,40 @@ describe('ItemsService', () => {
   });
 
   it('getPickupLocations', () => {
-    httpClientSpy.get.and.returnValue(of({ locations: []}));
+    httpClientSpy.get.mockReturnValue(of({ locations: []}));
     service.getPickupLocations('1').subscribe((result: any[]) => expect(result).toEqual([]))
   });
 
   it('canRequest', () => {
-    httpClientSpy.get.and.returnValue(of({ can: true, reasons: {} }));
-    service.canRequest('1').subscribe((result: any) => expect(result.can).toBeTrue());
+    httpClientSpy.get.mockReturnValue(of({ can: true, reasons: {} }));
+    service.canRequest('1').subscribe((result: any) => expect(result.can).toBe(true));
   });
 
   it('needCallout', () => {
     const item = new Item({ ...itemAll});
-    expect(service.needCallout(item)).toBeFalse();
+    expect(service.needCallout(item)).toBe(false);
 
     // Testing the checkin part
     item.actionDone = ItemAction.checkin;
     item.status = ItemStatus.IN_TRANSIT;
-    expect(service.needCallout(item)).toBeTrue();
+    expect(service.needCallout(item)).toBe(true);
     item.status = ItemStatus.AT_DESK;
     item.pending_loans = [new Loan()];
-    expect(service.needCallout(item)).toBeTrue();
+    expect(service.needCallout(item)).toBe(true);
     item.pending_loans = [];
     item.notes = [
       { type: ItemNoteType.CHECKIN, content: 'Checkin note' }
     ];
-    expect(service.needCallout(item)).toBeTrue();
+    expect(service.needCallout(item)).toBe(true);
     item.notes = [];
-    expect(service.needCallout(item)).toBeFalse();
+    expect(service.needCallout(item)).toBe(false);
 
     // Testing the checkout part
     item.actionDone = ItemAction.checkout;
-    expect(service.needCallout(item)).toBeFalse();
+    expect(service.needCallout(item)).toBe(false);
     item.notes = [
       { type: ItemNoteType.CHECKOUT, content: 'Checkout note' }
     ];
-    expect(service.needCallout(item)).toBeTrue();
+    expect(service.needCallout(item)).toBe(true);
   });
 });

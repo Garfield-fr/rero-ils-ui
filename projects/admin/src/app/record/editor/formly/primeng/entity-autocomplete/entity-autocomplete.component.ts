@@ -20,10 +20,17 @@ import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-local-form.component';
+import { Bind } from 'primeng/bind';
+import { Select } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
+import { AutoComplete } from 'primeng/autocomplete';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-entity-autocomplete',
-  template: `
+    selector: 'admin-entity-autocomplete',
+    template: `
     <div class="ui:grid ui:grid-cols-12 ui:gap-2">
       @if (!field.formControl.value) {
         @if (props.filters?.options) {
@@ -92,7 +99,7 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
         </div>
       }
     </div>`,
-  standalone: false
+    imports: [Bind, Select, FormsModule, AutoComplete, NgClass, Button, AsyncPipe, TranslatePipe]
 })
 export class EntityAutocompleteComponent extends RemoteAutocompleteComponent implements OnDestroy, AfterViewInit {
 

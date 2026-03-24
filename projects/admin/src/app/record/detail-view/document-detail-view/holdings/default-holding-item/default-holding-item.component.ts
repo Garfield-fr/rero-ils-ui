@@ -19,17 +19,28 @@ import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ItemsService } from '@app/admin/service/items.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService } from '@ngx-translate/core';
-import { RecordUiService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RecordUiService, Nl2brPipe } from '@rero/ng-core';
+import { UserService, InheritedCallNumberComponent, AvailabilityComponent, ItemHoldingsCallNumberPipe, SafeUrlPipe } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
+import { RecordMaskedComponent } from '../../../record-masked/record-masked.component';
+import { RouterLink } from '@angular/router';
+import { HoldingItemNoteComponent } from '../holding-item-note/holding-item-note.component';
+import { HoldingItemTemporaryItemTypeComponent } from '../holding-item-temporary-item-type/holding-item-temporary-item-type.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+import { ItemInCollectionPipe } from '../../../../../pipe/item-in-collection.pipe';
+import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../../shared/src/lib/pipe/safe-url.pipe';
+import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
 
 @Component({
     selector: 'admin-default-holding-item',
     templateUrl: './default-holding-item.component.html',
-    standalone: false
+    imports: [TranslateDirective, RecordMaskedComponent, RouterLink, InheritedCallNumberComponent, AvailabilityComponent, HoldingItemNoteComponent, HoldingItemTemporaryItemTypeComponent, Bind, Button, Tooltip, AsyncPipe, JsonPipe, TranslatePipe, ItemHoldingsCallNumberPipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, SafeUrlPipe_1, ItemHoldingsCallNumberPipe_1]
 })
 export class DefaultHoldingItemComponent implements OnInit {
 

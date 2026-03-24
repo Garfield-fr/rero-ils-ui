@@ -59,7 +59,7 @@ describe('Permissions', () => {
     }
   }
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const userServiceSpy = { } as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

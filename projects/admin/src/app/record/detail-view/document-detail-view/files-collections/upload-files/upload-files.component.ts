@@ -16,17 +16,28 @@
  */
 import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
-import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { CONFIG, FilesizePipe, DateTranslatePipe } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { Observable, catchError, concatMap, from, map, of, switchMap, tap, toArray } from 'rxjs';
+import { FilesCollectionsComponent } from '../files-collections.component';
+import { Bind } from 'primeng/bind';
+import { InputGroup } from 'primeng/inputgroup';
+import { FormsModule } from '@angular/forms';
+import { InputText } from 'primeng/inputtext';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { Tooltip } from 'primeng/tooltip';
+import { Button } from 'primeng/button';
+import { AsyncPipe } from '@angular/common';
+import { NgxSpinnerComponent } from 'ngx-spinner';
+import { Message } from 'primeng/message';
 
 @Component({
     selector: 'admin-upload-files',
     templateUrl: './upload-files.component.html',
-    standalone: false
+    imports: [FilesCollectionsComponent, TranslateDirective, Bind, FileUpload, InputGroup, FormsModule, InputText, InputGroupAddon, Tooltip, Button, AsyncPipe, FilesizePipe, TranslatePipe, DateTranslatePipe, NgxSpinnerComponent, Message]
 })
 export class UploadFilesComponent implements OnInit {
 

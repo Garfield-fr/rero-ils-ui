@@ -21,11 +21,15 @@ import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { OperationLogsApiService } from '@rero/shared';
 import { PatronService } from '../../../service/patron.service';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { HistoryLogComponent } from './history-log/history-log.component';
+import { AsyncPipe } from '@angular/common';
+import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'admin-history',
     templateUrl: './history.component.html',
-    standalone: false
+    imports: [TranslateDirective, HistoryLogComponent, AsyncPipe, TranslatePipe, CardModule]
 })
 export class HistoryComponent implements OnInit {
 

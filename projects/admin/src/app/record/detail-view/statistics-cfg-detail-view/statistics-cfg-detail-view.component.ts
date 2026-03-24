@@ -17,14 +17,23 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, inject, input, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { AppConfigService } from "@app/admin/service/app-config.service";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 
 import { Observable, Subscription } from 'rxjs';
+import { NgClass, AsyncPipe } from "@angular/common";
+import { Bind } from "primeng/bind";
+import { Fieldset } from "primeng/fieldset";
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from "primeng/tabs";
+import { Ripple } from "primeng/ripple";
+import { ReportsListComponent } from "./reports-list/reports-list.component";
+import { ReportDataComponent } from "./report-data/report-data.component";
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from "@rero/ng-core";
+import { Message } from "primeng/message";
 
 @Component({
     selector: "admin-statistics-cfg-view",
     templateUrl: "./statistics-cfg-detail-view.component.html",
-    standalone: false
+    imports: [TranslateDirective, NgClass, Bind, Fieldset, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, ReportsListComponent, ReportDataComponent, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, Message]
 })
 export class StatisticsCfgDetailViewComponent implements OnInit, OnDestroy {
 

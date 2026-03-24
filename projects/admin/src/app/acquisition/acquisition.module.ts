@@ -22,13 +22,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ApiService, ExportButtonComponent } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+
 import { AccordionModule } from 'primeng/accordion';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TabsModule } from 'primeng/tabs';
 import { TimelineModule } from 'primeng/timeline';
 import { TreeTableModule } from 'primeng/treetable';
-import { PreviewEmailModule } from '../shared/preview-email/preview-email.module';
+
 import { AcquisitionRoutingModule } from './acquisition-routing.module';
 import { AcqAccountApiService } from './api/acq-account-api.service';
 import { AcqOrderApiService } from './api/acq-order-api.service';
@@ -67,7 +67,29 @@ import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { ReceiptLineComponent } from './components/receipt/receipt-line/receipt-line.component';
 
 @NgModule({
-  declarations: [
+    imports: [
+    AccordionModule,
+    AcquisitionRoutingModule,
+    CommonModule,
+    FormlyModule.forChild({
+        types: [
+            { name: 'receipt-lines', component: ReceiptLinesTypeComponent },
+            { name: 'order-line', component: OrderLineTypeComponent },
+            { name: 'account-select', component: SelectAccountEditorWidgetComponent }
+        ],
+        wrappers: [
+            { name: 'input-no-label', component: InputNoLabelWrapperComponent }
+        ]
+    }),
+    FormsModule,
+    ReactiveFormsModule,
+    ExportButtonComponent,
+    TabsModule,
+    TimelineModule,
+    TranslateModule,
+    TreeTableModule,
+    InputNumberModule,
+    OverlayBadgeModule,
     AccountAvailableAmountPipe,
     AccountDetailViewComponent,
     AccountListComponent,
@@ -96,39 +118,13 @@ import { ReceiptLineComponent } from './components/receipt/receipt-line/receipt-
     ReceiptLinesTypeComponent,
     SelectAccountEditorWidgetComponent,
     VendorBriefViewComponent,
-    VendorDetailViewComponent,
-  ],
-  imports: [
-    AccordionModule,
-    AcquisitionRoutingModule,
-    CommonModule,
-    FormlyModule.forChild({
-      types: [
-        { name: 'receipt-lines', component: ReceiptLinesTypeComponent },
-        { name: 'order-line', component: OrderLineTypeComponent },
-        { name: 'account-select', component: SelectAccountEditorWidgetComponent }
-      ],
-      wrappers: [
-        { name: 'input-no-label', component: InputNoLabelWrapperComponent }
-      ]
-    }),
-    FormsModule,
-    PreviewEmailModule,
-    ReactiveFormsModule,
-    ExportButtonComponent,
-    SharedModule,
-    TabsModule,
-    TimelineModule,
-    TranslateModule,
-    TreeTableModule,
-    InputNumberModule,
-    OverlayBadgeModule
-  ],
-  schemas: [NO_ERRORS_SCHEMA],
-  providers: [
-    { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },
-    OrderReceipt,
-    { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] }
-  ]
+    VendorDetailViewComponent
+],
+    schemas: [NO_ERRORS_SCHEMA],
+    providers: [
+        { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },
+        OrderReceipt,
+        { provide: OrderReceiptForm, deps: [AcqOrderApiService, AcqAccountApiService, ApiService, OrderReceipt] }
+    ]
 })
 export class AcquisitionModule { }

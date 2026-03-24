@@ -17,11 +17,13 @@
  */
 import { Component, Input } from '@angular/core';
 import { IPatronPermission } from 'projects/admin/src/app/api/permission-api.service';
+import { NgClass, KeyValuePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-patron-permission',
     templateUrl: './patron-permission.component.html',
-    standalone: false
+    imports: [NgClass, KeyValuePipe, TranslatePipe]
 })
 export class PatronPermissionComponent {
 

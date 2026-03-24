@@ -16,11 +16,12 @@
  */
 import { Component, Input } from '@angular/core';
 import { PatronTransaction } from '../../../../../classes/patron-transaction';
+import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-default-transaction-detail',
     templateUrl: './default-transaction-detail.component.html',
-    standalone: false
+    imports: [TranslateDirective]
 })
 export class DefaultTransactionDetailComponent {
 

@@ -16,6 +16,7 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'admin-vendor-brief-view',
@@ -39,7 +40,7 @@ import { Component, Input, OnInit } from '@angular/core';
     }
   `,
     styleUrls: [],
-    standalone: false
+    imports: [RouterLink]
 })
 export class VendorBriefViewComponent implements OnInit {
 

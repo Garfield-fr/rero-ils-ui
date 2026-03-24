@@ -15,6 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { KeyExistsPipe } from '@rero/shared';
+import { KeyExistsPipe as KeyExistsPipe_1 } from '../../../../../../shared/src/lib/pipe/key-exists.pipe';
 
 @Component({
     selector: 'admin-record-masked',
@@ -36,7 +40,7 @@ import { Component, Input } from '@angular/core';
       }
     }
   `,
-    standalone: false
+    imports: [NgClass, TranslateDirective, TranslatePipe, KeyExistsPipe, KeyExistsPipe_1]
 })
 export class RecordMaskedComponent {
 

@@ -16,11 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CirculationLogComponent } from '../circulation-log.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circulation-log-loan',
     templateUrl: './circulation-log-loan.component.html',
-    standalone: false
+    imports: [CirculationLogComponent, Bind, Tag, RouterLink, AsyncPipe, TranslatePipe, GetRecordPipe]
 })
 export class CirculationLogLoanComponent {
 
