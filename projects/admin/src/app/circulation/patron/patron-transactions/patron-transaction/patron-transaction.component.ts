@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
@@ -40,7 +40,8 @@ import { Select } from 'primeng/select';
 @Component({
     selector: 'admin-patron-transaction',
     templateUrl: './patron-transaction.component.html',
-    imports: [NgClass, OpenCloseButtonComponent, FormsModule, TranslateDirective, OverdueTransactionDetailComponent, DefaultTransactionDetailComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe, Select]
+    imports: [NgClass, OpenCloseButtonComponent, FormsModule, TranslateDirective, OverdueTransactionDetailComponent, DefaultTransactionDetailComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe, Select],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionComponent implements OnChanges {
 

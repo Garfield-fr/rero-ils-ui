@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Location } from '@angular/common';
-import { Component, ElementRef, inject, input, DOCUMENT } from '@angular/core';
+import { Component, ElementRef, inject, input, DOCUMENT, ChangeDetectionStrategy} from '@angular/core';
 import { AbstractControl, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
@@ -49,7 +49,8 @@ export function fieldPasswordMatchValidator(control: AbstractControl) {
     selector: 'public-search-patron-profile-password',
     templateUrl: './patron-profile-password.component.html',
     standalone: true,
-    imports: [ReactiveFormsModule, FormlyModule, FormlyPrimeNGModule, TranslatePipe, LoadingBarModule, ButtonModule]
+    imports: [ReactiveFormsModule, FormlyModule, FormlyPrimeNGModule, TranslatePipe, LoadingBarModule, ButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfilePasswordComponent {
 

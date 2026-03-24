@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
@@ -42,7 +42,8 @@ import { Button } from 'primeng/button';
       }
     </div>
   `,
-    imports: [Bind, Button, TranslatePipe]
+    imports: [Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);

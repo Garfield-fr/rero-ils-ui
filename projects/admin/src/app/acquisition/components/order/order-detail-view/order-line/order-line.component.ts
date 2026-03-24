@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
@@ -36,7 +36,8 @@ import { NoteBadgeColorPipe } from '../../../../pipes/note-badge-color.pipe';
 @Component({
     selector: 'admin-order-line',
     templateUrl: './order-line.component.html',
-    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, OverlayBadge, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, TranslatePipe, NoteBadgeColorPipe]
+    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, OverlayBadge, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, TranslatePipe, NoteBadgeColorPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderLineComponent implements OnInit, OnDestroy {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);

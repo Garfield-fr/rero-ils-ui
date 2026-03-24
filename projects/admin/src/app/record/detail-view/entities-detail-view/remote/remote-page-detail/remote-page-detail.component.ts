@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { AppSettingsService, Entity } from '@rero/shared';
 import { Bind } from 'primeng/bind';
@@ -24,7 +24,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-remote-page-detail',
     templateUrl: './remote-page-detail.component.html',
-    imports: [DetailButtonComponent, Bind, Button, ErrorComponent, TranslatePipe]
+    imports: [DetailButtonComponent, Bind, Button, ErrorComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemotePageDetailComponent extends DetailComponent {
 

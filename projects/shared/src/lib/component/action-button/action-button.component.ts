@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy} from '@angular/core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
@@ -71,7 +71,8 @@ import { Nl2brPipe } from '@rero/ng-core';
       </ng-template>
     }
   `,
-    imports: [Bind, Button, Tooltip, RouterLink, NgClass, Nl2brPipe]
+    imports: [Bind, Button, Tooltip, RouterLink, NgClass, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ActionButtonComponent {
   label = input<string>();

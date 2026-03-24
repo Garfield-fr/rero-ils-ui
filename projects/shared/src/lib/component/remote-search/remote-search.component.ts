@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnDestroy, OnInit, DOCUMENT, input } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, DOCUMENT, input, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
 import type { AutoCompleteRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
@@ -28,7 +28,8 @@ import { SearchAutocompleteComponent, UpperCaseFirstPipe } from '@rero/ng-core';
     selector: 'shared-remote-search',
     templateUrl: './remote-search.component.html',
     providers: [RemoteSearchConfig],
-    imports: [SearchAutocompleteComponent, TranslatePipe, UpperCaseFirstPipe]
+    imports: [SearchAutocompleteComponent, TranslatePipe, UpperCaseFirstPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteSearchComponent implements OnInit, OnDestroy {
 

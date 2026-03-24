@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Location } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject, ChangeDetectionStrategy} from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -36,7 +36,8 @@ import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
     selector: 'public-search-patron-profile-personal-editor',
     templateUrl: './patron-profile-personal-editor.component.html',
     standalone: true,
-    imports: [ReactiveFormsModule, FormlyModule, FormlyPrimeNGModule, TranslatePipe, LoadingBarModule, ButtonModule, ToastModule]
+    imports: [ReactiveFormsModule, FormlyModule, FormlyPrimeNGModule, TranslatePipe, LoadingBarModule, ButtonModule, ToastModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input, OnChanges, output, SimpleChanges } from '@angular/core';
+import { Component, input, OnChanges, output, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 
@@ -30,7 +30,8 @@ import { Button } from 'primeng/button';
     (onClick)="updateStatus()"
   />
   `,
-    imports: [Bind, Button]
+    imports: [Bind, Button],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OpenCloseButtonComponent implements OnChanges {
 

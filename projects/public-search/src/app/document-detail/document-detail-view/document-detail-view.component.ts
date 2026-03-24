@@ -16,7 +16,7 @@
  */
 
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateDirective, TranslateService } from '@ngx-translate/core';
 import { AppSettingsService, SharedModule } from '@rero/shared';
@@ -29,7 +29,8 @@ import { ElectronicHoldingsComponent } from './holdings/electronic-holdings/elec
 @Component({
     selector: 'public-search-document-detail-vew',
     templateUrl: './document-detail-view.component.html',
-    imports: [LoadingBarModule, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, SharedModule, HoldingsComponent, ElectronicHoldingsComponent, NgClass, AsyncPipe]
+    imports: [LoadingBarModule, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, SharedModule, HoldingsComponent, ElectronicHoldingsComponent, NgClass, AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailViewComponent implements OnInit {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);

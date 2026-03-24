@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -29,7 +29,8 @@ import { CardModule } from 'primeng/card';
 @Component({
     selector: 'admin-history',
     templateUrl: './history.component.html',
-    imports: [TranslateDirective, HistoryLogComponent, AsyncPipe, TranslatePipe, CardModule]
+    imports: [TranslateDirective, HistoryLogComponent, AsyncPipe, TranslatePipe, CardModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryComponent implements OnInit {
 

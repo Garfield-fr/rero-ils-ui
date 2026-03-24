@@ -15,14 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { DocumentApiService } from '../api/document-api.service';
 import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
 
 @Component({
     selector: 'public-search-document-brief',
     templateUrl: './document-brief.component.html',
-    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe]
+    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentBriefComponent {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -27,7 +27,8 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-patron-transaction-history',
     templateUrl: './patron-transaction-history.component.html',
-    imports: [Bind, Timeline, NgClass, Tag, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe]
+    imports: [Bind, Timeline, NgClass, Tag, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionHistoryComponent {
 

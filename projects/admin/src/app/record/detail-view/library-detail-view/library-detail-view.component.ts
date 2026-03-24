@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { RecordService, UpperCaseFirstPipe } from '@rero/ng-core';
 
 import type { EsResult } from '@rero/ng-core';
@@ -41,7 +41,8 @@ import { Badge } from 'primeng/badge';
 @Component({
     selector: 'admin-library-detail-view',
     templateUrl: './library-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, Button, RouterLink, AccordionContent, LocationComponent, NgClass, DayOpeningHoursComponent, ExceptionDateComponent, Divider, NgTemplateOutlet, Fieldset, Tag, UpperCaseFirstPipe, TranslatePipe, CountryCodeTranslatePipe, Badge]
+    imports: [TranslateDirective, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, Button, RouterLink, AccordionContent, LocationComponent, NgClass, DayOpeningHoursComponent, ExceptionDateComponent, Divider, NgTemplateOutlet, Fieldset, Tag, UpperCaseFirstPipe, TranslatePipe, CountryCodeTranslatePipe, Badge],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LibraryDetailViewComponent implements OnInit, OnDestroy {
 

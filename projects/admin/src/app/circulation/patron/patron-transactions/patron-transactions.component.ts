@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, model, ModelSignal, OnDestroy, OnInit, WritableSignal } from '@angular/core';
+import { Component, computed, inject, model, ModelSignal, OnDestroy, OnInit, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -42,7 +42,8 @@ import { CurrencyPipe } from '@angular/common';
 @Component({
     selector: 'admin-patron-transactions',
     templateUrl: './patron-transactions.component.html',
-    imports: [Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, TranslateDirective, Tag, AccordionContent, Button, SplitButton, PatronTransactionComponent, OverdueTransactionComponent, CurrencyPipe, TranslatePipe]
+    imports: [Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, TranslateDirective, Tag, AccordionContent, Button, SplitButton, PatronTransactionComponent, OverdueTransactionComponent, CurrencyPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionsComponent implements OnInit, OnDestroy {
 

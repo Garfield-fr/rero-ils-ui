@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { EntityLinkComponent } from '../entity-link.component';
 import { ArrayTranslatePipe } from '../../pipe/array-translate.pipe';
@@ -25,7 +25,8 @@ import { JoinPipe } from '../../pipe/join.pipe';
 @Component({
     selector: 'shared-contribution',
     templateUrl: './contribution.component.html',
-    imports: [RouterLink, EntityLinkComponent, ArrayTranslatePipe, EntityLabelPipe, JoinPipe]
+    imports: [RouterLink, EntityLinkComponent, ArrayTranslatePipe, EntityLabelPipe, JoinPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContributionComponent {
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { EntitiesLocalGlobalComponent } from '../entities-local-global.component';
 import { TranslateDirective } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
@@ -23,7 +23,8 @@ import { NgClass } from '@angular/common';
 @Component({
     selector: 'admin-local-organisation-detail-view',
     templateUrl: './local-organisation-detail-view.component.html',
-    imports: [EntitiesLocalGlobalComponent, TranslateDirective, NgClass]
+    imports: [EntitiesLocalGlobalComponent, TranslateDirective, NgClass],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocalOrganisationDetailViewComponent {
   /** the current record */

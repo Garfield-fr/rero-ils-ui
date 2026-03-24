@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Library } from '@app/admin/classes/library';
 import { DateValidators } from '@app/admin/utils/validators';
@@ -33,7 +33,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 @Component({
     selector: 'admin-fixed-date-form',
     templateUrl: './fixed-date-form.component.html',
-    imports: [FormsModule, ReactiveFormsModule, NgClass, NgTemplateOutlet, TranslateDirective, Bind, Button, TranslatePipe, DatePickerModule, CheckboxModule]
+    imports: [FormsModule, ReactiveFormsModule, NgClass, NgTemplateOutlet, TranslateDirective, Bind, Button, TranslatePipe, DatePickerModule, CheckboxModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FixedDateFormComponent implements OnInit, OnDestroy {
 

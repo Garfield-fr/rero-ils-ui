@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { RecordService, DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';
@@ -31,7 +31,8 @@ import { Badge } from 'primeng/badge';
 @Component({
     selector: 'admin-pending-item',
     templateUrl: './pending-item.component.html',
-    imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, MainTitlePipe_1, Badge]
+    imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, MainTitlePipe_1, Badge],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PendingItemComponent implements OnInit {
 

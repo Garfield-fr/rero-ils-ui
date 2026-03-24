@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { ItemApiService } from '../../api/item-api.service';
@@ -39,7 +39,8 @@ import { canRequest } from '../model/can-request-model';
     <i class="fa fa-cart-arrow-down ui:mr-2"></i>
     {{ 'Request' | translate }}
   </p-button>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemRequestComponent implements OnInit {
   private itemApiService = inject(ItemApiService);

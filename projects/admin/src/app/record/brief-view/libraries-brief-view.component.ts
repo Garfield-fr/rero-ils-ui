@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { ResultItem  } from '@rero/ng-core';
 import { RouterLink } from '@angular/router';
 
@@ -27,7 +27,8 @@ import { RouterLink } from '@angular/router';
   </h5>
   <small> {{ record.metadata.code }}</small>
   `,
-    imports: [RouterLink]
+    imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LibrariesBriefViewComponent {
 

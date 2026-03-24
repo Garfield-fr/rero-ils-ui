@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -28,7 +28,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'public-search-pickup-location',
     templateUrl: './pickup-location.component.html',
-    imports: [Message, FormsModule, ReactiveFormsModule, FormlyModule, Button, TranslatePipe]
+    imports: [Message, FormsModule, ReactiveFormsModule, FormlyModule, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PickupLocationComponent implements OnInit {
 

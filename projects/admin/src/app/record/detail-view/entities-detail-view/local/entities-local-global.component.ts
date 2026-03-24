@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -38,7 +38,8 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
     }
   </dl>
   `,
-    imports: [TranslateDirective, TranslatePipe]
+    imports: [TranslateDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntitiesLocalGlobalComponent {
   @Input() record: any;

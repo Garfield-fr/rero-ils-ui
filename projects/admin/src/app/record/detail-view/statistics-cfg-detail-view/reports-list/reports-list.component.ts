@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from "@angular/core";
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ApiService, RecordService, DateTranslatePipe } from "@rero/ng-core";
 import { map } from "rxjs/operators";
 import { Bind } from "primeng/bind";
@@ -24,8 +24,10 @@ import { TranslateDirective } from "@ngx-translate/core";
 
 @Component({
     selector: "admin-reports-list",
+    standalone: true,
     templateUrl: "./reports-list.component.html",
-    imports: [Bind, TableModule, ButtonDirective, TranslateDirective, DateTranslatePipe]
+    imports: [Bind, TableModule, ButtonDirective, TranslateDirective, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReportsListComponent implements OnInit {
 

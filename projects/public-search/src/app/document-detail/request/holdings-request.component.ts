@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output, signal, computed } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal, computed, ChangeDetectionStrategy} from '@angular/core';
 import { IPatron, UserService, SharedModule } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
@@ -27,7 +27,8 @@ import { canRequest } from '../model/can-request-model';
 @Component({
     selector: 'public-search-request',
     templateUrl: './holdings-request.component.html',
-    imports: [Button, Tooltip, PickupLocationComponent, TranslatePipe, SharedModule]
+    imports: [Button, Tooltip, PickupLocationComponent, TranslatePipe, SharedModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingsRequestComponent implements OnInit {
 

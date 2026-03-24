@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Item } from '@app/admin/classes/items';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
@@ -29,7 +29,8 @@ import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../../shared
 @Component({
     selector: 'admin-overdue-transaction-detail',
     templateUrl: './overdue-transaction-detail.component.html',
-    imports: [TranslateDirective, RouterLink, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe, MainTitlePipe_1]
+    imports: [TranslateDirective, RouterLink, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe, MainTitlePipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverdueTransactionDetailComponent implements OnInit {
 

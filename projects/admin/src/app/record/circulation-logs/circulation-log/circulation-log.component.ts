@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import { PermissionsService, OpenCloseButtonComponent } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -27,7 +27,8 @@ import { DateTranslatePipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-circulation-log',
     templateUrl: './circulation-log.component.html',
-    imports: [OpenCloseButtonComponent, Bind, Button, ScrollPanel, JsonPipe, TranslatePipe, DateTranslatePipe]
+    imports: [OpenCloseButtonComponent, Bind, Button, ScrollPanel, JsonPipe, TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationLogComponent {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, model, ModelSignal, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, model, ModelSignal, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
@@ -33,7 +33,8 @@ import { BadgeModule } from 'primeng/badge';
 @Component({
     selector: 'admin-main',
     templateUrl: './main.component.html',
-    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CurrencyPipe, TranslatePipe, BadgeModule]
+    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CurrencyPipe, TranslatePipe, BadgeModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainComponent implements OnInit, OnDestroy {
 

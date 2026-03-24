@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, output } from '@angular/core';
+import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -34,7 +34,8 @@ import { GetTranslatedLabelPipe as GetTranslatedLabelPipe_1 } from '../../../../
 @Component({
     selector: 'admin-holding-header',
     templateUrl: './holding-header.component.html',
-    imports: [RecordMaskedComponent, Bind, Button, RouterLink, Tooltip, HoldingDetailComponent, TranslatePipe, GetTranslatedLabelPipe, Nl2brPipe, GetTranslatedLabelPipe_1]
+    imports: [RecordMaskedComponent, Bind, Button, RouterLink, Tooltip, HoldingDetailComponent, TranslatePipe, GetTranslatedLabelPipe, Nl2brPipe, GetTranslatedLabelPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingHeaderComponent implements OnInit {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { _, TranslatePipe } from "@ngx-translate/core";
 import { NgCoreTranslateService, DateTranslatePipe } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
@@ -31,7 +31,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'shared-operation-logs',
     templateUrl: './operation-logs.component.html',
-    imports: [Bind, TableModule, Button, DateTranslatePipe, TranslatePipe]
+    imports: [Bind, TableModule, Button, DateTranslatePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OperationLogsComponent implements OnInit {
 

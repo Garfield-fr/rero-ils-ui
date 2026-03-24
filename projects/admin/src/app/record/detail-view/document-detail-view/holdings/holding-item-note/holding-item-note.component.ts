@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { ItemNote } from '@app/admin/classes/items';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -28,7 +28,8 @@ import { TranslatePipe } from '@ngx-translate/core';
       </dl>
     }
   `,
-    imports: [TranslatePipe]
+    imports: [TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingItemNoteComponent {
   /** the item note */

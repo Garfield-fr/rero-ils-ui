@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Router } from '@angular/router';
 import { OperationLogsService } from '@rero/shared';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -35,7 +35,8 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'admin-entities-local-detail-view',
     templateUrl: './entities-local-detail-view.component.html',
-    imports: [Bind, Tag, Panel, TranslateDirective, LocalOrganisationDetailViewComponent, LocalPersonDetailViewComponent, LocalPlaceDetailViewComponent, LocalTopicDetailViewComponent, LocalWorkDetailViewComponent, AsyncPipe, TranslatePipe]
+    imports: [Bind, Tag, Panel, TranslateDirective, LocalOrganisationDetailViewComponent, LocalPersonDetailViewComponent, LocalPlaceDetailViewComponent, LocalTopicDetailViewComponent, LocalWorkDetailViewComponent, AsyncPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntitiesLocalDetailViewComponent implements OnInit {
 

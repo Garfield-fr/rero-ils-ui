@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { IPatronPermission, PermissionApiService } from 'projects/admin/src/app/api/permission-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -25,7 +25,8 @@ import { PatronPermissionComponent } from './patron-permission/patron-permission
 @Component({
     selector: 'admin-patron-permissions',
     templateUrl: './patron-permissions.component.html',
-    imports: [TranslateDirective, Bind, InputText, PatronPermissionComponent, TranslatePipe]
+    imports: [TranslateDirective, Bind, InputText, PatronPermissionComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronPermissionsComponent implements OnChanges {
 

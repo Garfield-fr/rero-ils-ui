@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { FieldArrayType, FormlyModule } from '@ngx-formly/core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -49,6 +49,7 @@ import { Button } from 'primeng/button';
       </div>
     }
   `,
-    imports: [FormlyModule, Bind, Button]
+    imports: [FormlyModule, Bind, Button],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RepeatTypeComponent extends FieldArrayType { }

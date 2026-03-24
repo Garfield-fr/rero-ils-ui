@@ -17,7 +17,7 @@
 
 import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
@@ -52,7 +52,8 @@ export type File = {
 @Component({
     selector: 'shared-doc-files',
     templateUrl: './files.component.html',
-    imports: [Bind, Tag, RouterLink, FormsModule, Carousel, NgClass, Paginator, Dialog, InputGroup, InputGroupAddon, AsyncPipe, TranslatePipe, FaIconClassPipe]
+    imports: [Bind, Tag, RouterLink, FormsModule, Carousel, NgClass, Paginator, Dialog, InputGroup, InputGroupAddon, AsyncPipe, TranslatePipe, FaIconClassPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilesComponent implements OnInit, OnDestroy {
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -41,7 +41,8 @@ import { Nl2brPipe } from '@rero/ng-core';
     <span [innerHtml]="record.metadata.description | nl2br"></span>
   }
   `,
-    imports: [RouterLink, Bind, Tag, TranslatePipe, Nl2brPipe]
+    imports: [RouterLink, Bind, Tag, TranslatePipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CircPoliciesBriefViewComponent {
 

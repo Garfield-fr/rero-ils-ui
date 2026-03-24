@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { AcqNoteType } from '../../../classes/common';
 import { AcqOrderStatus, IAcqOrder, orderDefaultData } from '../../../classes/order';
 import { RouterLink } from '@angular/router';
@@ -29,7 +29,8 @@ import { NotesFilterPipe as NotesFilterPipe_1 } from '../../../../../../../share
 @Component({
     selector: 'admin-acquisition-order-brief-view',
     templateUrl: './order-brief-view.component.html',
-    imports: [RouterLink, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, NotesFilterPipe, TruncateTextPipe, TranslatePipe, NotesFilterPipe_1]
+    imports: [RouterLink, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, NotesFilterPipe, TruncateTextPipe, TranslatePipe, NotesFilterPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderBriefViewComponent implements OnInit {
 

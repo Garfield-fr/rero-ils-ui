@@ -14,14 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-import-record-search',
     templateUrl: './import-record-search.component.html',
-    imports: [RecordSearchPageComponent]
+    imports: [RecordSearchPageComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImportRecordSearchComponent implements OnInit {
   private _route = inject(ActivatedRoute);

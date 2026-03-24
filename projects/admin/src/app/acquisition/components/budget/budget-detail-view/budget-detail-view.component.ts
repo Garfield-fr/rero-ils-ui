@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 
 import { Observable, Subscription } from 'rxjs';
@@ -28,7 +28,8 @@ import { MessageModule } from 'primeng/message';
 @Component({
     selector: 'admin-budget-detail-view',
     templateUrl: './budget-detail-view.component.html',
-    imports: [TranslateDirective, AsyncPipe, CurrencyPipe, TranslatePipe, MessageModule]
+    imports: [TranslateDirective, AsyncPipe, CurrencyPipe, TranslatePipe, MessageModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BudgetDetailViewComponent implements OnInit, OnDestroy {
 

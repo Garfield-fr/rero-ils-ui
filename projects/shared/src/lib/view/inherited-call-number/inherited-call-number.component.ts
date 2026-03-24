@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ItemHoldingsCallNumberPipe } from '../../pipe/item-holdings-call-number.pipe';
@@ -22,7 +22,8 @@ import { ItemHoldingsCallNumberPipe } from '../../pipe/item-holdings-call-number
 @Component({
     selector: 'shared-inherited-call-number',
     templateUrl: './inherited-call-number.component.html',
-    imports: [AsyncPipe, TranslatePipe, ItemHoldingsCallNumberPipe]
+    imports: [AsyncPipe, TranslatePipe, ItemHoldingsCallNumberPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InheritedCallNumberComponent implements OnInit {
 

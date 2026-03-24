@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Entity } from '@rero/shared';
 import { IEntityRelated } from './entities-related.interface';
@@ -25,7 +25,8 @@ import { UpperCaseFirstPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-entities-related',
     templateUrl: './entities-related.component.html',
-    imports: [RouterLink, TranslateDirective, KeyValuePipe, UpperCaseFirstPipe, TranslatePipe]
+    imports: [RouterLink, TranslateDirective, KeyValuePipe, UpperCaseFirstPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntitiesRelatedComponent implements OnInit {
 

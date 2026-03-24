@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, Input, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, Input, OnInit, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -31,7 +31,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-patron-transaction-events-brief-view',
     templateUrl: './patron-transaction-events-brief-view.component.html',
-    imports: [PatronTransactionEventOverdueComponent, PatronTransactionEventDefaultComponent, Bind, Tag, CurrencyPipe, DatePipe, TranslatePipe]
+    imports: [PatronTransactionEventOverdueComponent, PatronTransactionEventDefaultComponent, Bind, Tag, CurrencyPipe, DatePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionEventsBriefViewComponent implements OnInit {
 

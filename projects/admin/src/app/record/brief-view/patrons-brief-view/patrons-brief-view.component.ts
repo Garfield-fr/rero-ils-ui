@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
@@ -29,7 +29,8 @@ import { DateTranslatePipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-patrons-brief-view',
     templateUrl: './patrons-brief-view.component.html',
-    imports: [RouterLink, Bind, Button, Tag, TranslatePipe, DateTranslatePipe]
+    imports: [RouterLink, Bind, Button, Tag, TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronsBriefViewComponent {
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { LoanState } from '@app/admin/classes/loans';
 import { RecordService, DateTranslatePipe } from '@rero/ng-core';
 import { NgClass } from '@angular/common';
@@ -30,7 +30,8 @@ import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../../shared/s
 @Component({
     selector: 'admin-requested-item',
     templateUrl: './requested-item.component.html',
-    imports: [NgClass, OpenCloseButtonComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, Bind, Button, TranslateDirective, DateTranslatePipe, IdAttributePipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1, IdAttributePipe_1]
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, Bind, Button, TranslateDirective, DateTranslatePipe, IdAttributePipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1, IdAttributePipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RequestedItemComponent implements OnInit {
 

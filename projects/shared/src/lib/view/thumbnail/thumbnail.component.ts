@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, input } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
     selector: 'shared-thumbnail',
     templateUrl: './thumbnail.component.html',
-    imports: [NgClass, TranslatePipe]
+    imports: [NgClass, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ThumbnailComponent {
 

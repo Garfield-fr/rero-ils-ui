@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
@@ -52,7 +52,8 @@ import { Badge } from 'primeng/badge';
 @Component({
     selector: 'admin-libraries-library',
     templateUrl: './library.component.html',
-    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, InputText, InputGroup, InputGroupAddon, Select, NgClass, ToggleSwitch, Button, ExceptionDatesListComponent, InputNumber, Tooltip, Divider, Tabs, TabList, Tab, TabPanels, TabPanel, NgTemplateOutlet, Fieldset, Tag, TitleCasePipe, UpperCaseFirstPipe, TranslatePipe, NotificationTypePipe, Badge]
+    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, InputText, InputGroup, InputGroupAddon, Select, NgClass, ToggleSwitch, Button, ExceptionDatesListComponent, InputNumber, Tooltip, Divider, Tabs, TabList, Tab, TabPanels, TabPanel, NgTemplateOutlet, Fieldset, Tag, TitleCasePipe, UpperCaseFirstPipe, TranslatePipe, NotificationTypePipe, Badge],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LibraryComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
@@ -50,7 +50,8 @@ import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
         </div>
     </div>
   `,
-    imports: [NgClass, RouterLink, DateTranslatePipe, Nl2brPipe]
+    imports: [NgClass, RouterLink, DateTranslatePipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionBriefViewComponent {
 

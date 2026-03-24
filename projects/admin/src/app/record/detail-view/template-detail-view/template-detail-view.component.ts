@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RecordService, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 import { Observable, of, Subscription } from 'rxjs';
@@ -24,7 +24,8 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'admin-template-detail-view',
     templateUrl: './template-detail-view.component.html',
-    imports: [TranslateDirective, AsyncPipe, GetRecordPipe, Nl2brPipe]
+    imports: [TranslateDirective, AsyncPipe, GetRecordPipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TemplateDetailViewComponent implements OnInit, OnDestroy {
 

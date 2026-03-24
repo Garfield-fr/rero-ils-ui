@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { I18nPluralPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { ArrayTranslatePipe, IOrganisation, JoinPipe, OpenCloseButtonComponent } from '@rero/shared';
@@ -48,7 +48,8 @@ import { PatronProfileDocumentComponent } from '../../patron-profile-document/pa
       TooltipModule,
       PatronProfileDocumentComponent,
       NgTemplateOutlet,
-    ]
+    ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileLoanComponent implements OnInit {
 

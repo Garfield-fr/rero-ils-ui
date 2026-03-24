@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnChanges, OnInit, input } from '@angular/core';
+import { Component, inject, OnChanges, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { IAvailability } from '../../interface/i-availability';
 import { IAvailabilityService } from '../../service/i-availability.service';
@@ -26,7 +26,8 @@ import { GetTranslatedLabelPipe } from '../../pipe/get-translated-label.pipe';
 @Component({
     selector: 'shared-availability',
     templateUrl: './availability.component.html',
-    imports: [NgClass, DateTranslatePipe, TranslatePipe, GetTranslatedLabelPipe]
+    imports: [NgClass, DateTranslatePipe, TranslatePipe, GetTranslatedLabelPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AvailabilityComponent implements OnInit, OnChanges {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
@@ -32,7 +32,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-user-id-editor',
     templateUrl: './user-id-editor.component.html',
-    imports: [SearchInputComponent, Bind, Divider, FormsModule, ReactiveFormsModule, Button, FormlyModule, TranslatePipe]
+    imports: [SearchInputComponent, Bind, Divider, FormsModule, ReactiveFormsModule, Button, FormlyModule, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserIdEditorComponent implements OnInit {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service';
@@ -23,7 +23,8 @@ import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service'
     selector: 'public-search-patron-profile-menu',
     templateUrl: './patron-profile-menu.component.html',
     standalone: true,
-    imports: [FormsModule, SelectModule]
+    imports: [FormsModule, SelectModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileMenuComponent {
 

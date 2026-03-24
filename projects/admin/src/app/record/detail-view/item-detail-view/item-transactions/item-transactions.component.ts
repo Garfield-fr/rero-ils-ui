@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
@@ -32,7 +32,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-item-transactions',
     templateUrl: './item-transactions.component.html',
-    imports: [Bind, Panel, PermissionsDirective, TranslateDirective, ItemTransactionComponent, Button, TranslatePipe]
+    imports: [Bind, Panel, PermissionsDirective, TranslateDirective, ItemTransactionComponent, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemTransactionsComponent implements OnInit, OnDestroy {
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
@@ -44,6 +44,7 @@ import { ReceiptLineTotalAmountPipe } from '../../../pipes/receipt-line-total-am
         TranslatePipe,
         ReceiptLineTotalAmountPipe,
     ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiptLineComponent {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);

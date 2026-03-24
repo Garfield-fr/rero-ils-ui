@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { extractIdOnRef } from '@rero/ng-core';
@@ -26,7 +26,8 @@ import { ItemSwitchLocationComponent } from '../item-switch-location/item-switch
 @Component({
     selector: 'admin-item-switch-location-standalone',
     templateUrl: './item-switch-location-standalone.component.html',
-    imports: [ItemSwitchLocationComponent]
+    imports: [ItemSwitchLocationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemSwitchLocationStandaloneComponent implements OnInit {
 

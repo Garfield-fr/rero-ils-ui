@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -39,7 +39,8 @@ import { ReceptionDatesPipe } from '../../../pipes/reception-dates.pipe';
 @Component({
     selector: 'admin-receipt-summary',
     templateUrl: './receipt-summary.component.html',
-    imports: [OpenCloseButtonComponent, Bind, Tag, ActionButtonComponent, RouterLink, ReceiptLineComponent, NotesComponent, CurrencyPipe, I18nPluralPipe, TranslatePipe, NoteBadgeColorPipe, ReceptionDatesPipe]
+    imports: [OpenCloseButtonComponent, Bind, Tag, ActionButtonComponent, RouterLink, ReceiptLineComponent, NotesComponent, CurrencyPipe, I18nPluralPipe, TranslatePipe, NoteBadgeColorPipe, ReceptionDatesPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
 

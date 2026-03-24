@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import type { ToastMessageOptions } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
 import { Subscription } from 'rxjs';
@@ -34,7 +34,8 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
     }
   `,
     standalone: true,
-    imports: [MessageModule]
+    imports: [MessageModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileMessageComponent implements OnInit, OnDestroy {
   private patronApiService: PatronApiService = inject(PatronApiService);

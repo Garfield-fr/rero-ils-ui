@@ -1,2 +1,1 @@
-import 'zone.js';
-import 'zone.js/testing';
+// zone.js removed — using provideZonelessChangeDetection()

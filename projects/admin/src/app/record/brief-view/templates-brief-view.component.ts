@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
@@ -49,7 +49,8 @@ import { TruncateTextPipe, GetRecordPipe } from '@rero/ng-core';
       }
     </ul>
   `,
-    imports: [RouterLink, TranslateDirective, AsyncPipe, TruncateTextPipe, TranslatePipe, GetRecordPipe]
+    imports: [RouterLink, TranslateDirective, AsyncPipe, TruncateTextPipe, TranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TemplatesBriefViewComponent {
 

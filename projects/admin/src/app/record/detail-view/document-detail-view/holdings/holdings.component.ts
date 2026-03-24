@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { EsRecord } from 'projects/shared/src/public-api';
 import { HoldingsStore } from './store/holdings-store';
 import { MenuActionsComponent } from './menu-actions/menu-actions.component';
@@ -30,7 +30,8 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
     selector: 'admin-holdings',
     templateUrl: './holdings.component.html',
     providers: [HoldingsStore],
-    imports: [MenuActionsComponent, Bind, MultiSelect, Accordion, AccordionPanel, Ripple, AccordionHeader, HoldingHeaderComponent, AccordionContent, HoldingContentComponent, TranslateDirective, TranslatePipe]
+    imports: [MenuActionsComponent, Bind, MultiSelect, Accordion, AccordionPanel, Ripple, AccordionHeader, HoldingHeaderComponent, AccordionContent, HoldingContentComponent, TranslateDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingsComponent implements OnInit {
 

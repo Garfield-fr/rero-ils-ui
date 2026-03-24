@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -25,7 +25,8 @@ import { GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-location-detail-view',
     templateUrl: './location-detail-view.component.html',
-    imports: [TranslateDirective, NgClass, NgStyle, AsyncPipe, TranslatePipe, GetRecordPipe]
+    imports: [TranslateDirective, NgClass, NgStyle, AsyncPipe, TranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationDetailViewComponent implements OnInit, OnDestroy {
 

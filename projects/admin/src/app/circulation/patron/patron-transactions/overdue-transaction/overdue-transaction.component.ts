@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Item } from '@app/admin/classes/items';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
@@ -32,7 +32,8 @@ import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../shared/sr
 @Component({
     selector: 'admin-overdue-transaction',
     templateUrl: './overdue-transaction.component.html',
-    imports: [OpenCloseButtonComponent, RouterLink, TranslateDirective, InheritedCallNumberComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe, MainTitlePipe_1]
+    imports: [OpenCloseButtonComponent, RouterLink, TranslateDirective, InheritedCallNumberComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe, MainTitlePipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverdueTransactionComponent implements OnInit {
 

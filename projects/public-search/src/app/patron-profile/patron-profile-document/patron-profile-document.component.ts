@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateDirective } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
@@ -27,7 +27,8 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
     selector: 'public-search-patron-profile-document',
     templateUrl: './patron-profile-document.component.html',
     standalone: true,
-    imports: [TranslateDirective, ContributionComponent, MainTitlePipe, TagModule]
+    imports: [TranslateDirective, ContributionComponent, MainTitlePipe, TagModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileDocumentComponent {
 

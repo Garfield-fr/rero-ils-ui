@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import { IssueService } from '@app/admin/service/issue.service';
 import { OperationLogsService, OperationLogsDialogComponent } from '@rero/shared';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -30,7 +30,8 @@ import { ItemDetailViewComponent } from '../item-detail-view.component';
 @Component({
     selector: 'admin-item-page-detail',
     templateUrl: './item-page-detail.component.html',
-    imports: [DetailButtonComponent, Bind, Button, TranslateDirective, OperationLogsDialogComponent, ItemDetailViewComponent, ErrorComponent, TranslatePipe]
+    imports: [DetailButtonComponent, Bind, Button, TranslateDirective, OperationLogsDialogComponent, ItemDetailViewComponent, ErrorComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemPageDetailComponent extends DetailComponent implements OnInit, OnDestroy {
   private operationLogsService: OperationLogsService = inject(OperationLogsService);

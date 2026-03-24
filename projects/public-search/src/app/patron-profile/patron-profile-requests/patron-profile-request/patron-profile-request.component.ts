@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { OpenCloseButtonComponent } from '@rero/shared';
@@ -30,7 +30,8 @@ import { PatronProfileDocumentComponent } from '../../patron-profile-document/pa
     selector: 'public-search-patron-profile-request',
     templateUrl: './patron-profile-request.component.html',
     standalone: true,
-    imports: [NgClass, NgTemplateOutlet, TranslateDirective, TranslatePipe, DateTranslatePipe, OpenCloseButtonComponent, ButtonModule, PatronProfileDocumentComponent]
+    imports: [NgClass, NgTemplateOutlet, TranslateDirective, TranslatePipe, DateTranslatePipe, OpenCloseButtonComponent, ButtonModule, PatronProfileDocumentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileRequestComponent {
 

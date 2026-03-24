@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
@@ -26,7 +26,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-libraries-exception-dates-list',
     templateUrl: './exception-dates-list.component.html',
-    imports: [ExceptionDateComponent, Bind, Button, TranslatePipe]
+    imports: [ExceptionDateComponent, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExceptionDatesListComponent {
 

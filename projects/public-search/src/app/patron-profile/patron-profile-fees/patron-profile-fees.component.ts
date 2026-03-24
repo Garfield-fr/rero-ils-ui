@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
@@ -31,7 +31,8 @@ import { fee, overdueFee } from './types';
     selector: 'public-search-patron-profile-fees',
     templateUrl: './patron-profile-fees.component.html',
     standalone: true,
-    imports: [CurrencyPipe, TranslateDirective, TranslatePipe, PanelModule, PatronProfileFeeComponent]
+    imports: [CurrencyPipe, TranslateDirective, TranslatePipe, PanelModule, PatronProfileFeeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileFeesComponent implements OnInit {
 

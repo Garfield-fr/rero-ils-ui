@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { RecordService, DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';
@@ -30,7 +30,8 @@ import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../shared/sr
 @Component({
     selector: 'admin-pickup-item',
     templateUrl: './pickup-item.component.html',
-    imports: [RouterLink, Bind, Tag, ContributionComponent, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1]
+    imports: [RouterLink, Bind, Tag, ContributionComponent, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PickupItemComponent implements OnInit {
 

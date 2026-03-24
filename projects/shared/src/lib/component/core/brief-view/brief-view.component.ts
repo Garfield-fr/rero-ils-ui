@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterContentInit, Component, ContentChildren, QueryList, TemplateRef, input } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, QueryList, TemplateRef, input, ChangeDetectionStrategy} from '@angular/core';
 import { ReroTemplateDirective } from '../../../directive/rero-template.directive';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -30,7 +30,8 @@ export type BriefViewTag = {
 @Component({
     selector: 'shared-brief-view',
     templateUrl: './brief-view.component.html',
-    imports: [NgTemplateOutlet, RouterLink, Bind, Tag]
+    imports: [NgTemplateOutlet, RouterLink, Bind, Tag],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BriefViewComponent implements AfterContentInit {
 

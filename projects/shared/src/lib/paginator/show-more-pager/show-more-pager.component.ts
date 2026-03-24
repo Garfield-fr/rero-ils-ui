@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { Paginator } from '../paginator';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -23,7 +23,8 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'shared-search-show-more-pager',
     templateUrl: './show-more-pager.component.html',
-    imports: [Bind, Button, TranslateDirective, TranslatePipe]
+    imports: [Bind, Button, TranslateDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowMorePagerComponent {
 

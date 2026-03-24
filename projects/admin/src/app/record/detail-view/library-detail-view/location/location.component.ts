@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordUiService } from '@rero/ng-core';
 import { RouterLink } from '@angular/router';
@@ -26,7 +26,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-location',
     templateUrl: './location.component.html',
-    imports: [RouterLink, Tooltip, Bind, Button, TranslatePipe]
+    imports: [RouterLink, Tooltip, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationComponent implements OnInit {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -33,7 +33,8 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-item-transaction',
     templateUrl: './item-transaction.component.html',
-    imports: [RouterLink, Bind, Select, FormsModule, Button, Tooltip, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe]
+    imports: [RouterLink, Bind, Select, FormsModule, Button, Tooltip, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemTransactionComponent implements OnInit, OnDestroy {
 

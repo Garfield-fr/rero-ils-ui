@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription, switchMap, tap } from 'rxjs';
 import { PatronService } from '../../../service/patron.service';
@@ -32,7 +32,8 @@ import { JoinPipe as JoinPipe_1 } from '../../../../../../shared/src/lib/pipe/jo
 @Component({
     selector: 'admin-profile',
     templateUrl: './profile.component.html',
-    imports: [TranslateDirective, NgClass, NgPlural, NgPluralCase, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, JoinPipe, TranslatePipe, JoinPipe_1]
+    imports: [TranslateDirective, NgClass, NgPlural, NgPluralCase, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, JoinPipe, TranslatePipe, JoinPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 

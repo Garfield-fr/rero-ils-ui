@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { IPatronPermission } from 'projects/admin/src/app/api/permission-api.service';
 import { NgClass, KeyValuePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -23,7 +23,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-patron-permission',
     templateUrl: './patron-permission.component.html',
-    imports: [NgClass, KeyValuePipe, TranslatePipe]
+    imports: [NgClass, KeyValuePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronPermissionComponent {
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -41,7 +41,8 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 @Component({
     selector: 'admin-account-transfer',
     templateUrl: './account-transfer.component.html',
-    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, RouterLink, Bind, Button, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, SelectModule, CardModule, RadioButtonModule, InputGroupModule, InputGroupAddonModule]
+    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, RouterLink, Bind, Button, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, SelectModule, CardModule, RadioButtonModule, InputGroupModule, InputGroupAddonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountTransferComponent implements OnInit, OnDestroy {
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);

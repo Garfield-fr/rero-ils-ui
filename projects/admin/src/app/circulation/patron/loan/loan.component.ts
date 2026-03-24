@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
 import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
@@ -47,6 +47,7 @@ import { SelectModule } from 'primeng/select';
         TranslatePipe,
         SelectModule,
     ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoanComponent implements OnInit, OnDestroy {
   private itemsService: ItemsService = inject(ItemsService);

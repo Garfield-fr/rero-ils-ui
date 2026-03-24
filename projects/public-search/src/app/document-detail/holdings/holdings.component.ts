@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { I18nPluralPipe, NgClass } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { HoldingsNoteType, SharedModule, UserService } from '@rero/shared';
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
@@ -32,7 +32,8 @@ import { MultiSelect } from 'primeng/multiselect';
     selector: 'public-search-holdings',
     templateUrl: './holdings.component.html',
     imports: [Message, Accordion, AccordionPanel, Ripple, AccordionHeader, SharedModule, TranslateDirective, AccordionContent, ItemsComponent, HoldingsRequestComponent, NgClass, ButtonDirective, I18nPluralPipe, TranslatePipe, MultiSelect],
-    providers: [HoldingsStore]
+    providers: [HoldingsStore],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingsComponent implements OnInit {
 

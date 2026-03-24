@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { ProvisionActivityType, OperationLogsApiService, OpenCloseButtonComponent, ContributionComponent } from '@rero/shared';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
@@ -28,7 +28,8 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-history-log',
     templateUrl: './history-log.component.html',
-    imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, Timeline, NgClass, NgTemplateOutlet, AsyncPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe]
+    imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, Timeline, NgClass, NgTemplateOutlet, AsyncPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryLogComponent {
 

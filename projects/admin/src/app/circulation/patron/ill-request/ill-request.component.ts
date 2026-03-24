@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { IllRequestApiService } from '@app/admin/api/ill-request-api.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { Observable, of } from 'rxjs';
@@ -28,7 +28,8 @@ import { CardModule } from 'primeng/card';
 @Component({
     selector: 'admin-ill-request',
     templateUrl: './ill-request.component.html',
-    imports: [TranslateDirective, IllRequestItemComponent, AsyncPipe, CardModule]
+    imports: [TranslateDirective, IllRequestItemComponent, AsyncPipe, CardModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IllRequestComponent implements OnInit {
 

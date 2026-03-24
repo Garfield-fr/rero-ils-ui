@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 
@@ -31,7 +31,8 @@ import { RouterLink } from '@angular/router';
   }
   `,
     styles: [],
-    imports: [RouterLink]
+    imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemTypesBriefViewComponent {
 

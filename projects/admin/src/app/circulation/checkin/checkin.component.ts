@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Router } from '@angular/router';
 import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
@@ -35,7 +35,8 @@ import { ItemsListComponent } from '../items-list/items-list.component';
 @Component({
     selector: 'admin-circulation-checkout',
     templateUrl: './checkin.component.html',
-    imports: [TranslateDirective, SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe]
+    imports: [TranslateDirective, SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CheckinComponent implements OnInit {
 

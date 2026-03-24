@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -27,7 +27,8 @@ import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../../shared
 @Component({
     selector: 'admin-migration-data',
     templateUrl: './migration-data.component.html',
-    imports: [RouterLink, Bind, Tag, TranslateDirective, DateTranslatePipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1]
+    imports: [RouterLink, Bind, Tag, TranslateDirective, DateTranslatePipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDataBriefComponent {
   // current record

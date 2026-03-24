@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, input, model } from '@angular/core';
+import { Component, effect, inject, input, model, ChangeDetectionStrategy} from '@angular/core';
 import { EsRecord, PaginatorComponent, SafeUrlPipe } from '@rero/shared';
 import { ItemsStore } from '../store/items-store';
 import { Bind } from 'primeng/bind';
@@ -31,7 +31,8 @@ import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../../shared/src
     selector: 'admin-holding-content',
     providers: [ItemsStore],
     templateUrl: './holding-content.component.html',
-    imports: [Bind, InputGroup, FormsModule, InputText, InputGroupAddon, TranslateDirective, SerialHoldingItemComponent, DefaultHoldingItemComponent, PaginatorComponent, TranslatePipe, SafeUrlPipe, SafeUrlPipe_1]
+    imports: [Bind, InputGroup, FormsModule, InputText, InputGroupAddon, TranslateDirective, SerialHoldingItemComponent, DefaultHoldingItemComponent, PaginatorComponent, TranslatePipe, SafeUrlPipe, SafeUrlPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingContentComponent {
 

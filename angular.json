@@ -287,7 +287,6 @@
             },
             "index": "projects/public-search/src/index.html",
             "polyfills": [
-              "zone.js",
               "projects/public-search/src/polyfills.ts"
             ],
             "tsConfig": "projects/public-search/tsconfig.app.json",

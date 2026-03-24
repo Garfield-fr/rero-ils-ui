@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { AppConfigService } from '../app-config.service';
 import { RecordSearchPageComponent } from '@rero/ng-core';
@@ -24,7 +24,8 @@ import { RecordSearchPageComponent } from '@rero/ng-core';
 @Component({
     selector: 'public-search-document-record-search',
     templateUrl: './document-record-search.component.html',
-    imports: [RecordSearchPageComponent]
+    imports: [RecordSearchPageComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentRecordSearchComponent implements OnInit {
 

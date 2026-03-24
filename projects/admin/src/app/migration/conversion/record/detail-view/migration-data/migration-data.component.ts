@@ -16,7 +16,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService, DateTranslatePipe } from '@rero/ng-core';
@@ -31,7 +31,8 @@ import { Message } from 'primeng/message';
 @Component({
     selector: 'admin-migration-data',
     templateUrl: './migration-data.component.html',
-    imports: [Bind, Tag, TranslateDirective, JsonPipe, DateTranslatePipe, TranslatePipe, HighlightJsonPipe, Message]
+    imports: [Bind, Tag, TranslateDirective, JsonPipe, DateTranslatePipe, TranslatePipe, HighlightJsonPipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDataDetailComponent {
 

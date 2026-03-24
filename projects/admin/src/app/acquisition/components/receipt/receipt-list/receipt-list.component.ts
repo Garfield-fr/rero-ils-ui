@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, signal, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, signal, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { Subscription } from 'rxjs';
@@ -38,7 +38,8 @@ import { Badge } from 'primeng/badge';
 @Component({
     selector: 'admin-receipt-list',
     templateUrl: './receipt-list.component.html',
-    imports: [TranslateDirective, Bind, Button, RouterLink, ReceiptSummaryComponent, I18nPluralPipe, Nl2brPipe, TranslatePipe, TooltipModule, Panel, Badge]
+    imports: [TranslateDirective, Bind, Button, RouterLink, ReceiptSummaryComponent, I18nPluralPipe, Nl2brPipe, TranslatePipe, TooltipModule, Panel, Badge],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiptListComponent implements OnChanges, OnDestroy {
 

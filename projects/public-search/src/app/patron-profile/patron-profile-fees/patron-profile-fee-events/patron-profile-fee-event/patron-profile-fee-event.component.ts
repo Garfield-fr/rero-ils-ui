@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe, NgClass } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared';
@@ -30,7 +30,8 @@ import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
   selector: 'public-search-patron-profile-fee-event',
   templateUrl: './patron-profile-fee-event.component.html',
   standalone: true,
-  imports: [CurrencyPipe, NgClass, TranslateDirective, TranslatePipe, DateTranslatePipe, TagModule, TimelineModule]
+  imports: [CurrencyPipe, NgClass, TranslateDirective, TranslatePipe, DateTranslatePipe, TagModule, TimelineModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
     private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);

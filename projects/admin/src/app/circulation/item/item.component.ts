@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
@@ -42,7 +42,8 @@ import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../shared/src/
 @Component({
     selector: 'admin-item',
     templateUrl: './item.component.html',
-    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe, MainTitlePipe_1, IdAttributePipe_1]
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe, MainTitlePipe_1, IdAttributePipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemComponent implements OnChanges {
 

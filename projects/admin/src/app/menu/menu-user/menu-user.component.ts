@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
 import { MenuService } from '../service/menu.service';
 import { MenuTranslateService } from '../service/menu-translate.service';
@@ -33,7 +33,8 @@ import { Badge } from 'primeng/badge';
 @Component({
     selector: 'admin-menu-user',
     templateUrl: './menu-user.component.html',
-    imports: [Bind, Menubar, Ripple, RouterLink, NgClass, Badge]
+    imports: [Bind, Menubar, Ripple, RouterLink, NgClass, Badge],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuUserComponent implements OnInit, OnDestroy {
 

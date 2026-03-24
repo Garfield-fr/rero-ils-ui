@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { IAcqOrder } from '@app/admin/acquisition/classes/order';
 import { Notification } from '@app/admin/classes/notification';
@@ -31,7 +31,8 @@ import { PreviewEmailComponent } from '../../../../shared/preview-email/componen
 @Component({
     selector: 'admin-order-email-form',
     templateUrl: './order-email-form.component.html',
-    imports: [PreviewEmailComponent, TranslateDirective]
+    imports: [PreviewEmailComponent, TranslateDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderEmailFormComponent implements OnInit, OnDestroy {
 

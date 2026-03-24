@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
@@ -27,7 +27,8 @@ import { GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-patron-types-detail-view',
     templateUrl: './patron-types-detail-view.component.html',
-    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, CurrencyPipe, GetRecordPipe]
+    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, CurrencyPipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTypesDetailViewComponent {
 

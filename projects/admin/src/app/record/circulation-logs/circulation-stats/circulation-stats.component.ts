@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '../../../api/item-api.service';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
@@ -26,7 +26,8 @@ import { DefaultPipe } from '../../../pipe/default.pipe';
 @Component({
     selector: 'admin-circulation-stats',
     templateUrl: './circulation-stats.component.html',
-    imports: [Bind, Panel, UpperCaseFirstPipe, TranslatePipe, DefaultPipe]
+    imports: [Bind, Panel, UpperCaseFirstPipe, TranslatePipe, DefaultPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationStatsComponent implements OnInit {
 

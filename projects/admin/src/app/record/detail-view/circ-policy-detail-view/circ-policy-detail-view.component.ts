@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -28,7 +28,8 @@ import { GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-circ-policy-detail-view',
     templateUrl: './circ-policy-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Panel, TableModule, NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe, TranslatePipe, GetRecordPipe]
+    imports: [TranslateDirective, Bind, Panel, TableModule, NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe, TranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
@@ -29,7 +29,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-circulation-settings',
     templateUrl: './circulation-settings.component.html',
-    imports: [Bind, Menu, Button]
+    imports: [Bind, Menu, Button],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationSettingsComponent implements OnInit {
 

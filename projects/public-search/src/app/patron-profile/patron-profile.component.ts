@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { APP_BASE_HREF, CurrencyPipe, KeyValue, KeyValuePipe } from '@angular/common';
-import { afterNextRender, Component, inject, model, OnDestroy, OnInit } from '@angular/core';
+import { afterNextRender, Component, inject, model, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
@@ -83,7 +83,8 @@ type Tabs = {
       PatronProfileHistoriesComponent,
       PatronProfileIllRequestsComponent,
       PatronProfilePersonalComponent,
-    ]
+    ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileComponent implements OnInit, OnDestroy {
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);

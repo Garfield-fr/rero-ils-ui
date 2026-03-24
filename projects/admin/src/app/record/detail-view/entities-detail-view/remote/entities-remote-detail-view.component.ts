@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
@@ -32,7 +32,8 @@ import { ExtractSourceFieldPipe as ExtractSourceFieldPipe_1 } from '../../../../
 @Component({
     selector: 'admin-remote-entities-remote-detail-view',
     templateUrl: './entities-remote-detail-view.component.html',
-    imports: [Bind, Tag, Panel, RemoteEntitiesPersonDetailViewComponent, RemoteEntitiesOrganisationDetailViewComponent, RemoteTopicDetailViewComponent, TranslateDirective, AsyncPipe, UpperCasePipe, TranslatePipe, ExtractSourceFieldPipe, ExtractSourceFieldPipe_1]
+    imports: [Bind, Tag, Panel, RemoteEntitiesPersonDetailViewComponent, RemoteEntitiesOrganisationDetailViewComponent, RemoteTopicDetailViewComponent, TranslateDirective, AsyncPipe, UpperCasePipe, TranslatePipe, ExtractSourceFieldPipe, ExtractSourceFieldPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteEntitiesDetailViewComponent {
 

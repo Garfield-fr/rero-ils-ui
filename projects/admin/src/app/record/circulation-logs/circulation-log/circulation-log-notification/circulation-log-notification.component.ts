@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { NotificationApiService } from '@app/admin/api/notification-api.service';
 import { CirculationLogComponent } from '../circulation-log.component';
 import { Bind } from 'primeng/bind';
@@ -27,7 +27,8 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-circulation-log-notification',
     templateUrl: './circulation-log-notification.component.html',
-    imports: [CirculationLogComponent, Bind, Tag, TranslateDirective, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe]
+    imports: [CirculationLogComponent, Bind, Tag, TranslateDirective, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationLogNotificationComponent {
 

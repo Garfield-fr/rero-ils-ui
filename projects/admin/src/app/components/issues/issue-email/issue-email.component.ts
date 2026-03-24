@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { Tools } from '@app/admin/shared/preview-email/utils/tools';
@@ -29,7 +29,8 @@ import { Message } from 'primeng/message';
 @Component({
     selector: 'admin-issue-email',
     templateUrl: './issue-email.component.html',
-    imports: [PreviewEmailComponent, TranslateDirective, TranslatePipe, Message]
+    imports: [PreviewEmailComponent, TranslateDirective, TranslatePipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IssueEmailComponent implements OnInit {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, signal, SimpleChanges, WritableSignal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, signal, SimpleChanges, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
 import { CirculationStatsService } from '../service/circulation-stats.service';
@@ -29,7 +29,8 @@ import { MessageModule } from 'primeng/message';
 @Component({
     selector: 'admin-circulation-patron-detailed',
     templateUrl: './card.component.html',
-    imports: [NgClass, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe, TranslatePipe, MessageModule]
+    imports: [NgClass, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe, TranslatePipe, MessageModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardComponent implements OnChanges, OnDestroy {
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { HotkeysService, HotkeysShortcutPipe } from '@ngneat/hotkeys';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -23,7 +23,8 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
     selector: 'admin-custom-shortcut-help',
     templateUrl: './custom-shortcut-help.component.html',
     styleUrls: ['./custom-shortcut-help.component.scss'],
-    imports: [HotkeysShortcutPipe]
+    imports: [HotkeysShortcutPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomShortcutHelpComponent {
 

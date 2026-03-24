@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { _ as marker, TranslateDirective } from "@ngx-translate/core";
 import { MessageModule } from 'primeng/message';
@@ -36,7 +36,8 @@ export function _(str: string) {
       </div>
     </p-message>
   `,
-    imports: [TranslateDirective, MessageModule]
+    imports: [TranslateDirective, MessageModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ErrorPageComponent implements OnInit {

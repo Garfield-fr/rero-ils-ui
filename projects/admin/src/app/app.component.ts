@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { User, UserService, RemoteSearchComponent } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -33,7 +33,8 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
     selector: 'admin-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    imports: [LoadingBarModule, TranslateDirective, RouterLink, RemoteSearchComponent, MenuAppComponent, RouterOutlet, TranslatePipe, NgxSpinnerComponent, Toast, ConfirmDialog]
+    imports: [LoadingBarModule, TranslateDirective, RouterLink, RemoteSearchComponent, MenuAppComponent, RouterOutlet, TranslatePipe, NgxSpinnerComponent, Toast, ConfirmDialog],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit, AfterViewInit {
 

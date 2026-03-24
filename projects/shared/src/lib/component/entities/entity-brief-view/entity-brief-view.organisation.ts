@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, input } from '@angular/core';
+import { Component, inject, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { JoinPipe } from '../../../pipe/join.pipe';
 
@@ -27,7 +27,8 @@ import { JoinPipe } from '../../../pipe/join.pipe';
     }
   `,
     providers: [ExtractSourceFieldPipe],
-    imports: [JoinPipe]
+    imports: [JoinPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityBriefViewRemoteOrganisationComponent implements OnInit {
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -33,7 +33,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-patron-fee',
     templateUrl: './patron-fee.component.html',
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronFeeComponent implements OnInit {
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -40,7 +40,8 @@ import { RouterLink } from '@angular/router';
     }
   `,
     styleUrls: [],
-    imports: [RouterLink]
+    imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VendorBriefViewComponent implements OnInit {
 

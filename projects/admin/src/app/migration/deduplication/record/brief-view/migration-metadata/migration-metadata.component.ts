@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { MainTitlePipe } from '@rero/shared';
 import { Bind } from 'primeng/bind';
@@ -25,7 +25,8 @@ import { RouterLink } from '@angular/router';
 @Component({
     selector: 'admin-migration-metadata',
     templateUrl: './migration-metadata.component.html',
-    imports: [Bind, TableModule, TranslateDirective, RouterLink, TranslatePipe]
+    imports: [Bind, TableModule, TranslateDirective, RouterLink, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationMetadataBriefComponent {
   // services

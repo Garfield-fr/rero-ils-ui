@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -25,7 +25,8 @@ import { NgTemplateOutlet } from '@angular/common';
 @Component({
     selector: 'admin-remote-topic-detail-view',
     templateUrl: './remote-topic-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Tag, NgTemplateOutlet, TranslatePipe]
+    imports: [TranslateDirective, Bind, Tag, NgTemplateOutlet, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteTopicDetailViewComponent implements OnInit{
 

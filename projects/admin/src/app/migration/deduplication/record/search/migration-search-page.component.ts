@@ -15,13 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-migration-search-page',
     template: `<ng-core-record-search-page />`,
-    imports: [RecordSearchPageComponent]
+    imports: [RecordSearchPageComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationSearchPageComponent {
 }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -36,7 +36,8 @@ import { DateTranslatePipe } from '@rero/ng-core';
     selector: 'admin-received-issue',
     templateUrl: './received-issue.component.html',
     providers: [IssueService],
-    imports: [NgClass, OpenCloseButtonComponent, RouterLink, Bind, Tag, InheritedCallNumberComponent, TranslateDirective, NgPlural, NgPluralCase, Button, Tooltip, TranslatePipe, DateTranslatePipe]
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, Bind, Tag, InheritedCallNumberComponent, TranslateDirective, NgPlural, NgPluralCase, Button, Tooltip, TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceivedIssueComponent implements OnInit, OnDestroy {
 

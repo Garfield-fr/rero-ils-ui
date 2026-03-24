@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe, RecordService } from '@rero/ng-core';
 import { MainTitlePipe, OpenCloseButtonComponent, IOrganisation } from '@rero/shared';
@@ -42,7 +42,8 @@ import { PatronProfileFeeEventsComponent } from '../patron-profile-fee-events/pa
       TagModule,
       TimelineModule,
       PatronProfileFeeEventsComponent,
-    ]
+    ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
 

@@ -1,4 +1,4 @@
-import { enableProdMode, provideZoneChangeDetection, provideAppInitializer, inject, LOCALE_ID, importProvidersFrom } from '@angular/core';
+import { enableProdMode, provideZonelessChangeDetection, provideAppInitializer, inject, LOCALE_ID, importProvidersFrom } from '@angular/core';
 import { registerFormlyExtension } from './app/acquisition/formly/extension';
 import { OrderLineTypeComponent } from './app/acquisition/formly/type/field-order-line.type';
 import { ReceiptLinesTypeComponent } from './app/acquisition/formly/type/receipt-lines.type';
@@ -118,7 +118,7 @@ bootstrapApplication(AppComponent, {
     DialogService,
     provideAnimationsAsync(),
     providePrimeNG(primeNGConfig),
-    provideZoneChangeDetection(),
+    provideZonelessChangeDetection(),
     importProvidersFrom(
       AppRoutingModule,
       FormlyModule.forChild({

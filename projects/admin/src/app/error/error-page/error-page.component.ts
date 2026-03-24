@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { _, TranslatePipe } from "@ngx-translate/core";
 import { map } from 'rxjs/operators';
@@ -48,7 +48,8 @@ import { Button } from 'primeng/button';
       </div>
     </section>
   `,
-    imports: [Bind, Button, RouterLink, TranslatePipe]
+    imports: [Bind, Button, RouterLink, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ErrorPageComponent implements OnInit {

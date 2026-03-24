@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective } from '@ngx-translate/core';
 import { InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
@@ -26,7 +26,8 @@ import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../.
 @Component({
     selector: 'admin-inventory-brief-view',
     templateUrl: './items-brief-view.component.html',
-    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, AsyncPipe, JsonPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1]
+    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, AsyncPipe, JsonPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemsBriefViewComponent {
 

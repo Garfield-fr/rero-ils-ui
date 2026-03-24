@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -35,7 +35,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     </p-toast>
     <p-confirmDialog />
   `,
-    imports: [RouterOutlet, ToastModule, ConfirmDialogModule]
+    imports: [RouterOutlet, ToastModule, ConfirmDialogModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationMainComponent {
 }

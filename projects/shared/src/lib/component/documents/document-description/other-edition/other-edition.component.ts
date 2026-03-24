@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DescriptionZoneComponent } from '../description-zone/description-zone.component';
 import { AsyncPipe } from '@angular/common';
@@ -24,7 +24,8 @@ import { MainTitleRelationPipe } from '../../../../pipe/main-title-relation.pipe
 @Component({
     selector: 'shared-other-edition',
     templateUrl: './other-edition.component.html',
-    imports: [RouterLink, DescriptionZoneComponent, AsyncPipe, GetRecordPipe, MainTitleRelationPipe]
+    imports: [RouterLink, DescriptionZoneComponent, AsyncPipe, GetRecordPipe, MainTitleRelationPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OtherEditionComponent {
 

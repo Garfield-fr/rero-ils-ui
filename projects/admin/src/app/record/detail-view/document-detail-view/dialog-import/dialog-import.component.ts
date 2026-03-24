@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
@@ -25,7 +25,8 @@ import { Message } from 'primeng/message';
 @Component({
     selector: 'admin-dialog-import',
     templateUrl: './dialog-import.component.html',
-    imports: [TranslateDirective, RouterLink, Bind, Button, TranslatePipe, Message]
+    imports: [TranslateDirective, RouterLink, Bind, Button, TranslatePipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogImportComponent implements OnInit {
 

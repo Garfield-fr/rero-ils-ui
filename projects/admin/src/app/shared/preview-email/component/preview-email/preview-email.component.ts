@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import { Tools } from '@rero/shared';
 import { ITypeEmail } from '../../IPreviewInterface';
 import { NgTemplateOutlet } from '@angular/common';
@@ -31,7 +31,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-preview-email',
     templateUrl: './preview-email.component.html',
-    imports: [NgTemplateOutlet, TranslateDirective, Bind, Panel, Tag, Draggable, AutoComplete, Droppable, FormsModule, Button, TranslatePipe]
+    imports: [NgTemplateOutlet, TranslateDirective, Bind, Panel, Tag, Draggable, AutoComplete, Droppable, FormsModule, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PreviewEmailComponent {
 

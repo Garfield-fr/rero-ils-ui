@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -33,7 +33,8 @@ import { RouterLink } from '@angular/router';
       <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
     </h5>
   `,
-    imports: [NgClass, RouterLink]
+    imports: [NgClass, RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BudgetsBriefViewComponent {
 

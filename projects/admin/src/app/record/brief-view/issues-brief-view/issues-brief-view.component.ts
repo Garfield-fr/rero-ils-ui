@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { RecordUiService, DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { IssueItemStatus, InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
 import { RouterLink } from '@angular/router';
@@ -26,7 +26,8 @@ import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../.
 @Component({
     selector: 'admin-issues-brief-view',
     templateUrl: './issues-brief-view.component.html',
-    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, NgPlural, NgPluralCase, NgClass, AsyncPipe, JsonPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1]
+    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, NgPlural, NgPluralCase, NgClass, AsyncPipe, JsonPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IssuesBriefViewComponent implements OnInit {
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { UserService } from '@rero/shared';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
@@ -26,7 +26,8 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-order-lines',
     templateUrl: './order-lines.component.html',
-    imports: [OrderLineComponent, TranslateDirective, TranslatePipe]
+    imports: [OrderLineComponent, TranslateDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
 

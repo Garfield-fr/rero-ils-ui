@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AfterViewInit, Component, inject, OnInit, ViewChild, ViewContainerRef, input } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild, ViewContainerRef, input, ChangeDetectionStrategy} from '@angular/core';
 
 import { Entity, EntityType } from '../../../class/entity';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
@@ -48,7 +48,8 @@ import { TranslatePipe } from '@ngx-translate/core';
       </ng-template>
     </shared-brief-view>
   `,
-    imports: [BriefViewComponent, ReroTemplateDirective, Bind, Tag, TranslatePipe]
+    imports: [BriefViewComponent, ReroTemplateDirective, Bind, Tag, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityBriefViewComponent implements OnInit, AfterViewInit {
 

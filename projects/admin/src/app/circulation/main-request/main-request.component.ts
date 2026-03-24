@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, SearchInputComponent } from '@rero/ng-core';
@@ -32,7 +32,8 @@ import { SelectModule } from 'primeng/select';
 @Component({
     selector: 'admin-circulation-main-request',
     templateUrl: './main-request.component.html',
-    imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, SelectModule]
+    imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, SelectModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainRequestComponent implements OnInit, OnDestroy {
 

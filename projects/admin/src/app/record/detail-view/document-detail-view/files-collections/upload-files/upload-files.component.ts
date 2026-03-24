@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, inject, ChangeDetectionStrategy} from '@angular/core';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG, FilesizePipe, DateTranslatePipe } from '@rero/ng-core';
@@ -37,7 +37,8 @@ import { Message } from 'primeng/message';
 @Component({
     selector: 'admin-upload-files',
     templateUrl: './upload-files.component.html',
-    imports: [FilesCollectionsComponent, TranslateDirective, Bind, FileUpload, InputGroup, FormsModule, InputText, InputGroupAddon, Tooltip, Button, AsyncPipe, FilesizePipe, TranslatePipe, DateTranslatePipe, NgxSpinnerComponent, Message]
+    imports: [FilesCollectionsComponent, TranslateDirective, Bind, FileUpload, InputGroup, FormsModule, InputText, InputGroupAddon, Tooltip, Button, AsyncPipe, FilesizePipe, TranslatePipe, DateTranslatePipe, NgxSpinnerComponent, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadFilesComponent implements OnInit {
 

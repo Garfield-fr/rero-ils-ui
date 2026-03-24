@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../../../service/organisation.service';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
@@ -32,7 +32,8 @@ import { PanelModule } from 'primeng/panel';
 @Component({
     selector: 'admin-acquisition-account-detail-view',
     templateUrl: './account-detail-view.component.html',
-    imports: [TranslateDirective, RouterLink, NgClass, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, NegativeAmountPipe, MessageModule, PanelModule]
+    imports: [TranslateDirective, RouterLink, NgClass, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, NegativeAmountPipe, MessageModule, PanelModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountDetailViewComponent implements OnInit {
 

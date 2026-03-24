@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
@@ -39,7 +39,8 @@ import { TooltipModule } from 'primeng/tooltip';
       (onClick)="showCancelRequestDialog($event)"
     />
   `,
-    imports: [Bind, Button, TranslatePipe, TooltipModule]
+    imports: [Bind, Button, TranslatePipe, TooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CancelRequestButtonComponent {
 

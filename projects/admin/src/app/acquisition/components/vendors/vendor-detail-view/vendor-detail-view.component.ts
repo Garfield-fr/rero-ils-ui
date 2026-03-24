@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { Bind } from 'primeng/bind';
@@ -28,7 +28,8 @@ import { TranslateLanguagePipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-vendor-detail-view',
     templateUrl: './vendor-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, AddressTypeComponent, AsyncPipe, TranslateLanguagePipe, TranslatePipe]
+    imports: [TranslateDirective, Bind, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, AddressTypeComponent, AsyncPipe, TranslateLanguagePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VendorDetailViewComponent {
 

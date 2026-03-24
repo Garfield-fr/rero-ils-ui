@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionApiService } from '@app/admin/api/patron-transaction-api.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { tap } from 'rxjs';
@@ -29,7 +29,8 @@ import { GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-item-fees',
     templateUrl: './item-fees.component.html',
-    imports: [Bind, Panel, TranslateDirective, Tag, RouterLink, AsyncPipe, CurrencyPipe, GetRecordPipe]
+    imports: [Bind, Panel, TranslateDirective, Tag, RouterLink, AsyncPipe, CurrencyPipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemFeesComponent implements OnInit {
 

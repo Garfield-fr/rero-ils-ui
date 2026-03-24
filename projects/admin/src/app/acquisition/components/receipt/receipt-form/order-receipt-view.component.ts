@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
@@ -32,7 +32,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-order-receipt-view',
     templateUrl: './order-receipt-view.component.html',
-    imports: [FormsModule, ReactiveFormsModule, TranslateDirective, Bind, Button, FormlyModule, TranslatePipe]
+    imports: [FormsModule, ReactiveFormsModule, TranslateDirective, Bind, Button, FormlyModule, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderReceiptViewComponent implements OnInit {
 

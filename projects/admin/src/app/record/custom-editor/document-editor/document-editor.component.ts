@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AbstractCanDeactivateComponent, CONFIG, RecordService, EditorComponent } from '@rero/ng-core';
@@ -26,7 +26,8 @@ import { EditorService } from '../../../service/editor.service';
 @Component({
     selector: 'admin-document-editor',
     templateUrl: './document-editor.component.html',
-    imports: [EditorComponent]
+    imports: [EditorComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 /**

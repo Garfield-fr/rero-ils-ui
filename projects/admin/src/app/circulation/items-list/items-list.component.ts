@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { User, OpenCloseButtonComponent, IdAttributePipe } from '@rero/shared';
 import { ItemAction } from '../../classes/items';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -28,7 +28,8 @@ import { CardModule } from 'primeng/card';
 @Component({
     selector: 'admin-circulation-items-list',
     templateUrl: './items-list.component.html',
-    imports: [TranslateDirective, OpenCloseButtonComponent, Bind, Button, ItemComponent, IdAttributePipe, TranslatePipe, IdAttributePipe_1, CardModule]
+    imports: [TranslateDirective, OpenCloseButtonComponent, Bind, Button, ItemComponent, IdAttributePipe, TranslatePipe, IdAttributePipe_1, CardModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemsListComponent implements OnInit{
 

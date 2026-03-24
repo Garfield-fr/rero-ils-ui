@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { OpenCloseButtonComponent, JournalVolumePipe } from '@rero/shared';
 import { Bind } from 'primeng/bind';
@@ -29,7 +29,8 @@ import { JournalVolumePipe as JournalVolumePipe_1 } from '../../../../../../../s
 @Component({
     selector: 'admin-ill-request-item',
     templateUrl: './ill-request-item.component.html',
-    imports: [OpenCloseButtonComponent, Bind, Tag, Button, RouterLink, TranslateDirective, DateTranslatePipe, Nl2brPipe, TruncateTextPipe, JournalVolumePipe, TranslatePipe, JournalVolumePipe_1]
+    imports: [OpenCloseButtonComponent, Bind, Tag, Button, RouterLink, TranslateDirective, DateTranslatePipe, Nl2brPipe, TruncateTextPipe, JournalVolumePipe, TranslatePipe, JournalVolumePipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IllRequestItemComponent {
 

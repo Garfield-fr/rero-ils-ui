@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -44,7 +44,8 @@ import { TruncateTextPipe } from '@rero/ng-core';
     </dl>
   </div>
   `,
-    imports: [NgClass, RouterLink, TranslateDirective, TruncateTextPipe, TranslatePipe]
+    imports: [NgClass, RouterLink, TranslateDirective, TruncateTextPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatisticsCfgBriefViewComponent {
 

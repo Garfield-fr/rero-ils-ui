@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpParams } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
@@ -38,7 +38,8 @@ import { TooltipModule } from 'primeng/tooltip';
 @Component({
     selector: 'admin-account-list',
     templateUrl: './account-list.component.html',
-    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule]
+    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountListComponent implements OnInit {
   private userService: UserService = inject(UserService);

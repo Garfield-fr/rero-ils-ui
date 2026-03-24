@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
@@ -33,7 +33,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-item-switch-location',
     templateUrl: './item-switch-location.component.html',
-    imports: [FormsModule, ReactiveFormsModule, Bind, Card, Select, Button, TranslatePipe]
+    imports: [FormsModule, ReactiveFormsModule, Bind, Card, Select, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemSwitchLocationComponent implements OnInit {
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { OrganisationService } from '../../../../../service/organisation.service';
 import { PaymentData } from '../../interfaces';
 import { Bind } from 'primeng/bind';
@@ -26,7 +26,8 @@ import { CurrencyPipe } from '@angular/common';
 @Component({
     selector: 'admin-payments-data-table',
     templateUrl: './payments-data-table.component.html',
-    imports: [Bind, Divider, TranslateDirective, CurrencyPipe, TranslatePipe]
+    imports: [Bind, Divider, TranslateDirective, CurrencyPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentsDataTableComponent {
 

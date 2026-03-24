@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
@@ -32,7 +32,8 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-order-summary',
     templateUrl: './order-summary.component.html',
-    imports: [TranslateDirective, RouterLink, Bind, Tag, NgTemplateOutlet, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe]
+    imports: [TranslateDirective, RouterLink, Bind, Tag, NgTemplateOutlet, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderSummaryComponent implements OnInit, OnDestroy {
 

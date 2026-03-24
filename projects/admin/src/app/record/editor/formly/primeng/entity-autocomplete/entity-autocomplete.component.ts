@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterViewInit, Component, inject, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
 import { ApiService, RemoteAutocompleteComponent } from '@rero/ng-core';
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -99,7 +99,8 @@ import { TranslatePipe } from '@ngx-translate/core';
         </div>
       }
     </div>`,
-    imports: [Bind, Select, FormsModule, AutoComplete, NgClass, Button, AsyncPipe, TranslatePipe]
+    imports: [Bind, Select, FormsModule, AutoComplete, NgClass, Button, AsyncPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityAutocompleteComponent extends RemoteAutocompleteComponent implements OnDestroy, AfterViewInit {
 

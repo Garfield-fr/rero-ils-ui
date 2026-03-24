@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService, DateTranslatePipe } from '@rero/ng-core';
 import { RouterLink } from '@angular/router';
@@ -26,7 +26,8 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-ill-requests-brief-view',
     templateUrl: './ill-requests-brief-view.component.html',
-    imports: [RouterLink, Bind, Tag, TranslateDirective, TranslatePipe, DateTranslatePipe]
+    imports: [RouterLink, Bind, Tag, TranslateDirective, TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IllRequestsBriefViewComponent  implements OnInit {
 

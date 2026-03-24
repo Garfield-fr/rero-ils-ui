@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, input } from '@angular/core';
+import { Component, inject, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { Nl2brPipe } from '@rero/ng-core';
 import { JoinPipe } from '../../../pipe/join.pipe';
@@ -32,7 +32,8 @@ import { UrlActivePipe } from '../../../pipe/url-active.pipe';
     }
   `,
     providers: [ExtractSourceFieldPipe],
-    imports: [Nl2brPipe, JoinPipe, UrlActivePipe]
+    imports: [Nl2brPipe, JoinPipe, UrlActivePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityBriefViewRemotePersonComponent implements OnInit {
 

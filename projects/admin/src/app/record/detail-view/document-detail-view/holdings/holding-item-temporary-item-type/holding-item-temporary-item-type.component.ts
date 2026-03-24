@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { DateTime } from 'luxon';
 import { TranslateDirective } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
@@ -41,7 +41,8 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
       </dl>
     }
   `,
-    imports: [TranslateDirective, AsyncPipe, DateTranslatePipe, GetRecordPipe]
+    imports: [TranslateDirective, AsyncPipe, DateTranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingItemTemporaryItemTypeComponent {
 

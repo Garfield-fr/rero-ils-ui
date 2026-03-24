@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { Item } from '@app/admin/classes/items';
 import { LoanState } from '@app/admin/classes/loans';
 import { OpenCloseButtonComponent } from '@rero/shared';
@@ -26,7 +26,8 @@ import { CardModule } from 'primeng/card';
 @Component({
     selector: 'admin-circulation-requested-items-list',
     templateUrl: './requested-items-list.component.html',
-    imports: [OpenCloseButtonComponent, TranslateDirective, RequestedItemComponent, TranslatePipe, CardModule]
+    imports: [OpenCloseButtonComponent, TranslateDirective, RequestedItemComponent, TranslatePipe, CardModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RequestedItemsListComponent implements OnChanges {
 

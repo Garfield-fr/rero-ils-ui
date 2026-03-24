@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { MenuService } from '../service/menu.service';
 import { MenuItem } from 'primeng/api';
 import { Bind } from 'primeng/bind';
@@ -27,7 +27,8 @@ import { TieredMenu } from 'primeng/tieredmenu';
 @Component({
     selector: 'admin-menu-dashboard',
     templateUrl: './menu-dashboard.component.html',
-    imports: [Bind, Card, Ripple, RouterLink, TieredMenu]
+    imports: [Bind, Card, Ripple, RouterLink, TieredMenu],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuDashboardComponent implements OnInit {
 

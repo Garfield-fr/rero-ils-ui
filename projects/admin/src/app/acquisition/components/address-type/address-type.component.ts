@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { AddressType } from '../../classes/address-type';
 import { TranslateDirective } from '@ngx-translate/core';
 
@@ -23,7 +23,8 @@ import { TranslateDirective } from '@ngx-translate/core';
     selector: 'admin-address-type',
     templateUrl: './address-type.component.html',
     styleUrls: [],
-    imports: [TranslateDirective]
+    imports: [TranslateDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddressTypeComponent {
 

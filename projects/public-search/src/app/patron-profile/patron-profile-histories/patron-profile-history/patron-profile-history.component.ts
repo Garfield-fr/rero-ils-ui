@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { ContributionComponent } from '@rero/shared';
@@ -26,7 +26,8 @@ import { PatronProfileMenuService } from '../../patron-profile-menu.service';
     selector: 'public-search-patron-profile-history',
     templateUrl: './patron-profile-history.component.html',
     standalone: true,
-    imports: [AsyncPipe, TranslateDirective, DateTranslatePipe, GetRecordPipe, ContributionComponent, TagModule]
+    imports: [AsyncPipe, TranslateDirective, DateTranslatePipe, GetRecordPipe, ContributionComponent, TagModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileHistoryComponent {
 

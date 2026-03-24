@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 
 @Component({
     selector: 'admin-migration-search',
@@ -25,7 +25,8 @@ import { Component, Input } from '@angular/core';
       border-bottom-style: double;
       border-bottom-width: 4px;
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationSearchComponent {
   @Input() adminMode: any;

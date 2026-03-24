@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
@@ -34,7 +34,8 @@ import { DateTranslatePipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-patron-transaction-form',
     templateUrl: './patron-transaction-event-form.component.html',
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, ScrollPanel, TranslateDirective, Button, CurrencyPipe, DateTranslatePipe, TranslatePipe, Panel]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, ScrollPanel, TranslateDirective, Button, CurrencyPipe, DateTranslatePipe, TranslatePipe, Panel],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionEventFormComponent implements OnInit {
 

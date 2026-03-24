@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { _, TranslateDirective } from "@ngx-translate/core";
 import type { Error, EsResult } from '@rero/ng-core';
 import { Paginator, ShowMorePagerComponent } from '@rero/shared';
@@ -29,7 +29,8 @@ import { PatronProfileHistoryComponent } from './patron-profile-history/patron-p
     selector: 'public-search-patron-profile-histories',
     templateUrl: './patron-profile-histories.component.html',
     standalone: true,
-    imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileHistoryComponent]
+    imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileHistoryComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
 

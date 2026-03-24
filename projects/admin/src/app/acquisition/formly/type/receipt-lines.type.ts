@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { FieldArrayType, FormlyModule } from '@ngx-formly/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PanelModule } from 'primeng/panel';
@@ -52,6 +52,7 @@ import { CheckboxModule } from 'primeng/checkbox';
       }
     </p-panel>
   `,
-    imports: [FormlyModule, TranslatePipe, PanelModule, CheckboxModule]
+    imports: [FormlyModule, TranslatePipe, PanelModule, CheckboxModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiptLinesTypeComponent extends FieldArrayType {}

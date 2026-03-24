@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, input, OnInit, output } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService, DateTranslatePipe } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
@@ -32,7 +32,8 @@ import { Message } from 'primeng/message';
 @Component({
     selector: 'admin-migration-data-deduplication',
     templateUrl: './migration-data-deduplication.component.html',
-    imports: [Bind, Inplace, FormsModule, AutoFocus, Button, Tag, TranslateDirective, MigrationMetadataBriefComponent, DecimalPipe, DateTranslatePipe, TranslatePipe, Message]
+    imports: [Bind, Inplace, FormsModule, AutoFocus, Button, Tag, TranslateDirective, MigrationMetadataBriefComponent, DecimalPipe, DateTranslatePipe, TranslatePipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDataDeduplicationBriefComponent implements OnInit {
   // services

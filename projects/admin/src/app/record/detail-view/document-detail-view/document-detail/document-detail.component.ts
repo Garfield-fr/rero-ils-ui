@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
 import { OperationLogsService, OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
 import type { EsResult } from '@rero/ng-core';
@@ -31,7 +31,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-document-detail',
     templateUrl: './document-detail.component.html',
-    imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe]
+    imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
 

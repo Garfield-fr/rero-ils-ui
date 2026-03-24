@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FormlyFieldConfig, FormlyFormBuilder, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
@@ -31,7 +31,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-document-advanced-search-form',
     templateUrl: './document-advanced-search-form.component.html',
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe]
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentAdvancedSearchFormComponent implements OnInit {
 

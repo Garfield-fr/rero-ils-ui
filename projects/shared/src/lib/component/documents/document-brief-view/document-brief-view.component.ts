@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ContributionComponent } from '../../../view/contribution/contribution.component';
 import { TruncateTextPipe } from '@rero/ng-core';
@@ -27,7 +27,8 @@ import { MainTitlePipe } from '../../../pipe/main-title.pipe';
 @Component({
     selector: 'shared-document-brief-view',
     templateUrl: './document-brief-view.component.html',
-    imports: [RouterLink, ContributionComponent, TruncateTextPipe, IdentifiedByLabelPipe, JoinPipe, MainTitlePipe]
+    imports: [RouterLink, ContributionComponent, TruncateTextPipe, IdentifiedByLabelPipe, JoinPipe, MainTitlePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentBriefViewComponent {
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
@@ -56,6 +56,7 @@ import { TranslatePipe } from '@ngx-translate/core';
         OverlayBadge,
         TranslatePipe,
     ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderLineTypeComponent extends FieldType implements OnInit {
   private recordService: RecordService = inject(RecordService);

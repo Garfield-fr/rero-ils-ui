@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { APP_BASE_HREF, Location, ViewportScroller, NgClass, I18nPluralPipe } from '@angular/common';
-import { Component, inject, input, model, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, model, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
@@ -54,7 +54,8 @@ import { Badge } from 'primeng/badge';
 @Component({
     selector: 'admin-acquisition-order-detail-view',
     templateUrl: './order-detail-view.component.html',
-    imports: [NgClass, Bind, Button, OrderSummaryComponent, TranslateDirective, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Accordion, AccordionPanel, AccordionHeader, RouterLink, AccordionContent, OrderLinesComponent, NotesComponent, ReceiptListComponent, Timeline, I18nPluralPipe, Nl2brPipe, TranslatePipe, NoteBadgeColorPipe, TooltipModule, Message, Badge]
+    imports: [NgClass, Bind, Button, OrderSummaryComponent, TranslateDirective, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Accordion, AccordionPanel, AccordionHeader, RouterLink, AccordionContent, OrderLinesComponent, NotesComponent, ReceiptListComponent, Timeline, I18nPluralPipe, Nl2brPipe, TranslatePipe, NoteBadgeColorPipe, TooltipModule, Message, Badge],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderDetailViewComponent implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);

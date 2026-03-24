@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 import { ThumbnailComponent, ContributionComponent, InheritedCallNumberComponent, DocumentProvisionActivityPipe, ItemHoldingsCallNumberPipe } from '@rero/shared';
 import { RouterLink } from '@angular/router';
@@ -27,7 +27,8 @@ import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../.
 @Component({
     selector: 'admin-collection-items',
     templateUrl: './collection-items.component.html',
-    imports: [TranslateDirective, ThumbnailComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, AsyncPipe, JsonPipe, KeyValuePipe, CallbackArrayFilterPipe, DocumentProvisionActivityPipe, GetRecordPipe, ItemHoldingsCallNumberPipe, DocumentProvisionActivityPipe_1, ItemHoldingsCallNumberPipe_1]
+    imports: [TranslateDirective, ThumbnailComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, AsyncPipe, JsonPipe, KeyValuePipe, CallbackArrayFilterPipe, DocumentProvisionActivityPipe, GetRecordPipe, ItemHoldingsCallNumberPipe, DocumentProvisionActivityPipe_1, ItemHoldingsCallNumberPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionItemsComponent {
 

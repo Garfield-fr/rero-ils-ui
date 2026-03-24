@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, input } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { Entity } from '../class/entity';
@@ -36,7 +36,8 @@ import { RouterLink } from '@angular/router';
       >{{ linkName }}</a>
     }
   `,
-    imports: [RouterLink]
+    imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityLinkComponent implements OnInit, OnDestroy {
 

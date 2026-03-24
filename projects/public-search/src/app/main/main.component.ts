@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
@@ -24,6 +24,7 @@ import { TranslateDirective } from '@ngx-translate/core';
         <h1 class="ui:text-center" translate>Public search</h1>
     </div>
 `,
-    imports: [TranslateDirective]
+    imports: [TranslateDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainComponent { }

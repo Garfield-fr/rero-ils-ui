@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
 import { CirculationStatsService } from '../service/circulation-stats.service';
 import { TranslateDirective } from '@ngx-translate/core';
@@ -25,7 +25,8 @@ import { Card } from 'primeng/card';
 @Component({
     selector: 'admin-pickup',
     templateUrl: './pickup.component.html',
-    imports: [TranslateDirective, PickupItemComponent, Card]
+    imports: [TranslateDirective, PickupItemComponent, Card],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PickupComponent implements OnInit {
 

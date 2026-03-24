@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
 import { IPermissions, PERMISSIONS, PermissionsService, PermissionsDirective, LinkPermissionsDirective, JoinPipe } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
@@ -42,7 +42,8 @@ type PatronPhone = {
 @Component({
     selector: 'admin-patron-detail-view',
     templateUrl: './patron-detail-view.component.html',
-    imports: [Bind, ButtonDirective, PermissionsDirective, RouterLink, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, TranslateDirective, NgClass, Tag, LinkPermissionsDirective, PatronPermissionsComponent, AsyncPipe, I18nPluralPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, JoinPipe, Nl2brPipe, JoinPipe_1, Message]
+    imports: [Bind, ButtonDirective, PermissionsDirective, RouterLink, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, TranslateDirective, NgClass, Tag, LinkPermissionsDirective, PatronPermissionsComponent, AsyncPipe, I18nPluralPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, JoinPipe, Nl2brPipe, JoinPipe_1, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronDetailViewComponent implements OnInit,  OnDestroy {
 

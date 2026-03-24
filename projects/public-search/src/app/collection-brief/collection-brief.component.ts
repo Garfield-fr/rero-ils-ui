@@ -15,13 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'public-search-collection-brief',
     templateUrl: './collection-brief.component.html',
-    imports: [DateTranslatePipe, Nl2brPipe]
+    imports: [DateTranslatePipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionBriefComponent {
 

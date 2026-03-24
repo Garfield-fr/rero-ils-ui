@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService, TruncateTextPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 
@@ -29,7 +29,8 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'admin-ill-request-detail-view',
     templateUrl: './ill-request-detail-view.component.html',
-    imports: [Bind, Panel, TranslateDirective, RouterLink, Tag, AsyncPipe, TruncateTextPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe]
+    imports: [Bind, Panel, TranslateDirective, RouterLink, Tag, AsyncPipe, TruncateTextPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IllRequestDetailViewComponent implements OnInit {
 

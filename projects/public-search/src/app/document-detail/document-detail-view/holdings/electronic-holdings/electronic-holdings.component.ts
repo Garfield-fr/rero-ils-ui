@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { HoldingsApiService } from 'projects/public-search/src/app/api/holdings-api.service';
 import { Card } from 'primeng/card';
 import { TranslateDirective } from '@ngx-translate/core';
@@ -24,7 +24,8 @@ import { ButtonDirective } from 'primeng/button';
 @Component({
     selector: 'public-search-electronic-holdings',
     templateUrl: './electronic-holdings.component.html',
-    imports: [Card, TranslateDirective, ButtonDirective]
+    imports: [Card, TranslateDirective, ButtonDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ElectronicHoldingsComponent implements OnInit{
 

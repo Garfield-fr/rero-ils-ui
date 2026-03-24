@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from "@angular/common/http";
-import { Component, inject, input, OnDestroy, OnInit, viewChild } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import { AppConfigService } from "@app/admin/service/app-config.service";
 import { TranslateService, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 
@@ -33,7 +33,8 @@ import { Message } from "primeng/message";
 @Component({
     selector: "admin-statistics-cfg-view",
     templateUrl: "./statistics-cfg-detail-view.component.html",
-    imports: [TranslateDirective, NgClass, Bind, Fieldset, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, ReportsListComponent, ReportDataComponent, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, Message]
+    imports: [TranslateDirective, NgClass, Bind, Fieldset, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, ReportsListComponent, ReportDataComponent, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatisticsCfgDetailViewComponent implements OnInit, OnDestroy {
 

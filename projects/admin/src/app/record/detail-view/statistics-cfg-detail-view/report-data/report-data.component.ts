@@ -15,15 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { Bind } from "primeng/bind";
 import { TableModule } from "primeng/table";
 import { TranslateDirective } from "@ngx-translate/core";
 
 @Component({
     selector: "admin-report-data",
+    standalone: true,
     templateUrl: "./report-data.component.html",
-    imports: [Bind, TableModule, TranslateDirective]
+    imports: [Bind, TableModule, TranslateDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReportDataComponent {
 

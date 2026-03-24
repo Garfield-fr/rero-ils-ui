@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { IssueItemStatus, AvailabilityComponent, InheritedCallNumberComponent } from '@rero/shared';
 import { DefaultHoldingItemComponent } from '../default-holding-item/default-holding-item.component';
 import { RecordMaskedComponent } from '../../../record-masked/record-masked.component';
@@ -32,7 +32,8 @@ import { ItemInCollectionPipe } from '../../../../../pipe/item-in-collection.pip
 @Component({
     selector: 'admin-serial-holding-item',
     templateUrl: './serial-holding-item.component.html',
-    imports: [RecordMaskedComponent, RouterLink, AvailabilityComponent, InheritedCallNumberComponent, Bind, Button, Tooltip, HoldingItemNoteComponent, HoldingItemTemporaryItemTypeComponent, TranslateDirective, AsyncPipe, TranslatePipe, GetRecordPipe, Nl2brPipe, ItemInCollectionPipe]
+    imports: [RecordMaskedComponent, RouterLink, AvailabilityComponent, InheritedCallNumberComponent, Bind, Button, Tooltip, HoldingItemNoteComponent, HoldingItemTemporaryItemTypeComponent, TranslateDirective, AsyncPipe, TranslatePipe, GetRecordPipe, Nl2brPipe, ItemInCollectionPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SerialHoldingItemComponent extends DefaultHoldingItemComponent {
 

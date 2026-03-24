@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { IRolePermission, PermissionApiService } from '../../../api/permission-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -25,7 +25,8 @@ import { NgClass } from '@angular/common';
 @Component({
     selector: 'admin-permission-detail-view',
     templateUrl: './permission-detail-view.component.html',
-    imports: [TranslateDirective, Bind, InputText, NgClass, TranslatePipe]
+    imports: [TranslateDirective, Bind, InputText, NgClass, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionDetailViewComponent implements OnInit {
 

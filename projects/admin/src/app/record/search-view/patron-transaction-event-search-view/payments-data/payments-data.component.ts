@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { PaymentData } from '../interfaces';
 import { Bind } from 'primeng/bind';
 import { Fieldset } from 'primeng/fieldset';
@@ -27,7 +27,8 @@ import { PaymentDataPieComponent } from './pie/payment-data-pie.component';
 @Component({
     selector: 'admin-payments-data',
     templateUrl: './payments-data.component.html',
-    imports: [Bind, Fieldset, TranslateDirective, Button, PaymentsDataTableComponent, PaymentDataPieComponent]
+    imports: [Bind, Fieldset, TranslateDirective, Button, PaymentsDataTableComponent, PaymentDataPieComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentsDataComponent {
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ItemsService } from '@app/admin/service/items.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -40,7 +40,8 @@ import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../.
 @Component({
     selector: 'admin-default-holding-item',
     templateUrl: './default-holding-item.component.html',
-    imports: [TranslateDirective, RecordMaskedComponent, RouterLink, InheritedCallNumberComponent, AvailabilityComponent, HoldingItemNoteComponent, HoldingItemTemporaryItemTypeComponent, Bind, Button, Tooltip, AsyncPipe, JsonPipe, TranslatePipe, ItemHoldingsCallNumberPipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, SafeUrlPipe_1, ItemHoldingsCallNumberPipe_1]
+    imports: [TranslateDirective, RecordMaskedComponent, RouterLink, InheritedCallNumberComponent, AvailabilityComponent, HoldingItemNoteComponent, HoldingItemTemporaryItemTypeComponent, Bind, Button, Tooltip, AsyncPipe, JsonPipe, TranslatePipe, ItemHoldingsCallNumberPipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, SafeUrlPipe_1, ItemHoldingsCallNumberPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DefaultHoldingItemComponent implements OnInit {
 

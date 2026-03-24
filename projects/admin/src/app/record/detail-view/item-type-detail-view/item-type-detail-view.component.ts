@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -25,7 +25,8 @@ import { Panel } from 'primeng/panel';
 @Component({
     selector: 'admin-item-type-detail-view',
     templateUrl: './item-type-detail-view.component.html',
-    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, TranslatePipe]
+    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemTypeDetailViewComponent {
 

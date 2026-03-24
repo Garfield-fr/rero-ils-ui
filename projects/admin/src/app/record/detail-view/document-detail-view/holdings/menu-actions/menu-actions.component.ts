@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { IPermissions, PERMISSIONS, PermissionsService, PermissionsDirective } from '@rero/shared';
@@ -27,7 +27,8 @@ import { Menu } from 'primeng/menu';
 @Component({
     selector: 'admin-menu-actions',
     templateUrl: './menu-actions.component.html',
-    imports: [PermissionsDirective, Bind, Button, TranslatePipe, Menu]
+    imports: [PermissionsDirective, Bind, Button, TranslatePipe, Menu],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuActionsComponent {
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SafeUrlPipe } from '@rero/shared';
 import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../shared/src/lib/pipe/safe-url.pipe';
@@ -23,7 +23,8 @@ import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../shared/src/li
 @Component({
     selector: 'admin-related-resource',
     templateUrl: './related-resource.component.html',
-    imports: [TranslatePipe, SafeUrlPipe, SafeUrlPipe_1]
+    imports: [TranslatePipe, SafeUrlPipe, SafeUrlPipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RelatedResourceComponent {
 

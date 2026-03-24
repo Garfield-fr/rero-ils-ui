@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, model, OnInit } from '@angular/core';
+import { Component, inject, input, model, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { EsRecord, PaginatorComponent } from '@rero/shared';
 import { HoldingsSerialStore } from '../holdings-serial-store';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -42,7 +42,8 @@ import { GetRecordPipe } from '@rero/ng-core';
     selector: 'admin-serial-holding-detail-view',
     templateUrl: './serial-holding-detail-view.component.html',
     providers: [HoldingsSerialStore],
-    imports: [TranslateDirective, RecordMaskedComponent, DocumentsBriefViewComponent, HoldingSharedViewComponent, Bind, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Button, ExpectedIssueComponent, RouterLink, InputGroup, FormsModule, InputText, InputGroupAddon, ReceivedIssueComponent, PaginatorComponent, HoldingDetailComponent, LocalFieldComponent, AsyncPipe, TranslatePipe, GetRecordPipe]
+    imports: [TranslateDirective, RecordMaskedComponent, DocumentsBriefViewComponent, HoldingSharedViewComponent, Bind, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Button, ExpectedIssueComponent, RouterLink, InputGroup, FormsModule, InputText, InputGroupAddon, ReceivedIssueComponent, PaginatorComponent, HoldingDetailComponent, LocalFieldComponent, AsyncPipe, TranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SerialHoldingDetailViewComponent implements OnInit {
 

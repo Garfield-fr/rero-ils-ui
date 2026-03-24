@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, input, OnInit } from '@angular/core';
+import { Component, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { Bind } from 'primeng/bind';
@@ -29,7 +29,8 @@ import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-collection-detail-view',
     templateUrl: './collection-detail-view.component.html',
-    imports: [Bind, Tag, TranslateDirective, NgClass, CollectionItemsComponent, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe]
+    imports: [Bind, Tag, TranslateDirective, NgClass, CollectionItemsComponent, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionDetailViewComponent implements OnInit {
 

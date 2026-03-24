@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { CirculationPolicyApiService } from '@app/admin/api/circulation-policy-api.service';
 import { ItemTypeApiService } from '@app/admin/api/item-type-api.service';
 import { PatronTypeApiService } from '@app/admin/api/patron-type-api.service';
@@ -29,7 +29,8 @@ import { TableModule } from 'primeng/table';
 @Component({
     selector: 'admin-cipo-patron-type-item-type',
     templateUrl: './cipo-patron-type-item-type.component.html',
-    imports: [Bind, TableModule]
+    imports: [Bind, TableModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements OnInit {
 

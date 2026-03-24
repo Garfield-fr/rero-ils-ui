@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { CirculationLogComponent } from '../circulation-log.component';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -25,7 +25,8 @@ import { GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-circulation-item-scan',
     templateUrl: './circulation-item-scan.component.html',
-    imports: [CirculationLogComponent, Bind, Tag, TranslateDirective, AsyncPipe, TranslatePipe, GetRecordPipe]
+    imports: [CirculationLogComponent, Bind, Tag, TranslateDirective, AsyncPipe, TranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationItemScanComponent {
 

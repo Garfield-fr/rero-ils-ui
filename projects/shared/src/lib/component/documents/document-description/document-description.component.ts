@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, input } from '@angular/core';
+import { Component, inject, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { DescriptionZoneComponent } from './description-zone/description-zone.component';
 import { OtherEditionComponent } from './other-edition/other-edition.component';
@@ -30,7 +30,8 @@ import { SafeUrlPipe } from '../../../pipe/safe-url.pipe';
 @Component({
     selector: 'shared-document-description',
     templateUrl: './document-description.component.html',
-    imports: [DescriptionZoneComponent, OtherEditionComponent, Bind, Tag, CallbackArrayFilterPipe, KeyValuePipe, TranslateLanguagePipe, TranslatePipe, UpperCaseFirstPipe, DocumentProvisionActivityPipe, IdAttributePipe, SafeUrlPipe]
+    imports: [DescriptionZoneComponent, OtherEditionComponent, Bind, Tag, CallbackArrayFilterPipe, KeyValuePipe, TranslateLanguagePipe, TranslatePipe, UpperCaseFirstPipe, DocumentProvisionActivityPipe, IdAttributePipe, SafeUrlPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDescriptionComponent implements OnInit {
 

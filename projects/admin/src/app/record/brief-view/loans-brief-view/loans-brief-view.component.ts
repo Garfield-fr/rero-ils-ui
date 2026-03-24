@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
 import { PermissionsService, InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
 import { DateTime } from 'luxon';
@@ -34,7 +34,8 @@ import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/l
 @Component({
     selector: 'admin-loans-brief-view',
     templateUrl: './loans-brief-view.component.html',
-    imports: [Bind, Button, TranslateDirective, InheritedCallNumberComponent, RouterLink, Tag, NgClass, ScrollPanel, JsonPipe, DatePipe, TranslatePipe, MainTitlePipe, MainTitlePipe_1]
+    imports: [Bind, Button, TranslateDirective, InheritedCallNumberComponent, RouterLink, Tag, NgClass, ScrollPanel, JsonPipe, DatePipe, TranslatePipe, MainTitlePipe, MainTitlePipe_1],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoansBriefViewComponent implements OnInit {
 

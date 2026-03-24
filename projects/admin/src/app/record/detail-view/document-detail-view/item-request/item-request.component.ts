@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { AbstractControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -39,7 +39,8 @@ import { Message } from 'primeng/message';
 @Component({
     selector: 'admin-item-request',
     templateUrl: './item-request.component.html',
-    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, AsyncPipe, TranslatePipe, PatronBlockedMessagePipe, PatronBlockedMessagePipe_1, Message]
+    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, AsyncPipe, TranslatePipe, PatronBlockedMessagePipe, PatronBlockedMessagePipe_1, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemRequestComponent implements OnInit {
 
