@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { AbstractControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -32,14 +32,13 @@ import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { Card } from 'primeng/card';
-import { AsyncPipe } from '@angular/common';
 import { PatronBlockedMessagePipe as PatronBlockedMessagePipe_1 } from '../../../../../../../shared/src/lib/pipe/patron-blocked-message.pipe';
 import { Message } from 'primeng/message';
 
 @Component({
     selector: 'admin-item-request',
     templateUrl: './item-request.component.html',
-    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, AsyncPipe, TranslatePipe, PatronBlockedMessagePipe, PatronBlockedMessagePipe_1, Message],
+    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, TranslatePipe, PatronBlockedMessagePipe, PatronBlockedMessagePipe_1, Message],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemRequestComponent implements OnInit {
@@ -76,7 +75,7 @@ export class ItemRequestComponent implements OnInit {
   /** On submit event */
   onSubmit = new EventEmitter<any>();
   /** Requested item(s) */
-  requestedBy$: Observable<any>;
+  requestedBy = signal<any[] | null>(null);
   /** Request in progress */
   requestInProgress = false;
 
@@ -92,7 +91,9 @@ export class ItemRequestComponent implements OnInit {
     this.recordPid = data.recordPid;
     this.recordType = data.recordType;
     this.service = (this.recordType === 'item') ? this.itemService : this.holdingService;
-    this.requestedBy$ = (this.recordType === 'item') ?  this.loanService.requestedBy$(this.recordPid) : null;
+    if (this.recordType === 'item') {
+      this.loanService.requestedBy$(this.recordPid).subscribe(v => this.requestedBy.set(v));
+    }
     this.initForm();
   }
 

@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { OperationLogsService } from '@rero/shared';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 
 import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
 import { Bind } from 'primeng/bind';
@@ -30,12 +31,11 @@ import { LocalPersonDetailViewComponent } from './local-person-detail-view/local
 import { LocalPlaceDetailViewComponent } from './local-place-detail-view/local-place-detail-view.component';
 import { LocalTopicDetailViewComponent } from './local-topic-detail-view/local-topic-detail-view.component';
 import { LocalWorkDetailViewComponent } from './local-work-detail-view/local-work-detail-view.component';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-entities-local-detail-view',
     templateUrl: './entities-local-detail-view.component.html',
-    imports: [Bind, Tag, Panel, TranslateDirective, LocalOrganisationDetailViewComponent, LocalPersonDetailViewComponent, LocalPlaceDetailViewComponent, LocalTopicDetailViewComponent, LocalWorkDetailViewComponent, AsyncPipe, TranslatePipe],
+    imports: [Bind, Tag, Panel, TranslateDirective, LocalOrganisationDetailViewComponent, LocalPersonDetailViewComponent, LocalPlaceDetailViewComponent, LocalTopicDetailViewComponent, LocalWorkDetailViewComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntitiesLocalDetailViewComponent implements OnInit {
@@ -49,6 +49,11 @@ export class EntitiesLocalDetailViewComponent implements OnInit {
 
   /** Resource type */
   readonly type = input<string>('');
+
+  record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs => obs)),
+    { initialValue: null }
+  );
 
   /** Enum of type of Entity */
   entityType = EntityType;

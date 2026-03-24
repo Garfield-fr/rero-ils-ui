@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, signal, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
@@ -25,7 +25,6 @@ import { ItemsService } from '@app/admin/service/items.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
 import { ItemStatus, PermissionsService, UserService, OpenCloseButtonComponent, InheritedCallNumberComponent, ContributionComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CirculationStatsService } from '../patron/service/circulation-stats.service';
 import { NgClass, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
@@ -75,7 +74,7 @@ export class ItemComponent implements OnChanges {
   /** Fees related to the item/loan */
   totalAmountOfFee = 0;
   /** Notifications related to the current loan */
-  notifications$: Observable<any>;
+  notifications = signal<any[] | null>(null);
   /** ItemAction reference */
   itemAction = ItemAction;
   /** related document */
@@ -104,6 +103,7 @@ export class ItemComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if(changes?.item?.currentValue){
       this.loan = (this.item && this.item.loan) ? new Loan(this.item.loan) : null;
+      this.notifications.set(null);
       if (this.loan) {
         const loanPid = this.item.loan.pid;
         this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
@@ -118,11 +118,11 @@ export class ItemComponent implements OnChanges {
             }
           }
         );
-        this.notifications$ = this.recordService.getRecords(
+        this.recordService.getRecords(
           'notifications', { query: `context.loan.pid:${loanPid}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'mostrecent' }
         ).pipe(
           map((results: any) => results.hits.hits)
-        );
+        ).subscribe((hits: any[]) => this.notifications.set(hits));
       }
       if (this.item?.document?.pid) {
         this.recordService.getRecord('documents', this.item.document.pid, {

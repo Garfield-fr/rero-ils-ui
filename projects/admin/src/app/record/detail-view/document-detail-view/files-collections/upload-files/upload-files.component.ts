@@ -21,7 +21,7 @@ import { CONFIG, FilesizePipe, DateTranslatePipe } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { Observable, catchError, concatMap, from, map, of, switchMap, tap, toArray } from 'rxjs';
+import { catchError, concatMap, from, map, Observable, of, switchMap, tap, toArray } from 'rxjs';
 import { FilesCollectionsComponent } from '../files-collections.component';
 import { Bind } from 'primeng/bind';
 import { InputGroup } from 'primeng/inputgroup';
@@ -30,14 +30,13 @@ import { InputText } from 'primeng/inputtext';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { Tooltip } from 'primeng/tooltip';
 import { Button } from 'primeng/button';
-import { AsyncPipe } from '@angular/common';
 import { NgxSpinnerComponent } from 'ngx-spinner';
 import { Message } from 'primeng/message';
 
 @Component({
     selector: 'admin-upload-files',
     templateUrl: './upload-files.component.html',
-    imports: [FilesCollectionsComponent, TranslateDirective, Bind, FileUpload, InputGroup, FormsModule, InputText, InputGroupAddon, Tooltip, Button, AsyncPipe, FilesizePipe, TranslatePipe, DateTranslatePipe, NgxSpinnerComponent, Message],
+    imports: [FilesCollectionsComponent, TranslateDirective, Bind, FileUpload, InputGroup, FormsModule, InputText, InputGroupAddon, Tooltip, Button, FilesizePipe, TranslatePipe, DateTranslatePipe, NgxSpinnerComponent, Message],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadFilesComponent implements OnInit {
@@ -120,18 +119,17 @@ export class UploadFilesComponent implements OnInit {
   }
 
   /** Get the string used to display the search result number.
-   * @param hits - list of hit results.
-   * @returns observable of the string representation of the number of results.
+   * @returns string representation of the number of results.
    */
-  getResultsText(): Observable<string> {
+  getResultsText(): string {
     const remoteTotal = this.files.length;
     const totalFiltered = this.filteredFiles.length;
-    if (totalFiltered == this.files.length) {
-      return this.translateService.stream('{{ total }} results', { total: remoteTotal });
+    if (totalFiltered === this.files.length) {
+      return this.translateService.instant('{{ total }} results', { total: remoteTotal });
     }
     return totalFiltered === 0
-      ? this.translateService.stream('no result')
-      : this.translateService.stream('{{ total }} results of {{ remoteTotal }}', {
+      ? this.translateService.instant('no result')
+      : this.translateService.instant('{{ total }} results of {{ remoteTotal }}', {
           total: totalFiltered,
           remoteTotal: remoteTotal,
         });

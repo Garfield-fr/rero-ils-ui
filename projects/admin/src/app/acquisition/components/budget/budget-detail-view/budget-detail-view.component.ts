@@ -16,19 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 
-import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, Subscription, switchMap } from 'rxjs';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'admin-budget-detail-view',
     templateUrl: './budget-detail-view.component.html',
-    imports: [TranslateDirective, AsyncPipe, CurrencyPipe, TranslatePipe, MessageModule],
+    imports: [TranslateDirective, CurrencyPipe, TranslatePipe, MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BudgetDetailViewComponent implements OnInit, OnDestroy {
@@ -46,6 +46,11 @@ export class BudgetDetailViewComponent implements OnInit, OnDestroy {
 
   /** all component subscription */
   private _subscriptions = new Subscription();
+
+  record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs => obs)),
+    { initialValue: null }
+  );
 
   // GETTER & SETTER ==========================================================
   /** Get the currency code used for the current loaded organisation */

@@ -246,7 +246,7 @@
   <!-- END OF HEADER -->
 
   <!-- TABS -->
-   @let marcRecord = marc$ | async;
+   @let marcRecord = marc();
    <p-tabs [value]="selectedTab()">
     <p-tablist>
       @if (record.metadata.pid) {

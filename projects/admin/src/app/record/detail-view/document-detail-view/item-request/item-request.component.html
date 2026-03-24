@@ -16,7 +16,7 @@
 -->
 @defer(when formFields) {
   <div class="ui:flex ui:gap-2 ui:flex-col">
-  @if (requestedBy$ | async; as requestedBy) {
+  @if (requestedBy(); as requestedBy) {
     @if (requestedBy.length > 0) {
       <div class="ui:flex ui:gap-2 ui:my-1 ui:items-start">
         <p-message

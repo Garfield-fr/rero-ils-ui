@@ -15,39 +15,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { IllRequestApiService } from '@app/admin/api/ill-request-api.service';
 import { PatronService } from '@app/admin/service/patron.service';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { TranslateDirective } from '@ngx-translate/core';
 import { IllRequestItemComponent } from './ill-request-item/ill-request-item.component';
-import { AsyncPipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'admin-ill-request',
     templateUrl: './ill-request.component.html',
-    imports: [TranslateDirective, IllRequestItemComponent, AsyncPipe, CardModule],
+    imports: [TranslateDirective, IllRequestItemComponent, CardModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IllRequestComponent implements OnInit {
+export class IllRequestComponent {
 
   private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
   private patronService: PatronService = inject(PatronService);
 
   // COMPONENT ATTRIBUTES =====================================================
-  /** Ill records observable */
-  illRequests$: Observable<any>;
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.illRequests$ = this.patronService.currentPatron$.pipe(
+  /** Ill records signal */
+  illRequests = toSignal(
+    this.patronService.currentPatron$.pipe(
       switchMap((patron: any) => {
         return (!patron)
           ? of(null)
           : this.illRequestApiService.getByPatronPid(patron.pid, {remove_archived: '1'})
-      }
-    ));
-  }
+      })
+    ),
+    { initialValue: null }
+  );
 }

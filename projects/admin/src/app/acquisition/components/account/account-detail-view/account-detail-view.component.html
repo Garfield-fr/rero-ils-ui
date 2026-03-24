@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (organisation && esRecord$ | async; as account) {
+@if (organisation && esRecord(); as account) {
   <!-- ROLLOVER INFO -->
   @if (!account.is_active) {
     <p-message

@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService, CallbackArrayFilterPipe } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, PermissionsService, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
 import { Observable, of, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DocumentApiService } from '../../../api/document-api.service';
 import { RelatedResourceComponent } from './related-resource/related-resource.component';
 import { Bind } from 'primeng/bind';
@@ -35,7 +36,7 @@ import { EntitiesRelatedComponent } from './entities-related/entities-related.co
 import { LocalFieldComponent } from '../local-field/local-field.component';
 import { UploadFilesComponent } from './files-collections/upload-files/upload-files.component';
 import { TableModule } from 'primeng/table';
-import { AsyncPipe, I18nPluralPipe, KeyValuePipe } from '@angular/common';
+import { I18nPluralPipe, KeyValuePipe } from '@angular/common';
 import { MarcPipe } from '../../../pipe/marc.pipe';
 import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
 import { DocumentProvisionActivityPipe as DocumentProvisionActivityPipe_1 } from '../../../../../../shared/src/lib/pipe/document-provision-activity.pipe';
@@ -45,7 +46,7 @@ import { ReadMoreComponent } from '@rero/ng-core';
 @Component({
     selector: 'admin-document-detail-view',
     templateUrl: './document-detail-view.component.html',
-    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, RelatedResourceComponent, Bind, Tag, EntityLinkComponent, RecordMaskedComponent, ButtonDirective, RouterLink, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, FilesComponent, HoldingsComponent, DocumentDescriptionComponent, EntitiesRelatedComponent, LocalFieldComponent, UploadFilesComponent, TableModule, AsyncPipe, I18nPluralPipe, KeyValuePipe, CallbackArrayFilterPipe, TranslatePipe, DocumentProvisionActivityPipe, MainTitlePipe, MarcPipe, MainTitlePipe_1, DocumentProvisionActivityPipe_1, Message, ReadMoreComponent],
+    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, RelatedResourceComponent, Bind, Tag, EntityLinkComponent, RecordMaskedComponent, ButtonDirective, RouterLink, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, FilesComponent, HoldingsComponent, DocumentDescriptionComponent, EntitiesRelatedComponent, LocalFieldComponent, UploadFilesComponent, TableModule, I18nPluralPipe, KeyValuePipe, CallbackArrayFilterPipe, TranslatePipe, DocumentProvisionActivityPipe, MainTitlePipe, MarcPipe, MainTitlePipe_1, DocumentProvisionActivityPipe_1, Message, ReadMoreComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailViewComponent implements OnInit, OnDestroy {
@@ -59,8 +60,23 @@ export class DocumentDetailViewComponent implements OnInit, OnDestroy {
   /** Observable resolving record data */
   readonly record$ = input.required<Observable<any>>();
 
-  /** Observable of the imported record in marc format */
-  marc$: Observable<any>;
+  /** Signal of the imported record in marc format */
+  marc = toSignal(
+    toObservable(this.record$).pipe(
+      switchMap(obs => obs),
+      switchMap((record: any) => {
+        if (record != null && record.metadata != null && record.metadata.pid == null) {
+          return this.recordService.getRecord(
+            this.activatedRouter.snapshot.params.type, this.pid, {
+            resolve: 0,
+            headers: { Accept: 'application/marc+json, application/json' }
+          });
+        }
+        return of(null);
+      })
+    ),
+    { initialValue: null }
+  );
 
   /** Record subscription */
   private _recordObs: Subscription;
@@ -125,15 +141,6 @@ export class DocumentDetailViewComponent implements OnInit, OnDestroy {
         this.record = record;
         this.relatedResources = this.processRelatedResources(record);
         this.recordMessage = this.message(record);
-        if (record != null && record.metadata != null && this.record.metadata.pid == null) {
-          this.marc$ = this.recordService.getRecord(
-            this.activatedRouter.snapshot.params.type, this.pid, {
-            resolve: 0,
-            headers: { Accept: 'application/marc+json, application/json' }
-          });
-        } else {
-          this.marc$ = of(null);
-        }
         return this.pid
           ? this.documentApiService.getLinkedDocumentsCount(this.pid)
           : of(0);

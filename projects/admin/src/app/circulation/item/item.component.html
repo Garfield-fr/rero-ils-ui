@@ -23,7 +23,7 @@
   >
     <!-- BARCODE -->
     <div name="barcode" class="ui:col-span-3 ui:flex ui:gap-2">
-      @if (!item.actions || item.loan || totalAmountOfFee || item.pending_loans || notifications$) {
+      @if (!item.actions || item.loan || totalAmountOfFee || item.pending_loans || notifications()) {
         <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
       }
       <div class="ui:flex ui:flex-col ui:gap-2 ui:w-full">
@@ -239,7 +239,7 @@
               </p-tag>
             </dd>
           }
-          @if (item.loan && notifications$ | async; as notifications) {
+          @if (notifications(); as notifications) {
             @if (notifications.length > 0) {
               <dt translate>Notifications</dt>
               <dd>

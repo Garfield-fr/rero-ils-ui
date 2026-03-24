@@ -15,20 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 import { Ripple } from 'primeng/ripple';
 import { AddressTypeComponent } from '../../address-type/address-type.component';
-import { AsyncPipe } from '@angular/common';
 import { TranslateLanguagePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-vendor-detail-view',
     templateUrl: './vendor-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, AddressTypeComponent, AsyncPipe, TranslateLanguagePipe, TranslatePipe],
+    imports: [TranslateDirective, Bind, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, AddressTypeComponent, TranslateLanguagePipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VendorDetailViewComponent {
@@ -40,6 +40,11 @@ export class VendorDetailViewComponent {
 
   /** Resource type */
   readonly type = input<string>('');
+
+  record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs => obs)),
+    { initialValue: null }
+  );
 
   /**
    * Get Current language interface

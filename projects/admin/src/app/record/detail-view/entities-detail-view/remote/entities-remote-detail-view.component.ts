@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 
 import { EntityType, EntityTypeIcon, ExtractSourceFieldPipe } from '@rero/shared';
 import { Bind } from 'primeng/bind';
@@ -26,13 +27,13 @@ import { Panel } from 'primeng/panel';
 import { RemoteEntitiesPersonDetailViewComponent } from './remote-person-detail-view/remote-entities-person-detail-view.component';
 import { RemoteEntitiesOrganisationDetailViewComponent } from './remote-organisation-detail-view/remote-entities-organisation-detail-view.component';
 import { RemoteTopicDetailViewComponent } from './remote-topic-detail-view/remote-topic-detail-view.component';
-import { AsyncPipe, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { ExtractSourceFieldPipe as ExtractSourceFieldPipe_1 } from '../../../../../../../shared/src/lib/pipe/extract-source-field.pipe';
 
 @Component({
     selector: 'admin-remote-entities-remote-detail-view',
     templateUrl: './entities-remote-detail-view.component.html',
-    imports: [Bind, Tag, Panel, RemoteEntitiesPersonDetailViewComponent, RemoteEntitiesOrganisationDetailViewComponent, RemoteTopicDetailViewComponent, TranslateDirective, AsyncPipe, UpperCasePipe, TranslatePipe, ExtractSourceFieldPipe, ExtractSourceFieldPipe_1],
+    imports: [Bind, Tag, Panel, RemoteEntitiesPersonDetailViewComponent, RemoteEntitiesOrganisationDetailViewComponent, RemoteTopicDetailViewComponent, TranslateDirective, UpperCasePipe, TranslatePipe, ExtractSourceFieldPipe, ExtractSourceFieldPipe_1],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteEntitiesDetailViewComponent {
@@ -44,6 +45,11 @@ export class RemoteEntitiesDetailViewComponent {
 
   /** Resource type */
   readonly type = input<string>('');
+
+  record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs => obs)),
+    { initialValue: null }
+  );
 
   /** Enum of type of Entity */
   entityType = EntityType;

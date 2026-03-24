@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Observable, switchMap } from 'rxjs';
 import { OrganisationService } from '../../../../service/organisation.service';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
-import { IAcqAccount } from '../../../classes/account';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
@@ -35,7 +35,7 @@ import { PanelModule } from 'primeng/panel';
     imports: [TranslateDirective, RouterLink, NgClass, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, NegativeAmountPipe, MessageModule, PanelModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AccountDetailViewComponent implements OnInit {
+export class AccountDetailViewComponent {
 
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
@@ -43,21 +43,21 @@ export class AccountDetailViewComponent implements OnInit {
   // COMPONENT ATTRIBUTES =======================================================
   /** Observable resolving record data */
   readonly record$ = input.required<Observable<any>>();
-  /** metadata from ES - much more complete than DB stored record */
-  esRecord$: Observable<IAcqAccount>;
   /** Resource type */
   readonly type = input<string>('');
+
+  /** metadata from ES - much more complete than DB stored record */
+  esRecord = toSignal(
+    toObservable(this.record$).pipe(
+      switchMap(obs => obs),
+      switchMap((data: any) => this.acqAccountApiService.getAccount(data.metadata.pid))
+    ),
+    { initialValue: null }
+  );
 
   // GETTER & SETTER ============================================================
   /** Get the current budget pid for the organisation */
   get organisation(): any {
     return this.organisationService.organisation;
-  }
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.record$().subscribe((data: any) => {
-      this.esRecord$ = this.acqAccountApiService.getAccount(data.metadata.pid);
-    });
   }
 }
