@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { I18nPluralPipe, NgClass } from '@angular/common';
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { HoldingsNoteType, SharedModule, UserService } from '@rero/shared';
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
@@ -45,8 +45,8 @@ export class HoldingsComponent implements OnInit {
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** View code */
-  @Input() viewcode: string;
-  @Input() documentPid: string;
+  viewcode = input<string>();
+  documentPid = input<string>();
 
   noteAuthorizedTypes: string[] = [HoldingsNoteType.GENERAL, HoldingsNoteType.ACCESS];
 

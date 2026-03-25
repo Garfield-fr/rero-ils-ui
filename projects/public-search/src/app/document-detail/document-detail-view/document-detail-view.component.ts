@@ -16,7 +16,7 @@
  */
 
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateDirective, TranslateService } from '@ngx-translate/core';
 import { AppSettingsService, SharedModule } from '@rero/shared';
@@ -36,9 +36,9 @@ export class DocumentDetailViewComponent implements OnInit {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
   private translateService: TranslateService = inject(TranslateService);
 
-  @Input() viewcode: string;
-  @Input() documentpid: string;
-  @Input() showinfo = 'false';
+  viewcode = input<string>();
+  documentpid = input<string>();
+  showinfo = input('false');
 
   document = null;
   exportItems: MenuItem[];

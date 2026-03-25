@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe, RecordService } from '@rero/ng-core';
 import { MainTitlePipe, OpenCloseButtonComponent, IOrganisation } from '@rero/shared';
@@ -51,7 +51,7 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   private recordService: RecordService = inject(RecordService);
 
   /** Fee record */
-  @Input() record;
+  record = input<any>();
 
   /** Detail collapsed */
   isCollapsed = true;

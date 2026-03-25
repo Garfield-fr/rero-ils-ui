@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { Component, inject, input, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ApiService, RecordService, DateTranslatePipe } from "@rero/ng-core";
 import { map } from "rxjs/operators";
 import { Bind } from "primeng/bind";
@@ -35,7 +35,7 @@ export class ReportsListComponent implements OnInit {
   private apiService: ApiService = inject(ApiService);
 
   // persistent identifier of the current stat report configuration
-  @Input() pid: any;
+  pid = input<any>();
 
   // list of the corresponding reports from elasticsearch
   reports: any[];

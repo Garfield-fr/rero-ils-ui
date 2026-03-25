@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { ContributionComponent } from '@rero/shared';
@@ -34,7 +34,7 @@ export class PatronProfileHistoryComponent {
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
   /** Loan record */
-  @Input() record: any;
+  record = input<any>();
 
   /** Document section is collapsed */
   isCollapsed = true;

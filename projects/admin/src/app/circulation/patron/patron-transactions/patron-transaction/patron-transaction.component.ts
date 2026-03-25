@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
@@ -54,7 +54,7 @@ export class PatronTransactionComponent implements OnChanges {
 
   // COMPONENT ATTRIBUTES ============================================
   /** Patron transaction */
-  @Input() transaction: PatronTransaction;
+  transaction = input<PatronTransaction>();
   /** Is collapsed */
   isCollapsed = true;
   /** reference to PatronTransactionStatus -- used in HTML template */
@@ -75,11 +75,11 @@ export class PatronTransactionComponent implements OnChanges {
    *  @return: the transaction total amount to display depending of transaction status
    */
   get transactionAmount(): number {
-    if (this.transaction.status === PatronTransactionStatus.OPEN) {
-      return this.transaction.total_amount;
+    if (this.transaction().status === PatronTransactionStatus.OPEN) {
+      return this.transaction().total_amount;
     } else {
       let amount = 0;
-      for (const event of this.transaction.get_events()) {
+      for (const event of this.transaction().get_events()) {
         if (event.type === PatronTransactionEventType.FEE) {
           amount += event.amount;
         }
@@ -102,7 +102,7 @@ export class PatronTransactionComponent implements OnChanges {
       if (this.router.snapshot.queryParams.event === changes.transaction.currentValue) {
         this.isCollapsed = false;
       }
-      this.patronTransactionService.loadTransactionHistory(this.transaction).subscribe(events => this.transaction.events = events);
+      this.patronTransactionService.loadTransactionHistory(this.transaction()).subscribe(events => this.transaction().events = events);
       this.generateActionsMenu();
     }
   }
@@ -112,8 +112,8 @@ export class PatronTransactionComponent implements OnChanges {
    *  @return: True if transaction is still open and contains a 'dispute' event; False otherwise
    */
   public isDisputed(): boolean {
-    return (this.transaction.status === PatronTransactionStatus.OPEN)
-      ? this.transaction.events.some(e => e.type === PatronTransactionEventType.DISPUTE)
+    return (this.transaction().status === PatronTransactionStatus.OPEN)
+      ? this.transaction().events.some(e => e.type === PatronTransactionEventType.DISPUTE)
       : false;
   }
 
@@ -137,7 +137,7 @@ export class PatronTransactionComponent implements OnChanges {
       data: {
         action,
         mode,
-        transactions: [this.transaction]
+        transactions: [this.transaction()]
       }
     });
   }
@@ -147,7 +147,7 @@ export class PatronTransactionComponent implements OnChanges {
       {
         label: [
           this.translateService.instant('Pay'),
-          this.currencyPipe.transform(this.transaction.total_amount, this.organisationService.organisation.default_currency)
+          this.currencyPipe.transform(this.transaction().total_amount, this.organisationService.organisation.default_currency)
         ].join(' '),
         command: () => this.patronTransactionAction('pay', 'full')
       },

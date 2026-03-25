@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
@@ -47,11 +47,11 @@ export class ItemSwitchLocationComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the item to manage */
-  @Input() item: any = undefined;
+  item = input(undefined);
   /** Emit the item when it changes (could use two way binding on item in parent component --> [(item)]='') */
-  @Output() itemChange = new EventEmitter<any>();
+  itemChange = output<any>();
   /** the limit above which the filter feature will be activate on target dropdown */
-  @Input() filterLimit = 10;
+  filterLimit = input(10);
 
   /** the transfer form group */
   form: UntypedFormGroup;
@@ -76,7 +76,7 @@ export class ItemSwitchLocationComponent implements OnInit {
       .subscribe(locations => {
         this._buildOptions(locations);
         this.initialLocationName = locations
-        .filter(loc => loc.pid === extractIdOnRef(this.item.location.$ref))
+        .filter(loc => loc.pid === extractIdOnRef(this.item().location.$ref))
         .pop().name;
       });
   }
@@ -89,7 +89,7 @@ export class ItemSwitchLocationComponent implements OnInit {
    * @returns: True if the filter could be activated ; false if not.
    */
   isFilterActive(): boolean {
-      return this.options.reduce((acc, library) => acc + library.items.length, 0) > this.filterLimit;
+      return this.options.reduce((acc, library) => acc + library.items.length, 0) > this.filterLimit();
   }
 
   /** Handle form submission
@@ -98,9 +98,9 @@ export class ItemSwitchLocationComponent implements OnInit {
    */
   submit(): void {
     this.itemApiService
-      .updateLocation(this.item, this.form.value.target)
+      .updateLocation(this.item(), this.form.value.target)
       .pipe(
-        finalize(() => this.itemChange.emit(this.item))
+        finalize(() => this.itemChange.emit(this.item()))
       )
       .subscribe({
         next: (item: any) => this.item = item.metadata,
@@ -120,7 +120,7 @@ export class ItemSwitchLocationComponent implements OnInit {
    *    If user choose to cancel any changed, just emit the unchanged item.
    */
   cancel(): void {
-    this.itemChange.emit(this.item);
+    this.itemChange.emit(this.item());
   }
 
 
@@ -152,7 +152,7 @@ export class ItemSwitchLocationComponent implements OnInit {
         currentParent.items.push({
           label: location.name,
           value: location.pid,
-          disabled: location.pid === extractIdOnRef(this.item.location.$ref)
+          disabled: location.pid === extractIdOnRef(this.item().location.$ref)
         });
       });
     appendLibrary(currentParent, this.options);

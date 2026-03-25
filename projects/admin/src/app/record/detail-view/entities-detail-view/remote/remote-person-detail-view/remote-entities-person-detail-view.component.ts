@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Nl2brPipe } from '@rero/ng-core';
 import { UrlActivePipe } from '@rero/shared';
@@ -31,10 +31,10 @@ import { UrlActivePipe as UrlActivePipe_1 } from '../../../../../../../../shared
 export class RemoteEntitiesPersonDetailViewComponent {
 
   /** record metadata */
-  @Input() record: any;
+  record = input<any>();
 
   /** record source */
-  @Input() source: string;
+  source = input<string>();
 
   /** Disabled source link */
   disabledSourceLink = ['rero'];

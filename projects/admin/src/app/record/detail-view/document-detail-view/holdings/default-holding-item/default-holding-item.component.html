@@ -23,29 +23,29 @@
         <!-- Barcode -->
           <dt translate>Barcode</dt>
           <dd>
-            @if (item.metadata._masked) {
-              <admin-record-masked [record]="item" />
+            @if (item().metadata._masked) {
+              <admin-record-masked [record]="item()" />
             }
             <!-- Remove link if not current organisation -->
             @if (permissions) {
-              <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
-                {{ item.metadata.barcode }}
+              <a [routerLink]="['/records', 'items', 'detail', item().metadata.pid]" name="barcode">
+                {{ item().metadata.barcode }}
               </a>
             } @else {
-              {{ item.metadata.barcode }}
+              {{ item().metadata.barcode }}
             }
           </dd>
           <!-- Unit -->
-          @if (item.metadata.enumerationAndChronology) {
+          @if (item().metadata.enumerationAndChronology) {
             <dt translate>Unit</dt>
-            <dd>{{ item.metadata.enumerationAndChronology }}</dd>
+            <dd>{{ item().metadata.enumerationAndChronology }}</dd>
           }
           <!-- Call numbers -->
           @if (item | itemHoldingsCallNumber | async; as callNumber) {
             @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
               <dt translate>Call number</dt>
               <dd>
-                <shared-inherited-call-number [item]="item" />
+                <shared-inherited-call-number [item]="item()" />
               </dd>
             }
           }
@@ -54,22 +54,22 @@
           <dd>
             <shared-availability
               recordType="item"
-              [record]="item"
+              [record]="item()"
               [apiService]="itemApiService"
             ></shared-availability>
           </dd>
           <!-- URL -->
-          @if (item.metadata.url) {
+          @if (item().metadata.url) {
             <dt translate>Online access</dt>
-            <dd><a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a></dd>
+            <dd><a target="_blank" [href]="item().metadata.url | safeUrl">{{ item().metadata.url }}</a></dd>
           }
           <!-- TEMPORARY LOCATION -->
-          @if (item.metadata.temporary_location) {
+          @if (item().metadata.temporary_location) {
             <dt translate>Temporary location</dt>
-            <dd>{{ item.metadata.temporary_location.name }}</dd>
+            <dd>{{ item().metadata.temporary_location.name }}</dd>
           }
           <!-- ITEM IN COLLECTION (hide if not current organisation) -->
-          @let itemPid = item.metadata.pid;
+          @let itemPid = item().metadata.pid;
           @if (itemPid) {
             @let collections = permissions && itemPid | itemInCollection | async;
             @if (collections && collections.length > 0) {
@@ -86,10 +86,10 @@
         </dl>
         <!-- (hide if not current organisation) -->
         @if (permissions) {
-          @for (note of item.metadata.notes; track $index) {
+          @for (note of item().metadata.notes; track $index) {
             <admin-holding-item-note [note]="note" />
           }
-          <admin-holding-item-temporary-item-type [record]="item" />
+          <admin-holding-item-temporary-item-type [record]="item()" />
         }
 
     </div>
@@ -102,7 +102,7 @@
           size="small"
           [title]="'Item request'|translate"
           [outlined]="true"
-          (onClick)="addRequest(item.metadata.pid, 'item')"
+          (onClick)="addRequest(item().metadata.pid, 'item')"
           [pTooltip]="cannotRequestTooltipContent"
           tooltipPosition="top"
           [disabled]="!permissions.canRequest?.can"
@@ -118,7 +118,7 @@
             size="small"
             [title]="'Switch location'|translate"
             [outlined]="true"
-            [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]"
+            [routerLink]="['/records', 'items', 'switch_location', item().metadata.pid]"
           />
         }
         @if (permissions?.update?.can) {
@@ -127,7 +127,7 @@
             size="small"
             [title]="'Edit'|translate"
             [outlined]="true"
-            [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+            [routerLink]="['/records', 'items', 'edit', item().metadata.pid]"
           />
         }
         <p-button

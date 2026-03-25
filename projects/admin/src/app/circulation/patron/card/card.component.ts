@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, signal, SimpleChanges, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, OnDestroy, output, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
 import { CirculationStatsService } from '../service/circulation-stats.service';
@@ -32,23 +32,23 @@ import { MessageModule } from 'primeng/message';
     imports: [NgClass, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe, TranslatePipe, MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent implements OnChanges, OnDestroy {
+export class CardComponent implements OnDestroy {
 
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the patron */
-  @Input() patron: any;
+  patron = input<any>();
   /** the patron barcode */
-  @Input() barcode: string;
+  barcode = input<string>();
   /** is the circulation messages should be displayed */
-  @Input() displayCirculationMessages = false;
+  displayCirculationMessages = input(false);
   /** is the clear patron button should be displayed or not */
-  @Input() clearPatronButton = true;
+  clearPatronButton = input(true);
   /** which link should be use on the main patron name */
-  @Input() linkMode: 'circulation'|'detail' = 'detail';
+  linkMode = input('detail');
   /** event emitter when the close button are fired */
-  @Output() clearPatron = new EventEmitter<any>();
+  clearPatron = output<any>();
 
   /** Link used on the patron name */
   patronLink: string;
@@ -59,29 +59,26 @@ export class CardComponent implements OnChanges, OnDestroy {
   /** circulation messages about the loaded patron if exists */
   circulationMessages: WritableSignal<{severity: string, detail: string}[]> = signal([]);
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.patron) {
-      if (this.patron) {
-      this.patronLink = (this.linkMode === 'detail')
-        ? '/records/patrons/detail/' + this.patron.pid
-        : '/circulation/patron/' + this.barcode + '/loan';
-    }
+  constructor() {
+    effect(() => {
+      const patron = this.patron();
+      if (patron) {
+        this.patronLink = (this.linkMode() === 'detail')
+          ? '/records/patrons/detail/' + patron.pid
+          : '/circulation/patron/' + this.barcode() + '/loan';
 
-    if (this.patron && this.patron.birth_date) {
-      const today = DateTime.now().toFormat('M-dd');
-      const birthDate = DateTime.fromISO(this.patron.birth_date).toFormat('M-dd');
-      if (today === birthDate) {
-        this.isBirthday = true;
+        if (patron.birth_date) {
+          const today = DateTime.now().toFormat('M-dd');
+          const birthDate = DateTime.fromISO(patron.birth_date).toFormat('M-dd');
+          if (today === birthDate) {
+            this.isBirthday = true;
+          }
+          this.patronAge = Math.floor(DateTime.now().diff(DateTime.fromISO(patron.birth_date), 'years').years);
+        }
+
+        this.circulationMessages = this.circulationStatsService.messages;
       }
-    }
-
-    if (this.patron && this.patron.birth_date) {
-      const birthDate = DateTime.fromISO(this.patron.birth_date);
-      this.patronAge = Math.floor(DateTime.now().diff(birthDate, 'years').years);
-    }
-
-    this.circulationMessages = this.circulationStatsService.messages;
-    }
+    });
   }
 
   ngOnDestroy(): void {
@@ -90,8 +87,8 @@ export class CardComponent implements OnChanges, OnDestroy {
 
   /** Clear current patron */
   clear(): void {
-    if (this.patron) {
-      this.clearPatron.emit(this.patron);
+    if (this.patron()) {
+      this.clearPatron.emit(this.patron());
     }
     this.circulationStatsService.clearMessages();
   }

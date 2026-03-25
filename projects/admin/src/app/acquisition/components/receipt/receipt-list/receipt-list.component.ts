@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, signal, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, OnDestroy, signal, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { Subscription } from 'rxjs';
@@ -41,7 +41,7 @@ import { Badge } from 'primeng/badge';
     imports: [TranslateDirective, Bind, Button, RouterLink, ReceiptSummaryComponent, I18nPluralPipe, Nl2brPipe, TranslatePipe, TooltipModule, Panel, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReceiptListComponent implements OnChanges, OnDestroy {
+export class ReceiptListComponent implements OnDestroy {
 
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
@@ -50,7 +50,7 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the order for which we want to display receipts */
-  @Input() order: IAcqOrder;
+  order = input.required<IAcqOrder>();
   /** AcqReceipt to display */
   readonly receipts = signal<IAcqReceipt[] | undefined>(undefined);
 
@@ -58,6 +58,16 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
 
   /** all component subscription */
   private subscriptions = new Subscription();
+
+  constructor() {
+    effect(() => {
+      const order = this.order();
+      if (order) {
+        this.loadPermissions();
+        this._loadReceipts();
+      }
+    });
+  }
 
   // GETTER & SETTER ==========================================================
   /**
@@ -69,7 +79,7 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
   }
 
   canAdd(): boolean {
-    return [AcqOrderStatus.PARTIALLY_RECEIVED, AcqOrderStatus.ORDERED].some(status => status == this.order.status);
+    return [AcqOrderStatus.PARTIALLY_RECEIVED, AcqOrderStatus.ORDERED].some(status => status == this.order().status);
   }
 
   /**
@@ -78,14 +88,6 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
    */
   get numberOfReceipt(): number {
     return this.receipts()?.length ?? 0;
-  }
-
-  /** OnChanges hook */
-  ngOnChanges(changes: SimpleChanges) {
-    if (Object.hasOwn(changes, 'order')) {
-      this.loadPermissions();
-      this._loadReceipts();
-    }
   }
 
   /** OnDestroy hook */
@@ -97,7 +99,7 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
   /** load receipts related to an order */
   private _loadReceipts(): void {
     this.acqReceiptApiService
-      .getReceiptsForOrder(this.order.pid)
+      .getReceiptsForOrder(this.order().pid)
       .subscribe((receipts: IAcqReceipt[]) => this.receipts.set(receipts));
   }
 
@@ -107,10 +109,10 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
    */
   private loadPermissions(): void {
     this.subscriptions.add(this.recordPermissionService
-      .getPermission('acq_orders', this.order.pid)
+      .getPermission('acq_orders', this.order().pid)
       .pipe(
-        map(permissions => this.currentLibraryPermissionValidator.validate(permissions, this.order.library.pid)),
-        map(permissions => this.receivedOrderPermissionValidator.validate(permissions, this.order))
+        map(permissions => this.currentLibraryPermissionValidator.validate(permissions, this.order().library.pid)),
+        map(permissions => this.receivedOrderPermissionValidator.validate(permissions, this.order()))
       ).subscribe((permissions: any) => this.recordPermissions.set(permissions)));
   }
 }

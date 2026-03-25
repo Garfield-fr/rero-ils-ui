@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService, DateTranslatePipe } from '@rero/ng-core';
 import { RouterLink } from '@angular/router';
@@ -35,11 +35,11 @@ export class IllRequestsBriefViewComponent  implements OnInit {
 
   // COMPONENT ATTRIBUTES =======================================================
   /** Record */
-  @Input() record: any;
+  record = input<any>();
   /** Type of record */
-  @Input() type: string;
+  type = input<string>();
   /** Detail Url */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 
   /** the requester of the ILL request */
   requester = null;
@@ -48,11 +48,11 @@ export class IllRequestsBriefViewComponent  implements OnInit {
 
   /** Init hook */
   ngOnInit() {
-    if (this.record) {
-      this.recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
+    if (this.record()) {
+      this.recordService.getRecord('patrons', this.record().metadata.patron.pid).subscribe(
         (patron) => this.requester = patron.metadata
       );
-      this.tagSeverity = getTagSeverityFromStatus(this.record.metadata.status);
+      this.tagSeverity = getTagSeverityFromStatus(this.record().metadata.status);
     }
   }
 }

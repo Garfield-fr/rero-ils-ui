@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
@@ -41,7 +41,7 @@ export class PatronProfileFeesComponent implements OnInit {
   private patronApiService: PatronApiService = inject(PatronApiService);
 
   /** Total of fees */
-  @Input() feesTotal: number;
+  feesTotal = input<number>();
 
   /** First call of get record */
   loaded = false;

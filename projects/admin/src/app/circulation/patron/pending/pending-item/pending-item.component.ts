@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { RecordService, DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';
@@ -41,9 +41,9 @@ export class PendingItemComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Loan */
-  @Input() loan = undefined;
+  loan = input(undefined);
   /** Informs parent component to remove request when it is cancelled */
-  @Output() cancelRequestEvent = new EventEmitter<any>();
+  cancelRequestEvent = output<any>();
   /** Item, document */
   item = undefined;
   document = undefined;
@@ -52,9 +52,9 @@ export class PendingItemComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit() {
-    if (this.loan) {
-      const item$ = this.itemService.getItem(this.loan.metadata.item.barcode, this.loan.metadata.paton_pid);
-      const doc$ = this.recordService.getRecord('documents', this.loan.metadata.item.document.pid, { resolve: 1, headers: { Accept: 'application/rero+json' } });
+    if (this.loan()) {
+      const item$ = this.itemService.getItem(this.loan().metadata.item.barcode, this.loan().metadata.paton_pid);
+      const doc$ = this.recordService.getRecord('documents', this.loan().metadata.item.document.pid, { resolve: 1, headers: { Accept: 'application/rero+json' } });
       forkJoin([item$, doc$]).subscribe(
         ([itemData, documentData]) => {
           this.item = itemData;

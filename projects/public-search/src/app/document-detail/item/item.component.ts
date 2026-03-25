@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { SharedModule, UserService } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
@@ -35,28 +35,16 @@ export class ItemComponent {
   public userService = inject(UserService);
 
   /** Item record */
-  private _item: any;
+  item = input<any>();
+
+  /** View code */
+  viewcode = input<string>();
+
+  /** context */
+  context = input<string>();
 
   /** Temporary item type circulation */
   circulationInformation: string | undefined = undefined;
-
-  /** Set item record */
-  @Input() set item(item: any) {
-    this._item = item;
-    const { circulation_information } = item.metadata.item_type;
-    if (circulation_information) {
-      const information = circulation_information.find((obj: any) => obj.language === this.translateService.currentLang);
-      if (information) {
-        this.circulationInformation = information.label;
-      }
-    }
-  }
-
-  /** View code */
-  @Input() viewcode: string;
-
-  /** context */
-  @Input() context: string;
 
   /** Authorized types of note */
   noteAuthorizedTypes: string[] = [
@@ -69,13 +57,23 @@ export class ItemComponent {
 
   showRequestDialog = false;
 
+  constructor() {
+    effect(() => {
+      const item = this.item();
+      if (item) {
+        const { circulation_information } = item.metadata.item_type;
+        if (circulation_information) {
+          const information = circulation_information.find((obj: any) => obj.language === this.translateService.currentLang);
+          if (information) {
+            this.circulationInformation = information.label;
+          }
+        }
+      }
+    });
+  }
+
   /** Current interface language */
   get language() {
     return this.translateService.currentLang;
-  }
-
-  /** Get item record */
-  get item() {
-    return this._item;
   }
 }

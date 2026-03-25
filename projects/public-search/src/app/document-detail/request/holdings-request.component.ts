@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output, signal, computed, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, input, OnInit, output, signal, computed, ChangeDetectionStrategy} from '@angular/core';
 import { IPatron, UserService, SharedModule } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
@@ -38,16 +38,16 @@ export class HoldingsRequestComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record: item or holding */
-  @Input() record: any;
+  record = input<any>();
 
   /** Record type */
-  @Input() recordType: string;
+  recordType = input<string>();
 
   /** View code */
-  @Input() viewcode: string;
+  viewcode = input<string>();
 
   /** Holdings item count */
-  @Input() holdingsItemsCount: number;
+  holdingsItemsCount = input<number>();
 
   /** Item Can request with reason(s) */
   canRequest = signal<canRequest>({ can: false, reasons: {} });
@@ -74,7 +74,7 @@ export class HoldingsRequestComponent implements OnInit {
   requestDialog = false;
 
   /** Request dialog event */
-  @Output() requestDialogEvent = new EventEmitter<boolean>();
+  requestDialogEvent = output<boolean>();
 
   /** current patron */
   private _patron: IPatron;

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
@@ -36,7 +36,7 @@ export class ExceptionDatesListComponent {
 
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
-  @Input() exceptionDates = [];
+  exceptionDates = input([]);
 
   editException(index: number): void {
     this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
@@ -45,18 +45,18 @@ export class ExceptionDatesListComponent {
       width: '50vw',
       closable: false,
       data: {
-        exceptionDate: this.exceptionDates[index]
+        exceptionDate: this.exceptionDates()[index]
       }
     });
     this.dynamicDialogRef.onClose.subscribe((value?: any) => {
       if (value) {
-        this.exceptionDates[index] = value;
+        this.exceptionDates()[index] = value;
       }
     });
   }
 
   deleteException(index: number): void {
-    this.exceptionDates.splice(index, 1);
+    this.exceptionDates().splice(index, 1);
   }
 
   isOver(exception: ExceptionDates): boolean {

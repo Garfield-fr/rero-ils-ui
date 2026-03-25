@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransaction } from '../../../../../classes/patron-transaction';
 import { TranslateDirective } from '@ngx-translate/core';
 
@@ -27,6 +27,6 @@ import { TranslateDirective } from '@ngx-translate/core';
 export class DefaultTransactionDetailComponent {
 
   /** Patron transaction */
-  @Input() transaction: PatronTransaction;
+  transaction = input<PatronTransaction>();
 
 }

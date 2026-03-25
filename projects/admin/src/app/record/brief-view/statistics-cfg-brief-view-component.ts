@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -28,19 +28,19 @@ import { TruncateTextPipe } from '@rero/ng-core';
     <i
       class="fa fa-circle"
       [title]="activeLabel"
-      [ngClass]="{'text-success': record.metadata.is_active, 'text-error': !record.metadata.is_active}"
-    ></i>&nbsp;<a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+      [ngClass]="{'text-success': record().metadata.is_active, 'text-error': !record().metadata.is_active}"
+    ></i>&nbsp;<a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
   </h5>
   <div>
-    @if (record.metadata.description) {
-      <div [innerHTML]="record.metadata.description | truncateText: 30"></div>
+    @if (record().metadata.description) {
+      <div [innerHTML]="record().metadata.description | truncateText: 30"></div>
     }
     <dl class="metadata">
       <dt translate>Category</dt>
-      <dd>{{ record.metadata.category.type | translate }}</dd>
+      <dd>{{ record().metadata.category.type | translate }}</dd>
 
       <dt translate>Indicator</dt>
-      <dd>{{ record.metadata.category.indicator.type | translate }}</dd>
+      <dd>{{ record().metadata.category.indicator.type | translate }}</dd>
     </dl>
   </div>
   `,
@@ -52,20 +52,20 @@ export class StatisticsCfgBriefViewComponent {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record data */
-  @Input() record: any;
+  record = input<any>();
 
   /** Resource type */
-  @Input() type: string;
+  type = input<string>();
 
   /** Detail URL to navigate to detail view */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 
   /**
    * Status of the configuration on bullet title
    * @returns string - status
    */
     get activeLabel() {
-      return this.record.metadata.is_active
+      return this.record().metadata.is_active
         ? this.translateService.instant('Active')
         : this.translateService.instant('Inactive');
     }

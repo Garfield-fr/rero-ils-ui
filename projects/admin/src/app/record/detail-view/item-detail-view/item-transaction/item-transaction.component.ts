@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -45,17 +45,17 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
 
   // COMPONENTS ATTRIBUTES ===============================================================
   /** Loan Record */
-  @Input() transaction: any;
+  transaction = input<any>();
   /** Resource type */
-  @Input() type: string;
+  type = input<string>();
   /** Flag for cell background */
-  @Input() background: boolean;
+  background = input<boolean>();
   /** Item pid */
-  @Input() itemPid: string;
+  itemPid = input<string>();
   /** Informs parent component to remove request when it is cancelled */
-  @Output() cancelRequestEvent = new EventEmitter<any>();
+  cancelRequestEvent = output<any>();
   /** Informs parent component to update pickup location */
-  @Output() updatePickupLocationEvent = new EventEmitter<any>();
+  updatePickupLocationEvent = output<any>();
 
   /** Pickup locations of the organisation */
   pickupLocations: any;
@@ -76,17 +76,17 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   /** OnInit hook */
   ngOnInit() {
     this.currentUser = this.userService.user;
-    if (this.authorizedTypeToLoadPickupLocations.includes(this.type)) {
+    if (this.authorizedTypeToLoadPickupLocations.includes(this.type())) {
       this.pickupLocations$ = this.getPickupLocations().subscribe((pickups) => {
         this.pickupLocations = pickups;
-        this.currentPickupLocation = this.pickupLocations.find(loc => loc.value === this.transaction.metadata.pickup_location_pid);
+        this.currentPickupLocation = this.pickupLocations.find(loc => loc.value === this.transaction().metadata.pickup_location_pid);
       });
     }
   }
 
   /** OnDestroy hook */
   ngOnDestroy() {
-    if (this.authorizedTypeToLoadPickupLocations.includes(this.type)) {
+    if (this.authorizedTypeToLoadPickupLocations.includes(this.type())) {
       this.pickupLocations$.unsubscribe();
     }
   }
@@ -98,7 +98,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * @returns true if it is possible to cancel a loan
    */
   canCancelRequest(): boolean {
-    return this.loanService.canCancelRequest(this.transaction);
+    return this.loanService.canCancelRequest(this.transaction());
   }
 
   /**
@@ -106,7 +106,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
    * @returns true if it is possible to update pickup location.
    */
   canUpdateRequestPickupLocation(): boolean {
-    return this.loanService.canUpdateRequestPickupLocation(this.transaction);
+    return this.loanService.canUpdateRequestPickupLocation(this.transaction());
   }
 
   /** Show a confirmation dialog box for cancel request. */
@@ -118,14 +118,14 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
 
   /** Inform parent to cancel the request. */
   emitCancelRequest(): void {
-    this.cancelRequestEvent.emit(this.transaction);
+    this.cancelRequestEvent.emit(this.transaction());
   }
 
   /** Inform parent to cancel the request. */
   emitUpdatePickupLocation(event:  SelectChangeEvent): void {
     const data = {
       pickupLocationPid: event.value.value,
-      transaction: this.transaction
+      transaction: this.transaction()
     };
     this.updatePickupLocationEvent.emit(data);
   }
@@ -133,7 +133,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   /** Get pickups by organisation pid */
   private getPickupLocations(): Observable<{label: string, value: string}> {
     const { currentLibrary } = this.currentUser;
-    return this.itemService.getPickupLocations(this.itemPid).pipe(
+    return this.itemService.getPickupLocations(this.itemPid()).pipe(
         map(locations => locations.map((loc: any) => {
           if (this.pickupDefaultValue === undefined && loc.library.pid === currentLibrary) {
             this.pickupDefaultValue = loc.pid;

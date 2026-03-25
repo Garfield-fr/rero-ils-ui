@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 
 @Component({
     selector: 'admin-migration-search',
@@ -29,16 +29,16 @@ import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationSearchComponent {
-  @Input() adminMode: any;
-  @Input() currentType: any;
-  @Input() types: any;
-  @Input() detailUrl: any;
-  @Input() showSearchInput: any;
-  @Input() q: any;
-  @Input() page: any;
-  @Input() size: any;
-  @Input() sort: any;
-  @Input() aggregationsFilters: any;
+  adminMode = input<any>();
+  currentType = input<any>();
+  types = input<any>();
+  detailUrl = input<any>();
+  showSearchInput = input<any>();
+  q = input<any>();
+  page = input<any>();
+  size = input<any>();
+  sort = input<any>();
+  aggregationsFilters = input<any>();
 
   hits: any[] = [];
   aggregations: any[] = [];

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { IAcqOrder } from '@app/admin/acquisition/classes/order';
 import { Notification } from '@app/admin/classes/notification';
@@ -43,7 +43,7 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
   private translateService: TranslateService = inject(TranslateService);
 
   /** the related order */
-  @Input() order: IAcqOrder;
+  order: IAcqOrder;
 
   /** Available recipient types */
   emailTypes = ['to', 'cc', 'bcc', 'reply_to'];

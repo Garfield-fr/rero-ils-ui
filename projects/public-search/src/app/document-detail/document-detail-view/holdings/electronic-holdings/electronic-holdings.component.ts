@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { HoldingsApiService } from 'projects/public-search/src/app/api/holdings-api.service';
 import { Card } from 'primeng/card';
 import { TranslateDirective } from '@ngx-translate/core';
@@ -31,8 +31,8 @@ export class ElectronicHoldingsComponent implements OnInit{
 
   private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
 
-  @Input() documentPid: string;
-  @Input() viewcode: string;
+  documentPid = input<string>();
+  viewcode = input<string>();
 
   holdings = [];
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, model, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, model, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { EsRecord, PaginatorComponent } from '@rero/shared';
@@ -48,9 +48,9 @@ export class ItemsComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Holding */
-  @Input() holding: EsRecord;
+  holding = input<EsRecord>();
   /** View code */
-  @Input() viewcode: string;
+  viewcode = input<string>();
 
   constructor() {
     this.store.setFilter(this.filter);

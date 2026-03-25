@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { RecordUiService, DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { IssueItemStatus, InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
 import { RouterLink } from '@angular/router';
@@ -34,11 +34,11 @@ export class IssuesBriefViewComponent implements OnInit {
   protected recordUiService: RecordUiService = inject(RecordUiService);
 
   /** Record */
-  @Input() record: any;
+  record = input<any>();
   /** Type of record */
-  @Input() type: string;
+  type = input<string>();
   /** Detail Url */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 
   /** parent holding url */
   parentUrl: { link: string, external: boolean };
@@ -47,15 +47,15 @@ export class IssuesBriefViewComponent implements OnInit {
 
   /** @return last claim date */
   get claimLastDate(): string {
-    return this.record.metadata.issue.claims.dates
+    return this.record().metadata.issue.claims.dates
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime())[0];
   }
 
   /** OnInit hook */
   ngOnInit() {
-    if (this.record) {
+    if (this.record()) {
       this.parentUrl = {
-        link: `/records/holdings/detail/${this.record.metadata.holding.pid}`,
+        link: `/records/holdings/detail/${this.record().metadata.holding.pid}`,
         external: false
       };
     }

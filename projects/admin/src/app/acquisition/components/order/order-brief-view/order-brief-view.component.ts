@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { AcqNoteType } from '../../../classes/common';
 import { AcqOrderStatus, IAcqOrder, orderDefaultData } from '../../../classes/order';
 import { RouterLink } from '@angular/router';
@@ -36,11 +36,11 @@ export class OrderBriefViewComponent implements OnInit {
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** the record to display */
-  @Input() record: any;
+  record = input<any>();
   /** the record type */
-  @Input() type: string;
+  type = input<string>();
   /** the ur to the record detail view */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 
   /** the record as an AcqOrder */
   order: IAcqOrder = null;
@@ -51,7 +51,7 @@ export class OrderBriefViewComponent implements OnInit {
 
   /** get reception date (based on receiptLine reception date) */
   get receptionDate(): string | null {
-    return this.record.metadata.receipts
+    return this.record().metadata.receipts
       .filter(line => Object.hasOwn(line, 'receipt_date') && Array.isArray(line.receipt_date) && line.receipt_date.length > 0)
       .map(line => line.receipt_date[0])
       .shift();
@@ -77,7 +77,7 @@ export class OrderBriefViewComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    const metadata = {...orderDefaultData, ...this.record.metadata};
+    const metadata = {...orderDefaultData, ...this.record().metadata};
     // FILTERS NOTES ::
     //   the notes fields from AcqOrder ES index contains all notes from all related resources.
     //   We only need to keep the notes from itself.

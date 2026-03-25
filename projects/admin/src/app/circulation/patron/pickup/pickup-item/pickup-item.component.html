@@ -31,17 +31,17 @@
       <shared-contribution [contributions]="document?.contribution" />
     </div>
     <div class="ui:col-span-3">
-      {{ loan.metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
+      {{ loan().metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}
     </div>
     <div class="ui:col-span-2">
-      @if (loan.metadata.request_expire_date) {
-        {{ loan.metadata.request_expire_date | dateTranslate:'shortDate' }}
+      @if (loan().metadata.request_expire_date) {
+        {{ loan().metadata.request_expire_date | dateTranslate:'shortDate' }}
       } @else {
         {{ 'Unknown' | translate }}
       }
     </div>
     <div class="ui:col-span-1 ui:flex ui:justify-end">
-      <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
+      <admin-cancel-request-button [loan]="loan()" (cancelRequestEvent)="cancelRequest($event)" />
     </div>
   </div>
 }

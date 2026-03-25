@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit, ViewChild, inject, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, OnInit, ViewChild, inject, ChangeDetectionStrategy} from '@angular/core';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG, FilesizePipe, DateTranslatePipe } from '@rero/ng-core';
@@ -48,7 +48,7 @@ export class UploadFilesComponent implements OnInit {
   confirmationService: ConfirmationService = inject(ConfirmationService);
 
   // linked resource pid such as document
-  @Input() pid: string;
+  pid = input<string>();
   // List of files for the file record.
   files: any[] = undefined;
   // the maximum number of files by file record
@@ -160,7 +160,7 @@ export class UploadFilesComponent implements OnInit {
       if (this.parentRecord == null) {
         // create the parent record
         // should not happens when a document is used as parent record
-        obs = this.fileService.createParentRecord(this.pid).pipe(
+        obs = this.fileService.createParentRecord(this.pid()).pipe(
           map((record) => (this.parentRecord = record)),
           switchMap(() => {
             return this.generateCreateRequests(event);
@@ -297,7 +297,7 @@ export class UploadFilesComponent implements OnInit {
    * @returns Observable emitting files
    */
   private getFiles(): void {
-    this.fileService.getParentRecord(this.pid).pipe(
+    this.fileService.getParentRecord(this.pid()).pipe(
       map((record: any) => (this.parentRecord = record)),
       switchMap(() => {
         if(this.parentRecord == null) {

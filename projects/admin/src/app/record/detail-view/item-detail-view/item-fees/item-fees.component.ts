@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionApiService } from '@app/admin/api/patron-transaction-api.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { tap } from 'rxjs';
@@ -38,7 +38,7 @@ export class ItemFeesComponent implements OnInit {
   private organisationService: OrganisationService = inject(OrganisationService);
 
   /** Item pid */
-  @Input() itemPid: string;
+  itemPid = input<string>();
 
   /** Fees */
   fees: any[] = [];
@@ -56,7 +56,7 @@ export class ItemFeesComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-      this.patronTransactionApiService.getActiveFeesByItemPid(this.itemPid)
+      this.patronTransactionApiService.getActiveFeesByItemPid(this.itemPid())
         .pipe(tap((fees: any) => fees.map((fee: any) => this.total += fee.metadata.total_amount)))
         .subscribe((fees: any) => this.fees = fees);
   }

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { CirculationLogComponent } from '../circulation-log.component';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -31,9 +31,9 @@ import { GetRecordPipe } from '@rero/ng-core';
 export class CirculationItemScanComponent {
 
   /** Operation log record */
-  @Input() record: any;
+  record = input<any>();
   /** Is the log should be highlighted */
-  @Input() isHighlight = false;
+  isHighlight = input(false);
   /** Is the transaction must be separated from sibling elements */
-  @Input() separator = false;
+  separator = input(false);
 }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, input, output, ChangeDetectionStrategy} from '@angular/core';
 import { CirculationLogComponent } from '../circulation-log.component';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -34,14 +34,14 @@ export class CirculationLogLoanComponent {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Operation log record */
-  @Input() record: any;
+  record = input<any>();
   /** Is the log should be highlighted */
-  @Input() isHighlight = false;
+  isHighlight = input(false);
   /** Is the transaction must be separated from sibling elements */
-  @Input() separator = false;
+  separator = input(false);
 
   /** Event for close dialog */
-  @Output() closeDialogEvent  = new EventEmitter();
+  closeDialogEvent = output();
 
   // COMPONENT FUNCTIONS ======================================================
   /** Close dialog */

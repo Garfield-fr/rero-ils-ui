@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { DocumentApiService } from '../api/document-api.service';
 import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
 
@@ -30,24 +30,15 @@ export class DocumentBriefComponent {
   public coverUrl: string;
   private pathArray = window.location.pathname.split('/');
   public documentApiService: DocumentApiService = inject(DocumentApiService);
-  private _record: any;
 
-  @Input() type: string;
-  @Input() detailUrl: { link: string, external: boolean };
-  @Input() viewcode = this.pathArray[1];
-  @Input() set record(value) {
-    if (value !== undefined) {
-      this._record = value;
-    }
-  }
-
-  get record() {
-    return this._record;
-  }
+  type = input<string>();
+  detailUrl = input<{ link: string, external: boolean }>();
+  viewcode = input(this.pathArray[1]);
+  record = input<any>();
 
   /** process provision activity publications */
   get provisionActivityPublications() {
-    const { provisionActivity } = this._record.metadata;
+    const { provisionActivity } = this.record()?.metadata;
     const publications = [];
     if (undefined === provisionActivity) {
       return publications;

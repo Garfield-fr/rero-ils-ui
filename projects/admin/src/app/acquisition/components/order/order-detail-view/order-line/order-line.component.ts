@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
@@ -47,9 +47,9 @@ export class OrderLineComponent implements OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** order line */
-  @Input() orderLine: IAcqOrderLine;
+  orderLine = input.required<IAcqOrderLine>();
   /** parent order */
-  @Input() order: any;
+  order = input<any>();
 
   /** order line related account */
   readonly account = signal<any>(undefined);
@@ -77,11 +77,11 @@ export class OrderLineComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit() {
-    const account$ = this.recordService.getRecord('acq_accounts', this.orderLine.acq_account.pid);
+    const account$ = this.recordService.getRecord('acq_accounts', this.orderLine().acq_account.pid);
     const permissions$ = this.recordPermissionService
-      .getPermission('acq_order_lines', this.orderLine.pid)
-      .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid)));
-    const document$ = this.recordService.getRecord('documents', this.orderLine.document.pid).pipe(
+      .getPermission('acq_order_lines', this.orderLine().pid)
+      .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order().library.pid)));
+    const document$ = this.recordService.getRecord('documents', this.orderLine().document.pid).pipe(
       catchError(() => of(null))
     );
     forkJoin([permissions$, account$, document$]).subscribe(([permissions, account, document]) => {
@@ -99,11 +99,11 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   // COMPONENT FUNCTIONS ======================================================
   /** Delete the order line */
   deleteOrderLine() {
-    this.acqOrderApiService.deleteOrderLine(this.orderLine);
+    this.acqOrderApiService.deleteOrderLine(this.orderLine());
   }
 
   severity(): string {
-    switch(this.orderLine.priority) {
+    switch(this.orderLine().priority) {
       case 2:
         return 'primary';
       case 3:

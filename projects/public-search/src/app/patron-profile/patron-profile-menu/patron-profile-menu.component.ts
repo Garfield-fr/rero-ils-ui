@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service';
@@ -30,7 +30,7 @@ export class PatronProfileMenuComponent {
 
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
-  @Input() patronPid: string;
+  patronPid = input<string>();
 
   selectedOrganisation: IMenu;
 

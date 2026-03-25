@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { IPatronPermission, PermissionApiService } from 'projects/admin/src/app/api/permission-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -28,31 +28,32 @@ import { PatronPermissionComponent } from './patron-permission/patron-permission
     imports: [TranslateDirective, Bind, InputText, PatronPermissionComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronPermissionsComponent implements OnChanges {
+export class PatronPermissionsComponent {
 
   private permissionApiService: PermissionApiService = inject(PermissionApiService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Show or hide */
-  @Input() hidden = false;
+  hidden = input(false);
   /** Patron pid */
-  @Input() pid: string;
+  pid = input<string>();
 
   /** User permissions */
   permissions: IPatronPermission[] = [];
   /** User permissions filtered */
   filteredPermissions: IPatronPermission[] = [];
 
-  /** OnChanges hook */
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.hidden.currentValue && this.permissions.length === 0) {
-      this.permissionApiService
-        .getUserPermissions(this.pid)
-        .subscribe((permissions: IPatronPermission[]) => {
-          this.permissions = permissions;
-          this.filteredPermissions = permissions;
-        });
-    }
+  constructor() {
+    effect(() => {
+      if (!this.hidden() && this.permissions.length === 0) {
+        this.permissionApiService
+          .getUserPermissions(this.pid())
+          .subscribe((permissions: IPatronPermission[]) => {
+            this.permissions = permissions;
+            this.filteredPermissions = permissions;
+          });
+      }
+    });
   }
 
   // PUBLIC FUNCTIONS =========================================================

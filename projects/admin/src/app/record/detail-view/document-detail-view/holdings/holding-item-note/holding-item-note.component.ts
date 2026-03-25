@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { ItemNote } from '@app/admin/classes/items';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-holding-item-note',
     template: `
-    @if (note) {
+    @if (note()) {
       <dl class="metadata">
-        <dt>{{ note.type.toString() | translate }}</dt>
-        <dd [innerHTML]="note.content"></dd>
+        <dt>{{ note().type.toString() | translate }}</dt>
+        <dd [innerHTML]="note().content"></dd>
       </dl>
     }
   `,
@@ -33,5 +33,5 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class HoldingItemNoteComponent {
   /** the item note */
-  @Input() note: ItemNote;
+  note = input<ItemNote>();
 }

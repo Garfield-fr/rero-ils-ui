@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -42,7 +42,7 @@ import { ReceptionDatesPipe } from '../../../pipes/reception-dates.pipe';
     imports: [OpenCloseButtonComponent, Bind, Tag, ActionButtonComponent, RouterLink, ReceiptLineComponent, NotesComponent, CurrencyPipe, I18nPluralPipe, TranslatePipe, NoteBadgeColorPipe, ReceptionDatesPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
+export class ReceiptSummaryComponent implements OnInit, OnDestroy {
 
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
@@ -52,19 +52,31 @@ export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The receipt pid to load */
-  @Input() receiptPid: string;
+  receiptPid = input.required<string>();
   /** Is action button must be displayed */
-  @Input() allowActions = false;
+  allowActions = input(false);
   /** Collapse detail configuration */
-  @Input() collapsable = true;
-  @Input() isCollapsed = true;
+  collapsable = input(true);
   /** Record permissions */
   readonly recordPermissions = signal<RecordPermissions | undefined>(undefined);
   /** Receipt object */
   readonly receipt = signal<IAcqReceipt | undefined>(undefined);
+  /** Is the detail collapsed */
+  isCollapsed = true;
   validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED];
  /** all component subscription */
   private subscriptions = new Subscription();
+
+  constructor() {
+    effect(() => {
+      if (this.receiptPid()) {
+        this.loadReceipt();
+      }
+      if (!this.collapsable()) {
+        this.isCollapsed = false;
+      }
+    });
+  }
 
   // GETTER & SETTER ==========================================================
   /**
@@ -82,19 +94,10 @@ export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
     this.subscriptions.add(
       this.acqReceiptApiService.deletedReceiptLineSubject$.subscribe(
         (receiptLine: IAcqReceiptLine) => {
-      if(receiptLine.acq_receipt.pid === this.receiptPid) {
+      if(receiptLine.acq_receipt.pid === this.receiptPid()) {
         this.loadReceipt();
       }
     }));
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if(Object.hasOwn(changes, 'receiptPid') && changes.receiptPid) {
-      this.loadReceipt();
-    }
-    if(Object.hasOwn(changes, 'collapsable') && changes.collapsable != null && !this.collapsable) {
-      this.isCollapsed = false;
-    }
   }
 
   ngOnDestroy(): void {
@@ -103,14 +106,14 @@ export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
 
   loadReceipt() {
     this.acqReceiptApiService
-      .getReceipt(this.receiptPid).pipe(
+      .getReceipt(this.receiptPid()).pipe(
         tap((receipt: IAcqReceipt) => {
-          receipt.receipt_lines = receipt.receipt_lines.map((line:IAcqReceiptLine) => ({...line, ...{acq_receipt:{pid: this.receiptPid}}}))
+          receipt.receipt_lines = receipt.receipt_lines.map((line:IAcqReceiptLine) => ({...line, ...{acq_receipt:{pid: this.receiptPid()}}}))
         }),
         tap((receipt: IAcqReceipt) => this.receipt.set(receipt)),
         switchMap(():Observable<any> => {
           // Load permissions only if we need to display the action buttons
-          if (this.allowActions) {
+          if (this.allowActions()) {
             return this.updatePermissions();
           }
           return of(null)

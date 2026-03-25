@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective } from '@ngx-translate/core';
 import { InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
@@ -32,11 +32,11 @@ import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../.
 export class ItemsBriefViewComponent {
 
   /** Record */
-  @Input() record: any;
+  record = input<any>();
 
   /** Type of record */
-  @Input() type: string;
+  type = input<string>();
 
   /** Detail Url */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 }

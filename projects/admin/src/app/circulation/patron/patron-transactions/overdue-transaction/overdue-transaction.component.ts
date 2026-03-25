@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Item } from '@app/admin/classes/items';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
@@ -42,7 +42,7 @@ export class OverdueTransactionComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES ====================================================
   /** the overdue preview to display */
-  @Input() transaction: {loan: Loan, fees: LoanOverduePreview};
+  transaction = input<{loan: Loan, fees: LoanOverduePreview}>();
   /** Is transaction detail visible ? */
   isCollapsed = true;
   /** item, document corresponding to the loan */
@@ -60,8 +60,8 @@ export class OverdueTransactionComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    const itemRecord$ = this.recordService.getRecord('items', this.transaction.loan.item_pid.value);
-    const documentRecord$ = this.recordService.getRecord('documents', this.transaction.loan.document_pid);
+    const itemRecord$ = this.recordService.getRecord('items', this.transaction().loan.item_pid.value);
+    const documentRecord$ = this.recordService.getRecord('documents', this.transaction().loan.document_pid);
     forkJoin([itemRecord$, documentRecord$]).subscribe(
       ([itemData, documentData]) => {
         this.item = new Item(itemData.metadata);
@@ -69,7 +69,7 @@ export class OverdueTransactionComponent implements OnInit {
       }
     );
     // transform fees steps to fake PatronTransactionEvent
-    this.transaction.fees.steps = this.transaction.fees.steps.map(event => new PatronTransactionEvent({
+    this.transaction().fees.steps = this.transaction().fees.steps.map(event => new PatronTransactionEvent({
       creation_date: event[1],
       amount: event[0],
       type: PatronTransactionEventType.FEE,

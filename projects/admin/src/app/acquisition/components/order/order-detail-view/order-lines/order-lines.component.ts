@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { UserService } from '@rero/shared';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
@@ -29,23 +29,26 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
     imports: [OrderLineComponent, TranslateDirective, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
+export class OrderLinesComponent implements OnInit, OnDestroy {
 
   private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
   private userService : UserService = inject(UserService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** Acquisition order pid */
-  @Input() order: IAcqOrder;
+  order = input.required<IAcqOrder>();
   /** Acquisition order lines to display */
   readonly orderLines = signal<IAcqOrderLine[] | undefined>(undefined);
 
   /** all component subscription */
   private subscriptions = new Subscription();
 
+  constructor() {
+    effect(() => { this.loadOrderLines(); });
+  }
+
   /** OnInit hook */
   ngOnInit(): void {
-    this.loadOrderLines();
     this.subscriptions.add(
       this.acqOrderApiService
         .deletedOrderLineSubject$
@@ -57,22 +60,15 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
 
   canAdd(): boolean {
     // rollover
-    if (!this.order.is_current_budget) {
+    if (!this.order().is_current_budget) {
       return false;
     }
     // owning library
-    if (this.userService.user.currentLibrary !== this.order.library.pid) {
+    if (this.userService.user.currentLibrary !== this.order().library.pid) {
       return false;
     }
     // order status
-    return [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some(status => status == this.order.status);
-  }
-
-  /** OnChanges hook */
-  ngOnChanges(changes: SimpleChanges): void {
-    if (Object.hasOwn(changes, 'order')) {
-      this.loadOrderLines();
-    }
+    return [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some(status => status == this.order().status);
   }
 
   /** OnDestroy hook */
@@ -84,7 +80,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
   /** load order lines related to this order */
   private loadOrderLines(): void {
     this.acqOrderApiService
-      .getOrderLines(this.order.pid)
+      .getOrderLines(this.order().pid)
       .subscribe((lines: IAcqOrderLine[]) => this.orderLines.set(lines));
   }
 }

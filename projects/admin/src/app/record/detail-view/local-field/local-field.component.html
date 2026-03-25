@@ -32,7 +32,7 @@
           [label]="'Edit'|translate"
           outlined
           [routerLink]="['/records', 'local_fields', 'edit', localFieldRecordPid]"
-          [queryParams]="{ type: resourceType, ref: resourcePid }"
+          [queryParams]="{ type: resourceType(), ref: resourcePid() }"
           size="small"
         />
       }
@@ -54,7 +54,7 @@
       [label]="'Add local fields'|translate"
       outlined
       [routerLink]="['/records', 'local_fields', 'new']"
-      [queryParams]="{ type: resourceType, ref: resourcePid }"
+      [queryParams]="{ type: resourceType(), ref: resourcePid() }"
     />
   </div>
 }

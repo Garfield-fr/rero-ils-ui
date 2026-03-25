@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -27,7 +27,7 @@ import { Button } from 'primeng/button';
     template: `
     <p-button
       icon="fa fa-history"
-      id="{{ resourceType }}-circulation-history"
+      id="{{ resourceType() }}-circulation-history"
       [label]="'Circulation history'|translate"
       outlined
       severity="secondary"
@@ -45,9 +45,9 @@ export class CirculationLogsDialogComponent {
   private translateService: TranslateService = inject(TranslateService);
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource pid */
-  @Input() resourcePid: string;
+  resourcePid = input<string>();
   /** Resource type */
-  @Input() resourceType: 'item'|'loan' = 'item';
+  resourceType = input('item');
 
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;
@@ -65,8 +65,8 @@ export class CirculationLogsDialogComponent {
       width: '60vw',
       position: 'top',
       data: {
-        resourceType: this.resourceType,
-        resourcePid: this.resourcePid
+        resourceType: this.resourceType(),
+        resourcePid: this.resourcePid()
       }
     });
   }

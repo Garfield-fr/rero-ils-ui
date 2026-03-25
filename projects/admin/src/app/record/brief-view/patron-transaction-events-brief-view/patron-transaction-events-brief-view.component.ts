@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, Input, OnInit, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -41,11 +41,11 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Information to build the URL on the record detail view. */
-  @Input() detailUrl: { link: string; external: boolean };
+  detailUrl = input<{ link: string; external: boolean }>();
   /** The record to perform. */
-  @Input() record: any;
+  record = input<any>();
   /** The type of the record. */
-  @Input() type: string;
+  type = input<string>();
 
   /** is all data are loaded */
   loaded = false;
@@ -73,7 +73,7 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     this.organisation = this.organisationService.organisation;
-    this.event.set(new PatronTransactionEvent(this.record.metadata));
+    this.event.set(new PatronTransactionEvent(this.record().metadata));
     this.patronTransactionService
       .getPatronTransaction(this.event().parent.pid)
       .subscribe((parent: PatronTransaction) => {

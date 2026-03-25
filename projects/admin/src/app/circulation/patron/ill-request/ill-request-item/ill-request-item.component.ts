@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { OpenCloseButtonComponent, JournalVolumePipe } from '@rero/shared';
 import { Bind } from 'primeng/bind';
@@ -36,7 +36,7 @@ export class IllRequestItemComponent {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** ILL record. */
-  @Input() record: any;
+  record = input<any>();
   /** Is detail is collapsed. */
   isCollapsed = true;
 

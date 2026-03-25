@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -51,10 +51,10 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the issue to display */
-  @Input() issue: any;
+  issue = input<any>();
 
   /** the parent holding */
-  @Input() holding;
+  holding = input<any>();
 
   /** Allow claims */
   isClaimAllowed = false;
@@ -74,14 +74,14 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    * @return the string to use into the HTML title attribute
    */
   get iconTitle(): string {
-    return (this.issue.metadata._masked)
+    return (this.issue().metadata._masked)
       ? this.translateService.instant('Masked')
-      : this.translateService.instant(this.issue.metadata.issue.status);
+      : this.translateService.instant(this.issue().metadata.issue.status);
   }
 
   /** @return last claim date */
   get claimLastDate(): string {
-    return this.issue.metadata.issue.claims.dates
+    return this.issue().metadata.issue.claims.dates
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime())[0];
   }
 
@@ -90,13 +90,13 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   /** OnInit hook */
   ngOnInit(): void {
     this.recordPermissionService
-      .getPermission('items', this.issue.metadata.pid)
+      .getPermission('items', this.issue().metadata.pid)
       .subscribe(permission => this.recordPermissions =  this.recordPermissionService.membership(
         this.userService.user,
-        this.issue.metadata.library.pid,
+        this.issue().metadata.library.pid,
         permission
       ));
-    this.isClaimAllowed = this.issueService.isClaimAllowed(this.issue.metadata.issue.status);
+    this.isClaimAllowed = this.issueService.isClaimAllowed(this.issue().metadata.issue.status);
   }
 
   ngOnDestroy(): void {
@@ -109,9 +109,9 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    * @return: a string representing the classes to use to render the icon
    */
   getIcon(realState = false): string {
-    return (this.issue.metadata._masked && !realState)
+    return (this.issue().metadata._masked && !realState)
       ? 'fa-eye-slash text-error'
-      : this.holdingService.getIcon(this.issue.metadata.issue.status);
+      : this.holdingService.getIcon(this.issue().metadata.issue.status);
   }
 
   /**
@@ -127,12 +127,10 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
 
   /** Open claim dialog */
   openClaimEmailDialog(): void {
-    const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.issue);
+    const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.issue());
     this.subscription.add(
-      ref.onClose.subscribe((record: any) => {
-        if(record) {
-          this.issue = record;
-        }
+      ref.onClose.subscribe((_record: any) => {
+        // Note: cannot reassign signal input; the parent should update the input binding
       })
     );
   }

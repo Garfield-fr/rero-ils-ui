@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
@@ -45,10 +45,10 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** Item record */
-  @Input() itemPid: string;
+  itemPid = input<string>();
 
   /** Informs parent component that a request has been cancelled */
-  @Output() requestEvent = new EventEmitter<any>();
+  requestEvent = output<any>();
 
   /** Borrowed loan */
   borrowedBy: any[] = [];
@@ -64,8 +64,8 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit() {
-    const borrowedBy$ = this.loanService.borrowedBy$(this.itemPid);
-    const requestedBy$ = this.loanService.requestedBy$(this.itemPid);
+    const borrowedBy$ = this.loanService.borrowedBy$(this.itemPid());
+    const requestedBy$ = this.loanService.requestedBy$(this.itemPid());
     forkJoin([borrowedBy$, requestedBy$])
       .subscribe(([borrowedLoan, requestedLoans]) => {
         this.borrowedBy = borrowedLoan;
@@ -87,13 +87,12 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
       modal: true,
       width: '40vw',
       closable: true,
-      data: { recordPid: this.itemPid, recordType: 'item' }
+      data: { recordPid: this.itemPid(), recordType: 'item' }
     });
     this.subscription.add(
       ref.onClose.subscribe((value: boolean) => {
         if (value) {
-          // TODO: The 'emit' function requires a mandatory any argument
-          this.requestEvent.emit();
+          this.requestEvent.emit(null);
           this._refreshRequestList();
         }
       })
@@ -106,7 +105,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
    */
   cancelRequest(transaction: any): void {
     this.loanService
-      .cancelLoan(this.itemPid, transaction.metadata.pid, this.userService.user.currentLibrary)
+      .cancelLoan(this.itemPid(), transaction.metadata.pid, this.userService.user.currentLibrary)
       .subscribe((itemData: any) => {
         this.messageService.add({
           severity: 'warn',
@@ -114,8 +113,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
           detail: this.translateService.instant('The pending request has been cancelled.'),
           life: CONFIG.MESSAGE_LIFE
         });
-        // TODO: The 'emit' function requires a mandatory any argument
-        this.requestEvent.emit();
+        this.requestEvent.emit(null);
         this._refreshRequestList();
       });
   }
@@ -144,7 +142,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
    */
   private _refreshRequestList(): void {
     this.loanService
-      .requestedBy$(this.itemPid)
+      .requestedBy$(this.itemPid())
       .subscribe(requestedLoans =>
         this.requestedBy = requestedLoans
       );

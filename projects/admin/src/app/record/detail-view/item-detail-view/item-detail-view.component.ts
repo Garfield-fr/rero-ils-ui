@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterViewInit, Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, model, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordService, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 
 import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, UserService, InheritedCallNumberComponent, AvailabilityComponent, PermissionsDirective, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
 import { DateTime } from 'luxon';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
 import { OperationLogsService } from '@rero/shared';
@@ -55,7 +55,7 @@ import { Badge } from 'primeng/badge';
     imports: [Bind, Button, RouterLink, RecordMaskedComponent, TranslateDirective, InheritedCallNumberComponent, AvailabilityComponent, NgClass, Tooltip, Tabs, TabList, Ripple, Tab, NgPlural, NgPluralCase, TabPanels, TabPanel, CirculationLogsDialogComponent, ItemTransactionsComponent, ItemFeesComponent, PermissionsDirective, LocalFieldComponent, AsyncPipe, JsonPipe, CurrencyPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, MainTitlePipe_1, SafeUrlPipe_1, ItemHoldingsCallNumberPipe_1, KeyExistsPipe_1, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemDetailViewComponent implements OnChanges, OnDestroy {
+export class ItemDetailViewComponent implements OnDestroy {
 
   public itemApiService: ItemApiService = inject(ItemApiService);
   private recordService: RecordService = inject(RecordService);
@@ -65,9 +65,9 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
   private userService: UserService = inject(UserService);
 
   /** Document record */
-  @Input() record: any;
+  record = model<any>();
   /** Record permissions */
-  @Input() recordPermissions: any;
+  recordPermissions = input<any>();
 
   /** Permissions */
   permissions: IPermissions = PERMISSIONS;
@@ -83,6 +83,15 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
   /** Record subscription */
   private subscription: Subscription = new Subscription();
 
+  constructor() {
+    effect(() => {
+      const record = this.record();
+      if (record != null) {
+        this.recordService.getRecord('locations', record.metadata.location.pid, { resolve: 1 }).subscribe(data => this.location = data);
+      }
+    });
+  }
+
   /**
    * Is operation log enabled
    * @return boolean
@@ -92,7 +101,7 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
   }
 
   get isDisplayLocalFieldsTab(): boolean {
-    return this.userService.user.currentLibrary === this.record.metadata.library.pid;
+    return this.userService.user.currentLibrary === this.record()?.metadata.library.pid;
   }
 
   /**
@@ -105,15 +114,10 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
 
   /** returns an array of claim dates in DESC order */
   get claimsDates(): string[] {
-    return this.record.metadata.issue.claims.dates
+    return this.record()?.metadata.issue.claims.dates
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime());
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes?.record?.currentValue != null) {
-      this.recordService.getRecord('locations', changes.record.currentValue.metadata.location.pid, { resolve: 1 }).subscribe(data => this.location = data);
-    }
-  }
   /** OnDestroy hook */
   ngOnDestroy() {
     this.subscription.unsubscribe();
@@ -133,8 +137,8 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
    * @return boolean
    */
   hasTemporaryItemType(): boolean {
-    if ('temporary_item_type' in this.record.metadata) {
-      const endDateValue = this.record.metadata.temporary_item_type.end_date || undefined;
+    if ('temporary_item_type' in this.record()?.metadata) {
+      const endDateValue = this.record()?.metadata.temporary_item_type.end_date || undefined;
       return !(endDateValue && DateTime.fromISO(endDateValue) < DateTime.now());
     }
     return false;
@@ -142,8 +146,8 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
 
   /** Update item status */
   updateItemStatus(): void {
-    this.recordService.getRecord('items', this.record.metadata.pid, { resolve: 1 })
-      .subscribe((item: any) => this.record = item);
+    this.recordService.getRecord('items', this.record()?.metadata.pid, { resolve: 1 })
+      .subscribe((item: any) => this.record.set(item));
   }
 
   /**

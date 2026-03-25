@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
+import { Component, input, ChangeDetectionStrategy } from "@angular/core";
 import { Bind } from "primeng/bind";
 import { TableModule } from "primeng/table";
 import { TranslateDirective } from "@ngx-translate/core";
@@ -30,5 +30,5 @@ import { TranslateDirective } from "@ngx-translate/core";
 export class ReportDataComponent {
 
   // the report data to display
-  @Input() data: any;
+  data = input<any>();
 }

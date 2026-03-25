@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { I18nPluralPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { ArrayTranslatePipe, IOrganisation, JoinPipe, OpenCloseButtonComponent } from '@rero/shared';
@@ -62,7 +62,7 @@ export class PatronProfileLoanComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Loan record */
-  @Input() record: any;
+  record = input<any>();
 
   /** Document section is collapsed */
   isCollapsed = true;

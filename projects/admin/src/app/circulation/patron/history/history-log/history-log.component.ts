@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { ProvisionActivityType, OperationLogsApiService, OpenCloseButtonComponent, ContributionComponent } from '@rero/shared';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
@@ -36,7 +36,7 @@ export class HistoryLogComponent {
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
 
   /** Log to display */
-  @Input() log: any;
+  log = input<any>();
 
   /** Is collapsed */
   isCollapsed = true;
@@ -53,11 +53,11 @@ export class HistoryLogComponent {
   loadCheckout() {
     if (!this.checkoutLoaded) {
       this.operationLogsApiService
-        .getHistoryByLoanPid(this.log.metadata.loan.pid, 'checkout')
+        .getHistoryByLoanPid(this.log().metadata.loan.pid, 'checkout')
         .subscribe((log: any) => {
           this.checkoutLoaded = true;
-          this.log.metadata['type'] = 'Checkin';
-          this.events = [this.log.metadata];
+          this.log().metadata['type'] = 'Checkin';
+          this.events = [this.log().metadata];
           if (log) {
             log.metadata['type'] = 'Checkout';
             this.events.push(log.metadata);

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { NgClass } from '@angular/common';
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
@@ -34,13 +34,13 @@ export class PatronProfilePersonalComponent {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
 
   /** User record */
-  @Input() user: any;
+  user = input<any>();
 
   /** patron record */
-  @Input() patron: IPatron;
+  patron = input<IPatron>();
 
   /** Current viewcode */
-  @Input() viewcode: string;
+  viewcode = input<string>();
 
   /**
    * Check if the user profile is on read only

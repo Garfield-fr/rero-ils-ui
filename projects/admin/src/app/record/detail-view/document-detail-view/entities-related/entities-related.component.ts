@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Entity } from '@rero/shared';
 import { IEntityRelated } from './entities-related.interface';
@@ -33,7 +33,7 @@ export class EntitiesRelatedComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record metadata */
-  @Input() record: any;
+  record = input<any>();
 
   /** Entities processed */
   entities: Record<string, IEntityRelated[]> = {};
@@ -41,7 +41,7 @@ export class EntitiesRelatedComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     const language = this.translateService.currentLang;
-    const { metadata } = this.record;
+    const { metadata } = this.record();
     Entity.FIELDS_WITH_REF.forEach((field: string) => {
       if (field in metadata && metadata[field].length > 0) {
         metadata[field].forEach((entity: any) => {

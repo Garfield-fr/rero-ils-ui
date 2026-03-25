@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Location } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, inject, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, OnDestroy, OnInit, inject, ChangeDetectionStrategy} from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -51,7 +51,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Request referer */
-  @Input() referer: string | null;
+  referer = input<string | null>();
 
   /** Form submission error */
   formError: string | null = null;

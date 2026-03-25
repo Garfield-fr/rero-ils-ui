@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { OpenCloseButtonComponent } from '@rero/shared';
@@ -42,7 +42,7 @@ export class PatronProfileRequestComponent {
   private messageService: MessageService = inject(MessageService);
 
   /** Request record */
-  @Input() record: any;
+  record = input<any>();
 
   /** Document section is collapsed */
   isCollapsed = true;

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordUiService } from '@rero/ng-core';
 import { RouterLink } from '@angular/router';
@@ -35,13 +35,13 @@ export class LocationComponent implements OnInit {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
 
   /** The location whose details are displayed */
-  @Input() location: any;
+  location = input<any>();
 
   /** The parent library of the location */
-  @Input() library: any;
+  library = input<any>();
 
   /** Delete location event emitter */
-  @Output() deleteLocation = new EventEmitter();
+  deleteLocation = output<string>();
 
   /** location record permission */
   permissions: any;
@@ -50,7 +50,7 @@ export class LocationComponent implements OnInit {
    * Init
    */
   ngOnInit() {
-    this.recordPermissionService.getPermission('locations', this.location.metadata.pid).subscribe(
+    this.recordPermissionService.getPermission('locations', this.location().metadata.pid).subscribe(
       (permissions) => this.permissions = permissions
     );
   }

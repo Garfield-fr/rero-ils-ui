@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -39,19 +39,19 @@ export class PickupLocationComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record: item or holding */
-  @Input() record: any;
+  record = input<any>();
 
   /** Record type */
-  @Input() recordType: string;
+  recordType = input<string>();
 
   /** View code */
-  @Input() viewcode: string;
+  viewcode = input<string>();
 
   /** Item count */
-  @Input() itemCount = 0;
+  itemCount = input(0);
 
   /** Close request dialog event */
-  @Output() closeEvent = new EventEmitter<boolean>();
+  closeEvent = output<boolean>();
 
   /** Form */
   form = new UntypedFormGroup({});

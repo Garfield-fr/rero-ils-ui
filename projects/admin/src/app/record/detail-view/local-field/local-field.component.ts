@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { LocalFieldApiService } from '@app/admin/api/local-field-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
@@ -41,9 +41,9 @@ export class LocalFieldComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource Type */
-  @Input() resourceType: string;
+  resourceType = input<string>();
   /** Resource pid */
-  @Input() resourcePid: string;
+  resourcePid = input<string>();
 
   /** Pid of the LocalField record */
   localFieldRecordPid: string;
@@ -67,8 +67,8 @@ export class LocalFieldComponent implements OnInit {
   ngOnInit() {
     this.localFieldApiService
       .getByResourceTypeAndResourcePidAndOrganisationId(
-        this._translateType(this.resourceType),
-        this.resourcePid,
+        this._translateType(this.resourceType()),
+        this.resourcePid(),
         this.userService.user.currentOrganisation
       ).pipe(
         switchMap((record: any) => {

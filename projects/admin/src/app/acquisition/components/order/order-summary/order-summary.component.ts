@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
@@ -41,7 +41,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
 
   // COMPONENTS ATTRIBUTES ====================================================
-  @Input() order: IAcqOrder;
+  order = input.required<IAcqOrder>();
 
   /** reference to AcqOrderStatus class */
   acqOrderStatus = AcqOrderStatus;
@@ -58,8 +58,8 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
         .subscribe(
           (orderLine: IAcqOrderLine) => {
             if (orderLine.status !== AcqOrderLineStatus.CANCELLED) {
-              this.order.account_statement.provisional.total_amount -= orderLine.total_amount;
-              this.order.account_statement.provisional.quantity -= orderLine.quantity;
+              this.order().account_statement.provisional.total_amount -= orderLine.total_amount;
+              this.order().account_statement.provisional.quantity -= orderLine.quantity;
             }
           }
         )
@@ -69,7 +69,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
         .deletedReceiptSubject$
         .subscribe(
           (receipt: IAcqReceipt) => {
-            this.order.account_statement.expenditure.quantity -= receipt.quantity;
+            this.order().account_statement.expenditure.quantity -= receipt.quantity;
             // TODO :: reduce the order expenditure amount.
           }
         )

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { KeyExistsPipe } from '@rero/shared';
@@ -23,19 +23,19 @@ import { KeyExistsPipe as KeyExistsPipe_1 } from '../../../../../../shared/src/l
 @Component({
     selector: 'admin-record-masked',
     template: `
-    @if (record.metadata | keyExists:'_masked') {
+    @if (record().metadata | keyExists:'_masked') {
       <i
         class="fa"
         aria-hidden="true"
-        title="{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}"
-        [ngClass]="{ 'fa-eye-slash text-error': record.metadata._masked, 'fa-eye text-success': !record.metadata._masked }"
+        title="{{ (record().metadata._masked ? 'Masked' : 'No masked') | translate }}"
+        [ngClass]="{ 'fa-eye-slash text-error': record().metadata._masked, 'fa-eye text-success': !record().metadata._masked }"
       ></i>
-      @if (withLabel) {
-        <span class="ui:ml-1">{{ (record.metadata._masked ? 'Masked' : 'No masked') | translate }}</span>
+      @if (withLabel()) {
+        <span class="ui:ml-1">{{ (record().metadata._masked ? 'Masked' : 'No masked') | translate }}</span>
       }
     } @else {
       <i class="fa fa-eye text-success" title="No masked" aria-hidden="true"></i>
-      @if (withLabel) {
+      @if (withLabel()) {
         <span class="ui:ml-1" translate>No masked</span>
       }
     }
@@ -46,9 +46,9 @@ import { KeyExistsPipe as KeyExistsPipe_1 } from '../../../../../../shared/src/l
 export class RecordMaskedComponent {
 
   /** Record */
-  @Input() record: any;
+  record = input<any>();
 
   /** Label for bullet context */
-  @Input() withLabel = false;
+  withLabel = input(false);
 
 }

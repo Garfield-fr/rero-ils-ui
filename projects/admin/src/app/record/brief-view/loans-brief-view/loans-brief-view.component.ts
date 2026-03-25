@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
 import { PermissionsService, InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
 import { DateTime } from 'luxon';
@@ -45,11 +45,11 @@ export class LoansBriefViewComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Information to build the URL on the record detail view. */
-  @Input() detailUrl: { link: string; external: boolean };
+  detailUrl = input<{ link: string; external: boolean }>();
   /** The record to perform. */
-  @Input() record: any;
+  record = input<any>();
   /** The type of the record. */
-  @Input() type: string;
+  type = input<string>();
 
   /** debug mode toggle */
   debugMode = false;
@@ -75,8 +75,8 @@ export class LoansBriefViewComponent implements OnInit {
     // State bullet color
     this.setTagSeverity();
     // Is request is expired
-    if ('request_expire_date' in this.record.metadata) {
-      const requestExpireDate = DateTime.fromISO(this.record.metadata.request_expire_date);
+    if ('request_expire_date' in this.record().metadata) {
+      const requestExpireDate = DateTime.fromISO(this.record().metadata.request_expire_date);
       this.isRequestExpired = DateTime.now() >= requestExpireDate;
     }
   }
@@ -100,7 +100,7 @@ export class LoansBriefViewComponent implements OnInit {
 
   /** Define the bullet color. */
   private setTagSeverity(): void {
-    switch (this.record.metadata.state) {
+    switch (this.record().metadata.state) {
       case LoanState.CREATED:
       case LoanState.PENDING:
       case LoanState.ITEM_AT_DESK:

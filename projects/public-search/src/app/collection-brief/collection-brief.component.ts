@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 
 @Component({
@@ -26,9 +26,9 @@ import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 })
 export class CollectionBriefComponent {
 
-  @Input() record: any;
+  record = input<any>();
 
-  @Input() type: string;
+  type = input<string>();
 
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 }

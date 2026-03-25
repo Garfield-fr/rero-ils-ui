@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { Item } from '@app/admin/classes/items';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
@@ -37,14 +37,14 @@ export class OverdueTransactionDetailComponent implements OnInit {
   private recordService: RecordService = inject(RecordService);
 
   /** Patron transaction */
-  @Input() transaction: PatronTransaction;
+  transaction = input<PatronTransaction>();
   /** item linked to this transaction if transaction linked to a loan */
   item: Item;
 
   /** Load item information's if the transaction is linked to a loan */
   ngOnInit(): void {
-    if (this.transaction && this.transaction.loan && this.transaction.loan.pid) {
-      this.recordService.getRecord('loans', this.transaction.loan.pid, {}).pipe(
+    if (this.transaction && this.transaction().loan && this.transaction().loan.pid) {
+      this.recordService.getRecord('loans', this.transaction().loan.pid, {}).pipe(
         map(data => data.metadata),
         mergeMap( data => this.recordService.getRecord('items', (data as any).item_pid.value, {})),
         map(data => new Item(data.metadata))

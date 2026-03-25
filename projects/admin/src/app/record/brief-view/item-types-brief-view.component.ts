@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 
@@ -24,10 +24,10 @@ import { RouterLink } from '@angular/router';
     selector: 'admin-item-types-brief-view',
     template: `
   <h5>
-    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+    <a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
   </h5>
-  @if (record.metadata.description) {
-    {{ record.metadata.description }}
+  @if (record().metadata.description) {
+    {{ record().metadata.description }}
   }
   `,
     styles: [],
@@ -36,9 +36,9 @@ import { RouterLink } from '@angular/router';
 })
 export class ItemTypesBriefViewComponent {
 
-  @Input() record: any;
+  record = input<any>();
 
-  @Input() type: string;
+  type = input<string>();
 
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 }

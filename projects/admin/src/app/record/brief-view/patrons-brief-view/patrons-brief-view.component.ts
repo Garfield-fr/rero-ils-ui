@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 
 import { PERMISSIONS, PermissionsService } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
@@ -37,11 +37,11 @@ export class PatronsBriefViewComponent {
   private permissionsService: PermissionsService = inject(PermissionsService);
 
   /** the record to display */
-  @Input() record: any;
+  record = input<any>();
   /** the record type */
-  @Input() type: string;
+  type = input<string>();
   /** the url to access detail view */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 
   /**
    * Circulation access check

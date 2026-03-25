@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 import { ThumbnailComponent, ContributionComponent, InheritedCallNumberComponent, DocumentProvisionActivityPipe, ItemHoldingsCallNumberPipe } from '@rero/shared';
 import { RouterLink } from '@angular/router';
@@ -33,7 +33,7 @@ import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../.
 export class CollectionItemsComponent {
 
   /** Items for current collection */
-  @Input() items = [];
+  items = input([]);
 
     /**
    * Allow to filter provisionActivity keeping only activities that are 'Publication'

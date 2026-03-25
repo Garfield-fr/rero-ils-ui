@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
@@ -50,25 +50,25 @@ export class CancelRequestButtonComponent {
   messageService: MessageService = inject(MessageService);
 
   /** Loan record */
-  @Input() loan: any;
+  loan = input<any>();
 
   /** Informs parent component to remove request when it is cancelled */
-  @Output() cancelRequestEvent = new EventEmitter<any>();
+  cancelRequestEvent = output<any>();
 
   /**
    * Can cancel a loan request
    * @returns true if it is possible to cancel a loan
    */
   canCancelRequest(): boolean {
-    return this.loanService.canCancelRequest(this.loan);
+    return this.loanService.canCancelRequest(this.loan());
   }
 
   /** Show a confirmation dialog box for cancel request. */
   showCancelRequestDialog(event: Event): void {
     this.loanService.cancelRequestDialog(event, () => {
       this.loanService.cancelLoan(
-        this.loan.metadata.item.pid,
-        this.loan.metadata.pid,
+        this.loan().metadata.item.pid,
+        this.loan().metadata.pid,
         this.userService.user.currentLibrary
       ).subscribe((item: any) => {
         let message = this.translateService.instant("The request has been cancelled.");
@@ -82,7 +82,7 @@ export class CancelRequestButtonComponent {
           detail: message,
           life: CONFIG.MESSAGE_LIFE
         });
-        this.cancelRequestEvent.emit(this.loan.id);
+        this.cancelRequestEvent.emit(this.loan().id);
       });
     });
   }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, Input, OnChanges, Output, signal, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, model, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
@@ -44,7 +44,7 @@ import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../shared/src/
     imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe, MainTitlePipe_1, IdAttributePipe_1],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemComponent implements OnChanges {
+export class ItemComponent {
 
   private recordService: RecordService = inject(RecordService);
   private organisationService: OrganisationService = inject(OrganisationService);
@@ -59,15 +59,15 @@ export class ItemComponent implements OnChanges {
 
   // COMPONENT ATTRIBUTES ====================================================
   /** Current item */
-  @Input() item: any;
+  item = input<any>();
   /** Current patron */
-  @Input() patron: any;
+  patron = input<any>();
   /** Is the component is collapsed or not */
-  @Input() isCollapsed = true;
+  isCollapsed = model(true);
   /** Item has fees */
-  @Output() hasFeesEmitter = new EventEmitter<boolean>();
+  hasFeesEmitter = output<boolean>();
   /** Extend loan event emitter */
-  @Output() extendLoanClicked = new EventEmitter<any[]>();
+  extendLoanClicked = output<any[]>();
 
   /** loan corresponding to the item */
   loan: Loan;
@@ -100,37 +100,40 @@ export class ItemComponent implements OnChanges {
   get canUseDebugMode(): boolean {
     return this.permissionsService.canAccessDebugMode();
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes?.item?.currentValue){
-      this.loan = (this.item && this.item.loan) ? new Loan(this.item.loan) : null;
-      this.notifications.set(null);
-      if (this.loan) {
-        const loanPid = this.item.loan.pid;
-        this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
-          (transactions) => {
-            this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
-            if (this.totalAmountOfFee > 0) {
-              this.hasFeesEmitter.emit(true);
-              if(this.patron.pid) {
-                // update patron fees
-                this.circulationStatsService.updateFees(this.patron.pid).subscribe();
+  constructor() {
+    effect(() => {
+      const item = this.item();
+      if (item) {
+        this.loan = (item && item.loan) ? new Loan(item.loan) : null;
+        this.notifications.set(null);
+        if (this.loan) {
+          const loanPid = item.loan.pid;
+          this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
+            (transactions) => {
+              this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+              if (this.totalAmountOfFee > 0) {
+                this.hasFeesEmitter.emit(true);
+                if(this.patron().pid) {
+                  // update patron fees
+                  this.circulationStatsService.updateFees(this.patron().pid).subscribe();
+                }
               }
             }
-          }
-        );
-        this.recordService.getRecords(
-          'notifications', { query: `context.loan.pid:${loanPid}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'mostrecent' }
-        ).pipe(
-          map((results: any) => results.hits.hits)
-        ).subscribe((hits: any[]) => this.notifications.set(hits));
+          );
+          this.recordService.getRecords(
+            'notifications', { query: `context.loan.pid:${loanPid}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'mostrecent' }
+          ).pipe(
+            map((results: any) => results.hits.hits)
+          ).subscribe((hits: any[]) => this.notifications.set(hits));
+        }
+        if (item?.document?.pid) {
+          this.recordService.getRecord('documents', item.document.pid, {
+            resolve: 1,
+            headers: { Accept: 'application/rero+json, application/json' }
+          }).subscribe(document => this.document = document.metadata);
+        }
       }
-      if (this.item?.document?.pid) {
-        this.recordService.getRecord('documents', this.item.document.pid, {
-          resolve: 1,
-          headers: { Accept: 'application/rero+json, application/json' }
-        }).subscribe(document => this.document = document.metadata);
-      }
-    }
+    });
   }
 
   // COMPONENT FUNCTIONS ====================================================
@@ -139,21 +142,21 @@ export class ItemComponent implements OnChanges {
    * @return: transit location pid
    */
   getTransitLocationPid() {
-    if (this.patron || this.item.action_applied === undefined) {
-      if (this.item.loan && this.item.loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
-        return this.item.loan.pickup_location_pid;
+    if (this.patron() || this.item().action_applied === undefined) {
+      if (this.item().loan && this.item().loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
+        return this.item().loan.pickup_location_pid;
       }
-      if (this.item.loan && this.item.loan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
-        return this.item.location.pid;
+      if (this.item().loan && this.item().loan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
+        return this.item().location.pid;
       }
     } else {
-      const validatedLoan = new Loan(this.item.action_applied[ItemAction.validate]);
-      const checkedInLoan = new Loan(this.item.action_applied[ItemAction.checkin]);
+      const validatedLoan = new Loan(this.item().action_applied[ItemAction.validate]);
+      const checkedInLoan = new Loan(this.item().action_applied[ItemAction.checkin]);
       if (validatedLoan && validatedLoan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
         return validatedLoan.pickup_location_pid;
       }
       if (checkedInLoan && checkedInLoan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
-        return this.item.location.pid;
+        return this.item().location.pid;
       }
     }
     return null;
@@ -164,28 +167,28 @@ export class ItemComponent implements OnChanges {
    * @return the corresponding note if the corresponding action has been done.
    */
   getCirculationNoteForAction(): ItemNote[] {
-    if (this.item.actionDone) {
+    if (this.item().actionDone) {
       const notes: ItemNote[] = [];
-      const checkinNote = this.item.getNote(ItemNoteType.CHECKIN)
+      const checkinNote = this.item().getNote(ItemNoteType.CHECKIN)
       if (checkinNote && (
-        (this.item.actionDone === this.itemAction.checkin) || (
-          (((this.item.actionDone === this.itemAction.receive) && this.item.library.pid === this.userService.user.currentLibrary))
+        (this.item().actionDone === this.itemAction.checkin) || (
+          (((this.item().actionDone === this.itemAction.receive) && this.item().library.pid === this.userService.user.currentLibrary))
         )
       )) {
         notes.push(checkinNote);
       }
-      const checkoutNote = this.item.getNote(ItemNoteType.CHECKOUT)
-      if (checkoutNote && this.item.actionDone === this.itemAction.checkout) {
+      const checkoutNote = this.item().getNote(ItemNoteType.CHECKOUT)
+      if (checkoutNote && this.item().actionDone === this.itemAction.checkout) {
         notes.push(checkoutNote);
       }
       // Also include API notes (like temporary item type removal)
-      const apiNotes = this.item?.notes?.filter(i => i.type === ItemNoteType.API) || [];
+      const apiNotes = this.item()?.notes?.filter(i => i.type === ItemNoteType.API) || [];
       notes.push(...apiNotes);
       return notes;
-    } else if (this.item.notes) {
+    } else if (this.item().notes) {
       // Notes for item without loan.
       // This api note is pushed on error exception.
-      return this.item?.notes.filter(i => [ItemNoteType.CHECKIN, ItemNoteType.API].includes(i.type));
+      return this.item()?.notes.filter(i => [ItemNoteType.CHECKIN, ItemNoteType.API].includes(i.type));
     }
     return [];
   }
@@ -195,7 +198,7 @@ export class ItemComponent implements OnChanges {
    * @param event: the event fired
    */
   extendLoanClick(event: any) {
-    this.extendLoanClicked.emit(this.item);
+    this.extendLoanClicked.emit(this.item());
   }
 
 

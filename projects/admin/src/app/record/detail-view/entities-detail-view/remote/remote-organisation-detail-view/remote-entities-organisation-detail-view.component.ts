@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -28,10 +28,10 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 export class RemoteEntitiesOrganisationDetailViewComponent {
 
   /** Record metadata */
-  @Input() record: any;
+  record = input<any>();
 
   /** Record source */
-  @Input() source: string;
+  source = input<string>();
 
   /** Disabled source link */
   disabledSourceLink = ['rero'];

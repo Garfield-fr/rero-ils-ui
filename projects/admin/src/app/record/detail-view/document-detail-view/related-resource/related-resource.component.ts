@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SafeUrlPipe } from '@rero/shared';
 import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../shared/src/lib/pipe/safe-url.pipe';
@@ -28,15 +28,15 @@ import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../shared/src/li
 })
 export class RelatedResourceComponent {
 
-  @Input() electronicLocator: any;
+  electronicLocator = input<any>();
 
   /**
    * Format public note for display
    * @param electronicLocator: electronic locator to filter
    */
   get publicNotes(): any {
-    if (this.electronicLocator.publicNote) {
-      return this.electronicLocator.publicNote.join(', ');
+    if (this.electronicLocator().publicNote) {
+      return this.electronicLocator().publicNote.join(', ');
     }
   }
 }

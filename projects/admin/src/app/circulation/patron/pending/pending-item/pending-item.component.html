@@ -42,7 +42,7 @@
           <!-- position into queue -->
           <dt translate>Position</dt>
           <dd>
-            <p-badge severity="info" value="{{ loan.metadata.rank }} / {{ item.current_pending_requests }}" />
+            <p-badge severity="info" value="{{ loan().metadata.rank }} / {{ item.current_pending_requests }}" />
           </dd>
           <!-- item location -->
           @if (item.location.pid | getRecord: 'locations' | async; as location) {
@@ -54,9 +54,9 @@
         </dl>
       }
     </div>
-    <div class="ui:col-span-2">{{ loan.created | dateTranslate: 'short' }}</div>
+    <div class="ui:col-span-2">{{ loan().created | dateTranslate: 'short' }}</div>
     <div class="ui:col-span-1 ui:flex ui:justify-end">
-      <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
+      <admin-cancel-request-button [loan]="loan()" (cancelRequestEvent)="cancelRequest($event)" />
     </div>
   </div>
 }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, EventEmitter, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ItemsService } from '@app/admin/service/items.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -55,13 +55,13 @@ export class DefaultHoldingItemComponent implements OnInit {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Holding record */
-  @Input() holding: any;
+  holding = input<any>();
   /** Item Record */
-  @Input() item: any;
+  item = input<any>();
   /** Event for delete Item */
-  @Output() deleteItem = new EventEmitter();
+  deleteItem = output();
   /** Restrict the functionality of interface */
-  @Input() isCurrentOrganisation = true;
+  isCurrentOrganisation = input(true);
 
   /** Item permissions */
   permissions: any;
@@ -77,8 +77,8 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @returns number of request related to this item.
    */
   get itemRequestCounter(): number {
-    return (this.item.metadata.availability && this.item.metadata.availability.request)
-      ? this.item.metadata.availability.request
+    return (this.item().metadata.availability && this.item().metadata.availability.request)
+      ? this.item().metadata.availability.request
       : 0;
   }
 
@@ -94,7 +94,7 @@ export class DefaultHoldingItemComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    if (this.isCurrentOrganisation) {
+    if (this.isCurrentOrganisation()) {
       this._getPermissions();
     }
   }
@@ -129,14 +129,14 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @param itemPid - Item pid
    */
   delete(): void {
-    this.deleteItem.emit(this.item);
+    this.deleteItem.emit(this.item());
   }
 
   // PRIVATE COMPONENT FUNCTIONS ==============================================
   /** Get permissions */
   private _getPermissions(): void {
-    const permissionObs$ = this.recordPermissionService.getPermission('items', this.item.metadata.pid);
-    const canRequestObs$ = this.itemService.canRequest(this.item.metadata.pid);
+    const permissionObs$ = this.recordPermissionService.getPermission('items', this.item().metadata.pid);
+    const canRequestObs$ = this.itemService.canRequest(this.item().metadata.pid);
     forkJoin([permissionObs$, canRequestObs$]).subscribe(
       ([permissions, canRequest]) => {
         // DEV NOTES :: Why using switch location.
@@ -144,7 +144,7 @@ export class DefaultHoldingItemComponent implements OnInit {
         //   library is the same as current UI used library. So the switch library button should be displayed if the user may edit the item
         //   but are not using the same library as item owning library.
         const switchLocation = {can: permissions.update.can };
-        this.permissions = this.recordPermissionService.membership(this.userService.user, this.item.metadata.library.pid, permissions);
+        this.permissions = this.recordPermissionService.membership(this.userService.user, this.item().metadata.library.pid, permissions);
         this.permissions.switchLocation = switchLocation;
         this.permissions.canRequest = canRequest;
       });
