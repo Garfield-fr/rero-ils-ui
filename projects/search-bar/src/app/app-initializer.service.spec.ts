@@ -19,7 +19,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule, testUserPatronWithSettings, User, UserApiService } from '@rero/shared';
+import { testUserPatronWithSettings, User, UserApiService } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppInitializerService } from './app-initializer.service';
 
@@ -34,7 +34,6 @@ describe('AppInitializerService', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        SharedModule
       ],
       providers: [
         provideHttpClient(withInterceptorsFromDi()),

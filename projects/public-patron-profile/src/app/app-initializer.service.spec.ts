@@ -20,7 +20,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+
 import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
 import { of } from 'rxjs';
 import { AppInitializerService } from './app-initializer.service';
@@ -45,7 +45,6 @@ describe('AppInitializerService', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        SharedModule
       ],
       providers: [
         provideHttpClient(withInterceptorsFromDi()),

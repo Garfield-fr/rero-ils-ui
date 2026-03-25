@@ -31,7 +31,7 @@ import {
   primeNGConfig,
   provideCore,
 } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { providePrimeNG } from 'primeng/config';
@@ -62,7 +62,6 @@ export const appConfig: ApplicationConfig = {
         },
         isolate: false,
       }),
-      SharedModule,
       LoadingBarHttpClientModule,
       LoadingBarModule
     ),

@@ -24,7 +24,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { TranslateLoader as BaseCoreTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
 import { providePrimeNG } from 'primeng/config';
@@ -54,7 +54,6 @@ export const appConfig: ApplicationConfig = {
       FormlyModule.forRoot({
         validators: [{ name: 'passwordMatch', validation: fieldPasswordMatchValidator }],
       }),
-      SharedModule,
       LoadingBarHttpClientModule,
       TabsModule,
       MessageModule,
