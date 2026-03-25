@@ -20,7 +20,6 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { SharedModule } from '@rero/shared';
 import { DocumentBriefComponent } from './document-brief.component';
 
 
@@ -42,9 +41,7 @@ describe('DocumentBriefComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
     imports: [
-        
         TranslateModule.forRoot(),
-        SharedModule,
         DocumentBriefComponent
     ],
     providers: [
@@ -57,9 +54,9 @@ describe('DocumentBriefComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentBriefComponent);
     component = fixture.componentInstance;
-    component.detailUrl = { link: '/foo', external: false };
-    component.viewcode = 'global';
-    component.record = record
+    fixture.componentRef.setInput('detailUrl', { link: '/foo', external: false });
+    fixture.componentRef.setInput('viewcode', 'global');
+    fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
   });
 

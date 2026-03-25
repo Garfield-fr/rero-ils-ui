@@ -57,7 +57,7 @@ export class ItemsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.setHoldingsAndViewCode(this.holding, this.viewcode);
+    this.store.setHoldingsAndViewCode(this.holding(), this.viewcode());
     this.store.load();
   }
 }

@@ -17,7 +17,8 @@
  */
 import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { SharedModule, UserService } from '@rero/shared';
+import { AvailabilityComponent, NotesFilterPipe, SafeUrlPipe, UserService } from '@rero/shared';
+import { Nl2brPipe } from '@rero/ng-core';
 import { ItemApiService } from '../../api/item-api.service';
 import { ItemRequestComponent } from './item-request.component';
 import { PickupLocationComponent } from '../request/pickup-location/pickup-location.component';
@@ -25,7 +26,7 @@ import { PickupLocationComponent } from '../request/pickup-location/pickup-locat
 @Component({
     selector: 'public-search-item',
     templateUrl: './item.component.html',
-    imports: [TranslateDirective, SharedModule, TranslatePipe, ItemRequestComponent, PickupLocationComponent],
+    imports: [TranslateDirective, AvailabilityComponent, Nl2brPipe, NotesFilterPipe, SafeUrlPipe, TranslatePipe, ItemRequestComponent, PickupLocationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemComponent {

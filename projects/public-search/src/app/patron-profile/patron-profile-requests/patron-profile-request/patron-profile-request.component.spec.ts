@@ -20,7 +20,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -55,7 +55,6 @@ describe('PatronProfileRequestComponent', () => {
     schemas: [NO_ERRORS_SCHEMA],
     imports: [
         TranslateModule.forRoot(),
-        SharedModule,
         PatronProfileRequestComponent
     ],
     providers: [
@@ -85,7 +84,7 @@ describe('PatronProfileRequestComponent', () => {
   });
 
   it('should display the document information button and link', () => {
-    component.record = record;
+    fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
     const documentLink = fixture.nativeElement.querySelector('public-search-patron-profile-document');
     expect(documentLink.length === 1);
@@ -96,7 +95,7 @@ describe('PatronProfileRequestComponent', () => {
 
   it('should display the loan with ITEM_AT_DESK state', () => {
     record.metadata.state = 'ITEM_AT_DESK';
-    component.record = record;
+    fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
     const div = fixture.nativeElement.querySelectorAll('div')[2];
     expect(div.textContent).toContain('to pick up');
@@ -104,7 +103,7 @@ describe('PatronProfileRequestComponent', () => {
 
   it('should display the loan with PENDING state', () => {
     record.metadata.state = 'PENDING';
-    component.record = record;
+    fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
     const div = fixture.nativeElement.querySelectorAll('div')[2];
     expect(div.textContent).toContain('(position {{ rank }} in waiting list)');

@@ -79,14 +79,14 @@ export class PickupLocationComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     this.locationApiService
-      .getPickupLocationsByRecordId(this.recordType, this.record.metadata.pid)
+      .getPickupLocationsByRecordId(this.recordType(), this.record()?.metadata.pid)
       .subscribe((pickups: any) => {
         const options = [];
         pickups.forEach((pickup: any) => {
           options.push({label: pickup.name, value: pickup.pid });
         });
         // Text area Year/Volume/Number/Pages
-        if (this.recordType === 'holding') {
+        if (this.recordType() === 'holding') {
           this.fields.push({
             key: 'description',
             type: 'textarea',
@@ -121,15 +121,15 @@ export class PickupLocationComponent implements OnInit {
   /** Submit form */
   submit() {
     this.requestInProgress = true;
-    if (this.recordType === 'holding') {
+    if (this.recordType() === 'holding') {
       this.apiRequest = this.holdingsApiService.request({
-        holding_pid: this.record.metadata.pid,
+        holding_pid: this.record()?.metadata.pid,
         pickup_location_pid: this.model.pickup,
         description: this.model.description,
       });
-    } else if (this.recordType === 'item') {
+    } else if (this.recordType() === 'item') {
       this.apiRequest = this.itemApiService.request({
-        item_pid: this.record.metadata.pid,
+        item_pid: this.record()?.metadata.pid,
         pickup_location_pid: this.model.pickup,
       });
     }

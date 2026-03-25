@@ -20,7 +20,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { RecordService } from '@rero/ng-core';
-import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
@@ -73,8 +73,6 @@ describe('PatronProfileFeeComponent', () => {
     schemas: [NO_ERRORS_SCHEMA],
     imports: [
         TranslateModule.forRoot(),
-        SharedModule,
-
         PatronProfileFeesComponent
     ],
     providers: [
@@ -98,7 +96,7 @@ describe('PatronProfileFeeComponent', () => {
     fixture = TestBed.createComponent(PatronProfileFeesComponent);
     patronProfileService = TestBed.inject(PatronProfileService);
     component = fixture.componentInstance;
-    component.feesTotal = 12.50;
+    fixture.componentRef.setInput('feesTotal', 12.50);
     userApiServiceSpy.getLoggedUser.mockReturnValue(of(cloneDeep(testUserPatronWithSettings)));
     userService = TestBed.inject(UserService);
     userService.load().subscribe();

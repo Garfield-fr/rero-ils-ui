@@ -84,9 +84,9 @@ describe('CollectionBriefComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CollectionBriefComponent);
     component = fixture.componentInstance;
-    component.record = record;
-    component.type = 'coll';
-    component.detailUrl = { link: '/foo', external: false };
+    fixture.componentRef.setInput('record', record);
+    fixture.componentRef.setInput('type', 'coll');
+    fixture.componentRef.setInput('detailUrl', { link: '/foo', external: false });
     fixture.detectChanges();
   });
 

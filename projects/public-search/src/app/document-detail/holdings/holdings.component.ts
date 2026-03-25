@@ -17,7 +17,8 @@
 import { I18nPluralPipe, NgClass } from '@angular/common';
 import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { HoldingsNoteType, SharedModule, UserService } from '@rero/shared';
+import { AvailabilityComponent, DescriptionZoneComponent, GetTranslatedLabelPipe, HoldingsNoteType, NotesFilterPipe, UserService } from '@rero/shared';
+import { Nl2brPipe } from '@rero/ng-core';
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { ButtonDirective } from 'primeng/button';
 import { Message } from 'primeng/message';
@@ -31,7 +32,7 @@ import { MultiSelect } from 'primeng/multiselect';
 @Component({
     selector: 'public-search-holdings',
     templateUrl: './holdings.component.html',
-    imports: [Message, Accordion, AccordionPanel, Ripple, AccordionHeader, SharedModule, TranslateDirective, AccordionContent, ItemsComponent, HoldingsRequestComponent, NgClass, ButtonDirective, I18nPluralPipe, TranslatePipe, MultiSelect],
+    imports: [Message, Accordion, AccordionPanel, Ripple, AccordionHeader, AvailabilityComponent, DescriptionZoneComponent, GetTranslatedLabelPipe, Nl2brPipe, NotesFilterPipe, TranslateDirective, AccordionContent, ItemsComponent, HoldingsRequestComponent, NgClass, ButtonDirective, I18nPluralPipe, TranslatePipe, MultiSelect],
     providers: [HoldingsStore],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -52,7 +53,7 @@ export class HoldingsComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.store.setDocumentPidAndViewCode(this.documentPid, this.viewcode);
+    this.store.setDocumentPidAndViewCode(this.documentPid(), this.viewcode());
     this.store.load();
   }
 }

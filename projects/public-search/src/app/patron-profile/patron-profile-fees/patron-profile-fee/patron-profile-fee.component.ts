@@ -68,9 +68,9 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.record.loan) {
+    if (this.record()?.loan) {
       this.subscription.add(
-        this.recordService.getRecord('documents', this.record.loan.document_pid)
+        this.recordService.getRecord('documents', this.record()?.loan.document_pid)
           .subscribe(document => this.document = document)
       );
     }

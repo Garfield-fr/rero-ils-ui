@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, inject, input, OnInit, output, signal, computed, ChangeDetectionStrategy} from '@angular/core';
-import { IPatron, UserService, SharedModule } from '@rero/shared';
+import { IPatron, UserService } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { Button } from 'primeng/button';
@@ -27,7 +27,7 @@ import { canRequest } from '../model/can-request-model';
 @Component({
     selector: 'public-search-request',
     templateUrl: './holdings-request.component.html',
-    imports: [Button, Tooltip, PickupLocationComponent, TranslatePipe, SharedModule],
+    imports: [Button, Tooltip, PickupLocationComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingsRequestComponent implements OnInit {
@@ -87,20 +87,20 @@ export class HoldingsRequestComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     let apiRequest = null;
-    switch (this.recordType) {
+    switch (this.recordType()) {
         case 'holding': { apiRequest = this.holdingsApiService; break; }
         case 'item': { apiRequest = this.itemApiService; break; }
-        default: throw new TypeError(`${this.recordType} isn't supported`);
+        default: throw new TypeError(`${this.recordType()} isn't supported`);
     }
 
-    if (this.userService.user && this.record) {
+    if (this.userService.user && this.record()) {
       this._patron = this.userService.user.getPatronByOrganisationPid(
-        this.record.metadata.organisation.pid
+        this.record().metadata.organisation.pid
       );
       if (this._patron?.patron) {
         apiRequest.canRequest(
-          this.record.metadata.pid,
-          this.record.metadata.library.pid,
+          this.record().metadata.pid,
+          this.record().metadata.library.pid,
           this._patron.patron.barcode[0],
         ).subscribe((can: canRequest) => this.canRequest.set(can));
       }

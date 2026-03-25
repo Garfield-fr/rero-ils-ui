@@ -92,9 +92,9 @@ export class PatronProfileLoanComponent implements OnInit {
   }
   /** Check if the loan should be returned in very few days */
   get isDueSoon(): boolean {
-    return (this.record.metadata.is_late)
+    return (this.record()?.metadata.is_late)
       ? false
-      : DateTime.fromISO(this.record.metadata.due_soon_date) <= DateTime.now();
+      : DateTime.fromISO(this.record()?.metadata.due_soon_date) <= DateTime.now();
   }
 
     /** Get the cannot extend reasons messages as an array for template pipes */
@@ -105,7 +105,7 @@ export class PatronProfileLoanComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     this.loanApiService
-      .canExtend(this.record.metadata.pid)
+      .canExtend(this.record()?.metadata.pid)
       .subscribe((response: CanExtend) => this.canExtend = response);
   }
 
@@ -115,9 +115,9 @@ export class PatronProfileLoanComponent implements OnInit {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.renewInProgress = true;
     this.loanApiService.renew({
-      pid: this.record.metadata.pid,
-      item_pid: this.record.metadata.item.pid,
-      transaction_location_pid: this.record.metadata.item.location.pid,
+      pid: this.record()?.metadata.pid,
+      item_pid: this.record()?.metadata.item.pid,
+      transaction_location_pid: this.record()?.metadata.item.location.pid,
       transaction_user_pid: patronPid
     })
       .pipe(finalize(() => this.renewInProgress = false))
@@ -125,9 +125,12 @@ export class PatronProfileLoanComponent implements OnInit {
       this.actionDone = true;
       if (extendLoan !== undefined) {
         this.actionSuccess = true;
-        ['end_date', 'extension_count', 'is_late', 'due_soon_date'].map(field =>  this.record.metadata[field] = extendLoan[field]);
-        if ('overdue' in this.record.metadata) {
-          delete this.record.metadata.overdue;
+        const metadata = this.record()?.metadata;
+        if (metadata) {
+          ['end_date', 'extension_count', 'is_late', 'due_soon_date'].map(field => metadata[field] = extendLoan[field]);
+          if ('overdue' in metadata) {
+            delete metadata.overdue;
+          }
         }
         this.messageService.add({
           severity: 'success',

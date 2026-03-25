@@ -21,7 +21,7 @@
       <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
           <div class="ui:col-span-12 ui:flex ui:justify-end">
             {{ 'Total amount' | translate }}:
-            {{ feesTotal | currency:currency:'symbol' }}
+            {{ feesTotal() | currency:currency:'symbol' }}
           </div>
         </div>
     </ng-template>

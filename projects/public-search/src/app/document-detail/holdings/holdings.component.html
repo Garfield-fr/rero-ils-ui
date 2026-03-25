@@ -139,12 +139,12 @@
         <p-accordion-content>
           @if (panel.active()) {
             @if (holding.metadata.public_items_count > 0) {
-              <public-search-items [holding]="holding" [viewcode]="viewcode" />
+              <public-search-items [holding]="holding" [viewcode]="viewcode()" />
             }
             <public-search-request
               [record]="holding"
               recordType="holding"
-              [viewcode]="viewcode"
+              [viewcode]="viewcode()"
               [holdingsItemsCount]="holding.metadata.public_items_count"
               class="ui:w-full"
               [ngClass]="{'ui:mt-2': holding.metadata.public_items_count === 0}"
@@ -156,14 +156,14 @@
   </p-accordion>
 
   <div class="ui:mt-2">
-    @if(isAuthenticated && userService.user.hasRoles(['patron']) && viewcode === 'global') {
+    @if(isAuthenticated && userService.user.hasRoles(['patron']) && viewcode() === 'global') {
       <div>
         <a
           pButton
           [outlined]="true"
           size="small"
           icon="fa fa-truck"
-          href="/{{ viewcode }}/ill_requests/new?record_pid={{ documentPid }}"
+          href="/{{ viewcode() }}/ill_requests/new?record_pid={{ documentPid() }}"
           translate
         >
           Interlibrary loan

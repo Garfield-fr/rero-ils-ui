@@ -38,7 +38,11 @@ export class DocumentBriefComponent {
 
   /** process provision activity publications */
   get provisionActivityPublications() {
-    const { provisionActivity } = this.record()?.metadata;
+    const metadata = this.record()?.metadata;
+    if (!metadata) {
+      return [];
+    }
+    const { provisionActivity } = metadata;
     const publications = [];
     if (undefined === provisionActivity) {
       return publications;

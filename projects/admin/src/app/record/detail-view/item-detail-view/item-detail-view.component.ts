@@ -137,8 +137,9 @@ export class ItemDetailViewComponent implements OnDestroy {
    * @return boolean
    */
   hasTemporaryItemType(): boolean {
-    if ('temporary_item_type' in this.record()?.metadata) {
-      const endDateValue = this.record()?.metadata.temporary_item_type.end_date || undefined;
+    const metadata = this.record()?.metadata;
+    if (metadata && 'temporary_item_type' in metadata) {
+      const endDateValue = metadata.temporary_item_type.end_date || undefined;
       return !(endDateValue && DateTime.fromISO(endDateValue) < DateTime.now());
     }
     return false;

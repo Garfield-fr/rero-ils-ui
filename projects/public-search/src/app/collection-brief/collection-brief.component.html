@@ -15,27 +15,27 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
+@if (record()) {
   <h4>
-    <a [href]="detailUrl.link">{{ record.metadata.title }}</a>
-    @if (record.metadata.collection_id) {
-      ({{ record.metadata.collection_id }})
+    <a [href]="detailUrl()?.link">{{ record().metadata.title }}</a>
+    @if (record().metadata.collection_id) {
+      ({{ record().metadata.collection_id }})
     }
   </h4>
   <div>
-    @if (record.metadata.teachers) {
+    @if (record().metadata.teachers) {
       <div>
-        @for (teacher of record.metadata.teachers; track $index; let last = $last) {
+        @for (teacher of record().metadata.teachers; track $index; let last = $last) {
           {{ teacher.name }}{{ last ? '' : ', ' }}
         }
       </div>
     }
-    @if (record.metadata.description) {
-      <div [innerHtml]="record.metadata.description | nl2br"></div>
+    @if (record().metadata.description) {
+      <div [innerHtml]="record().metadata.description | nl2br"></div>
     }
     <div>
-      {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
-      - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
+      {{ record().metadata.start_date | dateTranslate: 'mediumDate' }}
+      - {{ record().metadata.end_date | dateTranslate: 'mediumDate' }}
     </div>
   </div>
 }

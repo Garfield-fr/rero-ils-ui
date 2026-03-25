@@ -38,7 +38,7 @@ export class ElectronicHoldingsComponent implements OnInit{
 
   ngOnInit(): void {
       this.holdingsApiService
-        .getElectronicHoldingsByDocumentPidAndViewcode(this.documentPid, this.viewcode, 1, 100)
+        .getElectronicHoldingsByDocumentPidAndViewcode(this.documentPid(), this.viewcode(), 1, 100)
         .subscribe((hits: any) => this.holdings = hits.hits);
   }
 }

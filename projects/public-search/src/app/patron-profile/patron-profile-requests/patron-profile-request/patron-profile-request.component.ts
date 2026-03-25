@@ -66,12 +66,12 @@ export class PatronProfileRequestComponent {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.cancelInProgress = true;
     this.loanApiService.cancel({
-      pid: this.record.metadata.pid,
-      transaction_location_pid: this.record.metadata.item.location.pid,
+      pid: this.record()?.metadata.pid,
+      transaction_location_pid: this.record()?.metadata.item.location.pid,
       transaction_user_pid: patronPid
     }).subscribe((cancelLoan: any) => {
       if (cancelLoan !== undefined) {
-        this.patronProfileService.cancelRequest(this.record.metadata.pid);
+        this.patronProfileService.cancelRequest(this.record()?.metadata.pid);
         this.actionDone = true;
         this.messageService.add({
           severity: 'success',

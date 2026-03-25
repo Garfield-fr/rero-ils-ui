@@ -22,7 +22,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
-import { AppSettingsService, SharedModule, testUserPatronWithSettings } from '@rero/shared';
+import { AppSettingsService, testUserPatronWithSettings } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { ButtonModule } from 'primeng/button';
 import { PatronProfilePersonalComponent } from './patron-profile-personal.component';
@@ -70,7 +70,6 @@ describe('PatronProfilePersonalComponent', () => {
         CommonModule,
         RouterModule.forRoot([]),
         TranslateModule.forRoot(),
-        SharedModule,
         ButtonModule],
     providers: [
         { provide: ActivatedRoute, useValue: fakeActivatedRoute },
@@ -92,8 +91,8 @@ describe('PatronProfilePersonalComponent', () => {
     translate.use('en');
     fixture = TestBed.createComponent(PatronProfilePersonalComponent);
     component = fixture.componentInstance;
-    component.patron = testUserPatronWithSettings.patrons[0];
-    component.user = testUserPatronWithSettings;
+    fixture.componentRef.setInput('patron', testUserPatronWithSettings.patrons[0]);
+    fixture.componentRef.setInput('user', testUserPatronWithSettings);
     fixture.detectChanges();
   });
 
@@ -121,7 +120,7 @@ describe('PatronProfilePersonalComponent', () => {
 
     const user = cloneDeep(testUserPatronWithSettings);
     user.keep_history = false;
-    component.user = user;
+    fixture.componentRef.setInput('user', user);
     fixture.detectChanges();
     expect(dd[9].textContent).toContain('The loan history is hidden.');
 
