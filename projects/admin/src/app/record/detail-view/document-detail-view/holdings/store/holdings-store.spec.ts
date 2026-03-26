@@ -245,7 +245,7 @@ const document = {
 }
 
 class HoldingsApiServiceMock {
-  getHoldingsByDocumentPid(documentPid: string): Observable<EsResult | Error> {
+  getHoldingsByDocumentPid(_documentPid: string): Observable<EsResult | Error> {
     const holdings = [];
 
     for (let i = 0; i < 12; i++) {

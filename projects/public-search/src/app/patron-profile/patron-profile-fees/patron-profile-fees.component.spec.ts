@@ -40,7 +40,6 @@ class StubPatronProfileFeeComponent {
 describe('PatronProfileFeeComponent', () => {
   let component: PatronProfileFeesComponent;
   let fixture: ComponentFixture<PatronProfileFeesComponent>;
-  let patronProfileService: PatronProfileService;
   let patronProfileMenuService: PatronProfileMenuService;
   let userService: UserService;
 
@@ -94,7 +93,6 @@ describe('PatronProfileFeeComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PatronProfileFeesComponent);
-    patronProfileService = TestBed.inject(PatronProfileService);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('feesTotal', 12.50);
     userApiServiceSpy.getLoggedUser.mockReturnValue(of(cloneDeep(testUserPatronWithSettings)));

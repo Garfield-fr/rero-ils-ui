@@ -18,6 +18,7 @@
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { DocumentApiService } from '../api/document-api.service';
 import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
+import { RecordData } from '@rero/ng-core';
 
 @Component({
     selector: 'public-search-document-brief',
@@ -34,11 +35,11 @@ export class DocumentBriefComponent {
   type = input<string>();
   detailUrl = input<{ link: string, external: boolean }>();
   viewcode = input(this.pathArray[1]);
-  record = input<any>();
+  record = input<RecordData>();
 
   /** process provision activity publications */
   get provisionActivityPublications() {
-    const metadata = this.record()?.metadata;
+    const metadata = this.record()?.metadata as any;
     if (!metadata) {
       return [];
     }

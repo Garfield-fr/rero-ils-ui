@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, input, OnInit, output, signal, computed, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, output, signal, computed, ChangeDetectionStrategy} from '@angular/core';
 import { IPatron, UserService } from '@rero/shared';
+import { RecordData } from '@rero/ng-core';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { Button } from 'primeng/button';
@@ -38,7 +39,7 @@ export class HoldingsRequestComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record: item or holding */
-  record = input<any>();
+  record = input<RecordData>();
 
   /** Record type */
   recordType = input<string>();
@@ -94,13 +95,14 @@ export class HoldingsRequestComponent implements OnInit {
     }
 
     if (this.userService.user && this.record()) {
+      const metadata = this.record()!.metadata as any;
       this._patron = this.userService.user.getPatronByOrganisationPid(
-        this.record().metadata.organisation.pid
+        metadata.organisation.pid
       );
       if (this._patron?.patron) {
         apiRequest.canRequest(
-          this.record().metadata.pid,
-          this.record().metadata.library.pid,
+          metadata.pid,
+          metadata.library.pid,
           this._patron.patron.barcode[0],
         ).subscribe((can: canRequest) => this.canRequest.set(can));
       }

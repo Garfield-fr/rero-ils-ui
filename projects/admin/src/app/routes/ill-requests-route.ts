@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -92,8 +92,8 @@ export class IllRequestsRoute extends BaseRoute implements RouteInterface {
               this.expertSearchFilter()
             ],
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ILL_CREATE) }),
-            canUpdate: (record: any) => this.routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this.routeToolService.canDelete(record, this.recordType),
+            canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
             aggregationsExpand: ['request_status', 'loan_status', 'requester'],
             aggregationsOrder: ['request_status', 'loan_status', 'requester', 'library'],
             listHeaders: {

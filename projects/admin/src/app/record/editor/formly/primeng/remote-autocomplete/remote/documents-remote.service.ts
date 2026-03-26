@@ -96,7 +96,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       );
   }
 
-  private processHit(metadata: any, queryOptions: IQueryOptions): ISuggestionItem {
+  private processHit(metadata: any, _queryOptions: IQueryOptions): ISuggestionItem {
     const summary = [];
     const baseHref = this.baseHref.replace(/\/$/, '');
     if (metadata.contribution) {

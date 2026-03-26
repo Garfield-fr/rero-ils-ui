@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { ActionStatus, ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ActionStatus, ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, Subscriber } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -82,10 +82,10 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
               this.expertSearchFilter()
             ],
             canAdd: () => this.routeToolService.canNot(),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
-            canUse: (record: any) => this._canUse(record),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+            canUse: (record: RecordData) => this._canUse(record),
             preCreateRecord: (data: any) => this._addDefaultValuesForTemplate(data),
-            redirectUrl: (record: any) => {
+            redirectUrl: (record: RecordData) => {
               return this.redirectUrl(
                 record.metadata,
                 '/records/templates/detail'

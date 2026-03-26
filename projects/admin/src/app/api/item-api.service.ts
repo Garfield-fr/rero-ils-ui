@@ -125,7 +125,7 @@ export class ItemApiService implements IAvailabilityService {
   addClaimIssue(itemPid: string, recipients: ITypeEmail[]): Observable<boolean> {
     const apiUrl = `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims`;
     return this.httpClient.post(apiUrl, {recipients}).pipe(
-      map((_: unknown) => true),
+      map(() => true),
       catchError(() => of(false))
     );
   }

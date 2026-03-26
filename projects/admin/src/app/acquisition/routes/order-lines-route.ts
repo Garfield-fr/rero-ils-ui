@@ -17,7 +17,7 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RecordData, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
@@ -69,7 +69,7 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOL_CREATE) }),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
-            redirectUrl: (record: any) => this.redirectUrl(record.metadata.acq_order, '/acquisition/records/acq_orders/detail'),
+            redirectUrl: (record: RecordData) => this.redirectUrl(record.metadata.acq_order, '/acquisition/records/acq_orders/detail'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
               if (formWidget?.formlyConfig?.props?.fieldMap === 'amount') {

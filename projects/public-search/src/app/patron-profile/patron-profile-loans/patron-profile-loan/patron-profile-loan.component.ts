@@ -92,9 +92,10 @@ export class PatronProfileLoanComponent implements OnInit {
   }
   /** Check if the loan should be returned in very few days */
   get isDueSoon(): boolean {
-    return (this.record()?.metadata.is_late)
+    const metadata = this.record()?.metadata;
+    return (metadata?.is_late)
       ? false
-      : DateTime.fromISO(this.record()?.metadata.due_soon_date) <= DateTime.now();
+      : DateTime.fromISO(metadata?.due_soon_date) <= DateTime.now();
   }
 
     /** Get the cannot extend reasons messages as an array for template pipes */
@@ -105,7 +106,7 @@ export class PatronProfileLoanComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     this.loanApiService
-      .canExtend(this.record()?.metadata.pid)
+      .canExtend(this.record()?.metadata?.pid)
       .subscribe((response: CanExtend) => this.canExtend = response);
   }
 
@@ -114,10 +115,11 @@ export class PatronProfileLoanComponent implements OnInit {
   renew(): void {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.renewInProgress = true;
+    const metadata = this.record()?.metadata;
     this.loanApiService.renew({
-      pid: this.record()?.metadata.pid,
-      item_pid: this.record()?.metadata.item.pid,
-      transaction_location_pid: this.record()?.metadata.item.location.pid,
+      pid: metadata?.pid,
+      item_pid: metadata?.item.pid,
+      transaction_location_pid: metadata?.item.location.pid,
       transaction_user_pid: patronPid
     })
       .pipe(finalize(() => this.renewInProgress = false))

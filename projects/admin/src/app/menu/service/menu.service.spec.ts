@@ -34,7 +34,7 @@ import { MENU_IDS } from '../menu-definition/menu-ids';
   providedIn: 'root'
 })
 class PermissionServiceSpy extends PermissionsService {
-  canAccess(permission: string | string[], operator: string = PERMISSION_OPERATOR.OR): boolean {
+  canAccess(permission: string | string[], _operator: string = PERMISSION_OPERATOR.OR): boolean {
     return permission === 'enabled';
   }
 }

@@ -43,5 +43,6 @@ export class MigrationSearchComponent {
   hits: any[] = [];
   aggregations: any[] = [];
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   refresh(_refresh: boolean): void {}
 }

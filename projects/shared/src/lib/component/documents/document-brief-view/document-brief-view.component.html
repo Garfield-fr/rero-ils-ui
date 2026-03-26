@@ -39,13 +39,13 @@
 }
 
 <!-- ISBN -->
-@if (record().identifiedBy | identifiedByLabel: ['bf:Isbn', 'bf:Ean']; as identifiedBy) {
+@if ($any(record()).identifiedBy | identifiedByLabel: ['bf:Isbn', 'bf:Ean']; as identifiedBy) {
   <div class="ui:text-sm ui:font-bold ui:text-muted-color" name="document-identified-by">
     ISBN: {{ identifiedBy | truncateText: 3 }}
   </div>
 }
 <!-- ISSN -->
-@if (record().identifiedBy | identifiedByLabel: ['bf:Issn']; as identifiedBy) {
+@if ($any(record()).identifiedBy | identifiedByLabel: ['bf:Issn']; as identifiedBy) {
   <div class="ui:text-sm ui:font-bold ui:text-muted-color" name="document-identified-by">
     ISSN: {{ identifiedBy | truncateText: 3 }}
   </div>

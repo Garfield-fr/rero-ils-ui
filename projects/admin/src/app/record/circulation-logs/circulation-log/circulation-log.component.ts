@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
 import { PermissionsService, OpenCloseButtonComponent } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';

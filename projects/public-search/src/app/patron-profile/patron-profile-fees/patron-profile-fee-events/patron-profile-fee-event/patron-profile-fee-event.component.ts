@@ -17,7 +17,7 @@
 import { CurrencyPipe, NgClass } from '@angular/common';
 import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { DateTranslatePipe } from '@rero/ng-core';
+import { DateTranslatePipe, RecordData } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared';
 import type { EsResult } from '@rero/ng-core';
 import { TagModule } from 'primeng/tag';
@@ -37,7 +37,7 @@ export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
     private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);
     private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
-    event = input<any>();
+    event = input<RecordData>();
 
     transactionEvents;
 
@@ -49,7 +49,7 @@ export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
       this.subscription.add(
-        this.patronTransactionEventApiService.getEvents(this.event().metadata.pid).subscribe((response: EsResult) =>
+        this.patronTransactionEventApiService.getEvents((this.event()!.metadata as any).pid).subscribe((response: EsResult) =>
         this.transactionEvents = response.hits.hits
       ));
     }

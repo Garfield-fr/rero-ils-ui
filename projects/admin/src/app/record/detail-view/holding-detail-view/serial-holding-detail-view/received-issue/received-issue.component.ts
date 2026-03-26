@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -129,7 +129,7 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   openClaimEmailDialog(): void {
     const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.issue());
     this.subscription.add(
-      ref.onClose.subscribe((_record: any) => {
+      ref.onClose.subscribe((_: any) => {
         // Note: cannot reassign signal input; the parent should update the input binding
       })
     );

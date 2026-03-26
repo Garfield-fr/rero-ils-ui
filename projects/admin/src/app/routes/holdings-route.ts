@@ -16,7 +16,7 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, JSONSchema7, RecordService, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, JSONSchema7, RecordData, RecordService, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -87,9 +87,9 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
               }
             },
             detailComponent: HoldingDetailViewComponent,
-            canRead: (record: any) => this.canRead(record),
+            canRead: (record: RecordData) => this.canRead(record),
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => {
               data.document = {
                 $ref: this.routeToolService.apiService.getRefEndpoint(
@@ -110,10 +110,10 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
                 this.routeToolService.translateService.instant(_('This will also delete all items and issues of the holdings.'))
               ];
             },
-            redirectUrl: (record: any, action: string) => {
+            redirectUrl: (record: RecordData, action: string) => {
               switch (action) {
                 case 'delete':
-                  return of(`/records/documents/detail/${record.metadata.document.pid}`);
+                  return of(`/records/documents/detail/${(record.metadata.document as Record<string, string>).pid}`);
                 default:
                   return of(`/records/holdings/detail/${record.metadata.pid}`);
               }

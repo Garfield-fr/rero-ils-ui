@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ItemsService } from '@app/admin/service/items.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';

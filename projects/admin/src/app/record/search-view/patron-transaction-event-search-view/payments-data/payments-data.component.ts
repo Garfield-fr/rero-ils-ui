@@ -41,7 +41,7 @@ export class PaymentsDataComponent {
    * Update the display mode to switch between allowed values as a carousel.
    * @param event: triggering event.
    */
-  updateMode(event: Event) {
+  updateMode(_event: Event) {
     switch (this.mode()) {
       case 'pie': this.mode.set('table'); break;
       case 'table': this.mode.set('pie'); break;

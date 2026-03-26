@@ -17,7 +17,7 @@
  */
 import { PermissionGuard } from '@app/admin/guard/permission.guard';
 import { _ } from "@ngx-translate/core";
-import { RouteInterface } from '@rero/ng-core';
+import { RecordData, RouteInterface } from '@rero/ng-core';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import {
@@ -62,10 +62,10 @@ export class PatronTransactionEventsRoute extends BaseRoute implements RouteInte
             key: this.name,
             label: _('Fees'),
             component: PatronTransactionEventsBriefViewComponent,
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
-            canAdd: (record: any) => of({can: false}),
-            canUpdate: (record: any) => of({can: false}),
-            canDelete: (record: any) => of({can: false}),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+            canAdd: (_record: RecordData) => of({can: false}),
+            canUpdate: (_record: RecordData) => of({can: false}),
+            canDelete: (_record: RecordData) => of({can: false}),
             aggregationsBucketSize: 10,
             aggregationsExpand: [
               'type',

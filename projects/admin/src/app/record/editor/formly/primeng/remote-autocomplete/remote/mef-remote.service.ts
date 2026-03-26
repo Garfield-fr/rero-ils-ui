@@ -46,7 +46,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
     return 'mef';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string): Observable<ISuggestionItem[]> {
+  getSuggestions(query: string, queryOptions: IQueryOptions, _currentPid: string): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }

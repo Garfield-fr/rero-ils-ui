@@ -38,7 +38,7 @@ const routes: Routes = [
     loadChildren: () => import('./circulation/circulation-routing.module').then(m => m.CIRCULATION_ROUTES)
   }, {
     path: 'acquisition',
-    loadChildren: () => import('./acquisition/acquisition-routing.module').then(m => m.ACQUISITION_ROUTES)
+    loadChildren: () => import('./acquisition/acquisition-routing.module').then(m => m.AcquisitionRoutingModule)
   },
   {
     path: 'permissions/matrix',

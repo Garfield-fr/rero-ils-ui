@@ -28,7 +28,7 @@ import { extractIdOnRef, Nl2brPipe } from '@rero/ng-core';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin, merge, Observable, Subscription } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import {
   AcqOrderHistoryVersion,
   AcqOrderStatus,

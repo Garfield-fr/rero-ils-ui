@@ -18,7 +18,6 @@
 import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { RecordService, UpperCaseFirstPipe } from '@rero/ng-core';
 
-import type { EsResult } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { Library } from '../../../classes/library';

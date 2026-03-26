@@ -140,7 +140,7 @@ export class UploadFilesComponent implements OnInit {
    *
    * @param event the standard event.
    */
-  onTextChange($event): void {
+  onTextChange(_$event): void {
     if (this.filterText.length > 0) {
       this.filteredFiles = this.files.filter((value) => value.label.toLowerCase().includes(this.filterText.toLowerCase()));
     } else {

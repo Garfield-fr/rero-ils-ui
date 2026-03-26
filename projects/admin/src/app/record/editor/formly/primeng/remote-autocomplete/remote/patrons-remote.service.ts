@@ -34,7 +34,7 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
     return 'patrons';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string): Observable<ISuggestionItem[]> {
+  getSuggestions(query: string, queryOptions: IQueryOptions, _currentPid: string): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
@@ -72,7 +72,7 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
       );
   }
 
-  private getPatronsRef(metadata: any, query: string): ISuggestionItem {
+  private getPatronsRef(metadata: any, _query: string): ISuggestionItem {
     return {
       label: this.patronService.getFormattedName(metadata),
       value: this.apiService.getRefEndpoint(this.getName(), metadata.pid)

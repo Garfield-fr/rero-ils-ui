@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { LocalFieldApiService } from '@app/admin/api/local-field-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
-import { of, Subscription, switchMap } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';

@@ -20,7 +20,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Fiction statement' | translate }}</ng-container>
       <ng-container content>
-        {{ record().metadata.fiction_statement | translate }}
+        {{ $any(record().metadata).fiction_statement | translate }}
       </ng-container>
     </shared-description-zone>
   }
@@ -56,7 +56,7 @@
       <ng-container label>{{ 'Other responsibilities' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (credit of record().metadata.credits; track $index) {
+          @for (credit of $any(record().metadata).credits; track $index) {
             <li>{{ credit }}</li>
           }
         </ul>
@@ -65,11 +65,11 @@
   }
 
   <!-- LANGUAGE -->
-  @if (record().metadata.language && record().metadata.language.length > 0) {
+  @if (record().metadata.language && $any(record().metadata.language).length > 0) {
     <shared-description-zone>
       <ng-container label>{{ 'Language' | translate }}</ng-container>
       <ng-container content>
-        @for (lang of record().metadata.language; track $index; let isLast = $last) {
+        @for (lang of $any(record().metadata.language); track $index; let isLast = $last) {
           {{ lang.value | translateLanguage: currentLanguage }}
           @if (!isLast) {, }
         }
@@ -82,7 +82,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Original language' | translate }}</ng-container>
       <ng-container content>
-        @for (lang of record().metadata.originalLanguage; track $index; let isLast = $last) {
+        @for (lang of $any(record().metadata.originalLanguage); track $index; let isLast = $last) {
             {{ lang | translateLanguage: currentLanguage }}
             @if (!isLast) {, }
         }
@@ -96,7 +96,7 @@
       <ng-container label>{{ 'Original title' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (title of record().metadata.originalTitle; track $index) {
+          @for (title of $any(record().metadata.originalTitle); track $index) {
             <li>{{ title }}</li>
           }
         </ul>
@@ -126,7 +126,7 @@
       <ng-container label>{{ 'Contents' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (table of record().metadata.tableOfContents; track $index) {
+          @for (table of $any(record().metadata.tableOfContents); track $index) {
             <li>{{ table }}</li>
           }
         </ul>
@@ -140,7 +140,7 @@
       <ng-container label>{{ 'Thesis' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (dissertation of record().metadata.dissertation; track $index) {
+          @for (dissertation of $any(record().metadata.dissertation); track $index) {
             @for (label of dissertation.label; track $index) {
               <li>{{ label.value }}</li>
             }
@@ -155,7 +155,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Intended audience' | translate }}</ng-container>
       <ng-container content>
-        @for (audience of record().metadata.intendedAudience; track $index; let isLast = $last) {
+        @for (audience of $any(record().metadata.intendedAudience); track $index; let isLast = $last) {
           {{ audience.value | translate }}
           @if (!isLast) {, }
         }
@@ -168,7 +168,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Illustrations' | translate }}</ng-container>
       <ng-container content>
-        {{ record().metadata.illustrativeContent.join(', ') }}
+        {{ $any(record().metadata.illustrativeContent).join(', ') }}
       </ng-container>
     </shared-description-zone>
   }
@@ -178,7 +178,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Colors' | translate }}</ng-container>
       <ng-container content>
-        @for (color of record().metadata.colorContent; track $index; let isLast = $last) {
+        @for (color of $any(record().metadata.colorContent); track $index; let isLast = $last) {
           {{ color | translate }}
           @if (!isLast) {, }
         }
@@ -192,7 +192,7 @@
       <ng-container label>{{ 'Scale' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (scale of record().metadata.scale; track $index) {
+          @for (scale of $any(record().metadata.scale); track $index) {
             <li>{{ scale.label }}</li>
           }
         </ul>
@@ -230,7 +230,7 @@
       <ng-container label>{{ 'Classification' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (classification of record().metadata.classification; track $index) {
+          @for (classification of $any(record().metadata.classification); track $index) {
             <li>
               {{ classification.classificationPortion }}
               @if (classification.subdivision) {
@@ -252,7 +252,7 @@
       <ng-container label>{{ 'Use and access condition' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (usage of record().metadata.usageAndAccessPolicy; track $index) {
+          @for (usage of $any(record().metadata.usageAndAccessPolicy); track $index) {
             <li>{{ usage.label }}</li>
           }
         </ul>
@@ -293,7 +293,7 @@
       <ng-container label>{{ 'Statement of responsibility' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (responsibility of record().metadata.ui_responsibilities; track $index) {
+          @for (responsibility of $any(record().metadata.ui_responsibilities); track $index) {
             <li>{{ responsibility }}</li>
           }
         </ul>
@@ -348,7 +348,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Copyright date' | translate }}</ng-container>
       <ng-container content>
-        {{ record().metadata.copyrightDate.join(", ") }}
+        {{ $any(record().metadata.copyrightDate).join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
@@ -368,7 +368,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Dimensions' | translate }}</ng-container>
       <ng-container content>
-        {{ record().metadata.dimensions.join(", ") }}
+        {{ $any(record().metadata.dimensions).join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
@@ -378,7 +378,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Format' | translate }}</ng-container>
       <ng-container content>
-        {{ record().metadata.bookFormat.join(", ") }}
+        {{ $any(record().metadata.bookFormat).join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
@@ -388,7 +388,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Production method' | translate }}</ng-container>
       <ng-container content>
-        @for (method of record().metadata.productionMethod; track $index; let isLast = $last) {
+        @for (method of $any(record().metadata.productionMethod); track $index; let isLast = $last) {
           {{ method | translate }}@if (!isLast) {, }
         }
       </ng-container>
@@ -417,7 +417,7 @@
       <ng-container label>{{ 'Supplementary content' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (sup of record().metadata.supplementaryContent; track $index) {
+          @for (sup of $any(record().metadata.supplementaryContent); track $index) {
             <li>{{ sup }}</li>
           }
         </ul>
@@ -431,7 +431,7 @@
       <ng-container label>{{ 'Terms of availability' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (term of record().metadata.acquisitionTerms; track $index) {
+          @for (term of $any(record().metadata.acquisitionTerms); track $index) {
             <li>{{ term }}</li>
           }
         </ul>
@@ -470,7 +470,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Carrier and content type' | translate }}</ng-container>
       <ng-container content>
-        @for (content of record().metadata.contentMediaCarrier; track $index; let isLastL1 = $last) {
+        @for (content of $any(record().metadata.contentMediaCarrier); track $index; let isLastL1 = $last) {
             {{ content.carrierType | translate }}
             @if (content.contentType) {
               (@for (type of content.contentType; track $index; let isLast = $last) {
@@ -488,7 +488,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Mode of issuance' | translate }}</ng-container>
       <ng-container content>
-        {{ record().metadata.issuance.main_type | translate }} / {{ record().metadata.issuance.subtype | translate }}
+        {{ $any(record().metadata.issuance).main_type | translate }} / {{ $any(record().metadata.issuance).subtype | translate }}
       </ng-container>
     </shared-description-zone>
   }

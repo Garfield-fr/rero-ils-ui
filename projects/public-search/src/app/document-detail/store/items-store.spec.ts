@@ -108,7 +108,7 @@ const holdings: EsRecord = {
 };
 
 class ItemApiServiceMock {
-  getItemsByHoldingsAndViewcode(holdings: Partial<EsRecord>, viewcode: string, page: number, itemsPerPage = 9999, filter = ''): Observable<EsResult> {
+  getItemsByHoldingsAndViewcode(holdings: Partial<EsRecord>, viewcode: string, page: number, _itemsPerPage = 9999, filter = ''): Observable<EsResult> {
     const element = 12;
     const items = [];
     for (let i = 0; i < element; i++) {

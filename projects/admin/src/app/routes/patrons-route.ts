@@ -19,7 +19,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import {
   ComponentCanDeactivateGuard,
   DetailComponent, EditorComponent,
-  JSONSchema7, RecordSearchPageComponent, RecordService, RouteInterface
+  JSONSchema7, RecordData, RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
@@ -127,9 +127,9 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
               }
             ],
             canAdd: () => of({ 'can': this.routeToolService.permissionsService.canAccess(PERMISSIONS.PTRN_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
-            canUpdate: (record: any) => this.routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this.routeToolService.canDelete(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+            canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               // set the patron expiration to now + 3 years if does not exists
               const defaultExpDate = new Date();

@@ -19,7 +19,7 @@ import { _ } from "@ngx-translate/core";
 import {
   ComponentCanDeactivateGuard,
   DetailComponent, EditorComponent,
-  JSONSchema7, RecordSearchPageComponent, RecordService, RouteInterface
+  JSONSchema7, RecordData, RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
@@ -103,7 +103,7 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
               this.expertSearchFilter()
             ],
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.COLL_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
             aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
             aggregationsExpand: ['type'],
             preprocessRecordEditor: (record: any) => {

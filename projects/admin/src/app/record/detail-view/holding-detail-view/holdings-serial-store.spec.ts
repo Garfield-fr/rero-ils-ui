@@ -270,7 +270,7 @@ class holdingsServiceMock {
     return of(issues);
   }
 
-  quickReceivedIssue(holding: any, displayText?: string, receivedDate?: string) {
+  quickReceivedIssue(_holding: any, _displayText?: string, _receivedDate?: string) {
     return of({
       "issue": {
         "$schema": "https://bib.rero.ch/schemas/items/item-v0.0.1.json",

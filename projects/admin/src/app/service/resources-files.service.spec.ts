@@ -18,10 +18,9 @@
 import { TestBed } from "@angular/core/testing";
 import { ResourcesFilesService } from "./resources-files.service";
 import { HttpClient } from "@angular/common/http";
-import { ApiService, File, RecordService } from "@rero/ng-core";
-import { apiResponse, UserService } from "@rero/shared";
+import { ApiService, File } from "@rero/ng-core";
+import { UserService } from "@rero/shared";
 import { of } from "rxjs";
-import { cloneDeep } from 'lodash-es';
 
 describe('ResourcesFilesService', () => {
   let service: ResourcesFilesService;

@@ -19,7 +19,7 @@ import {
 } from '@app/admin/components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
 import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RecordData, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -117,9 +117,9 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             preFilters: {
               organisation: null
             },
-            canRead: (record: any) => this.canRead(record),
+            canRead: (record: RecordData) => this.canRead(record),
             canAdd: () => of({can: false}),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, false),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, false),
             preprocessRecordEditor: (record: any) => {
               // If we found an `holding` parameter into the query string then we need to pre-populated
               // the form with the corresponding holding metadata (see '_populateItemFieldFromHolding' function
@@ -172,7 +172,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
             },
-            redirectUrl: (record: any) => this.getUrl(record),
+            redirectUrl: (record: RecordData) => this.getUrl(record),
             aggregationsBucketSize: 10,
             aggregationsOrder: [
               'document_type',
@@ -338,7 +338,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       if (isIrregular) {
         record.issue.regular = false;
       }
-    } catch (e) { }
+    } catch (_e) { /* intentional */ }
     // setting other issue attributes from url parameters
     const today = this.routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     record.enumerationAndChronology = this.routeToolService.getRouteQueryParam('enumerationAndChronology', '');

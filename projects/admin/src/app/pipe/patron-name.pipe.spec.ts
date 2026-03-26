@@ -25,7 +25,6 @@ import { PatronNamePipe } from "./patron-name.pipe";
 
 describe('PatronNamePipe', () => {
   let pipe: PatronNamePipe;
-  let recordService: RecordService;
 
   const patron = {
     metadata: {
@@ -55,7 +54,6 @@ describe('PatronNamePipe', () => {
     });
 
     pipe = TestBed.inject(PatronNamePipe);
-    recordService = TestBed.inject(RecordService);
   });
 
   it('should be created', () => {

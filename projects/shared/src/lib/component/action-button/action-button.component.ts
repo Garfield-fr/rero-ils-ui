@@ -80,7 +80,7 @@ export class ActionButtonComponent {
   title = input.required<string>();
   severity = input<string>('primary');
   routerLink = input<string[]>();
-  queryParams = input<any>();
+  queryParams = input<Record<string, string | number | boolean>>();
   class = input<string>();
   outlined = input<boolean>(true);
   rounded = input<boolean>(false);

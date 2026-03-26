@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { RecordService, DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { ItemsService } from '../../../../service/items.service';

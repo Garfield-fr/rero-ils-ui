@@ -40,7 +40,7 @@
       <!-- edition statement -->
       @if (record().metadata.editionStatement) {
         <ul class="ui:list-none">
-          @for (edition of record().metadata.editionStatement; track $index) {
+          @for (edition of $any(record().metadata.editionStatement); track $index) {
             <li>{{ edition._text[0].value }}</li>
           }
         </ul>

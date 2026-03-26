@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { ActionStatus, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ActionStatus, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { EntityBriefViewComponent, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -75,8 +75,8 @@ export class EntitiesRoute extends BaseRoute implements RouteInterface {
               can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.LOCENT_CREATE),
               routerLink: ['/records', this.recordType, 'new']
             }),
-            canUpdate: (record: any) => this._buildUpdatePermission(record),
-            canDelete: (record: any) => this._buildDeletePermission(record),
+            canUpdate: (record: RecordData) => this._buildUpdatePermission(record),
+            canDelete: (record: RecordData) => this._buildDeletePermission(record),
             aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
             aggregationsName: {
               resource_type: _('Source'),

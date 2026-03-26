@@ -35,8 +35,8 @@ export type BriefViewTag = {
 })
 export class BriefViewComponent implements AfterContentInit {
 
-  readonly link = input<any>();
-  readonly title = input<any>(undefined);
+  readonly link = input<string | string[]>();
+  readonly title = input<string | undefined>(undefined);
   readonly tags = input<BriefViewTag[]>();
 
   @ContentChildren(ReroTemplateDirective) templates: QueryList<ReroTemplateDirective> | null;

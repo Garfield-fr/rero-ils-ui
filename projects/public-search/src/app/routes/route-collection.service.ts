@@ -53,7 +53,7 @@ export class RouteCollectionService {
   getRouteByResourceName(name: string) {
     try {
       return this.resourcesAvailable[name];
-    } catch (e) {
+    } catch (_e) {
       throw new Error(
         `RouteCollectionService: The resource "${name}" does not exist.`
       );

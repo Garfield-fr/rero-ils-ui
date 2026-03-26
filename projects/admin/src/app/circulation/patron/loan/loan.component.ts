@@ -125,7 +125,7 @@ export class LoanComponent implements OnInit, OnDestroy {
               // operation is done on one of this items.
               this.pickupItems = pickupItems;
             },
-            error: (error) => {},
+            error: (_error) => { /* intentional no-op */ },
           });
         }
       })

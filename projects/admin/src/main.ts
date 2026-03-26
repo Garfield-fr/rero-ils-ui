@@ -13,7 +13,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, HttpClien
 import { NoCacheHeaderInterceptor } from './app/interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './app/interceptor/user-current-library.interceptor';
 import { TranslateService, TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
-import { NgCoreTranslateService, RemoteAutocompleteService, CoreConfigService, TruncateTextPipe, RecordHandleErrorService as CoreRecordHandleErrorService, withNgCoreFormly, registerNgCoreFormlyExtension, ComponentCanDeactivateGuard, primeNGConfig, CallbackArrayFilterPipe, DetailButtonComponent, EditorComponent, ErrorComponent, ExportButtonComponent, FilesizePipe, ListFiltersComponent, MarkdownPipe, MenuSortComponent, ReadMoreComponent, RecordSearchAggregationComponent, RecordSearchComponent, RecordSearchPageComponent, SearchFiltersComponent, SearchInputComponent, SearchTabsComponent, UpperCaseFirstPipe, TranslateLanguagePipe, CoreTranslateLoader } from '@rero/ng-core';
+import { NgCoreTranslateService, RemoteAutocompleteService, CoreConfigService, TruncateTextPipe, RecordHandleErrorService as CoreRecordHandleErrorService, withNgCoreFormly, registerNgCoreFormlyExtension, ComponentCanDeactivateGuard, primeNGConfig, CoreTranslateLoader } from '@rero/ng-core';
 import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './app/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
 import { remoteAutocompleteToken } from './app/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
 import { DocumentsRemoteService } from './app/record/editor/formly/primeng/remote-autocomplete/remote/documents-remote.service';
@@ -32,23 +32,10 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import { AppRoutingModule } from './app/app-routing.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TableModule } from 'primeng/table';
-import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
-import { CipoPatronTypeItemTypeComponent } from './app/record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
-import { RepeatTypeComponent } from './app/record/editor/type/repeat-section.type';
-import { FormlyFieldSelect } from '@ngx-formly/primeng/select';
-import { FieldCustomInputTypeComponent } from './app/record/editor/type/field-custom.type';
-import { EntityAutocompleteComponent } from './app/record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
-import { UserIdComponent } from './app/record/editor/wrappers/user-id.component';
-import { IdentifiedbyValueComponent } from './app/record/editor/wrappers/identifiedby-value.component';
+import { bootstrapApplication } from '@angular/platform-browser';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 
 
-import { FileUploadModule } from 'primeng/fileupload';
-import { MenubarModule } from 'primeng/menubar';
 import { AppComponent } from './app/app.component';
 
 if (environment.production) {

@@ -17,6 +17,7 @@
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
+import { RecordData } from '@rero/ng-core';
 
 @Component({
     selector: 'shared-part-of',
@@ -29,7 +30,7 @@ export class PartOfComponent {
   protected translateService: TranslateService = inject(TranslateService);
 
   /** Document */
-  readonly record = input<any>();
+  readonly record = input<RecordData>();
 
   /** View code */
   readonly viewcode = input<string>(null);

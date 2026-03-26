@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Routes } from '@angular/router';
+import { Injector, NgModule, runInInjectionContext } from '@angular/core';
+import { RouterModule, Routes, ROUTES } from '@angular/router';
 import { _ } from "@ngx-translate/core";
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { PermissionGuard } from '../guard/permission.guard';
@@ -31,7 +32,9 @@ import { ReceiptLinesRoute } from './routes/receipt-lines-route';
 import { ReceiptsRoute } from './routes/receipts-route';
 import { VendorsRoute } from './routes/vendors-route';
 
-export const ACQUISITION_ROUTES: Routes = [
+// Create routes in a factory function when the module is instantiated (in injection context)
+export function createAcquisitionRoutes(): Routes {
+  const routes: Routes = [
   {
     path: '',
     component: AcquisitionMainComponent,
@@ -69,4 +72,23 @@ export const ACQUISITION_ROUTES: Routes = [
       new VendorsRoute().getConfiguration()
     ],
   },
-];
+  ];
+  return routes;
+}
+
+function provideAcquisitionRoutesFactory(injector: Injector): Routes {
+  return runInInjectionContext(injector, () => createAcquisitionRoutes());
+}
+
+@NgModule({
+  imports: [RouterModule.forChild([])],
+  providers: [
+    {
+      provide: ROUTES,
+      multi: true,
+      useFactory: provideAcquisitionRoutesFactory,
+      deps: [Injector]
+    }
+  ]
+})
+export class AcquisitionRoutingModule { }

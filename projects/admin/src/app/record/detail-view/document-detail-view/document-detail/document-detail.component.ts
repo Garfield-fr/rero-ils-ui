@@ -17,7 +17,6 @@
 import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
 import { OperationLogsService, OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
-import type { EsResult } from '@rero/ng-core';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';

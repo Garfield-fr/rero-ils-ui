@@ -22,7 +22,7 @@ import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-transl
 import { RecordService, CallbackArrayFilterPipe } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, PermissionsService, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
 import { Observable, of, Subscription } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { DocumentApiService } from '../../../api/document-api.service';
 import { RelatedResourceComponent } from './related-resource/related-resource.component';
 import { Bind } from 'primeng/bind';

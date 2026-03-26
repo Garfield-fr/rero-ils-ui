@@ -19,7 +19,7 @@ import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core'
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
-import { AppSettingsService, IPatron, JoinPipe } from '@rero/shared';
+import { AppSettingsService, IPatron, IUser, JoinPipe } from '@rero/shared';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
@@ -34,7 +34,7 @@ export class PatronProfilePersonalComponent {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
 
   /** User record */
-  user = input<any>();
+  user = input<IUser>();
 
   /** patron record */
   patron = input<IPatron>();

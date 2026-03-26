@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
@@ -91,7 +91,7 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
               this.expertSearchFilter()
             ],
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.VNDR_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => {
               const { user } = this.routeToolService.userService;
               data.organisation = {

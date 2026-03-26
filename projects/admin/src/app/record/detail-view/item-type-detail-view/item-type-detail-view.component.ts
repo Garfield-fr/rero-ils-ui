@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Observable, switchMap } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';

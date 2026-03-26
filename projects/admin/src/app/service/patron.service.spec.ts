@@ -20,7 +20,7 @@ import { PatronService } from "./patron.service";
 import { ApiService, RecordService } from "@rero/ng-core";
 import { HttpClient } from "@angular/common/http";
 import { of } from "rxjs";
-import { apiResponse, loanPending, testCirculationInformations, testItem, testItemWithAllSerializedData, testOverduePreview, testPatron } from "@rero/shared";
+import { apiResponse, loanPending, testCirculationInformations, testItemWithAllSerializedData, testOverduePreview, testPatron } from "@rero/shared";
 import { Item } from "../classes/items";
 import { Loan } from "../classes/loans";
 

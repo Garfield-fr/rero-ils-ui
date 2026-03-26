@@ -16,7 +16,7 @@
  */
 
 import { Component, input, ChangeDetectionStrategy} from '@angular/core';
-import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
+import { DateTranslatePipe, Nl2brPipe, RecordData } from '@rero/ng-core';
 
 @Component({
     selector: 'public-search-collection-brief',
@@ -26,7 +26,7 @@ import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 })
 export class CollectionBriefComponent {
 
-  record = input<any>();
+  record = input<RecordData>();
 
   type = input<string>();
 

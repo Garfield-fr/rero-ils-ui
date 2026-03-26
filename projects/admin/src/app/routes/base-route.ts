@@ -24,8 +24,8 @@ import { RouteToolService } from './route-tool.service';
 
 export class BaseRoute {
 
-  protected routeToolService: RouteToolService = inject(RouteToolService);
-  protected location: Location = inject(Location);
+  protected routeToolService = inject(RouteToolService);;
+  protected location = inject(Location);
 
   /** Disabled action */
   readonly DISABLED = (): Observable<ActionStatus> => of({
@@ -38,7 +38,7 @@ export class BaseRoute {
    * @param url - any
    * @param type - string
    */
-  routeMatcher(url: any, type: string) {
+  routeMatcher(url: UrlSegment[], type: string) {
     if (url[0].path === 'records' && url[1].path === type) {
       return this.matchedUrl(url);
     }

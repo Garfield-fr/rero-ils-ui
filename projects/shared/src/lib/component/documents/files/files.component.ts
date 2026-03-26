@@ -121,7 +121,7 @@ export class FilesComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.breakpointObserver
         .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
-        .subscribe((state: BreakpointState) => {
+        .subscribe((_state: BreakpointState) => {
           switch (true) {
             case this.breakpointObserver.isMatched(Breakpoints.XSmall):
               this.numVisible = 1;
@@ -216,7 +216,7 @@ export class FilesComponent implements OnInit, OnDestroy {
    *
    * @param $event - standard event
    */
-  onTextChange(event): void {
+  onTextChange(_event: Event): void {
     if (this.filterText.length > 0) {
       this.filteredFiles = this.files.filter((value) => value.label.toLowerCase().includes(this.filterText.toLowerCase()));
     } else {

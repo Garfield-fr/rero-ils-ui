@@ -17,7 +17,7 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
+import { CONFIG, DateTranslatePipe, RecordData } from '@rero/ng-core';
 import { OpenCloseButtonComponent } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -42,7 +42,7 @@ export class PatronProfileRequestComponent {
   private messageService: MessageService = inject(MessageService);
 
   /** Request record */
-  record = input<any>();
+  record = input<RecordData>();
 
   /** Document section is collapsed */
   isCollapsed = true;
@@ -65,13 +65,14 @@ export class PatronProfileRequestComponent {
   cancel(): void {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.cancelInProgress = true;
+    const metadata = this.record()?.metadata as any;
     this.loanApiService.cancel({
-      pid: this.record()?.metadata.pid,
-      transaction_location_pid: this.record()?.metadata.item.location.pid,
+      pid: metadata?.pid,
+      transaction_location_pid: metadata?.item.location.pid,
       transaction_user_pid: patronPid
     }).subscribe((cancelLoan: any) => {
       if (cancelLoan !== undefined) {
-        this.patronProfileService.cancelRequest(this.record()?.metadata.pid);
+        this.patronProfileService.cancelRequest(metadata?.pid);
         this.actionDone = true;
         this.messageService.add({
           severity: 'success',

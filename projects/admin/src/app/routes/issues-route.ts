@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from '@ngx-translate/core';
-import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { PermissionGuard } from '../guard/permission.guard';
@@ -63,7 +63,7 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
             searchFilters: [
               this.expertSearchFilter()
             ],
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
             preFilters: {
                 or_issue_status: [IssueItemStatus.LATE],
                 organisation: null

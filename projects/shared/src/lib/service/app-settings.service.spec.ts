@@ -32,7 +32,7 @@ describe('ApplicationSettingsService', () => {
 
   it('should return an error if the settings are not present', () => {
     try {
-      const url = service.baseUrl;
+      const _url = service.baseUrl;
     } catch (e) {
       expect(e.message).toEqual('Set settings before call function.');
     }

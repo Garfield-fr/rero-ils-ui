@@ -29,8 +29,7 @@ import { LoanState } from "../classes/loans";
 
 describe('LoanService', () => {
   let service: LoanService;
-  let confirmationService: ConfirmationService;
-
+  
   const response = {...apiResponse};
   const recordServiceSpy = { getRecords: vi.fn() };
 

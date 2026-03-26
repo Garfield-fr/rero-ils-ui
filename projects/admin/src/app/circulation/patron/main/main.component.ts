@@ -217,42 +217,42 @@ export class MainComponent implements OnInit, OnDestroy {
         keys: '1',
         group: this.translateService.instant('Patron profile shortcuts'),
         description: this.translateService.instant('Go to "circulation" tab'),
-        callback: ($event) => {
+        callback: (_$event: KeyboardEvent) => {
           this.router.navigate(['/circulation', 'patron', this.barcode, 'loan']);
         }
       }, {
         keys: '2',
         group: this.translateService.instant('Patron profile shortcuts'),
         description: this.translateService.instant('Go to "pickup" tab'),
-        callback: ($event) => {
+        callback: (_$event: KeyboardEvent) => {
           this.router.navigate(['/circulation', 'patron', this.barcode, 'pickup']);
         }
       }, {
         keys: '3',
         group: this.translateService.instant('Patron profile shortcuts'),
         description: this.translateService.instant('Go to "pending" tab'),
-        callback: ($event) => {
+        callback: (_$event: KeyboardEvent) => {
           this.router.navigate(['/circulation', 'patron', this.barcode, 'pending']);
         }
       }, {
         keys: '4',
         group: this.translateService.instant('Patron profile shortcuts'),
         description: this.translateService.instant('Go to "ILL" tab'),
-        callback: ($event) => {
+        callback: (_$event: KeyboardEvent) => {
           this.router.navigate(['/circulation', 'patron', this.barcode, 'ill']);
         }
       }, {
         keys: '5',
         group: this.translateService.instant('Patron profile shortcuts'),
         description: this.translateService.instant('Go to "patron profile" tab'),
-        callback: ($event) => {
+        callback: (_$event: KeyboardEvent) => {
           this.router.navigate(['/circulation', 'patron', this.barcode, 'profile']);
         }
       }, {
         keys: '6',
         group: this.translateService.instant('Patron profile shortcuts'),
         description: this.translateService.instant('Go to "fees" tab'),
-        callback: ($event) => {
+        callback: (_$event: KeyboardEvent) => {
           this.router.navigate(['/circulation', 'patron', this.barcode, 'fees']);
         }
       }
@@ -263,7 +263,7 @@ export class MainComponent implements OnInit, OnDestroy {
             keys: '7',
             group: this.translateService.instant('Patron profile shortcuts'),
             description: this.translateService.instant('Go to "history" tab'),
-            callback: ($event) => {
+            callback: (_$event: KeyboardEvent) => {
               this.router.navigate(['/circulation', 'patron', this.barcode, 'history']);
             }
           }

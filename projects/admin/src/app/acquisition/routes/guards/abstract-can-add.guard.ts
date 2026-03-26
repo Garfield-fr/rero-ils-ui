@@ -31,7 +31,7 @@ export abstract class AbstractCanAddGuard {
    * @param route - Rote
    * @returns  Observable boolean
    */
-  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
+  canActivate(_route: ActivatedRouteSnapshot): Observable<boolean> {
     throw new Error('Missing canActivate implementation.');
   }
 

@@ -122,7 +122,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
         this.organisationPid = loggedUser.currentOrganisation;
       }
       this.libraryForm.create();
-      this.eventForm = this.libraryForm.getBuildEvent().subscribe((buildEvent: any) => {
+      this.eventForm = this.libraryForm.getBuildEvent().subscribe((_buildEvent: any) => {
         if (params && params.pid) {
           this.recordService.getRecord('libraries', params.pid).subscribe(record => {
             this.library = new Library(record.metadata as any);

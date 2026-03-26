@@ -87,6 +87,7 @@ describe('AppMenuUserComponent', () => {
         {
           label: 'logout',
           id: MENU_IDS.USER.LOGOUT,
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           command: () => {} },
       ] },
   ];

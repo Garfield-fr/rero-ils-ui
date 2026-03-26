@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from "@angular/common/http";
-import { Component, inject, input, OnDestroy, OnInit, viewChild, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { AppConfigService } from "@app/admin/service/app-config.service";
 import { TranslateService, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 

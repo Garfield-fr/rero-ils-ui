@@ -19,7 +19,7 @@ import { _ } from "@ngx-translate/core";
 import {
   ComponentCanDeactivateGuard,
   DetailComponent, EditorComponent, JSONSchema7,
-  RecordSearchPageComponent, RecordService, RouteInterface
+  RecordData, RecordSearchPageComponent, RecordService, RouteInterface
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR, Tools, User } from '@rero/shared';
 import { of } from 'rxjs';
@@ -101,7 +101,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
               this.expertSearchFilter()
             ],
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.CIPO_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => {
               const user: User = this.routeToolService.userService.user;
               if (data.parent == null) {

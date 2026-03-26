@@ -110,7 +110,7 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
   loadingChanged(value: boolean): void {
     if (value === false) {
       combineLatest([this.route.params, this.route.queryParams])
-      .subscribe(([params, queryParams]) => {
+      .subscribe(([_params, queryParams]) => {
         if (queryParams.pid) {
           if (queryParams.source && queryParams.source !== 'templates') {
             this.importFromExternalSource(queryParams.source, queryParams.pid);

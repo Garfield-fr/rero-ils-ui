@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -119,7 +119,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
       },
       validation: {
         messages: {
-          pattern: (error, field: FormlyFieldConfig) => `Only 2 decimals are allowed`
+          pattern: (_error: ValidationErrors, _field: FormlyFieldConfig) => `Only 2 decimals are allowed`
         }
       },
       validators: {
@@ -127,7 +127,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
           // As we use 'step' property, we need to specify 'min' property to '0' for a nice value interval. But
           // with this special validator, we disallow to place a payment with a 0 amount
           expression: (c) => c.value > 0,
-          message: (error) => this.translateService.instant('Must be greater than 0')
+          message: (_error) => this.translateService.instant('Must be greater than 0')
         }
       }
     };

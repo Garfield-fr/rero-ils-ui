@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Injectable } from '@angular/core';
 import { AccountDetailViewComponent } from '@app/admin/acquisition/components/account/account-detail-view/account-detail-view.component';
 import { CanAddAccountGuard } from '@app/admin/acquisition/routes/guards/can-add-account.guard';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '@app/admin/guard/can-access.guard';
@@ -23,7 +24,7 @@ import { BaseRoute } from '@app/admin/routes/base-route';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, JSONSchema7, RecordData, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 
@@ -35,8 +36,7 @@ export const exportFormats = [{
 }];
 
 export class AccountsRoute extends BaseRoute implements RouteInterface {
-
-  /** Route name */
+ /** Route name */
   readonly name = 'acq_accounts';
   /** Record type */
   readonly recordType = 'acq_accounts';
@@ -81,7 +81,7 @@ export class AccountsRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Acquisition account'),
             detailComponent: AccountDetailViewComponent,
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             redirectUrl: () => of('/acquisition/accounts'),
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {

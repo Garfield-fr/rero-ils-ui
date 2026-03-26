@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { EditorComponent, RouteInterface } from '@rero/ng-core';
+import { EditorComponent, RecordData, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -72,8 +72,8 @@ export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
             index: this.name,
             label: _('Local entities'),
             detailComponent: EntitiesLocalDetailViewComponent,
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
-            redirectUrl: (record: any, action: string) => action === 'delete'
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+            redirectUrl: (record: RecordData, action: string) => action === 'delete'
               ? of('/records/entities')
               : of(`/records/${this.recordType}/detail/${record.metadata.pid}`)
           }

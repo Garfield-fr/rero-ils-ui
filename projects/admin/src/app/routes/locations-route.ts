@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -77,7 +77,7 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
             label: _('Locations'),
             detailComponent: LocationDetailViewComponent,
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.LOC_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               // Location resource use a asynchronous validator ('valueAlreadyExists').
               // This validator needs the library pid to work ; but in creation mode, the record.library.pid isn't yet known by system
@@ -99,7 +99,7 @@ export class LocationsRoute extends BaseRoute implements RouteInterface {
               }
               return record;
             },
-            redirectUrl: (record: any) => {
+            redirectUrl: (record: RecordData) => {
               return this.redirectUrl(
                 record.metadata.library,
                 '/records/libraries/detail'

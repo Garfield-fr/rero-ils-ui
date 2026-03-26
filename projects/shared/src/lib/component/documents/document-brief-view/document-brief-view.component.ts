@@ -19,7 +19,7 @@
 import { Component, computed, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ContributionComponent } from '../../../view/contribution/contribution.component';
-import { TruncateTextPipe } from '@rero/ng-core';
+import { TruncateTextPipe, JsonObject } from '@rero/ng-core';
 import { IdentifiedByLabelPipe } from '../../../pipe/identifiedby-label.pipe';
 import { JoinPipe } from '../../../pipe/join.pipe';
 import { MainTitlePipe } from '../../../pipe/main-title.pipe';
@@ -33,13 +33,14 @@ import { MainTitlePipe } from '../../../pipe/main-title.pipe';
 export class DocumentBriefViewComponent {
 
   /** Record */
-  readonly record = input<any>();
+  readonly record = input<JsonObject>();
 
   /** Provision activities (derived from record) */
   readonly provisionActivityPublications = computed<any[]>(() => {
     const publications: any[] = [];
-    if (this.record()?.provisionActivity) {
-      this.record().provisionActivity.forEach(provision => {
+    const record = this.record() as any;
+    if (record?.provisionActivity) {
+      record.provisionActivity.forEach((provision: any) => {
         if (provision.type === 'bf:Publication' && '_text' in provision) {
           publications.push(...provision._text.map(text => text.value));
         }

@@ -106,7 +106,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
   cancelRequest(transaction: any): void {
     this.loanService
       .cancelLoan(this.itemPid(), transaction.metadata.pid, this.userService.user.currentLibrary)
-      .subscribe((itemData: any) => {
+      .subscribe((_itemData: any) => {
         this.messageService.add({
           severity: 'warn',
           summary: this.translateService.instant('Request'),
@@ -125,7 +125,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
   updateRequestPickupLocation(data: any): void {
     this.loanService
       .updateLoanPickupLocation(data.transaction.metadata.pid, data.pickupLocationPid)
-      .subscribe(_ => {
+      .subscribe(_result => {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Request'),

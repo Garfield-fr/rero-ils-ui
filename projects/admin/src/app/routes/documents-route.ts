@@ -16,7 +16,7 @@
  */
 
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, RecordData, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -136,7 +136,7 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
               },
             ],
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.DOC_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
             preprocessRecordEditor: (record: any) => {
               record = this.removeKey(record, '_text');
               record = this.removeKey(record, '_draft');

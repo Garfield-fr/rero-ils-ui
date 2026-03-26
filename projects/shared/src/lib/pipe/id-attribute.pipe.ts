@@ -26,7 +26,7 @@ export class IdAttributePipe implements PipeTransform {
    * @param args - array
    * @return any or string
    */
-  transform(value: any, options?: {prefix?: string|null, suffix?: string|null}, ...args: any[]): any {
+  transform(value: any, options?: {prefix?: string|null, suffix?: string|null}, ..._args: any[]): any {
     // If no options, return only value
     if (!options) {
       return value;

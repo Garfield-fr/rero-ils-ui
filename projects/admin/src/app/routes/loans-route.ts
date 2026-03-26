@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { LoanState } from '../classes/loans';
 import { LoansBriefViewComponent } from '../record/brief-view/loans-brief-view/loans-brief-view.component';
@@ -50,10 +50,10 @@ export class LoansRoute extends BaseRoute implements RouteInterface {
             key: this.name,
             label: _('Loans'),
             component: LoansBriefViewComponent,
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
-            canAdd: (record: any) => of({can: false}),
-            canUpdate: (record: any) => this.routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this.routeToolService.canDelete(record, this.recordType),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+            canAdd: (_record: RecordData) => of({can: false}),
+            canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
+            canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
             preFilters: {
               exclude_status: [LoanState.CANCELLED, LoanState.ITEM_RETURNED]
             },

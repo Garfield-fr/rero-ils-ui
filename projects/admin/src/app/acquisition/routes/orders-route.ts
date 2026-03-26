@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
@@ -38,7 +38,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
   /** Get route configuration */
   getConfiguration() {
     return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
+      matcher: url => this.routeMatcher(url, this.name),
       children: [
         {
           path: '',
@@ -98,7 +98,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
               this.expertSearchFilter()
             ],
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOR_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
             preCreateRecord: (data: any) => this._addDefaultInformation(data),
             preUpdateRecord: (data: any) => this._cleanRecord(data),
             aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),

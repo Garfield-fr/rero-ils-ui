@@ -123,7 +123,7 @@ export class ItemRequestComponent implements OnInit {
     this.httpClient.post(`/api/${this.recordType}/request`, body)
       .pipe(tap(() => this.requestInProgress = false))
       .subscribe({
-        next: (_: unknown) => {
+        next: () => {
           this.onSubmit.next(undefined);
           this.closeModal(true);
           this.messageService.add({

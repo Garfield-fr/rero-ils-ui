@@ -21,6 +21,7 @@ import {
   DetailComponent,
   EditorComponent,
   JSONSchema7,
+  RecordData,
   RecordSearchPageComponent,
   RecordService,
   RouteInterface,
@@ -115,7 +116,7 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
                   PERMISSIONS.STAT_CFG_CREATE
                 ),
               }),
-            permissions: (record: any) =>
+            permissions: (record: RecordData) =>
               this.routeToolService.permissions(record, this.recordType),
             formFieldMap: (
               field: FormlyFieldConfig,

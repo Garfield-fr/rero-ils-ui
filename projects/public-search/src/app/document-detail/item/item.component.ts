@@ -18,7 +18,7 @@
 import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AvailabilityComponent, NotesFilterPipe, SafeUrlPipe, UserService } from '@rero/shared';
-import { Nl2brPipe } from '@rero/ng-core';
+import { Nl2brPipe, RecordData } from '@rero/ng-core';
 import { ItemApiService } from '../../api/item-api.service';
 import { ItemRequestComponent } from './item-request.component';
 import { PickupLocationComponent } from '../request/pickup-location/pickup-location.component';
@@ -36,7 +36,7 @@ export class ItemComponent {
   public userService = inject(UserService);
 
   /** Item record */
-  item = input<any>();
+  item = input<RecordData>();
 
   /** View code */
   viewcode = input<string>();
@@ -62,7 +62,7 @@ export class ItemComponent {
     effect(() => {
       const item = this.item();
       if (item) {
-        const { circulation_information } = item.metadata.item_type;
+        const { circulation_information } = (item.metadata as any).item_type;
         if (circulation_information) {
           const information = circulation_information.find((obj: any) => obj.language === this.translateService.currentLang);
           if (information) {

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, input, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy} from '@angular/core';
 import { CirculationLogComponent } from '../circulation-log.component';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';

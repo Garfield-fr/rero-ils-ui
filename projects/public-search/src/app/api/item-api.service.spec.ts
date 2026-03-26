@@ -20,7 +20,6 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { EsRecord, EsResult, IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { QueryResponse } from '../record';
 import { ItemApiService } from './item-api.service';
 
 

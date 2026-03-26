@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';

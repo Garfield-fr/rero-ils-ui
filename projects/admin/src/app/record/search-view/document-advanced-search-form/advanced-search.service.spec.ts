@@ -138,7 +138,7 @@ describe('AdvancedSearchService', () => {
   });
 
   it('should return a search string', () => {
-    service.load().subscribe((loaded: boolean) => {
+    service.load().subscribe((_loaded: boolean) => {
       // CONTAINS
       let searchString = 'title.\\*:(flamand)';
       let model = {

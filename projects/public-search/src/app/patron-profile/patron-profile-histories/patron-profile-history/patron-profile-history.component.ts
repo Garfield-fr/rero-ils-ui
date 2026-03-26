@@ -17,7 +17,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
-import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
+import { DateTranslatePipe, GetRecordPipe, RecordData } from '@rero/ng-core';
 import { ContributionComponent } from '@rero/shared';
 import { TagModule } from 'primeng/tag';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
@@ -34,7 +34,7 @@ export class PatronProfileHistoryComponent {
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
   /** Loan record */
-  record = input<any>();
+  record = input<RecordData>();
 
   /** Document section is collapsed */
   isCollapsed = true;

@@ -17,7 +17,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { ApiService, File, RecordService } from '@rero/ng-core';
+import { ApiService, File } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
@@ -161,13 +161,13 @@ export class ResourcesFilesService {
     return this.httpService
       .post(`${this.baseUrl}/${parentRecordId}/files`, [{ key: fileKey, metadata: { label: fileData.label }}])
       .pipe(
-        switchMap((res: any) =>
+        switchMap((_res: any) =>
           // set the file content
           this.httpService.put(`${this.baseUrl}/${parentRecordId}/files/${fileKey}/content`, fileData, {
             headers: { 'content-type': 'application/octet-stream' },
           })
         ),
-        switchMap((res: any) => {
+        switchMap((_res: any) => {
           // commit the file
           return this.httpService.post(
             `${this.baseUrl}/${parentRecordId}/files/${fileKey}/commit`,
@@ -192,7 +192,7 @@ export class ResourcesFilesService {
    */
   update(parentRecordId: string, file: File, fileData: any): Observable<File> {
     return this.delete(parentRecordId, file.key, true).pipe(
-      switchMap((res) => this.create(parentRecordId, file.key, fileData))
+      switchMap((_res) => this.create(parentRecordId, file.key, fileData))
     );
   }
 

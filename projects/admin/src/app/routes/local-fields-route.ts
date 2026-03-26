@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, EditorComponent, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, EditorComponent, RecordData, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, User } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -69,8 +69,8 @@ export class LocalFieldsRoute extends BaseRoute implements RouteInterface {
           {
             key: this.name,
             label: 'Local Fields',
-            canRead: (record: any) => this.canReadLocalFields(record),
-            redirectUrl: (record: any) => this.getUrl(record),
+            canRead: (record: RecordData) => this.canReadLocalFields(record),
+            redirectUrl: (record: RecordData) => this.getUrl(record),
             preCreateRecord: (data: any) => {
               const user: User = this.routeToolService.userService.user;
               if (data.parent == null) {

@@ -25,7 +25,7 @@ import { _ } from "@ngx-translate/core";
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { CONFIG, RecordService, processJsonSchema, removeEmptyValues, resolve$ref } from '@rero/ng-core';
-import { AppSettingsService, User, UserService } from '@rero/shared';
+import { AppSettingsService, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -164,7 +164,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     const userQuery = this.recordService.getRecord('users', this.userService.user.id.toString());
 
     this._subscriptions.add(
-      forkJoin([schemaForm, userQuery]).subscribe(([schema, user]: [any, any]) => {
+      forkJoin([schemaForm, userQuery]).subscribe(([_schema, user]: [any, any]) => {
         this.model = user.metadata;
       })
     );

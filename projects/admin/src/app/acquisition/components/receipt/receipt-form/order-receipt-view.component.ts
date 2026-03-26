@@ -148,7 +148,7 @@ export class OrderReceiptViewComponent implements OnInit {
    * @param model: the model to process
    * @param receipt: the parent receipt object
    */
-  private createLinesAndMessage(model: IAcqReceiptModel, receipt: IAcqReceipt): void {
+  private createLinesAndMessage(model: IAcqReceiptModel, _receipt: IAcqReceipt): void {
     // receipt exists, we can create corresponding lines
     const lines = this.orderReceipt.processLines(model);
     if (lines.length > 0) {

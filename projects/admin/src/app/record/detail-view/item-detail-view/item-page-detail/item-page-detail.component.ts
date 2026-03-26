@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { IssueService } from '@app/admin/service/issue.service';
 import { OperationLogsService, OperationLogsDialogComponent } from '@rero/shared';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { DetailComponent, RecordDetailDirective, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
+import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription, switchMap, tap } from 'rxjs';

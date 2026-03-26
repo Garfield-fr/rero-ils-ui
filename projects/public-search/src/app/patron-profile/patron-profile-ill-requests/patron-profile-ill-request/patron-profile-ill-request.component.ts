@@ -16,7 +16,7 @@
  */
 import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Nl2brPipe, TruncateTextPipe } from '@rero/ng-core';
+import { Nl2brPipe, TruncateTextPipe, RecordData } from '@rero/ng-core';
 import { ArrayTranslatePipe, JoinPipe, JournalVolumePipe, NotesFilterPipe, OpenCloseButtonComponent } from '@rero/shared';
 import { TagModule } from 'primeng/tag';
 import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
@@ -43,7 +43,7 @@ import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
 export class PatronProfileIllRequestComponent {
 
   /** Ill record */
-  record = input<any>();
+  record = input<RecordData>();
 
   /** Detail collapsed */
   isCollapsed = true;

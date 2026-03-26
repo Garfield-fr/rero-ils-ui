@@ -197,7 +197,7 @@ export class ItemComponent {
    * Extend loan action
    * @param event: the event fired
    */
-  extendLoanClick(event: any) {
+  extendLoanClick(_event: any) {
     this.extendLoanClicked.emit(this.item());
   }
 

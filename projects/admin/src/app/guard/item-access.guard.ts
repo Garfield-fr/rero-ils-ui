@@ -44,7 +44,7 @@ export class ItemAccessGuard implements CanActivate {
    */
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    _state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       const itemPid = next.params.pid;
       this.recordService.getRecord('items', itemPid).pipe(
         map((data: any) => data.metadata),

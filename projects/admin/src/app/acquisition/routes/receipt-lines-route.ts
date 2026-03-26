@@ -17,7 +17,7 @@
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RouteInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, RecordData, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
@@ -58,8 +58,8 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
             },
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACRL_CREATE) }),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
-            redirectUrl: (record: any) => {this.location.back(); return of(null)},
+            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
+            redirectUrl: (_record: RecordData) => {this.location.back(); return of(null)},
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
               if (formWidget?.formlyConfig?.props?.fieldMap === 'amount') {
