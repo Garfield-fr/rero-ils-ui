@@ -15,8 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import {
+  ComponentCanDeactivateGuard,
+  DetailComponent,
+  EditorComponent,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
@@ -28,147 +37,128 @@ import { OrderDetailViewComponent } from '../components/order/order-detail-view/
 import { OrderReceiptViewComponent } from '../components/receipt/receipt-form/order-receipt-view.component';
 import { CanOrderReceiptGuard } from './guards/can-order-receipt.guard';
 
-export class OrdersRoute extends BaseRoute implements RouteInterface {
+export const ordersRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new OrdersRoute().getTypes();
 
+export const ordersRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Orders'),
+    canActivate: [PermissionGuard],
+    data: {
+      permissions: [PERMISSIONS.ACOR_ACCESS, PERMISSIONS.ACOR_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('Order'),
+    canActivate: [CanAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Order'),
+    canActivate: [CanAccessGuard, AcqOrderLineGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+      permissions: [PERMISSIONS.ACOR_SEARCH],
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('Order'),
+    canActivate: [PermissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.ACOR_CREATE],
+    },
+  },
+  {
+    path: 'receive/:pid',
+    component: OrderReceiptViewComponent,
+    title: _('Order'),
+    canActivate: [CanOrderReceiptGuard],
+  },
+];
+
+class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'acq_orders';
   /** Record type */
   readonly recordType = 'acq_orders';
 
-  /** Get route configuration */
-  getConfiguration() {
-    return {
-      matcher: url => this.routeMatcher(url, this.name),
-      children: [
+  getTypes(): Partial<RecordType>[] {
+    const orderType: any = {
+      key: this.name,
+      label: _('Orders'),
+      component: OrderBriefViewComponent,
+      detailComponent: OrderDetailViewComponent,
+      searchFilters: [this.expertSearchFilter()],
+      canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOR_CREATE), message: '' }),
+      permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
+      preCreateRecord: (data: any) => this._addDefaultInformation(data),
+      preUpdateRecord: (data: any) => this._cleanRecord(data),
+      aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
+      aggregationsExpand: ['library', 'order_date', 'status'],
+      aggregationsOrder: ['budget', 'library', 'status', 'account', 'vendor', 'order_date', 'receipt_date'],
+      aggregationsBucketSize: 10,
+      itemHeaders: {
+        Accept: 'application/rero+json, application/json',
+      },
+      listHeaders: {
+        Accept: 'application/rero+json',
+      },
+      sortOptions: [
         {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Orders'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ACOR_ACCESS, PERMISSIONS.ACOR_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+          label: _('Relevance'),
+          value: 'bestmatch',
+          defaultQuery: true,
+          icon: 'fa fa-sort-amount-desc',
         },
         {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('Order'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
+          label: _('Receipt date (newest)'),
+          value: 'receipt_date',
+          icon: 'fa fa-sort-amount-desc',
         },
         {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Order'),
-          canActivate: [CanAccessGuard, AcqOrderLineGuard],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE,
-            permissions: [ PERMISSIONS.ACOR_SEARCH ]
-          }
+          label: _('Reference (asc)'),
+          value: 'reference_asc',
+          icon: 'fa fa-sort-alpha-asc',
         },
         {
-          path: 'new',
-          component: EditorComponent,
-          title: _('Order'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ACOR_CREATE ]
-          }
+          label: _('Reference (desc)'),
+          value: 'reference_desc',
+          icon: 'fa fa-sort-alpha-desc',
         },
         {
-          path: 'receive/:pid',
-          component: OrderReceiptViewComponent,
-          title: _('Order'),
-          canActivate: [CanOrderReceiptGuard]
+          label: _('Order date (newest)'),
+          value: 'order_date_new',
+          icon: 'fa fa-sort-amount-desc',
+        },
+        {
+          label: _('Order date (oldest)'),
+          value: 'order_date_old',
+          icon: 'fa fa-sort-amount-asc',
         },
       ],
-      data: {
-        types: [
-          {
-            key: this.name,
-            label: _('Orders'),
-            component: OrderBriefViewComponent,
-            detailComponent: OrderDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOR_CREATE) }),
-            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
-            preCreateRecord: (data: any) => this._addDefaultInformation(data),
-            preUpdateRecord: (data: any) => this._cleanRecord(data),
-            aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
-            aggregationsExpand: [
-              'library',
-              'order_date',
-              'status'
-            ],
-            aggregationsOrder: [
-              'budget',
-              'library',
-              'status',
-              'account',
-              'vendor',
-              'order_date',
-              'receipt_date'
-            ],
-            aggregationsBucketSize: 10,
-            itemHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            listHeaders: {
-              Accept: 'application/rero+json'
-            },
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                defaultQuery: true,
-                 icon: 'fa fa-sort-amount-desc'
-              },
-              {
-                label: _('Receipt date (newest)'),
-                value: 'receipt_date',
-                 icon: 'fa fa-sort-amount-desc'
-              },
-              {
-                label: _('Reference (asc)'),
-                value: 'reference_asc',
-                icon: 'fa fa-sort-alpha-asc'
-              },
-              {
-                label: _('Reference (desc)'),
-                value: 'reference_desc',
-                icon: 'fa fa-sort-alpha-desc'
-              },
-
-              {
-                label: _('Order date (newest)'),
-                value: 'order_date_new',
-                 icon: 'fa fa-sort-amount-desc'
-              },
-              {
-                label: _('Order date (oldest)'),
-                value: 'order_date_old',
-                 icon: 'fa fa-sort-amount-asc'
-              }
-            ],
-            exportFormats: [
-              {
-                label: 'CSV',
-                format: 'csv',
-                endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
-                disableMaxRestResultsSize: true,
-              },
-            ],
-          }
-        ]
-      }
+      exportFormats: [
+        {
+          label: 'CSV',
+          format: 'csv',
+          endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
+          disableMaxRestResultsSize: true,
+        },
+      ],
     };
+    return [orderType];
   }
 
   /**
@@ -179,10 +169,10 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
   private _addDefaultInformation(data: any): any {
     const user = this.routeToolService.userService.user;
     data.organisation = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
+      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
     };
     data.library = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary)
+      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary),
     };
     return data;
   }

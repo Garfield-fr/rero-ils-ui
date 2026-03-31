@@ -15,11 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { ComponentCanDeactivateGuard, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import { ComponentCanDeactivateGuard, RecordData, RecordType } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { map, Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -27,10 +28,15 @@ import { DocumentEditorComponent } from '../record/custom-editor/document-editor
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { DocumentRecordSearchComponent } from '../record/search-view/document-record-search/document-record-search.component';
+import { OrganisationService } from '../service/organisation.service';
 import { BaseRoute } from './base-route';
 
-export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new DocumentsRoute().getTypes();
+export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => {
+  // onOrganisationLoaded$ is a Subject that fires only once during app init.
+  // By the time this resolver runs, the org is already loaded — read it directly.
+  const org = inject(OrganisationService).organisation;
+  return new DocumentsRoute().getTypesForOrg(org);
+};
 
 export const documentsRoutes: Routes = [
   {
@@ -91,7 +97,7 @@ class DocumentsRoute extends BaseRoute {
   /** Record type */
   readonly recordType = 'documents';
 
-  getTypes(): Observable<Partial<RecordType>[]> {
+  getTypesForOrg(org: { pid: string }): Partial<RecordType>[] {
     const docType = {
       key: this.name,
       label: _('Documents'),
@@ -229,13 +235,9 @@ class DocumentsRoute extends BaseRoute {
       },
     ];
 
-    return this.routeToolService.organisationService.onOrganisationLoaded$.pipe(
-      map(
-        org => {
-          types[0]['defaultSearchInputFilters'] = [{ key: 'organisation', values: [org.pid] }];
-          return types;
-        }
-      )
-    );
+    if (org?.pid) {
+      types[0]['defaultSearchInputFilters'] = [{ key: 'organisation', values: [org.pid] }];
+    }
+    return types;
   }
 }

@@ -1,132 +1,25 @@
-import { enableProdMode, provideZonelessChangeDetection, provideAppInitializer, inject, LOCALE_ID, importProvidersFrom } from '@angular/core';
-import { registerFormlyExtension } from './app/acquisition/formly/extension';
-import { OrderLineTypeComponent } from './app/acquisition/formly/type/field-order-line.type';
-import { ReceiptLinesTypeComponent } from './app/acquisition/formly/type/receipt-lines.type';
-import { InputNoLabelWrapperComponent } from './app/acquisition/formly/wrapper/input-no-label.wrapper';
-
-
-
-import { environment } from './environments/environment';
-import { AppInitializerService } from './app/service/app-initializer.service';
-import { APP_BASE_HREF, PlatformLocation, DatePipe } from '@angular/common';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, HttpClient } from '@angular/common/http';
-import { NoCacheHeaderInterceptor } from './app/interceptor/no-cache-header.interceptor';
-import { UserCurrentLibraryInterceptor } from './app/interceptor/user-current-library.interceptor';
-import { TranslateService, TranslateModule, TranslateLoader as BaseTranslateLoader } from '@ngx-translate/core';
-import { NgCoreTranslateService, RemoteAutocompleteService, CoreConfigService, TruncateTextPipe, RecordHandleErrorService as CoreRecordHandleErrorService, withNgCoreFormly, registerNgCoreFormlyExtension, ComponentCanDeactivateGuard, primeNGConfig, CoreTranslateLoader } from '@rero/ng-core';
-import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './app/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
-import { remoteAutocompleteToken } from './app/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
-import { DocumentsRemoteService } from './app/record/editor/formly/primeng/remote-autocomplete/remote/documents-remote.service';
-import { ItemsRemoteService } from './app/record/editor/formly/primeng/remote-autocomplete/remote/items-remote.service';
-import { MefRemoteService } from './app/record/editor/formly/primeng/remote-autocomplete/remote/mef-remote.service';
-import { PatronsRemoteService } from './app/record/editor/formly/primeng/remote-autocomplete/remote/patrons-remote.service';
-import { AppConfigService } from './app/service/app-config.service';
-import { MainTitlePipe, ItemHoldingsCallNumberPipe } from '@rero/shared';
-import { CurrentLibraryPermissionValidator } from './app/utils/permissions';
-import { ReceivedOrderPermissionValidator } from './app/acquisition/utils/permissions';
-import { CountryCodeTranslatePipe } from './app/pipe/country-code-translate.pipe';
-import { RecordHandleErrorService } from './app/service/record.handle-error.service';
-import { provideFormlyCore, FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import { AppRoutingModule } from './app/app-routing.module';
+/*
+ * RERO ILS UI
+ * Copyright (C) 2019-2025 RERO
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+import { provideZonelessChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-
-
 import { AppComponent } from './app/app.component';
-
-if (environment.production) {
-  enableProdMode();
-}
+import { appConfig } from './app/app.config';
 
 bootstrapApplication(AppComponent, {
-    providers: [
-    provideAppInitializer(() => {
-        const appInitializerService = inject(AppInitializerService);
-        return appInitializerService.load();
-    }),
-    {
-        provide: APP_BASE_HREF,
-        useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
-        deps: [PlatformLocation],
-    },
-    {
-        provide: HTTP_INTERCEPTORS,
-        useClass: NoCacheHeaderInterceptor,
-        multi: true,
-    },
-    {
-        provide: HTTP_INTERCEPTORS,
-        useClass: UserCurrentLibraryInterceptor,
-        multi: true,
-    },
-    { provide: TranslateService, useExisting: NgCoreTranslateService },
-    { provide: RemoteAutocompleteService, useExisting: UiRemoteAutocompleteService },
-    { provide: remoteAutocompleteToken, useExisting: DocumentsRemoteService, multi: true },
-    { provide: remoteAutocompleteToken, useExisting: ItemsRemoteService, multi: true },
-    { provide: remoteAutocompleteToken, useExisting: MefRemoteService, multi: true },
-    { provide: remoteAutocompleteToken, useExisting: PatronsRemoteService, multi: true },
-    { provide: CoreConfigService, useClass: AppConfigService },
-    {
-        provide: LOCALE_ID,
-        useFactory: (translate: TranslateService) => translate.currentLang,
-        deps: [TranslateService],
-    },
-    MainTitlePipe,
-    TruncateTextPipe,
-    DatePipe,
-    CurrentLibraryPermissionValidator,
-    ReceivedOrderPermissionValidator,
-    // TODO: needed for production build, remove this after it is fixed in the
-    // @ngneat/hotkeys library
-    ItemHoldingsCallNumberPipe,
-    CountryCodeTranslatePipe,
-    { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService },
-    provideHttpClient(withInterceptorsFromDi()),
-    provideFormlyCore(withNgCoreFormly()),
-    {
-        provide: FORMLY_CONFIG,
-        multi: true,
-        useFactory: registerNgCoreFormlyExtension,
-        deps: [TranslateService],
-    },
-    {
-        provide: FORMLY_CONFIG,
-        multi: true,
-        useFactory: registerFormlyExtension,
-        deps: [TranslateService],
-    },
-    ComponentCanDeactivateGuard,
-    ConfirmationService,
-    MessageService,
-    DialogService,
-    provideAnimationsAsync(),
-    providePrimeNG(primeNGConfig),
-    provideZonelessChangeDetection(),
-    importProvidersFrom(
-      AppRoutingModule,
-      FormlyModule.forChild({
-        types: [
-          { name: 'receipt-lines', component: ReceiptLinesTypeComponent },
-          { name: 'order-line', component: OrderLineTypeComponent },
-        ],
-        wrappers: [
-          { name: 'input-no-label', component: InputNoLabelWrapperComponent }
-        ]
-      }),
-      TranslateModule.forRoot({
-        loader: {
-          provide: BaseTranslateLoader,
-          useClass: CoreTranslateLoader,
-          deps: [CoreConfigService, HttpClient],
-        },
-        isolate: false,
-      }),
-      LoadingBarHttpClientModule
-    )
-]
-})
-  .catch(err => console.error(err));
+  ...appConfig,
+  providers: [provideZonelessChangeDetection(), ...appConfig.providers],
+}).catch((err) => console.error(err));

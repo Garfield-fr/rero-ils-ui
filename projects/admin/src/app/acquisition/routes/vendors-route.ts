@@ -14,8 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import {
+  ComponentCanDeactivateGuard,
+  DetailComponent,
+  EditorComponent,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
@@ -24,107 +33,95 @@ import { BaseRoute } from '../../routes/base-route';
 import { VendorBriefViewComponent } from '../components/vendors/vendor-brief-view.component';
 import { VendorDetailViewComponent } from '../components/vendors/vendor-detail-view/vendor-detail-view.component';
 
-export class VendorsRoute extends BaseRoute implements RouteInterface {
+export const vendorsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new VendorsRoute().getTypes();
 
+export const vendorsRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Vendors'),
+    canActivate: [PermissionGuard],
+    data: {
+      permissions: [PERMISSIONS.VNDR_ACCESS, PERMISSIONS.VNDR_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('Vendor'),
+    canActivate: [CanAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Vendor'),
+    canActivate: [CanAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('Vendor'),
+    canActivate: [PermissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.VNDR_CREATE],
+    },
+  },
+];
+
+class VendorsRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'vendors';
-
   /** Record type */
   readonly recordType = 'vendors';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Vendors'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.VNDR_ACCESS, PERMISSIONS.VNDR_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: _('Vendors'),
+        component: VendorBriefViewComponent,
+        detailComponent: VendorDetailViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.VNDR_CREATE), message: '' }),
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        preCreateRecord: (data: any) => {
+          const { user } = this.routeToolService.userService;
+          data.organisation = {
+            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+          };
+          return data;
         },
-        {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('Vendor'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
-        },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Vendor'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
-        },
-        {
-          path: 'new',
-          component: EditorComponent,
-          title: _('Vendor'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.VNDR_CREATE ]
-          }
-        }
-      ],
-      data: {
-        types: [
+        sortOptions: [
           {
-            key: this.name,
-            label: _('Vendors'),
-            component: VendorBriefViewComponent,
-            detailComponent: VendorDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.VNDR_CREATE) }),
-            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
-            preCreateRecord: (data: any) => {
-              const { user } = this.routeToolService.userService;
-              data.organisation = {
-                $ref: this.routeToolService.apiService.getRefEndpoint(
-                  'organisations',
-                  user.currentOrganisation
-                )
-              };
-              return data;
-            },
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                defaultQuery: true,
-                icon: 'fa fa-sort-amount-desc'
-              },
-              {
-                label: _('Name (asc)'),
-                value: 'name_asc',
-                defaultNoQuery: true,
-                icon: 'fa fa-sort-alpha-asc'
-              },
-              {
-                label: _('Name (desc)'),
-                value: 'name_desc',
-                icon: 'fa fa-sort-alpha-desc'
-              }
-            ],
-            showFacetsIfNoResults: true
-          }
-        ]
-      }
-    };
+            label: _('Relevance'),
+            value: 'bestmatch',
+            defaultQuery: true,
+            icon: 'fa fa-sort-amount-desc',
+          },
+          {
+            label: _('Name (asc)'),
+            value: 'name_asc',
+            defaultNoQuery: true,
+            icon: 'fa fa-sort-alpha-asc',
+          },
+          {
+            label: _('Name (desc)'),
+            value: 'name_desc',
+            icon: 'fa fa-sort-alpha-desc',
+          },
+        ],
+        showFacetsIfNoResults: true,
+      },
+    ];
   }
 }

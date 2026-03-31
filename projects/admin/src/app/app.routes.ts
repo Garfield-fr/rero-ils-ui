@@ -14,41 +14,56 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes, UrlSegment } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
+
+/**
+ * Matches /records/<type> and exposes `type` as a positional param so that
+ * child routes (and RecordSearchPageComponent) can read it via paramMap.
+ */
+function recordTypeMatcher(type: string) {
+  return (url: UrlSegment[]) => {
+    if (url.length >= 2 && url[0].path === 'records' && url[1].path === type) {
+      return {
+        consumed: [url[0], url[1]],
+        posParams: { type: new UrlSegment(type, {}) },
+      };
+    }
+    return null;
+  };
+}
+import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { PermissionGuard } from './guard/permission.guard';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
-import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { ErrorPageComponent } from './error/error-page/error-page.component';
-import { itemTypeRouteResolver } from './routes/item-types-route';
-import { patronTypesRouteResolver } from './routes/patron-types-route';
 import { circulationPoliciesRouteResolver } from './routes/circulation-policies-route';
-import { librariesRouteResolver } from './routes/libraries-route';
-import { illRequestsRouteResolver } from './routes/ill-requests-route';
-import { statisticsCfgRouteResolver } from './routes/statistics-cfg-route';
 import { collectionsRouteResolver } from './routes/collections-route';
-import { patronsRouteResolver } from './routes/patrons-route';
-import { templatesRouteResolver } from './routes/templates-route';
-import { issuesRouteResolver } from './routes/issues-route';
-import { loansRouteResolver } from './routes/loans-route';
-import { patronTransactionEventsRouteResolver } from './routes/patron-transaction-events-route';
-import { entitiesRouteResolver } from './routes/entities-route';
-import { holdingsRouteResolver } from './routes/holdings-route';
-import { locationsRouteResolver } from './routes/locations-route';
+import { documentsRouteResolver } from './routes/documents-route';
 import { entitiesLocalRouteResolver } from './routes/entities-local-route';
 import { entitiesRemoteRouteResolver } from './routes/entities-remote-route';
-import { localFieldsRouteResolver } from './routes/local-fields-route';
-import { documentsRouteResolver } from './routes/documents-route';
-import { itemsRouteResolver } from './routes/items-route';
+import { entitiesRouteResolver } from './routes/entities-route';
+import { holdingsRouteResolver } from './routes/holdings-route';
+import { illRequestsRouteResolver } from './routes/ill-requests-route';
 import { importDocumentsRouteResolver } from './routes/import-documents-route';
+import { issuesRouteResolver } from './routes/issues-route';
+import { itemTypeRouteResolver } from './routes/item-types-route';
+import { itemsRouteResolver } from './routes/items-route';
+import { librariesRouteResolver } from './routes/libraries-route';
+import { loansRouteResolver } from './routes/loans-route';
+import { localFieldsRouteResolver } from './routes/local-fields-route';
+import { locationsRouteResolver } from './routes/locations-route';
+import { patronTransactionEventsRouteResolver } from './routes/patron-transaction-events-route';
+import { patronTypesRouteResolver } from './routes/patron-types-route';
+import { patronsRouteResolver } from './routes/patrons-route';
+import { statisticsCfgRouteResolver } from './routes/statistics-cfg-route';
+import { templatesRouteResolver } from './routes/templates-route';
+import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'migrations',
-    loadChildren: () => import('./migration/migration-routing.module').then((m) => m.MIGRATION_ROUTES),
+    loadChildren: () => import('./migration/migration.routes').then((m) => m.MIGRATION_ROUTES),
   },
   {
     path: '',
@@ -56,59 +71,59 @@ const routes: Routes = [
     title: _('Home'),
   },
   {
-    path: 'records/item_types',
+    matcher: recordTypeMatcher('item_types'),
     loadChildren: () => import('./routes/item-types-route').then((m) => m.itemTypesRoutes),
     resolve: { types: itemTypeRouteResolver },
   },
   {
-    path: 'records/patron_types',
+    matcher: recordTypeMatcher('patron_types'),
     loadChildren: () => import('./routes/patron-types-route').then((m) => m.patronTypesRoutes),
     resolve: { types: patronTypesRouteResolver },
   },
   {
-    path: 'records/circ_policies',
+    matcher: recordTypeMatcher('circ_policies'),
     loadChildren: () => import('./routes/circulation-policies-route').then((m) => m.circulationPoliciesRoutes),
     resolve: { types: circulationPoliciesRouteResolver },
   },
   {
-    path: 'records/libraries',
+    matcher: recordTypeMatcher('libraries'),
     loadChildren: () => import('./routes/libraries-route').then((m) => m.librariesRoutes),
     resolve: { types: librariesRouteResolver },
   },
   {
-    path: 'records/ill_requests',
+    matcher: recordTypeMatcher('ill_requests'),
     loadChildren: () => import('./routes/ill-requests-route').then((m) => m.illRequestsRoutes),
     resolve: { types: illRequestsRouteResolver },
     data: { linkPrefix: 'records' },
   },
   {
-    path: 'records/stats_cfg',
+    matcher: recordTypeMatcher('stats_cfg'),
     loadChildren: () => import('./routes/statistics-cfg-route').then((m) => m.statisticsCfgRoutes),
     resolve: { types: statisticsCfgRouteResolver },
   },
   {
-    path: 'records/collections',
+    matcher: recordTypeMatcher('collections'),
     loadChildren: () => import('./routes/collections-route').then((m) => m.collectionsRoutes),
     resolve: { types: collectionsRouteResolver },
   },
   {
-    path: 'records/patrons',
+    matcher: recordTypeMatcher('patrons'),
     loadChildren: () => import('./routes/patrons-route').then((m) => m.patronsRoutes),
     resolve: { types: patronsRouteResolver },
   },
   {
-    path: 'records/templates',
+    matcher: recordTypeMatcher('templates'),
     loadChildren: () => import('./routes/templates-route').then((m) => m.templatesRoutes),
     resolve: { types: templatesRouteResolver },
   },
   {
-    path: 'records/issues',
+    matcher: recordTypeMatcher('issues'),
     loadChildren: () => import('./routes/issues-route').then((m) => m.issuesRoutes),
     resolve: { types: issuesRouteResolver },
     data: { adminMode: () => of({ can: false, message: '' }), detailUrl: '/records/items/detail/:pid' },
   },
   {
-    path: 'records/loans',
+    matcher: recordTypeMatcher('loans'),
     loadChildren: () => import('./routes/loans-route').then((m) => m.loansRoutes),
     resolve: { types: loansRouteResolver },
     data: {
@@ -117,7 +132,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'records/patron_transaction_events',
+    matcher: recordTypeMatcher('patron_transaction_events'),
     loadChildren: () => import('./routes/patron-transaction-events-route').then((m) => m.patronTransactionEventsRoutes),
     resolve: { types: patronTransactionEventsRouteResolver },
     data: {
@@ -126,44 +141,44 @@ const routes: Routes = [
     },
   },
   {
-    path: 'records/entities',
+    matcher: recordTypeMatcher('entities'),
     loadChildren: () => import('./routes/entities-route').then((m) => m.entitiesRoutes),
     resolve: { types: entitiesRouteResolver },
   },
   {
-    path: 'records/holdings',
+    matcher: recordTypeMatcher('holdings'),
     loadChildren: () => import('./routes/holdings-route').then((m) => m.holdingsRoutes),
     resolve: { types: holdingsRouteResolver },
   },
   {
-    path: 'records/locations',
+    matcher: recordTypeMatcher('locations'),
     loadChildren: () => import('./routes/locations-route').then((m) => m.locationsRoutes),
     resolve: { types: locationsRouteResolver },
   },
   {
-    path: 'records/local_entities',
+    matcher: recordTypeMatcher('local_entities'),
     loadChildren: () => import('./routes/entities-local-route').then((m) => m.entitiesLocalRoutes),
     resolve: { types: entitiesLocalRouteResolver },
   },
   {
-    path: 'records/remote_entities',
+    matcher: recordTypeMatcher('remote_entities'),
     loadChildren: () => import('./routes/entities-remote-route').then((m) => m.entitiesRemoteRoutes),
     resolve: { types: entitiesRemoteRouteResolver },
     data: { adminMode: () => of({ can: false, message: '' }) },
   },
   {
-    path: 'records/local_fields',
+    matcher: recordTypeMatcher('local_fields'),
     loadChildren: () => import('./routes/local-fields-route').then((m) => m.localFieldsRoutes),
     resolve: { types: localFieldsRouteResolver },
     data: { adminMode: () => of({ can: false, message: '' }) },
   },
   {
-    path: 'records/documents',
+    matcher: recordTypeMatcher('documents'),
     loadChildren: () => import('./routes/documents-route').then((m) => m.documentsRoutes),
     resolve: { types: documentsRouteResolver },
   },
   {
-    path: 'records/items',
+    matcher: recordTypeMatcher('items'),
     loadChildren: () => import('./routes/items-route').then((m) => m.itemsRoutes),
     resolve: { types: itemsRouteResolver },
   },
@@ -175,11 +190,11 @@ const routes: Routes = [
   },
   {
     path: 'circulation',
-    loadChildren: () => import('./circulation/circulation-routing.module').then((m) => m.CIRCULATION_ROUTES),
+    loadChildren: () => import('./circulation/circulation.routes').then((m) => m.CIRCULATION_ROUTES),
   },
   {
     path: 'acquisition',
-    loadChildren: () => import('./acquisition/acquisition-routing.module').then((m) => m.AcquisitionRoutingModule),
+    loadChildren: () => import('./acquisition/acquisition.routes').then((m) => m.acquistisonsRoutes),
   },
   {
     path: 'permissions/matrix',
@@ -201,11 +216,3 @@ const routes: Routes = [
     title: _('Error'),
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  // for debug
-  //imports: [RouterModule.forRoot(routes, { enableTracing: true })],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}
