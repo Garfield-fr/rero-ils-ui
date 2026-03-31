@@ -14,8 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import {
+  ActionStatus,
+  ComponentCanDeactivateGuard,
+  DetailComponent,
+  EditorComponent,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -24,85 +34,77 @@ import { IllRequestsBriefViewComponent } from '../record/brief-view/ill-requests
 import { IllRequestDetailViewComponent } from '../record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class IllRequestsRoute extends BaseRoute implements RouteInterface {
+export const illRequestsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new IllRequestsRoute().getTypes();
 
+export const illRequestsRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('ILL requests'),
+    canActivate: [PermissionGuard],
+    data: {
+      permissions: [PERMISSIONS.ILL_ACCESS, PERMISSIONS.ILL_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('ILL request'),
+    canActivate: [CanAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('ILL request'),
+    canActivate: [CanAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('ILL request'),
+    canActivate: [PermissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.ILL_CREATE],
+    },
+  },
+];
+
+class IllRequestsRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'ill_requests';
 
   /** Record type */
   readonly recordType = 'ill_requests';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('ILL requests'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ILL_ACCESS, PERMISSIONS.ILL_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: 'ILL request',
+        component: IllRequestsBriefViewComponent,
+        detailComponent: IllRequestDetailViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        canAdd: () =>
+          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ILL_CREATE) } as ActionStatus),
+        canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
+        canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
+        aggregationsExpand: ['request_status', 'loan_status', 'requester'],
+        aggregationsOrder: ['request_status', 'loan_status', 'requester', 'library'],
+        listHeaders: {
+          Accept: 'application/rero+json, application/json',
         },
-        {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('ILL request'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
-        },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('ILL request'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
-        },
-        {
-          path: 'new',
-          component: EditorComponent,
-          title: _('ILL request'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ILL_CREATE ]
-          }
-        }
-      ],
-      data: {
-        linkPrefix: 'records',
-        types: [
-          {
-            key: this.name,
-            label: 'ILL request',
-            component: IllRequestsBriefViewComponent,
-            detailComponent: IllRequestDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ILL_CREATE) }),
-            canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
-            aggregationsExpand: ['request_status', 'loan_status', 'requester'],
-            aggregationsOrder: ['request_status', 'loan_status', 'requester', 'library'],
-            listHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            showFacetsIfNoResults: true
-          }
-        ]
-      }
-    };
+        showFacetsIfNoResults: true,
+      },
+    ];
   }
 }

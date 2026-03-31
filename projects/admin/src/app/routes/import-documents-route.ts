@@ -16,10 +16,12 @@
  */
 
 import { inject } from '@angular/core';
+import { ResolveFn, Routes } from '@angular/router';
 import { TranslateService, _ } from '@ngx-translate/core';
-import { RouteInterface } from '@rero/ng-core';
+import { RecordType } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ImportSourceApiService } from '../api/import-source-api.service';
 import { ExternalSourceSetting } from '../classes/external-source';
 import { PermissionGuard } from '../guard/permission.guard';
@@ -29,14 +31,32 @@ import { DocumentDetailComponent } from '../record/detail-view/document-detail-v
 import { ImportRecordSearchComponent } from '../record/search-view/import-record-search/import-record-search.component';
 import { BaseRoute } from './base-route';
 
-export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
+export const importDocumentsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new ImportDocumentsRoute().getTypeConfigs();
 
+export const importDocumentsRoutes: Routes = [
+  {
+    path: '',
+    component: ImportRecordSearchComponent,
+    title: _('Import from the web'),
+    canActivate: [PermissionGuard],
+    data: {
+      permissions: [PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DocumentDetailComponent,
+    title: _('Import'),
+  },
+];
+
+class ImportDocumentsRoute extends BaseRoute {
   private translateService: TranslateService = inject(TranslateService);
+  private importSourceApiService: ImportSourceApiService = inject(ImportSourceApiService);
 
-  /** Route name */
-  readonly name = 'import';
-
-  private _baseTypeConfig = {
+  private _baseTypeConfig: any = {
     component: DocumentsBriefViewComponent,
     detailComponent: DocumentDetailViewComponent,
     canAdd: () => of(false),
@@ -46,49 +66,20 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
     aggregationsBucketSize: 10,
     aggregationsOrder: ['document_type', 'author', 'language', 'year'],
     aggregationsExpand: ['document_type', 'author', 'language', 'year'],
-    itemHeaders: { Accept: 'application/rero+json, application/json'},
-    listHeaders: { Accept: 'application/rero+json, application/json'},
+    itemHeaders: { Accept: 'application/rero+json, application/json' },
+    listHeaders: { Accept: 'application/rero+json, application/json' },
     allowEmptySearch: false,
-    showFacetsIfNoResults: true
+    showFacetsIfNoResults: true,
   };
 
   /**
-   * Get Configuration
-   * @returns the configuration to use for this route
+   * Get type configs from external sources (async).
+   * @returns observable of the array of record type configurations.
    */
-  getConfiguration() {
-    const config = {
-      path: 'records/:type',
-      children: [
-        {
-          path: '',
-          component: ImportRecordSearchComponent,
-          title: _('Import from the web'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
-        },
-        {
-          path: 'detail/:pid',
-          component: DocumentDetailComponent,
-          title: _('Import')
-        }
-      ],
-      data: {
-        types: []
-      }
-    };
-    this.routeToolService.injector.get(ImportSourceApiService)
-      .getSources()
-      .subscribe((sources: ExternalSourceSetting[]) => {
-        sources.forEach((source: ExternalSourceSetting) => {
-          const sourceConfig = this._loadConfigSource(source);
-          config.data.types.push(sourceConfig);
-        });
-      });
-    return config;
+  getTypeConfigs(): Observable<Partial<RecordType>[]> {
+    return this.importSourceApiService.getSources().pipe(
+      map((sources: ExternalSourceSetting[]) => sources.map((source) => this._loadConfigSource(source)))
+    );
   }
 
   /**
@@ -98,10 +89,11 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
    */
   getResultsText(hits: any): Observable<string> {
     const total = this.routeToolService.recordService.totalHits(hits.total) || 0;
-    return (total === 0)
+    return total === 0
       ? this.translateService.stream('no result')
       : this.translateService.stream('{{ total }} results of {{ remoteTotal }}', {
-          total, remoteTotal: hits.remote_total
+          total,
+          remoteTotal: hits.remote_total,
         });
   }
 
@@ -112,8 +104,8 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
   private _loadConfigSource(source: ExternalSourceSetting) {
     const sourceConfig = {
       key: source.getImportEndpoint(),
-      label: source.label
+      label: source.label,
     };
-    return {...this._baseTypeConfig, ...sourceConfig};
+    return { ...this._baseTypeConfig, ...sourceConfig };
   }
 }

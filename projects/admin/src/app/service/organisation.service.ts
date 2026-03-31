@@ -16,8 +16,10 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { Subject } from 'rxjs';
+import { JsonObject, RecordData, RecordService } from '@rero/ng-core';
+import { Organisation } from '@rero/shared/types/rero-shared';
+import { Observable, Subject } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +31,13 @@ export class OrganisationService {
   // SERVICE ATTRIBUTES =======================================================
 
   /** Observable on Record Organisation */
-  private onOrganisationLoaded = new Subject<any>();
+  private onOrganisationLoaded = new Subject<Organisation>();
   /** Organisation record */
-  private record: any;
+  private record: Organisation;
 
   // GETTER & SETTER ==========================================================
   /** Return observable of organisation */
-  get onOrganisationLoaded$() {
+  get onOrganisationLoaded$(): Observable<Organisation> {
     return this.onOrganisationLoaded.asObservable();
   }
   /** Get current organisation*/
@@ -49,9 +51,9 @@ export class OrganisationService {
    */
   loadOrganisationByPid(pid: string) {
     this.recordService
-      .getRecord('organisations', pid)
-      .subscribe((orgRecord: any) => {
-        this.record  = orgRecord.metadata;
+      .getRecord<RecordData<Organisation>>('organisations', pid)
+      .subscribe(orgRecord => {
+        this.record = orgRecord.metadata;
         this.onOrganisationLoaded.next(this.record);
       });
   }

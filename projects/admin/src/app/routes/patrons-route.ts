@@ -14,12 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
+import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { _ } from '@ngx-translate/core';
 import {
+  ActionStatus,
   ComponentCanDeactivateGuard,
-  DetailComponent, EditorComponent,
-  JSONSchema7, RecordData, RecordSearchPageComponent, RecordService, RouteInterface
+  DetailComponent,
+  EditorComponent,
+  JSONSchema7,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordService,
+  RecordType,
+  RouteDataTypesInterface,
 } from '@rero/ng-core';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
@@ -30,160 +38,154 @@ import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-vi
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class PatronsRoute extends BaseRoute implements RouteInterface {
+export const patronsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new PatronsRoute().getTypes();
 
+export const patronsRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Patrons'),
+    canActivate: [PermissionGuard],
+    data: {
+      permissions: [PERMISSIONS.PTRN_ACCESS, PERMISSIONS.PTRN_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('Patron'),
+    canActivate: [CanAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Patron'),
+    canActivate: [CanAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('Patron'),
+    canActivate: [PermissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.PTRN_CREATE],
+    },
+  },
+];
+
+class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'patrons';
 
   /** Record type */
   readonly recordType = 'patrons';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Patrons'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.PTRN_ACCESS, PERMISSIONS.PTRN_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: _('Users'),
+        editorSettings: {
+          template: {
+            recordType: 'templates',
+            loadFromTemplate: true,
+            saveAsTemplate: true,
+          },
         },
-        {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('Patron'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
-        },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Patron'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
-        },
-        {
-          path: 'new',
-          component: EditorComponent,
-          title: _('Patron'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.PTRN_CREATE ]
-          }
-        }
-      ],
-      data: {
-        types: [
+        component: PatronsBriefViewComponent,
+        detailComponent: PatronDetailViewComponent,
+        searchFilters: [
+          this.expertSearchFilter(),
           {
-            key: this.name,
-            label: _('Users'),
-            editorSettings: {
-              template: {
-                recordType: 'templates',
-                loadFromTemplate: true,
-                saveAsTemplate: true
-              }
-            },
-            component: PatronsBriefViewComponent,
-            detailComponent: PatronDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter(),
+            label: 'Show only:',
+            filters: [
               {
-                'label': 'Show only:',
-                filters: [
-                  {
-                    label: _('Expired'),
-                    filter: 'expired',
-                    value: 'true',
-                    showIfQuery: true
-                  },
-                  {
-                    label: _('Not expired'),
-                    filter: 'not_expired',
-                    value: 'true',
-                    showIfQuery: true
-                  },
-                  {
-                    label: _('Blocked'),
-                    filter: 'blocked',
-                    value: 'true',
-                    showIfQuery: true
-                  }
-                ]
-              }
-            ],
-            canAdd: () => of({ 'can': this.routeToolService.permissionsService.canAccess(PERMISSIONS.PTRN_CREATE) }),
-            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
-            canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
-            preprocessRecordEditor: (record: any) => {
-              // set the patron expiration to now + 3 years if does not exists
-              const defaultExpDate = new Date();
-              defaultExpDate.setFullYear(defaultExpDate.getFullYear() + 3);
-              record = {
-                patron: {
-                  expiration_date: this.routeToolService.datePipe.transform(defaultExpDate, 'yyyy-MM-dd')
-                }
-                , ...record
-              };
-              return record;
-            },
-            postprocessRecordEditor: (record: any) => {
-              // Clean-up 'blocked_note' field content if blocked is false.
-              if (record.blocked === false) {
-                delete record.blocked_note;
-              }
-              // Clean-up 'patron' data from record if the patron doesn't have the 'patron' role
-              if (!record.roles.includes('patron') && 'patron' in record) {
-                delete record.patron;
-              }
-              return record;
-            },
-            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              if (field.props.label === 'Role' && field.asyncValidators == null) {
-                    field.asyncValidators = {};
-              }
-              return this._limitUserFormField(field, jsonSchema);
-            },
-            aggregationsExpand: ['roles', 'city', 'patron_type'],
-            aggregationsOrder: ['roles', 'city', 'patron_type'],
-            allowEmptySearch: false,
-            listHeaders: {
-              Accept: 'application/rero+json'
-            },
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                defaultQuery: true,
-                defaultNoQuery: true,
-                icon: 'fa fa-sort-amount-desc'
+                label: _('Expired'),
+                filter: 'expired',
+                value: 'true',
+                showIfQuery: true,
               },
               {
-                label: _('Name'),
-                value: 'full_name',
-                icon: 'fa fa-sort-alpha-asc'
-              }
+                label: _('Not expired'),
+                filter: 'not_expired',
+                value: 'true',
+                showIfQuery: true,
+              },
+              {
+                label: _('Blocked'),
+                filter: 'blocked',
+                value: 'true',
+                showIfQuery: true,
+              },
             ],
-            showFacetsIfNoResults: true
+          },
+        ],
+        canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.PTRN_CREATE) } as ActionStatus),
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
+        canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
+        preprocessRecordEditor: (record: any) => {
+          // set the patron expiration to now + 3 years if does not exists
+          const defaultExpDate = new Date();
+          defaultExpDate.setFullYear(defaultExpDate.getFullYear() + 3);
+          record = {
+            patron: {
+              expiration_date: this.routeToolService.datePipe.transform(defaultExpDate, 'yyyy-MM-dd'),
+            },
+            ...record,
+          };
+          return record;
+        },
+        postprocessRecordEditor: (record: any) => {
+          // Clean-up 'blocked_note' field content if blocked is false.
+          if (record.blocked === false) {
+            delete record.blocked_note;
           }
-        ]
-      }
-    };
+          // Clean-up 'patron' data from record if the patron doesn't have the 'patron' role
+          if (!record.roles.includes('patron') && 'patron' in record) {
+            delete record.patron;
+          }
+          return record;
+        },
+        formFieldMap: ((field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+          if (field.props.label === 'Role' && field.asyncValidators == null) {
+            field.asyncValidators = {};
+          }
+          return this._limitUserFormField(field, jsonSchema);
+        }) as any,
+        aggregationsExpand: ['roles', 'city', 'patron_type'],
+        aggregationsOrder: ['roles', 'city', 'patron_type'],
+        allowEmptySearch: false,
+        listHeaders: {
+          Accept: 'application/rero+json',
+        },
+        sortOptions: [
+          {
+            label: _('Relevance'),
+            value: 'bestmatch',
+            defaultQuery: true,
+            defaultNoQuery: true,
+            icon: 'fa fa-sort-amount-desc',
+          },
+          {
+            label: _('Name'),
+            value: 'full_name',
+            icon: 'fa fa-sort-alpha-asc',
+          },
+        ],
+        showFacetsIfNoResults: true,
+      },
+    ];
   }
 
   /** Limit some field from user editor.
@@ -200,10 +202,10 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
     //   this information will be lost on save !
     const formWidget = jsonSchema.widget;
     if (formWidget?.formlyConfig?.props?.fieldMap === 'roles') {
-      const values = Object.assign([], field.props.options);  // create a clone of original values
+      const values = Object.assign([], field.props.options); // create a clone of original values
       field.props.options = this.routeToolService.recordPermissionService.getRolesManagementPermissions().pipe(
         map((results: any) => {
-          values.forEach((role: any) => role.disabled = !results.allowed_roles.includes(role.value));
+          values.forEach((role: any) => (role.disabled = !results.allowed_roles.includes(role.value)));
           return values;
         })
       );
@@ -230,24 +232,25 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
             });
           });
 
-          f.props.options = recordService.getRecords(
-            'libraries',
-            { query: `pid:${libraries.join(' OR pid:')}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' }
-          ).pipe(
-            map((result: any) => +recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-            map((hits: any) => {
-              return hits.map((hit: any) => {
-                return {
-                  label: hit.metadata.name,
-                  value: apiService.getRefEndpoint(
-                    'libraries',
-                    hit.metadata.pid
-                  )
-                };
-              });
+          f.props.options = recordService
+            .getRecords('libraries', {
+              query: `pid:${libraries.join(' OR pid:')}`,
+              page: 1,
+              itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+              sort: 'name',
             })
-          );
-        }
+            .pipe(
+              map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+              map((hits: any) => {
+                return hits.map((hit: any) => {
+                  return {
+                    label: hit.metadata.name,
+                    value: apiService.getRefEndpoint('libraries', hit.metadata.pid),
+                  };
+                });
+              })
+            );
+        },
       };
     }
     return field;

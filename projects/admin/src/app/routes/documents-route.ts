@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, RecordData, RouteInterface } from '@rero/ng-core';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import { ComponentCanDeactivateGuard, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -28,215 +29,213 @@ import { DocumentDetailComponent } from '../record/detail-view/document-detail-v
 import { DocumentRecordSearchComponent } from '../record/search-view/document-record-search/document-record-search.component';
 import { BaseRoute } from './base-route';
 
-export class DocumentsRoute extends BaseRoute implements RouteInterface {
+export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new DocumentsRoute().getTypes();
 
+export const documentsRoutes: Routes = [
+  {
+    path: '',
+    component: DocumentRecordSearchComponent,
+    title: _('Documents'),
+    canActivate: [PermissionGuard],
+    data: {
+      permissions: [PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DocumentDetailComponent,
+    title: _('Document'),
+    canActivate: [CanAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: DocumentEditorComponent,
+    title: _('Document'),
+    canActivate: [CanAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: DocumentEditorComponent,
+    title: _('Document'),
+    canActivate: [PermissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.DOC_CREATE],
+    },
+  },
+  {
+    path: 'duplicate',
+    component: DocumentEditorComponent,
+    title: _('Document'),
+    canActivate: [PermissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.DOC_CREATE],
+    },
+  },
+];
+
+class DocumentsRoute extends BaseRoute {
   /** Route name */
   readonly name = 'documents';
 
   /** Record type */
   readonly recordType = 'documents';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    const config = {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
+  getTypes(): Observable<Partial<RecordType>[]> {
+    const docType = {
+      key: this.name,
+      label: _('Documents'),
+      editorSettings: {
+        longMode: true,
+        template: {
+          recordType: 'templates',
+          loadFromTemplate: true,
+          saveAsTemplate: true,
+        },
+      },
+      component: DocumentsBriefViewComponent,
+      detailComponent: DocumentDetailViewComponent,
+      searchFilters: [
+        this.expertSearchFilter(),
         {
-          path: '',
-          component: DocumentRecordSearchComponent,
-          title: _('Documents'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+          label: _('Search in full text'),
+          filter: 'fulltext',
+          value: 'true',
+          showIfQuery: true,
         },
         {
-          path: 'detail/:pid',
-          component: DocumentDetailComponent,
-          title: _('Document'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
+          label: _('Show only:'),
+          filters: [
+            {
+              label: _('Online resources'),
+              filter: 'online',
+              value: 'true',
+              showIfQuery: true,
+            },
+            {
+              label: _('Physical resources'),
+              filter: 'not_online',
+              value: 'true',
+              showIfQuery: true,
+            },
+          ],
         },
-        {
-          path: 'edit/:pid',
-          component: DocumentEditorComponent,
-          title: _('Document'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
-        },
-        {
-          path: 'new',
-          component: DocumentEditorComponent,
-          title: _('Document'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.DOC_CREATE ]
-          }
-        },
-        {
-          path: 'duplicate',
-          component: DocumentEditorComponent,
-          title: _('Document'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.DOC_CREATE ]
-          }
-        }
       ],
-      data: {
-        types: [
-          {
-            key: this.name,
-            label: _('Documents'),
-            editorSettings: {
-              longMode: true,
-              template: {
-                recordType: 'templates',
-                loadFromTemplate: true,
-                saveAsTemplate: true
-              }
-            },
-            component: DocumentsBriefViewComponent,
-            detailComponent: DocumentDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter(),
-              {
-                label: _('Search in full text'),
-                filter: 'fulltext',
-                value: 'true',
-                showIfQuery: true
-              },
-              {
-                label: _('Show only:'),
-                filters: [
-                  {
-                    label: _('Online resources'),
-                    filter: 'online',
-                    value: 'true',
-                    showIfQuery: true
-                  },
-                  {
-                    label: _('Physical resources'),
-                    filter: 'not_online',
-                    value: 'true',
-                    showIfQuery: true
-                  }
-                ]
-              },
-            ],
-            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.DOC_CREATE) }),
-            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
-            preprocessRecordEditor: (record: any) => {
-              record = this.removeKey(record, '_text');
-              record = this.removeKey(record, '_draft');
-              return record;
-            },
-            postprocessRecordEditor: (record: any) => {
-              // A linked entity must not have a type in the data.
-              // If it does, we delete it.
-              if (record.contribution) {
-                record.contribution.map((contribution: any) => {
-                  if (contribution.entity.$ref && contribution.entity.type) {
-                    delete(contribution.entity.type);
-                  }
-                });
-              }
-              return record;
-            },
-            aggregations: (aggregations: any) => this.routeToolService
-              .aggregationFilter(aggregations),
-            aggregationsName: {
-              online: _('Online resources'),
-              not_online: _('Physical resources'),
-              organisation: _('Library'),
-              genreForm: _('Genre, form'),
-              intendedAudience: _('Intended audience'),
-              year: _('Publication year'),
-              subject: _('Subject'),
-              fiction_statement: _('Fiction statement'),
-              acquisition: _('Acquisition date'),
-            },
-            showFacetsIfNoResults: true,
-            allowEmptySearch: false,
-            aggregationsOrder: [
-              'document_type',
-              'fiction_statement',
-              'organisation',
-              'language',
-              'year',
-              'author',
-              'subject',
-              'genreForm',
-              'intendedAudience',
-              'acquisition',
-              'status',
-            ],
-            aggregationsExpand: () => {
-              const expand = ['document_type', 'fiction_statement'];
-              const { queryParams } = this.routeToolService.activatedRoute.snapshot;
-              if (queryParams.location || queryParams.library) {
-                expand.push('organisation');
-              }
-              return expand;
-            },
-            aggregationsBucketSize: 10,
-            itemHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            listHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                defaultQuery: true
-              },
-              {
-                label: _('Date (newest)'),
-                value: 'pub_date_new'
-              },
-              {
-                label: _('Date (oldest)'),
-                value: 'pub_date_old',
-              },
-                {
-                  label: _('Title'),
-                  value: 'title'
-                }
-            ]
-          },
-          {
-            key: 'holdings',
-            name: 'holdings',
-            deleteMessage: (): string[] => {
-              return [
-                this.routeToolService.translateService.instant(_('Do you really want to delete this record?')),
-                this.routeToolService.translateService.instant(_('This will also delete all items and issues of the holdings.'))
-              ];
-            },
-            hideInTabs: true
-          }
-        ]
-      }
+      canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.DOC_CREATE), message: '' }),
+      permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+      preprocessRecordEditor: (record: any) => {
+        record = this.removeKey(record, '_text');
+        record = this.removeKey(record, '_draft');
+        return record;
+      },
+      postprocessRecordEditor: (record: any) => {
+        // A linked entity must not have a type in the data.
+        // If it does, we delete it.
+        if (record.contribution) {
+          record.contribution.map((contribution: any) => {
+            if (contribution.entity.$ref && contribution.entity.type) {
+              delete contribution.entity.type;
+            }
+          });
+        }
+        return record;
+      },
+      aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
+      aggregationsName: {
+        online: _('Online resources'),
+        not_online: _('Physical resources'),
+        organisation: _('Library'),
+        genreForm: _('Genre, form'),
+        intendedAudience: _('Intended audience'),
+        year: _('Publication year'),
+        subject: _('Subject'),
+        fiction_statement: _('Fiction statement'),
+        acquisition: _('Acquisition date'),
+      },
+      showFacetsIfNoResults: true,
+      allowEmptySearch: false,
+      aggregationsOrder: [
+        'document_type',
+        'fiction_statement',
+        'organisation',
+        'language',
+        'year',
+        'author',
+        'subject',
+        'genreForm',
+        'intendedAudience',
+        'acquisition',
+        'status',
+      ],
+      aggregationsExpand: () => {
+        const expand = ['document_type', 'fiction_statement'];
+        const { queryParams } = this.routeToolService.activatedRoute.snapshot;
+        if (queryParams.location || queryParams.library) {
+          expand.push('organisation');
+        }
+        return expand;
+      },
+      aggregationsBucketSize: 10,
+      itemHeaders: {
+        Accept: 'application/rero+json, application/json',
+      },
+      listHeaders: {
+        Accept: 'application/rero+json, application/json',
+      },
+      sortOptions: [
+        {
+          label: _('Relevance'),
+          value: 'bestmatch',
+          defaultQuery: true,
+        },
+        {
+          label: _('Date (newest)'),
+          value: 'pub_date_new',
+        },
+        {
+          label: _('Date (oldest)'),
+          value: 'pub_date_old',
+        },
+        {
+          label: _('Title'),
+          value: 'title',
+        },
+      ],
     };
 
-    this.routeToolService.organisationService.onOrganisationLoaded$.subscribe((org) => {
-      config.data.types[0]['defaultSearchInputFilters'] = [{
-        'key': 'organisation', 'values': [org.pid]
-      }];
-    });
-    return config;
+    const types: Partial<RecordType>[] = [
+      docType,
+      {
+        key: 'holdings',
+        deleteMessage: (): string[] => {
+          return [
+            this.routeToolService.translateService.instant(_('Do you really want to delete this record?')),
+            this.routeToolService.translateService.instant(
+              _('This will also delete all items and issues of the holdings.')
+            ),
+          ];
+        },
+        hideInTabs: true,
+      },
+    ];
+
+    return this.routeToolService.organisationService.onOrganisationLoaded$.pipe(
+      map(
+        org => {
+          types[0]['defaultSearchInputFilters'] = [{ key: 'organisation', values: [org.pid] }];
+          return types;
+        }
+      )
+    );
   }
 }

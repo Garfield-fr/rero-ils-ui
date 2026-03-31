@@ -14,8 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import {
+  ActionStatus,
+  ComponentCanDeactivateGuard,
+  DetailComponent,
+  EditorComponent,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordType,
+  RouteDataTypesInterface
+} from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
@@ -24,8 +34,54 @@ import { ItemTypesBriefViewComponent } from '../record/brief-view/item-types-bri
 import { ItemTypeDetailViewComponent } from '../record/detail-view/item-type-detail-view/item-type-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class ItemTypesRoute extends BaseRoute implements RouteInterface {
+export const itemTypeRouteResolver: ResolveFn<Partial<RecordType>[]> = () => {
+  return new ItemTypesRoute().getTypes();
+};
 
+
+export const itemTypesRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Item types'),
+    canActivate: [PermissionGuard],
+    data: {
+      permissions: [PERMISSIONS.ITTY_ACCESS, PERMISSIONS.ITTY_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('Item type'),
+    canActivate: [CanAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Item type'),
+    canActivate: [CanAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('Item type'),
+    canActivate: [PermissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.ITTY_CREATE],
+    },
+  },
+];
+
+class ItemTypesRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'item_types';
 
@@ -36,90 +92,40 @@ export class ItemTypesRoute extends BaseRoute implements RouteInterface {
    * Get Configuration
    * @return Object
    */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Item types'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ITTY_ACCESS, PERMISSIONS.ITTY_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: _('Item types'),
+        component: ItemTypesBriefViewComponent,
+        detailComponent: ItemTypeDetailViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        canAdd: () =>
+          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ITTY_CREATE) } as ActionStatus),
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        preCreateRecord: (data) => {
+          const { user } = this.routeToolService.userService;
+          data.organisation = {
+            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+          };
+          return data;
         },
-        {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('Item type'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
-        },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Item type'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
-        },
-        {
-          path: 'new',
-          component: EditorComponent,
-          title: _('Item type'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ITTY_CREATE ]
-          }
-        }
-      ],
-      data: {
-        types: [
+        sortOptions: [
           {
-            key: this.name,
-            label: _('Item types'),
-            component: ItemTypesBriefViewComponent,
-            detailComponent: ItemTypeDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ITTY_CREATE) }),
-            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
-            preCreateRecord: (data: any) => {
-              const { user } = this.routeToolService.userService;
-              data.organisation = {
-                $ref: this.routeToolService.apiService.getRefEndpoint(
-                  'organisations',
-                  user.currentOrganisation
-                )
-              };
-              return data;
-            },
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                icon: 'fa fa-sort-amount-desc',
-                defaultQuery: true
-              },
-              {
-                label: _('Name'),
-                value: 'name',
-                icon: 'fa fa-sort-alpha-asc',
-                defaultNoQuery: true
-              }
-            ],
-            showFacetsIfNoResults: true
-          }
-        ]
-      }
-    };
+            label: _('Relevance'),
+            value: 'bestmatch',
+            icon: 'fa fa-sort-amount-desc',
+            defaultQuery: true,
+          },
+          {
+            label: _('Name'),
+            value: 'name',
+            icon: 'fa fa-sort-alpha-asc',
+            defaultNoQuery: true,
+          },
+        ],
+        showFacetsIfNoResults: true,
+      },
+    ];
   }
 }

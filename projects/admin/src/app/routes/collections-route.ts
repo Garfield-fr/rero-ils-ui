@@ -14,12 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { _ } from "@ngx-translate/core";
+import { _ } from '@ngx-translate/core';
 import {
+  ActionStatus,
   ComponentCanDeactivateGuard,
-  DetailComponent, EditorComponent,
-  JSONSchema7, RecordData, RecordSearchPageComponent, RecordService, RouteInterface
+  DetailComponent,
+  EditorComponent,
+  JSONSchema7,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordService,
+  RecordType,
+  RouteDataTypesInterface,
 } from '@rero/ng-core';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
@@ -34,141 +42,129 @@ import { BaseRoute } from './base-route';
 export interface JSONSchema7Items extends JSONSchema7 {
   items: {
     properties: any;
-  }
+  };
 }
 
-export class CollectionsRoute extends BaseRoute implements RouteInterface {
+export const collectionsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new CollectionsRoute().getTypes();
 
+export const collectionsRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    canActivate: [PermissionGuard],
+    title: _('Exhibitions/Courses'),
+    data: {
+      permissions: [PERMISSIONS.COLL_ACCESS, PERMISSIONS.COLL_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('Exhibition/course'),
+    canActivate: [CanAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Exhibition/course'),
+    canActivate: [CanAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('Exhibition/course'),
+    canActivate: [PermissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.COLL_CREATE],
+    },
+  },
+];
+
+class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'collections';
 
   /** Record type */
   readonly recordType = 'collections';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '', component: RecordSearchPageComponent,
-          canActivate: [ PermissionGuard ],
-          title: _('Exhibitions/Courses'),
-          data: {
-            permissions: [ PERMISSIONS.COLL_ACCESS, PERMISSIONS.COLL_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: 'Exhibition/course',
+        component: CollectionBriefViewComponent,
+        detailComponent: CollectionDetailViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        canAdd: () =>
+          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.COLL_CREATE) } as ActionStatus),
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
+        aggregationsExpand: ['type'],
+        preprocessRecordEditor: (record: any) => {
+          const { user } = this.routeToolService.userService;
+          if (!record.pid) {
+            // set the user's default library at the time of creation
+            record.libraries = [];
+            record.libraries.push({
+              $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary),
+            });
           }
+          return record;
         },
-        {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('Exhibition/course'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
+        preCreateRecord: (data) => {
+          const { user } = this.routeToolService.userService;
+          data.organisation = {
+            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+          };
+          return data;
         },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Exhibition/course'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
-        },
-        {
-          path: 'new',
-          component: EditorComponent,
-          title: _('Exhibition/course'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.COLL_CREATE ]
-          }
-        }
-      ],
-      data: {
-        types: [
-          {
-            key: this.name,
-            label: 'Exhibition/course',
-            component: CollectionBriefViewComponent,
-            detailComponent: CollectionDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.COLL_CREATE) }),
-            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
-            aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
-            aggregationsExpand: ['type'],
-            preprocessRecordEditor: (record: any) => {
-              const { user } = this.routeToolService.userService;
-              if (!record.pid) {
-                // set the user's default library at the time of creation
-                record.libraries = [];
-                record.libraries.push({
-                  $ref: this.routeToolService.apiService.getRefEndpoint(
-                    'libraries',
-                    user.currentLibrary
-                  )
-                });
-              }
-              return record;
-            },
-            preCreateRecord: (data: any) => {
-              const { user } = this.routeToolService.userService;
-              data.organisation = {
-                $ref: this.routeToolService.apiService.getRefEndpoint(
-                  'organisations',
-                  user.currentOrganisation
-                )
-              };
-              return data;
-            },
-            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7Items): FormlyFieldConfig => {
-              const formWidget = jsonSchema.widget;
-              if (formWidget?.formlyConfig?.props?.fieldMap) {
-                switch (formWidget.formlyConfig.props.fieldMap) {
-                  case 'items': {
-                    // filter the linked items by the organisation of the current logged user
-                    const queryOptions = jsonSchema?.items?.properties?.$ref?.widget?.formlyConfig?.props?.queryOptions;
-                    if (queryOptions) {
-                      const { currentOrganisation } = this.routeToolService.userService.user;
-                      queryOptions.filter = `AND organisation.pid:${currentOrganisation}`;
-                    }
-                  }
-                    break;
-                  case 'library':
-                    return this.populateLibrariesByCurrentUser(field);
+        formFieldMap: ((field: FormlyFieldConfig, jsonSchema: JSONSchema7Items): FormlyFieldConfig => {
+          const formWidget = jsonSchema.widget;
+          if (formWidget?.formlyConfig?.props?.fieldMap) {
+            switch (formWidget.formlyConfig.props.fieldMap) {
+              case 'items': {
+                // filter the linked items by the organisation of the current logged user
+                const queryOptions = jsonSchema?.items?.properties?.$ref?.widget?.formlyConfig?.props?.queryOptions;
+                if (queryOptions) {
+                  const { currentOrganisation } = this.routeToolService.userService.user;
+                  queryOptions.filter = `AND organisation.pid:${currentOrganisation}`;
                 }
+                break;
               }
-              return field;
-            },
-            listHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                defaultQuery: true
-              },
-              {
-                label: _('Title'),
-                value: 'title',
-                defaultNoQuery: true
-              }
-            ],
-            showFacetsIfNoResults: true
+              case 'library':
+                return this.populateLibrariesByCurrentUser(field);
+            }
           }
-        ]
-      }
-    };
+          return field;
+        }) as any,
+        listHeaders: {
+          Accept: 'application/rero+json, application/json',
+        },
+        sortOptions: [
+          {
+            label: _('Relevance'),
+            value: 'bestmatch',
+            defaultQuery: true,
+          },
+          {
+            label: _('Title'),
+            value: 'title',
+            defaultNoQuery: true,
+          },
+        ],
+        showFacetsIfNoResults: true,
+      },
+    ];
   }
 
   /**
@@ -193,24 +189,25 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
           });
         });
 
-        f.props.options = recordService.getRecords(
-          'libraries',
-          { query: `pid:${libraries.join(' OR pid:')}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' }
-        ).pipe(
-          map((result: any) => +recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-          map((hits: any) => {
-            return hits.map((hit: any) => {
-              return {
-                label: hit.metadata.name,
-                value: apiService.getRefEndpoint(
-                  'libraries',
-                  hit.metadata.pid
-                )
-              };
-            });
+        f.props.options = recordService
+          .getRecords('libraries', {
+            query: `pid:${libraries.join(' OR pid:')}`,
+            page: 1,
+            itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+            sort: 'name',
           })
-        );
-      }
+          .pipe(
+            map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+            map((hits: any) => {
+              return hits.map((hit: any) => {
+                return {
+                  label: hit.metadata.name,
+                  value: apiService.getRefEndpoint('libraries', hit.metadata.pid),
+                };
+              });
+            })
+          );
+      },
     };
     return field;
   }

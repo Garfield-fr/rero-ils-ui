@@ -14,94 +14,73 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS } from '@rero/shared';
-import { of } from 'rxjs';
 import { PermissionGuard } from '../guard/permission.guard';
 import { IssuesBriefViewComponent } from '../record/brief-view/issues-brief-view/issues-brief-view.component';
 import { BaseRoute } from './base-route';
 
-export class IssuesRoute extends BaseRoute implements RouteInterface {
+export const issuesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new IssuesRoute().getTypes();
 
+export const issuesRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Late issues'),
+    canActivate: [PermissionGuard],
+    data: {
+      permissions: [PERMISSIONS.ISSUE_MANAGEMENT],
+    },
+  },
+];
+
+class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'issues';
 
   /** Record type */
   readonly recordType = 'items';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    const config = {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Late issues'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ISSUE_MANAGEMENT ]
-          }
-        }
-      ],
-      data: {
-        adminMode: () => of({
-          can: false,
-          message: ''
-        }),
-        detailUrl: '/records/items/detail/:pid',
-        types: [
+  getTypes(): Partial<RecordType>[] {
+    const types: Partial<RecordType>[] = [
+      {
+        key: this.name,
+        label: 'Issues',
+        index: 'items',
+        component: IssuesBriefViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        preFilters: {
+          or_issue_status: [IssueItemStatus.LATE],
+          organisation: null,
+        },
+        aggregationsBucketSize: 10,
+        aggregationsOrder: ['library', 'location', 'item_type', 'vendor', 'claims_count', 'claims_date'],
+        aggregationsExpand: ['library'],
+        listHeaders: {
+          Accept: 'application/rero+json, application/json',
+        },
+        exportFormats: [
           {
-            key: this.name,
-            label: 'Issues',
-            index: 'items',
-            component: IssuesBriefViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
-            preFilters: {
-                or_issue_status: [IssueItemStatus.LATE],
-                organisation: null
-              },
-            aggregationsBucketSize: 10,
-            aggregationsOrder: [
-              'library',
-              'location',
-              'item_type',
-              'vendor',
-              'claims_count',
-              'claims_date'
-            ],
-            aggregationsExpand: ['library'],
-            listHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            exportFormats: [
-              {
-                label: 'CSV',
-                format: 'csv',
-                endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
-                disableMaxRestResultsSize: true,
-              }
-            ],
-            showFacetsIfNoResults: true
-          }
+            label: 'CSV',
+            format: 'csv',
+            endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
+            disableMaxRestResultsSize: true,
+          },
         ],
-      }
-    };
+        showFacetsIfNoResults: true,
+      },
+    ];
     // TODO: Refactor this after the change of AppInitializer service with user.
     this.routeToolService.userService.loaded$.subscribe(() => {
       const { patronLibrarian } = this.routeToolService.userService.user;
       if (patronLibrarian) {
-        config.data.types[0].preFilters.organisation = patronLibrarian.organisation.pid;
+        (types[0].preFilters as any).organisation = patronLibrarian.organisation.pid;
       }
     });
-
-    return config;
+    return types;
   }
 }

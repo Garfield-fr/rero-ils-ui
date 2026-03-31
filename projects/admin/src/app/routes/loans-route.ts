@@ -14,82 +14,71 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { RecordData, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import { ActionStatus, RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { LoanState } from '../classes/loans';
 import { LoansBriefViewComponent } from '../record/brief-view/loans-brief-view/loans-brief-view.component';
 import { BaseRoute } from './base-route';
 
-export class LoansRoute extends BaseRoute implements RouteInterface {
+export const loansRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new LoansRoute().getTypes();
 
+export const loansRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Current loans'),
+  },
+];
+
+class LoansRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'loans';
 
   /** Record type */
   readonly recordType = 'loans';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Current loans'),
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: _('Loans'),
+        component: LoansBriefViewComponent,
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        canAdd: () => of({ can: false } as ActionStatus),
+        canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
+        canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
+        preFilters: {
+          exclude_status: [LoanState.CANCELLED, LoanState.ITEM_RETURNED],
         },
-      ],
-      data: {
-        adminMode: this.DISABLED,
-        types: [
+        aggregationsBucketSize: 10,
+        aggregationsExpand: ['owner_library', 'transaction_library', 'pickup_library', 'misc_status', 'status'],
+        aggregationsOrder: [
+          'owner_library',
+          'transaction_library',
+          'pickup_library',
+          'status',
+          'misc_status',
+          'patron_type',
+          'end_date',
+          'request_expire_date',
+        ],
+        allowEmptySearch: true,
+        listHeaders: {
+          Accept: 'application/rero+json',
+        },
+        exportFormats: [
           {
-            key: this.name,
-            label: _('Loans'),
-            component: LoansBriefViewComponent,
-            permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
-            canAdd: (_record: RecordData) => of({can: false}),
-            canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
-            preFilters: {
-              exclude_status: [LoanState.CANCELLED, LoanState.ITEM_RETURNED]
-            },
-            aggregationsBucketSize: 10,
-            aggregationsExpand: [
-              'owner_library',
-              'transaction_library',
-              'pickup_library',
-              'misc_status',
-              'status'
-            ],
-            aggregationsOrder: [
-              'owner_library',
-              'transaction_library',
-              'pickup_library',
-              'status',
-              'misc_status',
-              'patron_type',
-              'end_date',
-              'request_expire_date'
-            ],
-            allowEmptySearch: true,
-            showSearchInput: false,
-            listHeaders: {
-              Accept: 'application/rero+json'
-            },
-            exportFormats: [{
-              label: 'CSV',
-              format: 'csv',
-              endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
-              disableMaxRestResultsSize: true,
-            }],
-            showFacetsIfNoResults: true
-          }
-        ]
-      }
-    };
+            label: 'CSV',
+            format: 'csv',
+            endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
+            disableMaxRestResultsSize: true,
+          },
+        ],
+        showFacetsIfNoResults: true,
+      },
+    ];
   }
 }
