@@ -97,7 +97,7 @@ export class EntityBriefViewComponent implements OnInit, AfterViewInit {
     if (this.contentComponent) {
       setTimeout(() => {  // To be run at next macro task and avoid `NG100` error into console.
         const componentRef: any = this.entityContent.createComponent(this.contentComponent);
-        componentRef.instance.record = this.record();
+        componentRef.setInput('record', this.record());
       });
     }
   }

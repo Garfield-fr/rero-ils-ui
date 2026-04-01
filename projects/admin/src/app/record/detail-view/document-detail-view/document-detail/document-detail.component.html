@@ -17,12 +17,12 @@
 <div>
   @if (record()) {
     <ng-core-detail-button
-      [record]="record()"
-      [type]="type"
-      [adminMode]="adminMode"
-      [useStatus]="useStatus"
-      [updateStatus]="updateStatus"
-      [deleteStatus]="deleteStatus"
+      [record]="record() ?? null"
+      [type]="type()"
+      [adminMode]="adminMode()"
+      [useStatus]="useStatus()"
+      [updateStatus]="updateStatus()"
+      [deleteStatus]="deleteStatus()"
       (recordEvent)="recordEvent($event)"
       (deleteMessageEvent)="showDeleteMessage($event)"
     >
@@ -54,8 +54,9 @@
       </ng-container>
     </ng-core-detail-button>
   }
-  @if (error) {
-    <ng-core-error [error]="error" />
+  @let err = error();
+  @if (err) {
+    <ng-core-error [error]="err" />
   }
   <ng-template ngCoreRecordDetail />
 </div>

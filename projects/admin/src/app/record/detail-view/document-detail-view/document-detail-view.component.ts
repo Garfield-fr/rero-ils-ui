@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy, signal} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { RecordService, CallbackArrayFilterPipe } from '@rero/ng-core';
+import { RecordService, CallbackArrayFilterPipe, RecordData } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, PermissionsService, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
 import { Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -58,7 +58,7 @@ export class DocumentDetailViewComponent implements OnInit, OnDestroy {
   private permissionsService: PermissionsService = inject(PermissionsService);
 
   /** Observable resolving record data */
-  readonly record$ = input.required<Observable<any>>();
+  readonly record$ = input.required<Observable<RecordData>>();
 
   /** Signal of the imported record in marc format */
   marc = toSignal(
@@ -82,10 +82,10 @@ export class DocumentDetailViewComponent implements OnInit, OnDestroy {
   private _recordObs: Subscription;
 
   /** Resource type */
-  readonly type = input<string>('');
+  type = input.required<string>();
 
   /** Document record */
-  record: any;
+  readonly record = signal<RecordData | undefined>(undefined);
 
   /** Related resources */
   relatedResources = [];
@@ -138,7 +138,7 @@ export class DocumentDetailViewComponent implements OnInit, OnDestroy {
     this.activateLink = !this.activatedRouter.snapshot.params.type.startsWith('import_');
     this._recordObs = this.record$().pipe(
       switchMap((record: any) => {
-        this.record = record;
+        this.record.set(record);
         this.relatedResources = this.processRelatedResources(record);
         this.recordMessage = this.message(record);
         return this.pid
@@ -156,7 +156,7 @@ export class DocumentDetailViewComponent implements OnInit, OnDestroy {
   }
 
   selectedTab(): string {
-    return this.record.metadata.pid ? 'get' : 'description';
+    return this.record().metadata.pid ? 'get' : 'description';
   }
 
   /**

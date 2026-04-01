@@ -35,7 +35,7 @@ export class ExtractSourceFieldPipe implements PipeTransform {
    */
   transform(metadata: any, field: string): any {
     const contributionsLabel: any = this.appSettingsService.agentLabelOrder;
-    const language = this.translateService.currentLang;
+    const language = this.translateService.getCurrentLang();
     const agentLabelOrder = (language in contributionsLabel)
       ? contributionsLabel[language]
       : contributionsLabel[contributionsLabel.fallback];
