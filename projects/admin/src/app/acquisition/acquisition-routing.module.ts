@@ -21,7 +21,6 @@ import { _ } from '@ngx-translate/core';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { PermissionGuard } from '../guard/permission.guard';
-import { recordTypeMatcher } from '../routes/record-type-matcher';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
 import { accountsRouteResolver } from './routes/accounts-route';
@@ -58,38 +57,38 @@ export const acquisitionsRoutes: Routes = [
     },
   },
   {
-    matcher: recordTypeMatcher('acq_accounts'),
+    path: 'records/acq_accounts',
     loadChildren: () => import('./routes/accounts-route').then((m) => m.accountsRoutes),
     resolve: { types: accountsRouteResolver },
   },
   {
-    matcher: recordTypeMatcher('budgets'),
+    path: 'records/budgets',
     loadChildren: () => import('./routes/budgets-route').then((m) => m.budgetsRoutes),
     resolve: { types: budgetsRouteResolver },
     data: { adminMode: () => of({ can: false, message: '' }) },
   },
   {
-    matcher: recordTypeMatcher('acq_orders'),
+    path: 'records/acq_orders',
     loadChildren: () => import('./routes/orders-route').then((m) => m.ordersRoutes),
     resolve: { types: ordersRouteResolver },
   },
   {
-    matcher: recordTypeMatcher('acq_order_lines'),
+    path: 'records/acq_order_lines',
     loadChildren: () => import('./routes/order-lines-route').then((m) => m.orderLinesRoutes),
     resolve: { types: orderLinesRouteResolver },
   },
   {
-    matcher: recordTypeMatcher('acq_receipts'),
+    path: 'records/acq_receipts',
     loadChildren: () => import('./routes/receipts-route').then((m) => m.receiptsRoutes),
     resolve: { types: receiptsRouteResolver },
   },
   {
-    matcher: recordTypeMatcher('acq_receipt_lines'),
+    path: 'records/acq_receipt_lines',
     loadChildren: () => import('./routes/receipt-lines-route').then((m) => m.receiptLinesRoutes),
     resolve: { types: receiptLinesRouteResolver },
   },
   {
-    matcher: recordTypeMatcher('vendors'),
+    path: 'records/vendors',
     loadChildren: () => import('./routes/vendors-route').then((m) => m.vendorsRoutes),
     resolve: { types: vendorsRouteResolver },
   },

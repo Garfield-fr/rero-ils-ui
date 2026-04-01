@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2025 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,32 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
+import { UrlMatcher, UrlSegment } from '@angular/router';
 
-export enum ItemStatus {
-  ON_SHELF = 'on_shelf',
-  AT_DESK = 'at_desk',
-  ON_LOAN = 'on_loan',
-  IN_TRANSIT = 'in_transit',
-  EXCLUDED = 'excluded',
-  MISSING = 'missing',
+/**
+ * Returns an Angular UrlMatcher that matches /records/<type> and exposes
+ * `type` as a positional param so child routes (RecordSearchPageComponent)
+ * can read it via paramMap.
+ */
+export function recordTypeMatcher(type: string): UrlMatcher {
+  return (url: UrlSegment[]) => {
+    if (url.length >= 2 && url[0].path === 'records' && url[1].path === type) {
+      return {
+        consumed: [url[0], url[1]],
+        posParams: { type: new UrlSegment(type, {}) },
+      };
+    }
+    return null;
+  };
 }
-
-export enum IssueItemStatus {
-  DELETED = 'deleted',
-  EXPECTED = 'expected',
-  LATE = 'late',
-  RECEIVED = 'received',
-}
-
-// Marquage pour extraction i18n (si nécessaire)
-_('on_shelf');
-_('at_desk');
-_('on_loan');
-_('in_transit');
-_('excluded');
-_('missing');
-_('deleted');
-_('expected');
-_('late');
-_('received');

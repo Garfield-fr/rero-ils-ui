@@ -14,26 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Routes, UrlSegment } from '@angular/router';
+import { Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
-
-/**
- * Matches /records/<type> and exposes `type` as a positional param so that
- * child routes (and RecordSearchPageComponent) can read it via paramMap.
- */
-function recordTypeMatcher(type: string) {
-  return (url: UrlSegment[]) => {
-    if (url.length >= 2 && url[0].path === 'records' && url[1].path === type) {
-      return {
-        consumed: [url[0], url[1]],
-        posParams: { type: new UrlSegment(type, {}) },
-      };
-    }
-    return null;
-  };
-}
+import { recordTypeMatcher } from './routes/record-type-matcher';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { PermissionGuard } from './guard/permission.guard';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
@@ -190,11 +175,11 @@ export const routes: Routes = [
   },
   {
     path: 'circulation',
-    loadChildren: () => import('./circulation/circulation.routes').then((m) => m.CIRCULATION_ROUTES),
+    loadChildren: () => import('./circulation/circulation.routes').then((m) => m.circulationRoutes),
   },
   {
     path: 'acquisition',
-    loadChildren: () => import('./acquisition/acquisition.routes').then((m) => m.acquistisonsRoutes),
+    loadChildren: () => import('./acquisition/acquisition.routes').then((m) => m.acquisitionsRoutes),
   },
   {
     path: 'permissions/matrix',
