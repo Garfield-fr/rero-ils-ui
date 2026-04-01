@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, effect, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RecordService, UpperCaseFirstPipe } from '@rero/ng-core';
-
 import { UserService } from '@rero/shared';
-import { Observable, Subscription } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { Library } from '../../../classes/library';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -43,53 +43,48 @@ import { Badge } from 'primeng/badge';
     imports: [TranslateDirective, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, Button, RouterLink, AccordionContent, LocationComponent, NgClass, DayOpeningHoursComponent, ExceptionDateComponent, Divider, NgTemplateOutlet, Fieldset, Tag, UpperCaseFirstPipe, TranslatePipe, CountryCodeTranslatePipe, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LibraryDetailViewComponent implements OnInit, OnDestroy {
+export class LibraryDetailViewComponent {
 
   private recordService: RecordService = inject(RecordService);
   private userService: UserService = inject(UserService);
 
-  // COMPONENT ATTRIBUTES =====================================================
-  /** Observable resolving record data */
   readonly record$ = input.required<Observable<any>>();
-  /** Resource type */
   readonly type = input<string>('');
-  /** the library record as `Library` */
-  record: Library = null;
-  /** linked locations */
-  locations = [];
-  /** Is the current logged user can add locations */
-  isUserCanAddLocation = false;
 
-  /** Record subscription */
-  private recordObs: Subscription;
+  private readonly _rawRecord = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
+  );
 
-  /** OnInit hook */
-  ngOnInit() {
-   this.recordObs = this.record$().subscribe((data: any) => {
-      const libraryPid = data.metadata.pid;
-      this.record = new Library(data.metadata);
-      this.isUserCanAddLocation = this.userService.user.currentLibrary === libraryPid;
-      // Load linked locations
-      this.recordService
-        .getRecords('locations', { query: `library.pid:${libraryPid}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
-        .subscribe((record: any) => this.locations = record.hits.hits || []);
-   });
+  readonly record = computed(() => {
+    const r = this._rawRecord();
+    return r ? new Library(r.metadata) : null;
+  });
+
+  readonly isUserCanAddLocation = computed(() =>
+    this.userService.user.currentLibrary === this._rawRecord()?.metadata?.pid
+  );
+
+  private readonly _fetchedLocations = toSignal(
+    toObservable(this._rawRecord).pipe(
+      switchMap(r => {
+        const pid = r?.metadata?.pid;
+        if (!pid) return of([]);
+        return this.recordService.getRecords('locations', {
+          query: `library.pid:${pid}`, page: 1,
+          itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name'
+        }).pipe(map((res: any) => res.hits.hits || []));
+      })
+    ),
+    { initialValue: [] }
+  );
+
+  readonly locations = signal<any[]>([]);
+
+  constructor() {
+    effect(() => this.locations.set(this._fetchedLocations()));
   }
 
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.recordObs.unsubscribe();
-  }
-
-  // COMPONENT FUNCTIONS ======================================================
-  /**
-   * Delete a location event listener
-   * This function catch the event emitted when a location is deleted and removed the deleted location
-   * from the known locations list
-   * @param deletedLocationPid - The deleted location pid
-   */
   deleteLocation(deletedLocationPid: Event): void {
-    this.locations = this.locations.filter((location: any) => deletedLocationPid !== location.metadata.pid);
+    this.locations.update(list => list.filter((location: any) => deletedLocationPid !== location.metadata.pid));
   }
-
 }

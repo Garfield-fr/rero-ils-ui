@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService, TruncateTextPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
-
-import { Observable } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -32,33 +32,28 @@ import { AsyncPipe } from '@angular/common';
     imports: [Bind, Panel, TranslateDirective, RouterLink, Tag, AsyncPipe, TruncateTextPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IllRequestDetailViewComponent implements OnInit {
+export class IllRequestDetailViewComponent {
 
   private recordService: RecordService = inject(RecordService);
 
-  // COMPONENT ATTRIBUTES =======================================================
-  /** The observable resolving record data */
   readonly record$ = input.required<Observable<any>>();
-  /** The resource type */
   readonly type = input<string>('');
-  /** The record */
-  record: any;
 
-  /** the requester of the ILL request */
-  requester = null;
+  readonly record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
+  );
 
-  tagSeverity: string;
-  loanTagSeverity: string;
+  readonly tagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.status));
+  readonly loanTagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.loan_status));
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.record$().subscribe((record) => {
-      this.record = record;
-      this.tagSeverity = getTagSeverityFromStatus(record.metadata.status);
-      this.loanTagSeverity = getTagSeverityFromStatus(record.metadata.loan_status);
-      this.recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
-        (patron) => this.requester = patron.metadata
-      );
-    });
-  }
+  readonly requester = toSignal(
+    toObservable(this.record).pipe(
+      switchMap(r => {
+        const pid = r?.metadata?.patron?.pid;
+        if (!pid) return of(null);
+        return this.recordService.getRecord('patrons', pid).pipe(map((p: any) => p.metadata));
+      })
+    ),
+    { initialValue: null }
+  );
 }
