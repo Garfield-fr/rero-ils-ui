@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
-
-import { Observable } from 'rxjs';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Observable, switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -32,18 +32,12 @@ import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
     imports: [Bind, Tag, TranslateDirective, NgClass, CollectionItemsComponent, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CollectionDetailViewComponent implements OnInit {
+export class CollectionDetailViewComponent {
 
-  /** The observable resolving record data */
   readonly record$ = input.required<Observable<any>>();
-
-  /** The resource type */
   readonly type = input<string>('');
 
-  /** The record */
-  record: any;
-
-  ngOnInit(): void {
-    this.record$().subscribe((record: any) => this.record = record);
-  }
+  readonly record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
+  );
 }

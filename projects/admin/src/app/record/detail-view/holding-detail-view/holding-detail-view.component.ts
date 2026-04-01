@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-
-import { Observable, Subscription } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { SerialHoldingDetailViewComponent } from './serial-holding-detail-view/serial-holding-detail-view.component';
 
 @Component({
@@ -26,40 +26,24 @@ import { SerialHoldingDetailViewComponent } from './serial-holding-detail-view/s
     imports: [SerialHoldingDetailViewComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HoldingDetailViewComponent implements OnInit , OnDestroy {
+export class HoldingDetailViewComponent {
 
   private router: Router = inject(Router);
 
-  /** Observable resolving record data */
   readonly record$ = input.required<Observable<any>>();
-
-  /** Resource type */
   readonly type = input<string>('');
 
-  /** Record */
-  record: any;
+  readonly record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
+  );
 
-  /** The observer to the record observable */
-  private recordObs: Subscription;
-
-  /**
-   * Init hook
-   */
-  ngOnInit() {
-    this.recordObs = this.record$().subscribe(record => {
-      this.record = record;
-      // TODO : At this time, only 'serial' holding should be displayed. Then redirect user to the document detail view
-      if (this.record.metadata.holdings_type !== 'serial') {
+  constructor() {
+    effect(() => {
+      const r = this.record();
+      // TODO: At this time, only 'serial' holding should be displayed. Then redirect user to the document detail view
+      if (r && r.metadata.holdings_type !== 'serial') {
         this.router.navigate(['/errors/403'], { skipLocationChange: true });
       }
     });
   }
-
-  /**
-   * Destroy hook
-   */
-  ngOnDestroy(): void {
-    this.recordObs.unsubscribe();
-  }
-
 }

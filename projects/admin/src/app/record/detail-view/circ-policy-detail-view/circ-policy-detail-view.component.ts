@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Observable, switchMap } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -31,81 +32,59 @@ import { GetRecordPipe } from '@rero/ng-core';
     imports: [TranslateDirective, Bind, Panel, TableModule, NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe, TranslatePipe, GetRecordPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
+export class CircPolicyDetailViewComponent {
 
   private organisationService: OrganisationService = inject(OrganisationService);
 
-  // COMPONENT ATTRIBUTES ======================================================
-  /** The observable resolving record data */
   readonly record$ = input.required<Observable<any>>();
-  /** The resource type */
   readonly type = input<string>('');
-  /** The record */
-  record: any;
-  /** Reminders */
-  reminders = [];
-  /** Overdues */
-  overdues = [];
-  /** The settings to display, patron type pid as a key */
-  settings = new Map<string, string[]>();
-  /** The list of item types concerned by the circulation policy */
-  itemTypes = new Set();
 
-  /** The observer to the record observable */
-  private _recordObs = null;
+  readonly record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
+  );
 
-  // GETTER & SETTER ==========================================================
-  /** Organisation currency */
+  readonly reminders = computed(() => {
+    const r = this.record();
+    if (!r?.metadata?.reminders) return [];
+    return [...r.metadata.reminders].sort((a: any, b: any) =>
+      a.type > b.type ? 1 : a.days_delay - b.days_delay
+    );
+  });
+
+  readonly overdues = computed(() => {
+    const r = this.record();
+    if (!r?.metadata?.overdue_fees?.intervals) return [];
+    return [...r.metadata.overdue_fees.intervals].sort((a: any, b: any) => a.from - b.from);
+  });
+
+  readonly settings = computed(() => {
+    const map = new Map<string, string[]>();
+    const r = this.record();
+    if (!r?.metadata?.settings) return map;
+    r.metadata.settings.forEach((setting: any) => {
+      if (!map.has(setting.patron_type.pid)) {
+        map.set(setting.patron_type.pid, [setting.item_type.pid]);
+      } else {
+        map.get(setting.patron_type.pid).push(setting.item_type.pid);
+      }
+    });
+    return map;
+  });
+
+  readonly itemTypes = computed(() => {
+    const set = new Set<string>();
+    const r = this.record();
+    if (!r?.metadata?.settings) return set;
+    r.metadata.settings.forEach((s: any) => set.add(s.item_type.pid));
+    return set;
+  });
+
   get org_currency() {
     return this.organisationService.organisation.default_currency;
   }
 
-  /** checkout is allowed ? */
   get checkoutIsAllowed() {
-    return this.record && Object.hasOwn(this.record.metadata, 'checkout_duration');
-  }
-
-  /** On init hook */
-  ngOnInit() {
-    this._recordObs = this.record$().subscribe(record => {
-      this.record = record;
-      if (record.metadata.settings) {
-        record.metadata.settings.forEach(setting => {
-          // create new entry
-          if (!this.settings.has(setting.patron_type.pid)) {
-            this.settings.set(setting.patron_type.pid, [setting.item_type.pid]);
-          } else {
-            // append
-            this.settings.get(setting.patron_type.pid).push(setting.item_type.pid);
-          }
-          // add item type to the list
-          if (!this.itemTypes.has(setting.item_type.pid)) {
-            this.itemTypes.add(setting.item_type.pid);
-          }
-        });
-      }
-
-      // sort reminders to ensure a better display
-      if (record.metadata.reminders) {
-        this.reminders = record.metadata.reminders
-        .sort((a: any, b: any) => {
-          return (a.type > b.type)
-            ? 1
-            : a.days_delay - b.days_delay;
-          }
-        );
-      }
-      // sort incremental overdue intervals
-      if (record.metadata.overdue_fees && record.metadata.overdue_fees.intervals) {
-        this.overdues = record.metadata.overdue_fees.intervals
-          .sort((a: any, b: any) => a.from - b.from);
-      }
-    });
-  }
-
-  /** On destroy hook */
-  ngOnDestroy() {
-    this._recordObs.unsubscribe();
+    const r = this.record();
+    return r && Object.hasOwn(r.metadata, 'checkout_duration');
   }
 }

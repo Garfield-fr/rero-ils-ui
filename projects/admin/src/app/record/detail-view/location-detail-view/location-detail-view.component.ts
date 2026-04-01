@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-
-import { Observable, Subscription } from 'rxjs';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Observable, switchMap } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
 import { GetRecordPipe } from '@rero/ng-core';
@@ -28,31 +28,12 @@ import { GetRecordPipe } from '@rero/ng-core';
     imports: [TranslateDirective, NgClass, NgStyle, AsyncPipe, TranslatePipe, GetRecordPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LocationDetailViewComponent implements OnInit, OnDestroy {
+export class LocationDetailViewComponent {
 
-  /** Observable resolving record data */
   readonly record$ = input.required<Observable<any>>();
-
-  /** Resource type */
   readonly type = input<string>('');
 
-  /** Record */
-  record: any;
-
-  /** The observer to the record observable */
-  private _recordObs: Subscription;
-
-  /** On init hook */
-  ngOnInit() {
-    this._recordObs = this.record$().subscribe(record => {
-      this.record = record;
-    });
-  }
-
-  /**
-   * Destroy
-   */
-  ngOnDestroy(): void {
-    this._recordObs.unsubscribe();
-  }
+  readonly record = toSignal(
+    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
+  );
 }
