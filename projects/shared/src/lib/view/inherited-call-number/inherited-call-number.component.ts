@@ -15,14 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
-import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ItemHoldingsCallNumberPipe } from '../../pipe/item-holdings-call-number.pipe';
 
 @Component({
     selector: 'shared-inherited-call-number',
     templateUrl: './inherited-call-number.component.html',
-    imports: [AsyncPipe, TranslatePipe, ItemHoldingsCallNumberPipe],
+    imports: [TranslatePipe, ItemHoldingsCallNumberPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InheritedCallNumberComponent implements OnInit {

@@ -18,7 +18,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { Observable, of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { ItemHoldingsCallNumberPipe } from './item-holdings-call-number.pipe';
 
 describe('ItemHoldingsCallNumberPipe', () => {
@@ -28,6 +28,7 @@ describe('ItemHoldingsCallNumberPipe', () => {
   const recordServiceSpy = { getRecord: vi.fn() };
 
   beforeEach(() => {
+    recordServiceSpy.getRecord.mockReset();
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot()
@@ -61,10 +62,8 @@ describe('ItemHoldingsCallNumberPipe', () => {
         value: record.metadata.second_call_number
       }
     };
-    expect(pipe.transform(record)).toBeInstanceOf(Observable);
-    pipe.transform(record).subscribe((result: any) => {
-      expect(result).toEqual(output);
-    });
+    expect(pipe.transform(record)).toEqual(output);
+    expect(recordServiceSpy.getRecord).not.toHaveBeenCalled();
   });
 
   it('should return call number undefined', () => {
@@ -78,28 +77,31 @@ describe('ItemHoldingsCallNumberPipe', () => {
       first: { source: undefined, value: undefined },
       second: { source: undefined, value: undefined }
     };
-    expect(pipe.transform(record)).toBeInstanceOf(Observable);
-    pipe.transform(record).subscribe((result: any) => {
-      expect(result).toEqual(output);
-    });
+    expect(pipe.transform(record)).toEqual(output);
   });
 
   it('should return call numbers with calling the api', () => {
-    const apiRecord = { metadata: { call_number: 'M call number' } };
-    recordServiceSpy.getRecord.mockReturnValue(of(apiRecord));
+    const subject = new Subject<{ metadata: { call_number: string } }>();
+    recordServiceSpy.getRecord.mockReturnValue(subject.asObservable());
     const record = {
       metadata: {
         holding: { pid: '1' },
-        second_call_number: apiRecord.metadata.call_number
+        second_call_number: 'M call number'
       }
     };
     const output = {
       first: { source: 'holding', value: 'M call number' },
       second: { source: 'item', value: record.metadata.second_call_number }
     };
-    expect(pipe.transform(record)).toBeInstanceOf(Observable);
-    pipe.transform(record).subscribe((result: any) => {
-      expect(result).toEqual(output);
+
+    expect(pipe.transform(record)).toEqual({
+      first: { source: undefined, value: undefined },
+      second: { source: undefined, value: undefined }
     });
+
+    subject.next({ metadata: { call_number: 'M call number' } });
+    expect(pipe.transform(record)).toEqual(output);
+    expect(recordServiceSpy.getRecord).toHaveBeenCalledTimes(1);
+    expect(recordServiceSpy.getRecord).toHaveBeenCalledWith('holdings', '1', { resolve: 1 });
   });
 });
