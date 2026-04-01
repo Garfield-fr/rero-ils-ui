@@ -24,7 +24,7 @@ import { Bind } from 'primeng/bind';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { AutoComplete } from 'primeng/autocomplete';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Button } from 'primeng/button';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -37,7 +37,7 @@ import { TranslatePipe } from '@ngx-translate/core';
           <div class="ui:col-span-4">
             <p-select
               [fluid]="true"
-              [options]="optionValues$|async"
+              [options]="optionValues()"
               [ngModel]="props.filters.selected"
               (onChange)="changeFilter($event)"
             >
@@ -99,7 +99,7 @@ import { TranslatePipe } from '@ngx-translate/core';
         </div>
       }
     </div>`,
-    imports: [Bind, Select, FormsModule, AutoComplete, NgClass, Button, AsyncPipe, TranslatePipe],
+    imports: [Bind, Select, FormsModule, AutoComplete, NgClass, Button, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityAutocompleteComponent extends RemoteAutocompleteComponent implements OnDestroy, AfterViewInit {

@@ -47,7 +47,7 @@ import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 export const routes: Routes = [
   {
     path: 'migrations',
-    loadChildren: () => import('./migration/migration-routing.module').then((m) => m.MIGRATION_ROUTES),
+    loadChildren: () => import('./migration/migration.routes').then((m) => m.MIGRATION_ROUTES),
   },
   {
     path: '',

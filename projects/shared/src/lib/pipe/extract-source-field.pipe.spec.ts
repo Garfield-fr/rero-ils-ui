@@ -41,9 +41,11 @@ describe('Pipe: ExtractFieldSource', () => {
 
   const field = 'authorized_access_point';
 
-  const translateServiceSpy = { currentLang: 'en' };
+  let currentLang = 'en';
+  const translateServiceSpy = { getCurrentLang: () => currentLang };
 
   beforeEach(() => {
+    currentLang = 'en';
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot()
@@ -65,21 +67,21 @@ describe('Pipe: ExtractFieldSource', () => {
   });
 
   it('transform data with french language', () => {
-    (translateService as any).currentLang = 'fr';
+    currentLang = 'fr';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('idref-access-point');
   });
 
   it('transform data with deutsch language', () => {
-    (translateService as any).currentLang = 'de';
+    currentLang = 'de';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('gnd-access-point');
   });
 
   it('transform data with it language (fallback)', () => {
-    (translateService as any).currentLang = 'it';
+    currentLang = 'it';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('idref-access-point');
