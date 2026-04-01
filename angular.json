@@ -93,8 +93,13 @@
           "configurations": {
             "production": {
               "buildTarget": "admin:build:production"
+            },
+            "development": {
+              "buildTarget": "admin:build:development",
+              "prebundle": { "exclude": ["@rero/ng-core" ] }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -232,8 +237,13 @@
           "configurations": {
             "production": {
               "buildTarget": "public-holdings-items:build:production"
+            },
+            "development": {
+              "buildTarget": "public-holdings-items:build:development",
+              "prebundle": { "exclude": ["@rero/ng-core" ] }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -355,8 +365,13 @@
           "configurations": {
             "production": {
               "buildTarget": "public-search:build:production"
+            },
+            "development": {
+              "buildTarget": "public-search:build:development",
+              "prebundle": { "exclude": ["@rero/ng-core" ] }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -492,8 +507,13 @@
           "configurations": {
             "production": {
               "buildTarget": "search-bar:build:production"
+            },
+            "development": {
+              "buildTarget": "search-bar:build:development",
+              "prebundle": { "exclude": ["@rero/ng-core" ] }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -665,8 +685,13 @@
           "configurations": {
             "production": {
               "buildTarget": "public-patron-profile:build:production"
+            },
+            "development": {
+              "buildTarget": "public-patron-profile:build:development",
+              "prebundle": { "exclude": ["@rero/ng-core" ] }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
