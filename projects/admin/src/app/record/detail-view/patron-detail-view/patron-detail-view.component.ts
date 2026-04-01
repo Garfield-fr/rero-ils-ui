@@ -65,9 +65,7 @@ export class PatronDetailViewComponent {
     return meta ? this._processPhones(meta) : [];
   });
 
-  get canAccessDisplayPermissions(): boolean {
-    return this.permissionsService.canAccess(PERMISSIONS.PERM_MANAGEMENT);
-  }
+  readonly canAccessDisplayPermissions = computed(() => this.permissionsService.canAccess(PERMISSIONS.PERM_MANAGEMENT));
 
   getRoleTagSeverity(role: string): string {
     return roleTagSeverity(role);

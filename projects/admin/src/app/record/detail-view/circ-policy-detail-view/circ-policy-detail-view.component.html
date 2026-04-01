@@ -61,7 +61,7 @@
           </dd>
           <!-- CHECKOUT SETTINGS-->
           <dt translate>Allow checkout</dt>
-          @if (checkoutIsAllowed) {
+          @if (checkoutIsAllowed()) {
             <dd class="ui:flex ui:gap-2">
               <i id="cipo-allow-checkout" class="fa fa-check text-success" aria-hidden="true"></i>
             <dl class="metadata" style="padding-top: 0 !important;">
@@ -132,7 +132,7 @@
                 <td>{{ reminder.communication_channel | translate }}</td>
                 <td>
                   @if (reminder.fee_amount) {
-                    {{ reminder.fee_amount | currency: org_currency }}
+                    {{ reminder.fee_amount | currency: org_currency() }}
                   } @else {
                     &mdash;
                   }
@@ -167,7 +167,7 @@
                   }
                 </td>
                 <td>
-                  {{ overdue.fee_amount | currency: org_currency }} / {{ 'day' | translate }}
+                  {{ overdue.fee_amount | currency: org_currency() }} / {{ 'day' | translate }}
                 </td>
               </tr>
             </ng-template>

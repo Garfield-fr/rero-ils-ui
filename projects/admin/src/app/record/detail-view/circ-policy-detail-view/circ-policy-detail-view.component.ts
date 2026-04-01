@@ -79,12 +79,9 @@ export class CircPolicyDetailViewComponent {
     return set;
   });
 
-  get org_currency() {
-    return this.organisationService.organisation.default_currency;
-  }
-
-  get checkoutIsAllowed() {
+  readonly org_currency = computed(() => this.organisationService.organisation.default_currency);
+  readonly checkoutIsAllowed = computed(() => {
     const r = this.record();
     return r && Object.hasOwn(r.metadata, 'checkout_duration');
-  }
+  });
 }

@@ -255,7 +255,7 @@
     }
 
     <!-- PERMISSIONS ======================================== -->
-    @if (canAccessDisplayPermissions) {
+    @if (canAccessDisplayPermissions()) {
       <p-accordion-panel value="5">
         <p-accordion-header>
           <span class="ui:text-bold ui:text-xl" translate>Permissions</span>
