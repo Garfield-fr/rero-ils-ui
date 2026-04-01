@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { PatronTransactionApiService } from '@app/admin/api/patron-transaction-api.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { tap } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
 import { TranslateDirective } from '@ngx-translate/core';
@@ -32,32 +33,29 @@ import { GetRecordPipe } from '@rero/ng-core';
     imports: [Bind, Panel, TranslateDirective, Tag, RouterLink, AsyncPipe, CurrencyPipe, GetRecordPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemFeesComponent implements OnInit {
+export class ItemFeesComponent {
 
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
 
-  /** Item pid */
-  itemPid = input<string>();
+  readonly itemPid = input<string>();
 
-  /** Fees */
-  fees: any[] = [];
+  private readonly _fees = toSignal(
+    toObservable(this.itemPid).pipe(
+      switchMap(pid => pid
+        ? this.patronTransactionApiService.getActiveFeesByItemPid(pid)
+        : of([])
+      )
+    ),
+    { initialValue: [] }
+  );
 
-  /** Total fees */
-  total = 0;
+  readonly fees = computed(() => this._fees() as any[]);
+  readonly total = computed(() =>
+    this.fees().reduce((sum: number, fee: any) => sum + fee.metadata.total_amount, 0)
+  );
 
-  /**
-   * Get the current organisation
-   * @return Organisation
-   */
   get organisation() {
     return this.organisationService.organisation;
-  }
-
-  /** OnInit hook */
-  ngOnInit(): void {
-      this.patronTransactionApiService.getActiveFeesByItemPid(this.itemPid())
-        .pipe(tap((fees: any) => fees.map((fee: any) => this.total += fee.metadata.total_amount)))
-        .subscribe((fees: any) => this.fees = fees);
   }
 }

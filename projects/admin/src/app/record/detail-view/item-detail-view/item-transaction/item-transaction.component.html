@@ -33,13 +33,14 @@
         </div>
       }
       <!-- REQUESTS -->
-      @if (type() === 'loan_request' && pickupLocations && pickupLocations.length > 0) {
+      @if (type() === 'loan_request' && pickupLocations().length > 0) {
         @if (canUpdateRequestPickupLocation()) {
           <p-select
           class="ui:col-span-4"
           optionLabel="label"
-          [options]="pickupLocations"
-          [(ngModel)]="currentPickupLocation"
+          [options]="pickupLocations()"
+          [ngModel]="currentPickupLocation()"
+          (ngModelChange)="currentPickupLocation.set($event)"
           (onChange)="emitUpdatePickupLocation($event)"/>
 
         } @else {
