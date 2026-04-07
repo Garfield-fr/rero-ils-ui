@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpParams } from '@angular/common/http';
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
@@ -26,22 +27,23 @@ import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-transl
 import { ApiService, CONFIG, RecordService, ExportButtonComponent, Nl2brPipe } from '@rero/ng-core';
 import { IPermissions, PERMISSIONS, UserService, PermissionsDirective } from '@rero/shared';
 import { MessageService, TreeNode, TreeTableNode } from 'primeng/api';
-import { forkJoin, switchMap, tap } from 'rxjs';
+import { filter, forkJoin } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { TreeTableModule } from 'primeng/treetable';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, JsonPipe } from '@angular/common';
 import { AccountAvailableAmountPipe } from '../../../pipes/account-available-amount.pipe';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
     selector: 'admin-account-list',
     templateUrl: './account-list.component.html',
-    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule, JsonPipe],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AccountListComponent implements OnInit {
+export class AccountListComponent {
   private userService: UserService = inject(UserService);
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
@@ -51,32 +53,50 @@ export class AccountListComponent implements OnInit {
   private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =======================================================
-  /** Root account to display */
-  rootAccounts: TreeTableNode[] = [];
-
-  /** Export options configuration. */
-  exportOptions: {
-    label: string;
-    url: string;
-    disabled?: boolean;
-    disabled_message?: string;
-  }[];
-
   /** All user permissions */
   permissions: IPermissions = PERMISSIONS;
 
-  /** Store library pid */
-  private _libraryPid: string;
+  /** Library pid derived from user signal */
+  private readonly libraryPid = computed(() => this.userService.user()?.currentLibrary);
 
-  // GETTER & SETTER ============================================================
-  /** Get the current organisation */
-  get organisation(): any {
-    return this.organisationService.organisation;
+  /** Root accounts — writable signal, updated on load and mutated locally */
+  readonly rootAccounts = signal<TreeTableNode[]>([]);
+
+  /** Export options — derived from rootAccounts */
+  readonly exportOptions = computed(() => this._exportFormats());
+
+  constructor() {
+    const _loaded = toSignal(
+      toObservable(this.libraryPid).pipe(
+        filter((pid): pid is string => !!pid),
+        switchMap((pid) => {
+          let localAccounts: IAcqAccount[];
+          return this.acqAccountApiService.getAccounts(pid, undefined, { sort: 'depth' }).pipe(
+            tap((accounts: IAcqAccount[]) => (localAccounts = accounts)),
+            switchMap((accounts: any[]) =>
+              forkJoin(
+                accounts.map((account) =>
+                  this.recordPermissionService
+                    .getPermission('acq_accounts', account.pid)
+                    .pipe(tap((permission) => (account.permissions = permission)))
+                )
+              )
+            ),
+            map(() => this.orderAccountsAsTree(localAccounts))
+          );
+        })
+      ),
+      { initialValue: [] as TreeTableNode[] }
+    );
+    effect(() => this.rootAccounts.set(_loaded()));
   }
 
+  readonly organisation = this.organisationService.organisation;
+
+  // GETTER & SETTER ============================================================
   /** Get a message containing the reasons why record list cannot be exported */
   get exportInfoMessage(): string {
-    return this.rootAccounts.length === 0
+    return this.rootAccounts().length === 0
       ? this.translateService.instant('Result list is empty.')
       : this.translateService.instant('Too many items. Should be less than {{max}}.', {
           max: RecordService.MAX_REST_RESULTS_SIZE,
@@ -106,27 +126,6 @@ export class AccountListComponent implements OnInit {
       }
     });
   }
-  /** OnInit hook */
-  ngOnInit(): void {
-    this._libraryPid = this.userService.user()?.currentLibrary;
-    let localAccounts;
-    this.acqAccountApiService
-      .getAccounts(this._libraryPid, undefined, { sort: 'depth' })
-      .pipe(
-        tap((accounts: IAcqAccount[]) => (localAccounts = accounts)),
-        switchMap((accounts: any[]) => {
-          const obs = accounts.map((account) =>
-            this.recordPermissionService
-              .getPermission('acq_accounts', account.pid)
-              .pipe(tap((permission) => (account.permissions = permission)))
-          );
-          return forkJoin(obs);
-        }),
-        tap(() => (this.rootAccounts = this.orderAccountsAsTree(localAccounts))),
-        tap(() => (this.exportOptions = this._exportFormats()))
-      )
-      .subscribe();
-  }
 
   processAccount(accounts) {
     return accounts.map((account) => {
@@ -137,6 +136,7 @@ export class AccountListComponent implements OnInit {
       };
     });
   }
+
   // COMPONENT FUNCTIONS ========================================================
   /** Operations to do when an account is deleted */
   accountDelete(node): void {
@@ -145,12 +145,16 @@ export class AccountListComponent implements OnInit {
       .pipe(
         tap(() => {
           if (node.parent) {
-            node.parent.children = node.parent.children.filter((account) => account.data.pid !== node.node.data.pid);
+            node.parent.children = node.parent.children.filter(
+              (account) => account.data.pid !== node.node.data.pid
+            );
             node.parent.leaf = !(node.parent.children.length > 0);
+            this.rootAccounts.update((accounts) => [...accounts]);
           } else {
-            this.rootAccounts = this.rootAccounts.filter((account) => account.data.pid !== node.node.data.pid);
+            this.rootAccounts.update((accounts) =>
+              accounts.filter((account) => account.data.pid !== node.node.data.pid)
+            );
           }
-          this.rootAccounts = [...this.rootAccounts];
         })
       )
       .subscribe(() => {
@@ -168,17 +172,17 @@ export class AccountListComponent implements OnInit {
   }
 
   expandAll() {
-    this.rootAccounts.forEach((node) => {
-      this.expandRecursive(node, true);
+    this.rootAccounts.update((accounts) => {
+      accounts.forEach((node) => this.expandRecursive(node, true));
+      return [...accounts];
     });
-    this.rootAccounts = [...this.rootAccounts];
   }
 
   collapseAll() {
-    this.rootAccounts.forEach((node) => {
-      this.expandRecursive(node, false);
+    this.rootAccounts.update((accounts) => {
+      accounts.forEach((node) => this.expandRecursive(node, false));
+      return [...accounts];
     });
-    this.rootAccounts = [...this.rootAccounts];
   }
 
   private expandRecursive(node: TreeNode, isExpand: boolean) {
@@ -211,7 +215,8 @@ export class AccountListComponent implements OnInit {
    * @return formatted url for an export format.
    */
   getExportFormatUrl(format: any) {
-    const defaultQueryParams = ['is_active:true', `library.pid:${this._libraryPid}`];
+    const libraryPid = this.libraryPid();
+    const defaultQueryParams = ['is_active:true', `library.pid:${libraryPid}`];
     const query = defaultQueryParams.join(' AND ');
     const baseUrl = format.endpoint || this.apiService.getExportEndpointByType('acq_accounts');
     const params = new HttpParams().set('q', query).set('format', format.format);
@@ -227,7 +232,7 @@ export class AccountListComponent implements OnInit {
    * @return Boolean
    */
   canExport(format: any): boolean {
-    const totalResults = this.rootAccounts.length;
+    const totalResults = this.rootAccounts().length;
     return Object.hasOwn(format, 'disableMaxRestResultsSize') && format.disableMaxRestResultsSize
       ? totalResults > 0
       : totalResults > 0 && totalResults < RecordService.MAX_REST_RESULTS_SIZE;

@@ -90,7 +90,7 @@ export class ItemComponent {
    * @returns current organisation
    */
   get organisation(): Organisation {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 
   /**

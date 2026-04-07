@@ -58,7 +58,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   ngOnInit(): void {
     this.loading = true;
     const libraryPid = this.userService.user()?.currentLibrary;
-    this.defaultCurrency = this.organisationService.organisation.default_currency;
+    this.defaultCurrency = this.organisationService.organisation().default_currency;
     this.acqAccountApiService.getAccounts(libraryPid).subscribe({
       next: (accounts: IAcqAccount[]) => {
         accounts = orderAccountsAsTree(accounts);

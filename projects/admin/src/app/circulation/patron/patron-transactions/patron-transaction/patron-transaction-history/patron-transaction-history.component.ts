@@ -40,7 +40,7 @@ export class PatronTransactionHistoryComponent {
   patronTransactionEventType = PatronTransactionEventType;
 
   get organisation() {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 
   eventLabel(event: any): string {

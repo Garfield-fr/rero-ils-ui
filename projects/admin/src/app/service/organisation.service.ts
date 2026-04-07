@@ -15,10 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { inject, Injectable } from '@angular/core';
-import { JsonObject, RecordData, RecordService } from '@rero/ng-core';
+import { inject, Injectable, Signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RecordData, RecordService } from '@rero/ng-core';
+import { UserService } from '@rero/shared';
 import { Organisation } from '@rero/shared/types/rero-shared';
-import { Observable, Subject } from 'rxjs';
+import { filter, switchMap } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -27,34 +30,17 @@ import { Observable, Subject } from 'rxjs';
 export class OrganisationService {
 
   private recordService: RecordService = inject(RecordService);
+  private userService: UserService = inject(UserService);
 
-  // SERVICE ATTRIBUTES =======================================================
-
-  /** Observable on Record Organisation */
-  private onOrganisationLoaded = new Subject<Organisation>();
-  /** Organisation record */
-  private record: Organisation;
-
-  // GETTER & SETTER ==========================================================
-  /** Return observable of organisation */
-  get onOrganisationLoaded$(): Observable<Organisation> {
-    return this.onOrganisationLoaded.asObservable();
-  }
-  /** Get current organisation*/
-  get organisation() {
-    return this.record;
-  }
-
-  /**
-   * Load organisation record
-   * @param pid - string
-   */
-  loadOrganisationByPid(pid: string) {
-    this.recordService
-      .getRecord<RecordData<Organisation>>('organisations', pid)
-      .subscribe(orgRecord => {
-        this.record = orgRecord.metadata;
-        this.onOrganisationLoaded.next(this.record);
-      });
-  }
+  readonly organisation: Signal<Organisation | null> = toSignal(
+    toObservable(this.userService.user).pipe(
+      filter((user) => !!user?.currentOrganisation),
+      switchMap((user) =>
+        this.recordService
+          .getRecord<RecordData<Organisation>>('organisations', user.currentOrganisation)
+          .pipe(map((orgRecord) => orgRecord.metadata))
+      )
+    ),
+    { initialValue: null }
+  );
 }

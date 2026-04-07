@@ -71,7 +71,7 @@ export class AccountTransferComponent implements OnInit, OnDestroy {
   // GETTER & SETTER ============================================================
   /** Get the current organisation */
   get organisation(): any {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 
   /** Get the currency symbol for the organisation */

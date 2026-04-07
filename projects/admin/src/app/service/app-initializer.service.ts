@@ -20,7 +20,6 @@ import { AppSettingsService, User, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
-import { OrganisationService } from './organisation.service';
 import { RemoteAutocompleteFactoryService } from '../record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
 import { LibrarySwitchStorageService } from '../menu/service/library-switch-storage.service';
 
@@ -30,7 +29,6 @@ import { LibrarySwitchStorageService } from '../menu/service/library-switch-stor
 export class AppInitializerService {
 
   private userService: UserService = inject(UserService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
   private appConfigService: AppConfigService = inject(AppConfigService);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
@@ -61,7 +59,6 @@ export class AppInitializerService {
 
           user.currentOrganisation = user.patronLibrarian.organisation.pid;
           user.currentBudget = user.patronLibrarian.organisation.budget.pid;
-          this.organisationService.loadOrganisationByPid(user.currentOrganisation);
         }
       }),
       switchMap(() => this.initTranslateService())

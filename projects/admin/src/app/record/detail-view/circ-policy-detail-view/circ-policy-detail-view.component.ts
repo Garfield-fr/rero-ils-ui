@@ -73,7 +73,7 @@ export class CircPolicyDetailViewComponent {
     return set;
   });
 
-  readonly org_currency = computed(() => this.organisationService.organisation.default_currency);
+  readonly org_currency = computed(() => this.organisationService.organisation().default_currency);
   readonly checkoutIsAllowed = computed(() => {
     const r = this.record();
     return r && Object.hasOwn(r.metadata, 'checkout_duration');

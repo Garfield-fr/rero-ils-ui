@@ -19,7 +19,7 @@ import { Component, computed, inject, input, OnInit, signal, WritableSignal, Cha
 
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { Organisation } from '@app/admin/classes/core';
+
 import { PatronTransactionsService } from '../../../service/patron-transactions.service';
 import { PatronTransactionEventOverdueComponent } from './patron-transaction-event-overdue.component';
 import { PatronTransactionEventDefaultComponent } from './patron-transaction-event-default.component';
@@ -54,7 +54,7 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
   /** Parent parent transaction */
   parent: PatronTransaction;
   /** current organisation */
-  organisation: Organisation;
+  readonly organisation = computed(() => this.organisationService.organisation());
   /** reference to PatronTransactionEventType */
   eventTypes = PatronTransactionEventType;
   severity = computed(() => {
@@ -72,7 +72,6 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.organisation = this.organisationService.organisation;
     this.event.set(new PatronTransactionEvent(this.record().metadata));
     this.patronTransactionService
       .getPatronTransaction(this.event().parent.pid)

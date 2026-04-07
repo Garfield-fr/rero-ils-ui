@@ -87,7 +87,7 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
    * @returns - url on the public interface
    */
   getCollectionLink(name): string {
-    const viewcode = this.organisationService.organisation.code;
+    const viewcode = this.organisationService.organisation().code;
     return `/${viewcode}/search/documents?q=files.collections.raw:(${name})&simple=0`;
   }
 

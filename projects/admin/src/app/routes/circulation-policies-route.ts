@@ -211,7 +211,7 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     const service = this.routeToolService.getInjectorToken(OrganisationService);
     field.props.addonLeft = [
-      Tools.currencySymbol(this.routeToolService.translateService.currentLang, service.organisation.default_currency),
+      Tools.currencySymbol(this.routeToolService.translateService.currentLang, service.organisation().default_currency),
     ];
     return field;
   }

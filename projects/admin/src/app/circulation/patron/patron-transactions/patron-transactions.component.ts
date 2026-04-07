@@ -98,7 +98,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * @return current organisation
    */
   get organisation(): any {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 
   /**

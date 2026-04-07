@@ -39,6 +39,6 @@ export class PaymentsDataTableComponent {
   // GETTER & SETTER ==========================================================
   /** Organisation currency */
   get org_currency() {
-    return this.organisationService.organisation.default_currency;
+    return this.organisationService.organisation().default_currency;
   }
 }

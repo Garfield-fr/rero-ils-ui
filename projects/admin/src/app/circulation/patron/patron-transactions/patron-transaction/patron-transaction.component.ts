@@ -92,7 +92,7 @@ export class PatronTransactionComponent implements OnChanges {
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
   // HOOKS ============================================
 
@@ -147,7 +147,7 @@ export class PatronTransactionComponent implements OnChanges {
       {
         label: [
           this.translateService.instant('Pay'),
-          this.currencyPipe.transform(this.transaction().total_amount, this.organisationService.organisation.default_currency)
+          this.currencyPipe.transform(this.transaction().total_amount, this.organisationService.organisation().default_currency)
         ].join(' '),
         command: () => this.patronTransactionAction('pay', 'full')
       },

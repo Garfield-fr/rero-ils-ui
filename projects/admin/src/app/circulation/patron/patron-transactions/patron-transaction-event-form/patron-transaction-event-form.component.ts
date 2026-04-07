@@ -113,7 +113,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
         addonLeft: [
           Tools.currencySymbol(
             this.translateService.currentLang,
-            this.organisationService.organisation.default_currency
+            this.organisationService.organisation().default_currency
           )
         ]
       },
@@ -187,7 +187,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 
   /**

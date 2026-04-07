@@ -56,6 +56,6 @@ export class ItemFeesComponent {
   );
 
   get organisation() {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 }

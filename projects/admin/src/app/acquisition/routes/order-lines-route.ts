@@ -114,7 +114,7 @@ class OrderLinesRoute extends BaseRoute implements RouteDataTypesInterface {
     //         But how to retrieve the order from here ??? and how get quickly currency to use into
     const service = this.routeToolService.getInjectorToken(OrganisationService);
     field.props.addonLeft = [
-      Tools.currencySymbol(this.routeToolService.translateService.currentLang, service.organisation.default_currency),
+      Tools.currencySymbol(this.routeToolService.translateService.currentLang, service.organisation().default_currency),
     ];
     return field;
   }

@@ -32,9 +32,7 @@ import { OrganisationService } from '../service/organisation.service';
 import { BaseRoute } from './base-route';
 
 export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => {
-  // onOrganisationLoaded$ is a Subject that fires only once during app init.
-  // By the time this resolver runs, the org is already loaded — read it directly.
-  const org = inject(OrganisationService).organisation;
+  const org = inject(OrganisationService).organisation();
   return new DocumentsRoute().getTypesForOrg(org);
 };
 

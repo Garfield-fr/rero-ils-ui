@@ -123,7 +123,7 @@ export class PatronFeeComponent implements OnInit {
         addonLeft: [
           Tools.currencySymbol(
             this.translateService.currentLang,
-            this.organisationService.organisation.default_currency
+            this.organisationService.organisation().default_currency
           )
         ]
       }

@@ -61,7 +61,7 @@ export class PaymentDataPieComponent implements OnInit {
           callbacks: {
             label: (context) => {
               const label = context.formattedValue || '';
-              return ` ${label} ${this.organisationService.organisation.default_currency}`;
+              return ` ${label} ${this.organisationService.organisation().default_currency}`;
             },
           },
         },

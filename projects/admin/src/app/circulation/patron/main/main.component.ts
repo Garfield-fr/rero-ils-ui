@@ -70,7 +70,7 @@ export class MainComponent implements OnInit, OnDestroy {
    * @return current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 
   /** OnInit hook */

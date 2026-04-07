@@ -41,6 +41,6 @@ export class PatronTypesDetailViewComponent {
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 }

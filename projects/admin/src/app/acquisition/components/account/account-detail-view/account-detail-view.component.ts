@@ -58,6 +58,6 @@ export class AccountDetailViewComponent {
   // GETTER & SETTER ============================================================
   /** Get the current budget pid for the organisation */
   get organisation(): any {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 }

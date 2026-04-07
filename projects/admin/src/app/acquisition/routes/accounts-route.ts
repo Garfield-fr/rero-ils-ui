@@ -131,9 +131,9 @@ class AccountsRoute extends BaseRoute implements RouteDataTypesInterface {
    */
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     const service = this.routeToolService.getInjectorToken(OrganisationService);
-    if (service.organisation) {
+    if (service.organisation()) {
       field.props.addonLeft = [
-        Tools.currencySymbol(this.routeToolService.translateService.currentLang, service.organisation.default_currency),
+        Tools.currencySymbol(this.routeToolService.translateService.currentLang, service.organisation().default_currency),
       ];
     }
     return field;

@@ -55,7 +55,7 @@ export class OverdueTransactionComponent implements OnInit {
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
+    return this.organisationService.organisation();
   }
 
   /** OnInit hook */

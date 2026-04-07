@@ -93,7 +93,7 @@ class ReceiptLinesRoute extends BaseRoute implements RouteDataTypesInterface {
     field.props.addonLeft = [
       Tools.currencySymbol(
         this.routeToolService.translateService.currentLang,
-        service.organisation.default_currency
+        service.organisation().default_currency
       ),
     ];
     return field;
