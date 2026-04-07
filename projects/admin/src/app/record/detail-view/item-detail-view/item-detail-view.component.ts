@@ -66,6 +66,8 @@ export class ItemDetailViewComponent implements OnDestroy {
 
   /** Document record */
   record = model<any>();
+  /** Resource type */
+  type = input<string>('');
   /** Record permissions */
   recordPermissions = input<any>();
 
@@ -109,7 +111,7 @@ export class ItemDetailViewComponent implements OnDestroy {
    * @return string
    */
   get organisationCurrency(): string {
-    return this.organisationService.organisation.default_currency;
+    return this.organisationService.organisation().default_currency;
   }
 
   /** returns an array of claim dates in DESC order */
