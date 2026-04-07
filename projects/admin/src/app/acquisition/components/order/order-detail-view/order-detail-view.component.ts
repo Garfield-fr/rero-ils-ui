@@ -17,6 +17,7 @@
  */
 import { APP_BASE_HREF, Location, ViewportScroller, NgClass, I18nPluralPipe } from '@angular/common';
 import { Component, inject, input, model, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
@@ -27,7 +28,7 @@ import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-transl
 import { extractIdOnRef, Nl2brPipe } from '@rero/ng-core';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { forkJoin, merge, Observable, Subscription } from 'rxjs';
+import { filter, forkJoin, merge, Subscription } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import {
   AcqOrderHistoryVersion,
@@ -70,10 +71,13 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy {
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
 
   // COMPONENT ATTRIBUTES =====================================================
-  /** Observable resolving record data */
-  readonly record$ = input.required<Observable<any>>();
+  /** Record data */
+  readonly record = input<any>();
   /** Resource type */
   readonly type = input<string>('');
+
+  private readonly _record$ = toObservable(this.record);
+
   /** the order corresponding to the record */
   order: IAcqOrder;
   /** Is order notes are collapsed */
@@ -121,7 +125,8 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy {
     this.tabActiveIndex.set(this.route.snapshot.queryParamMap.get('tab') || 'order');
     this.subscriptions.add(this.tabActiveIndex.subscribe(tabName => this.addTabToUrl(tabName)));
     this.subscriptions.add(
-      this.record$().pipe(
+      this._record$.pipe(
+        filter((record: any) => !!record?.metadata?.pid),
         tap((record: any) => this.order = record.metadata),
         switchMap(() => {
           const obs = [
@@ -131,7 +136,7 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy {
             ),
             // permissions
             this.recordPermissionService.getPermission('acq_orders', this.order.pid).pipe(
-              map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid)),
+              map((permissions) => this.permissionValidator.validate(permissions, this.order?.library?.pid)),
               map((permissions) => this.recordPermissions = permissions)
             )
           ];
@@ -141,7 +146,7 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy {
           merge(this.acqReceiptApiService.deletedReceiptSubject$, this.acqReceiptApiService.deletedReceiptLineSubject$)
       ),
         switchMap(() => this.acqOrderService.getOrder(this.order.pid, 1)),
-        tap(order => this.order = order)
+        tap((order: any) => this.order = order)
       ).subscribe()
     );
   }

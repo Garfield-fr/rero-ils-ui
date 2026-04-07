@@ -80,7 +80,7 @@ export class OrderLineComponent implements OnInit, OnDestroy {
     const account$ = this.recordService.getRecord('acq_accounts', this.orderLine().acq_account.pid);
     const permissions$ = this.recordPermissionService
       .getPermission('acq_order_lines', this.orderLine().pid)
-      .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order().library.pid)));
+      .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order()?.library?.pid)));
     const document$ = this.recordService.getRecord('documents', this.orderLine().document.pid).pipe(
       catchError(() => of(null))
     );

@@ -18,7 +18,7 @@
 
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Observable, switchMap } from 'rxjs';
+import { filter, switchMap } from 'rxjs';
 import { OrganisationService } from '../../../../service/organisation.service';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -41,15 +41,15 @@ export class AccountDetailViewComponent {
   private organisationService: OrganisationService = inject(OrganisationService);
 
   // COMPONENT ATTRIBUTES =======================================================
-  /** Observable resolving record data */
-  readonly record$ = input.required<Observable<any>>();
+  /** Record data */
+  readonly record = input<any>();
   /** Resource type */
   readonly type = input<string>('');
 
   /** metadata from ES - much more complete than DB stored record */
-  esRecord = toSignal(
-    toObservable(this.record$).pipe(
-      switchMap(obs => obs),
+  readonly esRecord = toSignal(
+    toObservable(this.record).pipe(
+      filter((data: any) => !!data?.metadata?.pid),
       switchMap((data: any) => this.acqAccountApiService.getAccount(data.metadata.pid))
     ),
     { initialValue: null }

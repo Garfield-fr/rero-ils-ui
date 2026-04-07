@@ -26,12 +26,10 @@ import { of, switchMap, tap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { ItemDetailViewComponent } from '../item-detail-view.component';
-
 @Component({
     selector: 'admin-item-page-detail',
     templateUrl: './item-page-detail.component.html',
-    imports: [DetailButtonComponent, Bind, Button, TranslateDirective, OperationLogsDialogComponent, ItemDetailViewComponent, ErrorComponent, TranslatePipe],
+    imports: [DetailButtonComponent, Bind, Button, TranslateDirective, OperationLogsDialogComponent, ErrorComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemPageDetailComponent extends DetailComponent {
@@ -41,7 +39,7 @@ export class ItemPageDetailComponent extends DetailComponent {
   private userService: UserService = inject(UserService);
 
   readonly recordPermissions = toSignal(
-    toObservable(this.record).pipe(
+    toObservable(this.record as any).pipe(
       switchMap((record: any) => {
         const pid = record?.metadata?.pid;
         if (!pid) return of(null);

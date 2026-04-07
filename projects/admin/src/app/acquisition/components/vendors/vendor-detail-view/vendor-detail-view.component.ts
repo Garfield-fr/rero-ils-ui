@@ -15,9 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Observable, switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
@@ -35,16 +33,11 @@ export class VendorDetailViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
 
-  /** Observable resolving record data */
-  readonly record$ = input.required<Observable<any>>();
+  /** Record data */
+  readonly record = input<any>();
 
   /** Resource type */
   readonly type = input<string>('');
-
-  record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs => obs)),
-    { initialValue: null }
-  );
 
   /**
    * Get Current language interface

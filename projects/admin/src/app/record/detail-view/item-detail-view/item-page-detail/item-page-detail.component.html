@@ -43,8 +43,8 @@
     </ng-container>
   </ng-core-detail-button>
   }
-  <admin-item-detail-view ngCoreRecordDetail [record]="record()" [recordPermissions]="resolvedRecordPermissions()" />
   @if (error()) {
     <ng-core-error [error]="error()" />
   }
+  <ng-container #dynamicHost />
 </div>
