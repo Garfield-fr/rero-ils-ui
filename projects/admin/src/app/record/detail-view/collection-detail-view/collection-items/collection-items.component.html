@@ -53,7 +53,7 @@
                 <dd>
                   <a [routerLink]="['/records','items','detail', item.pid]">{{ $any(itemData).metadata.barcode }}</a>
                 </dd>
-                @if (itemData | itemHoldingsCallNumber; as callNumber) {
+                @if (itemData | itemHoldingsCallNumber | async; as callNumber) {
                   @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
                     <dt translate>Call number</dt>
                     <dd>

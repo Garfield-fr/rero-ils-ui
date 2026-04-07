@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injector, Pipe, PipeTransform, runInInjectionContext, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
+import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 type CallNumberSource = 'item' | 'holding' | undefined;
@@ -37,65 +37,46 @@ type RecordMetadata = {
   holding?: { pid?: string };
 };
 
-@Pipe({ name: 'itemHoldingsCallNumber', pure: false })
+@Pipe({ name: 'itemHoldingsCallNumber' })
 export class ItemHoldingsCallNumberPipe implements PipeTransform {
 
   protected recordService: RecordService = inject(RecordService);
-  private readonly injector = inject(Injector);
-  private readonly cache = new Map<string, Signal<ItemCallNumbers>>();
 
   /**
-   * Get item call numbers
-   * @return object: first, second are the item first, second call numbers.
+   * Get item call numbers as an Observable.
+   * Use with the `async` pipe in templates.
+   * @return Observable<ItemCallNumbers>
    */
-  transform(record: unknown): ItemCallNumbers {
+  transform(record: unknown): Observable<ItemCallNumbers> {
     const metadata = this.extractMetadata(record);
     if (!metadata) {
-      return this.emptyCallNumbers();
+      return of(this.emptyCallNumbers());
     }
 
     if (metadata.call_number) {
-      return {
-        first: {
-          source: 'item',
-          value: metadata.call_number
-        },
-        second: {
-          source: 'item',
-          value: metadata.second_call_number
-        }
-      };
+      return of({
+        first: { source: 'item', value: metadata.call_number },
+        second: { source: 'item', value: metadata.second_call_number }
+      });
     }
 
     const holdingPid = metadata.holding?.pid;
     if (!holdingPid) {
-      return this.emptyCallNumbers();
+      return of(this.emptyCallNumbers());
     }
 
-    const cacheKey = `${holdingPid}::${metadata.second_call_number ?? ''}`;
-    if (!this.cache.has(cacheKey)) {
-      const secondCallNumber = metadata.second_call_number;
-      const sig = runInInjectionContext(this.injector, () =>
-        toSignal(
-          this.recordService.getRecord('holdings', holdingPid, { resolve: 1 }).pipe(
-            map((data: unknown) => {
-              const callNumber = this.extractHoldingCallNumber(data);
-              return callNumber
-                ? {
-                    first: { source: 'holding' as const, value: callNumber },
-                    second: { source: 'item' as const, value: secondCallNumber }
-                  }
-                : this.emptyCallNumbers();
-            }),
-            startWith(this.emptyCallNumbers())
-          ),
-          { initialValue: this.emptyCallNumbers() }
-        )
-      );
-      this.cache.set(cacheKey, sig);
-    }
-
-    return this.cache.get(cacheKey)!();
+    return this.recordService.getRecord('holdings', holdingPid, { resolve: 1 }).pipe(
+      map((data: unknown) => {
+        const callNumber = this.extractHoldingCallNumber(data);
+        return callNumber
+          ? {
+              first: { source: 'holding' as const, value: callNumber },
+              second: { source: 'item' as const, value: metadata.second_call_number }
+            }
+          : this.emptyCallNumbers();
+      }),
+      startWith(this.emptyCallNumbers())
+    );
   }
 
   private extractMetadata(record: unknown): RecordMetadata | null {
@@ -113,26 +94,18 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
     if (!data || typeof data !== 'object') {
       return undefined;
     }
-
     const recordObject = data as Record<string, unknown>;
     if (!recordObject.metadata || typeof recordObject.metadata !== 'object') {
       return undefined;
     }
-
     const metadata = recordObject.metadata as Record<string, unknown>;
     return typeof metadata.call_number === 'string' ? metadata.call_number : undefined;
   }
 
   private emptyCallNumbers(): ItemCallNumbers {
     return {
-      first: {
-        source: undefined,
-        value: undefined
-      },
-      second: {
-        source: undefined,
-        value: undefined
-      }
+      first: { source: undefined, value: undefined },
+      second: { source: undefined, value: undefined }
     };
   }
 }

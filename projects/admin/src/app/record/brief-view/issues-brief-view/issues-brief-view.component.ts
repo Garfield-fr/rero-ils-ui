@@ -21,12 +21,11 @@ import { IssueItemStatus, InheritedCallNumberComponent, ItemHoldingsCallNumberPi
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgPlural, NgPluralCase, NgClass, AsyncPipe, JsonPipe } from '@angular/common';
-import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
 
 @Component({
     selector: 'admin-issues-brief-view',
     templateUrl: './issues-brief-view.component.html',
-    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, NgPlural, NgPluralCase, NgClass, AsyncPipe, JsonPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1],
+    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, NgPlural, NgPluralCase, NgClass, AsyncPipe, JsonPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IssuesBriefViewComponent implements OnInit {

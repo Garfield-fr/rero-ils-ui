@@ -41,7 +41,7 @@
             <dd>{{ item().metadata.enumerationAndChronology }}</dd>
           }
           <!-- Call numbers -->
-          @if (item | itemHoldingsCallNumber; as callNumber) {
+          @if (item | itemHoldingsCallNumber | async; as callNumber) {
             @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
               <dt translate>Call number</dt>
               <dd>

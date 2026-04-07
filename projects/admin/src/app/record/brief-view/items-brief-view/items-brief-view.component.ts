@@ -19,14 +19,14 @@ import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective } from '@ngx-translate/core';
 import { InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
-import { JsonPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
 
 
 @Component({
     selector: 'admin-inventory-brief-view',
     templateUrl: './items-brief-view.component.html',
-    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, JsonPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1],
+    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, AsyncPipe, JsonPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemsBriefViewComponent {
