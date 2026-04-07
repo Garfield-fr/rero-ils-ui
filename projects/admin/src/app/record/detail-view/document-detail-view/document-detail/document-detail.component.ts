@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
 import { OperationLogsService, OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
@@ -33,7 +33,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DocumentDetailComponent extends DetailComponent implements OnInit {
+export class DocumentDetailComponent extends DetailComponent {
 
   private dialogService: DialogService = inject(DialogService);
   private operationLogsService: OperationLogsService = inject(OperationLogsService);
@@ -71,7 +71,6 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         ].join(' - ');
       });
     }
-    super.ngOnInit();
   }
 
   /** Source for imported record. */
@@ -82,18 +81,6 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
       this.route.snapshot.params.type !== null
     ) {
       return this.route.snapshot.params.type.replace('import_', '');
-    }
-    return null;
-  }
-
-  /** External identifier for imported record. */
-  get pid(): string | null {
-    if (
-      this.route.snapshot &&
-      this.route.snapshot.params &&
-      this.route.snapshot.params.pid !== null
-    ) {
-      return this.route.snapshot.params.pid;
     }
     return null;
   }

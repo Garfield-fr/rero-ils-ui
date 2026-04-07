@@ -16,11 +16,8 @@
  */
 import { HttpClient } from "@angular/common/http";
 import { Component, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { AppConfigService } from "@app/admin/service/app-config.service";
 import { TranslateService, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
-
-import { Observable, switchMap } from 'rxjs';
 import { NgClass, AsyncPipe } from "@angular/common";
 import { Bind } from "primeng/bind";
 import { Fieldset } from "primeng/fieldset";
@@ -43,12 +40,8 @@ export class StatisticsCfgDetailViewComponent {
   private appConfigService: AppConfigService = inject(AppConfigService);
   private translateService: TranslateService = inject(TranslateService);
 
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
   readonly type = input<string>('');
-
-  readonly record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
-  );
 
   readonly liveData = signal<any>(null);
   readonly liveDataError = signal<string | undefined>(undefined);

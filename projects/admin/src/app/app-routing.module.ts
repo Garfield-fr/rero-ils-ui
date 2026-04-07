@@ -17,7 +17,6 @@
 import { Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { PERMISSIONS } from '@rero/shared';
-import { of } from 'rxjs';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { PermissionGuard } from './guard/permission.guard';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
@@ -104,7 +103,7 @@ export const routes: Routes = [
         path: 'records/issues',
         loadChildren: () => import('./routes/issues-route').then((m) => m.issuesRoutes),
         resolve: { types: issuesRouteResolver },
-        data: { adminMode: () => of({ can: false, message: '' }), detailUrl: '/records/items/detail/:pid' },
+        data: { adminMode: false, detailUrl: '/records/items/detail/:pid' },
       },
       {
         path: 'records/loans',
@@ -112,7 +111,7 @@ export const routes: Routes = [
         resolve: { types: loansRouteResolver },
         data: {
           showSearchInput: false,
-          adminMode: () => of({ can: false, message: '' }),
+          adminMode: false,
         },
       },
       {
@@ -121,7 +120,7 @@ export const routes: Routes = [
         resolve: { types: patronTransactionEventsRouteResolver },
         data: {
           showSearchInput: false,
-          adminMode: () => of({ can: false, message: '' }),
+          adminMode: false,
         },
       },
       {
@@ -148,13 +147,13 @@ export const routes: Routes = [
         path: 'records/remote_entities',
         loadChildren: () => import('./routes/entities-remote-route').then((m) => m.entitiesRemoteRoutes),
         resolve: { types: entitiesRemoteRouteResolver },
-        data: { adminMode: () => of({ can: false, message: '' }) },
+        data: { adminMode: false },
       },
       {
         path: 'records/local_fields',
         loadChildren: () => import('./routes/local-fields-route').then((m) => m.localFieldsRoutes),
         resolve: { types: localFieldsRouteResolver },
-        data: { adminMode: () => of({ can: false, message: '' }) },
+        data: { adminMode: false },
       },
       {
         path: 'records/documents',

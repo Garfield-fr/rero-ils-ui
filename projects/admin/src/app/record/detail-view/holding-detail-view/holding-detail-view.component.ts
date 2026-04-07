@@ -15,9 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, effect, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { Observable, switchMap } from 'rxjs';
 import { SerialHoldingDetailViewComponent } from './serial-holding-detail-view/serial-holding-detail-view.component';
 
 @Component({
@@ -30,12 +28,8 @@ export class HoldingDetailViewComponent {
 
   private router: Router = inject(Router);
 
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
   readonly type = input<string>('');
-
-  readonly record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
-  );
 
   constructor() {
     effect(() => {

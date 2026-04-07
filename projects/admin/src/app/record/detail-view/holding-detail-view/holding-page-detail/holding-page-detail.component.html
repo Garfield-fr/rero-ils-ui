@@ -17,11 +17,11 @@
   @if (record()) {
     <ng-core-detail-button
     [record]="record()"
-    [type]="type"
-    [adminMode]="adminMode"
-    [useStatus]="useStatus"
-    [updateStatus]="updateStatus"
-    [deleteStatus]="deleteStatus"
+    [type]="type()"
+    [adminMode]="adminMode()"
+    [useStatus]="useStatus()"
+    [updateStatus]="updateStatus()"
+    [deleteStatus]="deleteStatus()"
     (recordEvent)="recordEvent($event)"
     (deleteMessageEvent)="showDeleteMessage($event)"
   >
@@ -34,7 +34,7 @@
     </ng-container>
   </ng-core-detail-button>
   }
-  @if (error) {
-    <ng-core-error [error]="error" />
+  @if (error()) {
+    <ng-core-error [error]="error()" />
   }
   <ng-template ngCoreRecordDetail />

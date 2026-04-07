@@ -15,8 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Observable, switchMap } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 import { TranslateDirective } from '@ngx-translate/core';
 import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
@@ -33,16 +31,11 @@ import { GetRecordPipe } from '@rero/ng-core';
 export class PatronTypesDetailViewComponent {
 
   private organisationService: OrganisationService = inject(OrganisationService);
-  /** Observable resolving record data */
-  readonly record$ = input.required<Observable<any>>();
+
+  readonly record = input<any>();
 
   /** Resource type */
   readonly type = input<string>('');
-
-  record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs => obs)),
-    { initialValue: null }
-  );
 
   /** Get current organisation
    *  @return: current organisation

@@ -16,8 +16,6 @@
  */
 
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Observable, switchMap } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
 import { GetRecordPipe } from '@rero/ng-core';
@@ -30,10 +28,6 @@ import { GetRecordPipe } from '@rero/ng-core';
 })
 export class LocationDetailViewComponent {
 
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
   readonly type = input<string>('');
-
-  readonly record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
-  );
 }

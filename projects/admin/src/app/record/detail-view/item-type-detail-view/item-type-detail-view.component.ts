@@ -14,9 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Observable, switchMap } from 'rxjs';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
 import { Bind } from 'primeng/bind';
@@ -30,12 +28,6 @@ import { Panel } from 'primeng/panel';
 })
 export class ItemTypeDetailViewComponent {
 
-  readonly record$ = input.required<Observable<any>>();
-
+  readonly record = input<any>();
   readonly type = input<string>('');
-
-  record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs => obs)),
-    { initialValue: null }
-  );
 }

@@ -37,7 +37,7 @@
               [label]="'Import'|translate"
               outlined
               [permissions]="permissions.DOC_CREATE"
-              (onClick)="importDocument($event, record(), { source: source, pid: pid })"
+              (onClick)="importDocument($event, record(), { source: source, pid: pid() })"
             />
           }
           @if (record()?.metadata.pid) {

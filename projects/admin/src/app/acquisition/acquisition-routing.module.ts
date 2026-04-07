@@ -19,7 +19,6 @@
 import { Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
-import { of } from 'rxjs';
 import { PermissionGuard } from '../guard/permission.guard';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
@@ -65,7 +64,7 @@ export const acquisitionsRoutes: Routes = [
     path: 'records/budgets',
     loadChildren: () => import('./routes/budgets-route').then((m) => m.budgetsRoutes),
     resolve: { types: budgetsRouteResolver },
-    data: { adminMode: () => of({ can: false, message: '' }) },
+    data: { adminMode: false },
   },
   {
     path: 'records/acq_orders',

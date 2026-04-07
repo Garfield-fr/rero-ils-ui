@@ -19,7 +19,6 @@
 import { Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
-import { of } from 'rxjs';
 import { PermissionGuard } from '../guard/permission.guard';
 import { recordTypeMatcher } from '../routes/record-type-matcher';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
@@ -66,7 +65,7 @@ export const acquisitionsRoutes: Routes = [
     matcher: recordTypeMatcher('budgets'),
     loadChildren: () => import('./routes/budgets-route').then((m) => m.budgetsRoutes),
     resolve: { types: budgetsRouteResolver },
-    data: { adminMode: () => of({ can: false, message: '' }) },
+    data: { adminMode: false },
   },
   {
     matcher: recordTypeMatcher('acq_orders'),

@@ -19,7 +19,7 @@ import { Component, computed, effect, inject, input, signal, ChangeDetectionStra
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RecordService, UpperCaseFirstPipe } from '@rero/ng-core';
 import { UserService } from '@rero/shared';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { Library } from '../../../classes/library';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -48,24 +48,20 @@ export class LibraryDetailViewComponent {
   private recordService: RecordService = inject(RecordService);
   private userService: UserService = inject(UserService);
 
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
   readonly type = input<string>('');
 
-  private readonly _rawRecord = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
-  );
-
-  readonly record = computed(() => {
-    const r = this._rawRecord();
+  readonly library = computed(() => {
+    const r = this.record();
     return r ? new Library(r.metadata) : null;
   });
 
   readonly isUserCanAddLocation = computed(() =>
-    this.userService.user.currentLibrary === this._rawRecord()?.metadata?.pid
+    this.userService.user.currentLibrary === this.record()?.metadata?.pid
   );
 
   private readonly _fetchedLocations = toSignal(
-    toObservable(this._rawRecord).pipe(
+    toObservable(this.record).pipe(
       switchMap(r => {
         const pid = r?.metadata?.pid;
         if (!pid) return of([]);

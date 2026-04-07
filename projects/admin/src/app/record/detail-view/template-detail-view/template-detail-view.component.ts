@@ -15,10 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
-import { Observable, switchMap } from 'rxjs';
 import { TranslateDirective } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 
@@ -32,10 +30,6 @@ export class TemplateDetailViewComponent {
 
   private route: ActivatedRoute = inject(ActivatedRoute);
 
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
   readonly type = input<string>('');
-
-  readonly record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
-  );
 }

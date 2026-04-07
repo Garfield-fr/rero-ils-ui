@@ -18,7 +18,7 @@ import { Component, computed, inject, input, ChangeDetectionStrategy } from '@an
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
 import { RecordService, TruncateTextPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -36,12 +36,8 @@ export class IllRequestDetailViewComponent {
 
   private recordService: RecordService = inject(RecordService);
 
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
   readonly type = input<string>('');
-
-  readonly record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
-  );
 
   readonly tagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.status));
   readonly loanTagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.loan_status));

@@ -16,9 +16,7 @@
  */
 
 import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IPermissions, PERMISSIONS, PermissionsService, PermissionsDirective, LinkPermissionsDirective, JoinPipe } from '@rero/shared';
-import { Observable, switchMap } from 'rxjs';
 import { roleTagSeverity } from '../../../utils/roles';
 import { Bind } from 'primeng/bind';
 import { ButtonDirective } from 'primeng/button';
@@ -49,19 +47,14 @@ export class PatronDetailViewComponent {
 
   private permissionsService: PermissionsService = inject(PermissionsService);
 
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
   readonly type = input<string>('');
 
   readonly permissions: IPermissions = PERMISSIONS;
 
-  private readonly _rawRecord = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
-  );
-
-  readonly record = computed(() => this._rawRecord());
-  readonly patron = computed(() => this._rawRecord()?.metadata ?? null);
+  readonly patron = computed(() => this.record()?.metadata ?? null);
   readonly phones = computed(() => {
-    const meta = this._rawRecord()?.metadata;
+    const meta = this.record()?.metadata;
     return meta ? this._processPhones(meta) : [];
   });
 

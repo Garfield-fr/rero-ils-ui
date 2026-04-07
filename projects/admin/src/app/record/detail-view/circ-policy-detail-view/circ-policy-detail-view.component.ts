@@ -16,8 +16,6 @@
  */
 
 import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Observable, switchMap } from 'rxjs';
 import { OrganisationService } from '../../../service/organisation.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -36,12 +34,8 @@ export class CircPolicyDetailViewComponent {
 
   private organisationService: OrganisationService = inject(OrganisationService);
 
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
   readonly type = input<string>('');
-
-  readonly record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs$ => obs$))
-  );
 
   readonly reminders = computed(() => {
     const r = this.record();

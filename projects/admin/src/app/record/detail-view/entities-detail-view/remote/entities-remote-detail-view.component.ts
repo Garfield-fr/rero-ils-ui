@@ -16,9 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Observable, switchMap } from 'rxjs';
 
 import { EntityType, EntityTypeIcon, ExtractSourceFieldPipe } from '@rero/shared';
 import { Bind } from 'primeng/bind';
@@ -40,16 +38,10 @@ export class RemoteEntitiesDetailViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
 
-  /** Observable resolving record data */
-  readonly record$ = input.required<Observable<any>>();
+  readonly record = input<any>();
 
   /** Resource type */
   readonly type = input<string>('');
-
-  record = toSignal(
-    toObservable(this.record$).pipe(switchMap(obs => obs)),
-    { initialValue: null }
-  );
 
   /** Enum of type of Entity */
   entityType = EntityType;
