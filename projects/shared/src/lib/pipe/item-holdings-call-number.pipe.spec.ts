@@ -18,7 +18,8 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { of, Subject } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { ItemHoldingsCallNumberPipe } from './item-holdings-call-number.pipe';
 
 describe('ItemHoldingsCallNumberPipe', () => {
@@ -45,7 +46,7 @@ describe('ItemHoldingsCallNumberPipe', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should return call numbers without calling the api', () => {
+  it('should return call numbers without calling the api', async () => {
     const record = {
       metadata: {
         call_number: 'first call number',
@@ -54,19 +55,19 @@ describe('ItemHoldingsCallNumberPipe', () => {
     };
     const output = {
       first: {
-        source: 'item',
+        source: 'item' as const,
         value: record.metadata.call_number
       },
       second: {
-        source: 'item',
+        source: 'item' as const,
         value: record.metadata.second_call_number
       }
     };
-    expect(pipe.transform(record)).toEqual(output);
+    expect(await firstValueFrom(pipe.transform(record))).toEqual(output);
     expect(recordServiceSpy.getRecord).not.toHaveBeenCalled();
   });
 
-  it('should return call number undefined', () => {
+  it('should return call number undefined', async () => {
     recordServiceSpy.getRecord.mockReturnValue(of({ metadata: {} }));
     const record = {
       metadata: {
@@ -77,12 +78,11 @@ describe('ItemHoldingsCallNumberPipe', () => {
       first: { source: undefined, value: undefined },
       second: { source: undefined, value: undefined }
     };
-    expect(pipe.transform(record)).toEqual(output);
+    expect(await firstValueFrom(pipe.transform(record).pipe(skip(1)))).toEqual(output);
   });
 
-  it('should return call numbers with calling the api', () => {
-    const subject = new Subject<{ metadata: { call_number: string } }>();
-    recordServiceSpy.getRecord.mockReturnValue(subject.asObservable());
+  it('should return call numbers with calling the api', async () => {
+    recordServiceSpy.getRecord.mockReturnValue(of({ metadata: { call_number: 'M call number' } }));
     const record = {
       metadata: {
         holding: { pid: '1' },
@@ -90,18 +90,17 @@ describe('ItemHoldingsCallNumberPipe', () => {
       }
     };
     const output = {
-      first: { source: 'holding', value: 'M call number' },
-      second: { source: 'item', value: record.metadata.second_call_number }
+      first: { source: 'holding' as const, value: 'M call number' },
+      second: { source: 'item' as const, value: record.metadata.second_call_number }
     };
 
-    expect(pipe.transform(record)).toEqual({
+    expect(await firstValueFrom(pipe.transform(record))).toEqual({
       first: { source: undefined, value: undefined },
       second: { source: undefined, value: undefined }
     });
 
-    subject.next({ metadata: { call_number: 'M call number' } });
-    expect(pipe.transform(record)).toEqual(output);
-    expect(recordServiceSpy.getRecord).toHaveBeenCalledTimes(1);
+    expect(await firstValueFrom(pipe.transform(record).pipe(skip(1)))).toEqual(output);
+    expect(recordServiceSpy.getRecord).toHaveBeenCalledTimes(2);
     expect(recordServiceSpy.getRecord).toHaveBeenCalledWith('holdings', '1', { resolve: 1 });
   });
 });

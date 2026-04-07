@@ -43,9 +43,9 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
   protected recordService: RecordService = inject(RecordService);
 
   /**
-   * Get item call numbers as an Observable.
-   * Use with the `async` pipe in templates.
-   * @return Observable<ItemCallNumbers>
+    * Get item call numbers as an Observable.
+    * Use with the `async` pipe in templates.
+    * @return Observable<ItemCallNumbers>
    */
   transform(record: unknown): Observable<ItemCallNumbers> {
     const metadata = this.extractMetadata(record);

@@ -15,32 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { CurrencyPipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, computed, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { ApiService, CONFIG, RecordService, ExportButtonComponent, Nl2brPipe } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, UserService, PermissionsDirective } from '@rero/shared';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ApiService, CONFIG, ExportButtonComponent, Nl2brPipe, RecordService } from '@rero/ng-core';
+import { IPermissions, PERMISSIONS, PermissionsDirective, UserService } from '@rero/shared';
 import { MessageService, TreeNode, TreeTableNode } from 'primeng/api';
-import { filter, forkJoin } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
-import { TreeTableModule } from 'primeng/treetable';
-import { CurrencyPipe, JsonPipe } from '@angular/common';
-import { AccountAvailableAmountPipe } from '../../../pipes/account-available-amount.pipe';
 import { TooltipModule } from 'primeng/tooltip';
+import { TreeTableModule } from 'primeng/treetable';
+import { filter, forkJoin } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { AccountAvailableAmountPipe } from '../../../pipes/account-available-amount.pipe';
 
 @Component({
     selector: 'admin-account-list',
     templateUrl: './account-list.component.html',
-    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule, JsonPipe],
+    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountListComponent {

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable } from '@angular/core';
+import { effect, inject, Injectable } from '@angular/core';
 import { LibraryService } from '@app/admin/menu/service/library.service';
 import { MenuService } from '@app/admin/menu/service/menu.service';
 import { LocalStorageService } from '@rero/ng-core';
@@ -35,7 +35,17 @@ export class LoanFixedDateService {
   private _keyExpiration = 43200;
 
   constructor() {
-    this.init();
+    effect(() => {
+      if (this.libraryService.selectedLibrary()) {
+        this.remove();
+      }
+    });
+
+    effect(() => {
+      if (this.menuService.logoutVersion() > 0) {
+        this.remove();
+      }
+    });
   }
 
   /**
@@ -82,16 +92,5 @@ export class LoanFixedDateService {
    */
   remove(): void {
     this.localeStorageService.remove(this._dueDateKey);
-  }
-
-  /**
-   * Init service
-   * Connecting the library change service
-   */
-  init(): void {
-    // We delete the stored value if we change library
-    this.libraryService.switch$.subscribe(() => this.remove());
-    // Delete locale storage on logout
-    this.menuService.logout$.subscribe(() => this.remove());
   }
 }

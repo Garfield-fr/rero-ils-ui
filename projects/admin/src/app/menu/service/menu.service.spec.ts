@@ -15,9 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 
 import { MenuService } from './menu.service';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { PERMISSION_OPERATOR, PermissionsService, UserService } from '@rero/shared';
 import { LibraryApiService } from '../api/library-api.service';
 import { ISwitchLibrary, LibraryService } from './library.service';
@@ -143,18 +145,20 @@ describe('MenuService', () => {
   };
 
   const userServiceSpy = { } as any;
-  userServiceSpy.user = {
+  userServiceSpy.user = signal({
     id: 1,
     currentLibrary: '1',
     patronLibrarian: {
       libraries: [{ pid: '1' }, { pid: '2' }]
     }
-  }
+  });
 
   const libraryApiServiceSpy = { findByLibrariesPidAndOrderBy$: vi.fn() };
   libraryApiServiceSpy.findByLibrariesPidAndOrderBy$.mockReturnValue(of(librariesResponse));
 
   const libraryServiceSpy = { } as any;
+  libraryServiceSpy.selectedLibrary = signal(null);
+  libraryServiceSpy.switch = vi.fn();
 
   const localStorageServiceSpy = { has: vi.fn(), set: vi.fn() };
   localStorageServiceSpy.has.mockReturnValue(false);
@@ -207,17 +211,18 @@ describe('MenuService', () => {
     expect(languages[2].styleClass).toEqual('ui:font-bold');
   });
 
-  it('should return library menu lines', () => {
-    service.generateMenuLibrary$().subscribe((menu: MenuItem) => {
-      expect(menu.menu.label).toEqual('lib-1');
-      expect(menu.menu.id).toEqual('library-menu');
-      expect(menu.menu.icon).not.toBeNull();
-      expect(menu.menu.items.length).toEqual(2);
-      expect(menu.menu.items[0].code).toEqual('lib-1');
-      expect(menu.menu.items[0].label).toEqual('[lib-1] Library 1');
-      expect(menu.menu.items[0].pid).toEqual('1');
-      expect(typeof menu.menu.items[0].command === 'function').toBe(true)
-    });
+  it('should return library menu lines', async () => {
+    const menu = await firstValueFrom(
+      service.generateMenuLibrary$().pipe(filter((menu): menu is NonNullable<typeof menu> => !!menu))
+    );
+    expect(menu?.menu.label).toEqual('lib-1');
+    expect(menu?.menu.id).toEqual('library-menu');
+    expect(menu?.menu.icon).not.toBeNull();
+    expect(menu?.menu.items?.length).toEqual(2);
+    expect(menu?.menu.items?.[0].code).toEqual('lib-1');
+    expect(menu?.menu.items?.[0].label).toEqual('[lib-1] Library 1');
+    expect(menu?.menu.items?.[0].pid).toEqual('1');
+    expect(typeof menu?.menu.items?.[0].command === 'function').toBe(true);
   });
 
   it('should return the application\'s menu lines', () => {
@@ -231,12 +236,12 @@ describe('MenuService', () => {
   });
 
   it('should change the library code with the switch', () => {
-    const menu = service.generateAppMenu(appMenu);
+    service.generateAppMenu(appMenu);
     service.updateLibraryLink(librarySwitch);
-    expect(menu[2].items[0].routerLink[4]).toEqual('2');
-    expect(menu[1].items[0].queryParams.library).toEqual('2');
-    expect(menu[1].items[0].queryParams.owner_library).toEqual('2');
-    expect(menu[1].items[0].queryParams.owning_library).toEqual('2');
+    expect(service.appMenuItems()[2].items[0].routerLink[4]).toEqual('2');
+    expect(service.appMenuItems()[1].items[0].queryParams.library).toEqual('2');
+    expect(service.appMenuItems()[1].items[0].queryParams.owner_library).toEqual('2');
+    expect(service.appMenuItems()[1].items[0].queryParams.owning_library).toEqual('2');
   });
 
   it('should return true on the logout event', () => {

@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 
 import { ISwitchLibrary, LibraryService } from './library.service';
 import { UserService } from '@rero/shared';
@@ -24,10 +25,10 @@ describe('LibraryService', () => {
   let service: LibraryService;
 
   const userService = {
-    user: {
+    user: signal({
       id: 1,
       currentLibrary: '0'
-    }
+    })
   };
 
   const librarySwitchData: ISwitchLibrary = {
@@ -53,8 +54,8 @@ describe('LibraryService', () => {
   });
 
   it('should change library', () => {
-    service.switch$.subscribe((library: ISwitchLibrary) => expect(library).toEqual(librarySwitchData));
     service.switch(librarySwitchData);
-    expect(userService.user.currentLibrary).toEqual(librarySwitchData.pid);
+    expect(service.selectedLibrary()).toEqual(librarySwitchData);
+    expect(userService.user().currentLibrary).toEqual(librarySwitchData.pid);
   });
 });

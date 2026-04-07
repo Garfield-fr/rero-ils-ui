@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="ui:flex ui:flex-wrap ui:lg:flex-nowrap ui:gap-4">
-  @for (item of items; track item.id) {
+  @for (item of items(); track item.id) {
     <div class="ui:w-full">
       <p-card styleClass="ui:bg-white">
         <ng-template #header>

@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { LoanFixedDateService } from "./loan-fixed-date.service";
 import { LocalStorageService } from "@rero/ng-core";
-import { of } from "rxjs";
 import { LibraryService } from "@app/admin/menu/service/library.service";
 import { MenuService } from "@app/admin/menu/service/menu.service";
 
@@ -26,10 +26,10 @@ describe('LoanFixedDateService', () => {
   let service: LoanFixedDateService;
 
   const libraryServiceSpy = { } as any;
-  libraryServiceSpy.switch$ = of({});
+  libraryServiceSpy.selectedLibrary = signal(null);
 
   const menuServiceSpy = { } as any;
-  menuServiceSpy.logout$ = of({});
+  menuServiceSpy.logoutVersion = signal(0);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

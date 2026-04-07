@@ -15,9 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
+import { map, startWith } from 'rxjs/operators';
 import { MenuService } from '../service/menu.service';
-import { MenuItem } from 'primeng/api';
+import { MenuTranslateService } from '../service/menu-translate.service';
 import { Bind } from 'primeng/bind';
 import { Card } from 'primeng/card';
 import { Ripple } from 'primeng/ripple';
@@ -30,13 +33,22 @@ import { TieredMenu } from 'primeng/tieredmenu';
     imports: [Bind, Card, Ripple, RouterLink, TieredMenu],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuDashboardComponent implements OnInit {
+export class MenuDashboardComponent {
 
+  private translateService: TranslateService = inject(TranslateService);
   private menuService: MenuService = inject(MenuService);
+  private menuTranslateService: MenuTranslateService = inject(MenuTranslateService);
 
-  items: MenuItem[] = [];
+  private readonly currentLanguage = toSignal(
+    this.translateService.onLangChange.pipe(
+      map(() => this.translateService.currentLang),
+      startWith(this.translateService.currentLang)
+    ),
+    { initialValue: this.translateService.currentLang }
+  );
 
-  ngOnInit(): void {
-    this.items = this.menuService.appMenuItems;
-  }
+  readonly items = computed(() => {
+    this.currentLanguage();
+    return this.menuTranslateService.process(this.menuService.appMenuItems());
+  });
 }

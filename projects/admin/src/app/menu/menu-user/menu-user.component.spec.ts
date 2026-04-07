@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 
 import { MenuUserComponent } from './menu-user.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -24,7 +25,6 @@ import { UserService } from '@rero/shared';
 import { LibrarySwitchStorageService } from '../service/library-switch-storage.service';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { ISwitchLibrary, LibraryService } from '../service/library.service';
 import { MENU_IDS } from '../menu-definition/menu-ids';
@@ -98,23 +98,40 @@ describe('AppMenuUserComponent', () => {
     name: 'library name'
   };
 
-  const menuServiceSpy = { generateMenuLibrary$: vi.fn(), generateMenuLanguages: vi.fn(), updateLibraryQueryParams: vi.fn(), logout: vi.fn() };
-  menuServiceSpy.generateMenuLibrary$.mockReturnValue(of([]));
+  const libraryMenuSignal = signal({ menu: menuItems[0], libraryActive: librarySwitch });
+  const menuServiceSpy = { libraryMenu: libraryMenuSignal, generateMenuLanguages: vi.fn(), updateLibraryQueryParams: vi.fn(), logout: vi.fn() };
+  menuServiceSpy.generateMenuLanguages.mockImplementation(() => [
+    {
+      label: 'french',
+      code: 'fr',
+      id: 'lang-fr',
+      styleClass: translateService?.currentLang === 'fr' ? 'ui:font-bold' : ''
+    },
+    {
+      label: 'English',
+      code: 'en',
+      id: 'lang-en',
+      styleClass: translateService?.currentLang === 'en' ? 'ui:font-bold' : ''
+    },
+  ]);
 
   const menuTranslateServiceSpy = { process: vi.fn() };
-  menuTranslateServiceSpy.process.mockReturnValue(menuItems);
+  menuTranslateServiceSpy.process.mockImplementation((items: MenuItem[]) => items);
 
   const userServiceSpy = { } as any;
-  userServiceSpy.user = {
+  userServiceSpy.user = signal({
     id: 1,
     currentLibrary: 'foo'
-  };
+  });
 
   const librarySwitchStorageServiceSpy = { save: vi.fn() };
 
   const routerSpy = { navigate: vi.fn() };
 
   beforeEach(async () => {
+    menuServiceSpy.updateLibraryQueryParams.mockReset();
+    routerSpy.navigate.mockReset();
+
     await TestBed.configureTestingModule({
     imports: [
         TranslateModule.forRoot(),
@@ -151,20 +168,31 @@ describe('AppMenuUserComponent', () => {
   });
 
   it('should change the library menu', () => {
-    expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toBeUndefined();
+    expect(component.items().find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU)?.items?.[0].styleClass).toBeUndefined();
     libraryService.switch(librarySwitch);
-    expect(component.items.find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU).items[0].styleClass).toEqual('ui:font-bold');
+    libraryMenuSignal.set({
+      menu: {
+        ...menuItems[0],
+        label: librarySwitch.code,
+        items: [{ ...menuItems[0].items[0], styleClass: 'ui:font-bold' }]
+      },
+      libraryActive: librarySwitch
+    });
+    fixture.detectChanges();
+    expect(menuServiceSpy.updateLibraryQueryParams).toHaveBeenCalledWith(librarySwitch);
+    expect(component.items().find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU)?.items?.[0].styleClass).toEqual('ui:font-bold');
   });
 
   it('should change the language menu', () => {
-    expect(component.items
+    expect(component.items()
       .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items
       .find((item: MenuItem) => item.id === 'lang-en').styleClass)
       .toEqual('ui:font-bold');
 
     translateService.use('fr');
-    expect(component.items
+    fixture.detectChanges();
+    expect(component.items()
       .find((item: MenuItem) => item.id === MENU_IDS.USER.MENU).items
       .find((item: MenuItem) => item.id === MENU_IDS.USER.LANGUAGE).items
       .find((item: MenuItem) => item.id === 'lang-fr').styleClass)

@@ -29,16 +29,16 @@ export class PatronProfileMenuService {
   private _onChange = new Subject<IMenu>();
 
   /** Menu */
-  private _menu = [];
+  private _menu: IMenu[] = [];
 
   /** Current menu */
-  private _currentMenu: IMenu;
+  private _currentMenu: IMenu | null = null;
 
   /** All available patrons */
-  private _patrons: IPatron[];
+  private _patrons: IPatron[] = [];
 
   /** Current patron */
-  private _currentPatron: IPatron;
+  private _currentPatron: IPatron | null = null;
 
   /**
    * On change
@@ -82,8 +82,8 @@ export class PatronProfileMenuService {
 
   /** OnInit hook */
   init(): void {
-    const { user } = this.userService;
-    if (user.isAuthenticated) {
+    const user = this.userService.user();
+    if (user?.isAuthenticated) {
       this._patrons = user.patrons.filter((patron) => patron.roles.includes('patron'));
       this._currentPatron = this._patrons[0];
       this._patrons.forEach((patron: IPatron) =>

@@ -15,17 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable, inject } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { CoreConfigService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
 import { PERMISSION_OPERATOR, PermissionsService, UserService } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { MenuItem } from 'primeng/api';
-import { Observable, map, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { LibraryApiService } from '../api/library-api.service';
 import { MENU_IDS } from '../menu-definition/menu-ids';
 import { LibrarySwitchStorageService } from './library-switch-storage.service';
 import { ISwitchLibrary, LibraryService } from './library.service';
+
+type LibraryRecord = {
+  metadata: {
+    pid: string;
+    code: string;
+    name: string;
+  };
+};
+
+type LibraryMenuData = {
+  menu: MenuItem;
+  libraryActive: ISwitchLibrary;
+};
 
 @Injectable({
   providedIn: 'root'
@@ -43,32 +59,82 @@ export class MenuService {
 
   private libraryKeys = ['library', 'owner_library', 'owning_library'];
 
-  private logoutEvent = new EventEmitter<boolean>();
+  private readonly _logoutVersion = signal(0);
+  private readonly _applicationMenuItems = signal<MenuItem[]>([]);
 
-  private onChange = new EventEmitter<MenuItem[]>();
+  readonly appMenuItems = this._applicationMenuItems.asReadonly();
+  readonly logoutVersion = this._logoutVersion.asReadonly();
+  readonly logout$ = toObservable(this.logoutVersion).pipe(
+    filter((logoutVersion: number) => logoutVersion > 0),
+    map(() => true)
+  );
 
-  private applicationMenuItems: MenuItem[] = [];
+  private readonly libraries = toSignal(
+    toObservable(this.userService.user).pipe(
+      map((user) => user?.patronLibrarian?.libraries.map((library: { pid: string }) => library.pid) ?? []),
+      switchMap((librariesPid: string[]) => {
+        if (librariesPid.length === 0) {
+          return of([] as LibraryRecord[]);
+        }
 
-  get logout$(): Observable<boolean> {
-    return this.logoutEvent.asObservable();
-  }
+        return this.libraryApiService.findByLibrariesPidAndOrderBy$(librariesPid).pipe(
+          map((results: EsResult) => results.hits.total.value > 0
+            ? results.hits.hits.map((library) => ({
+              metadata: {
+                pid: String(library.metadata['pid']),
+                code: String(library.metadata['code']),
+                name: String(library.metadata['name'])
+              }
+            }))
+            : []
+          )
+        );
+      })
+    ),
+    { initialValue: [] as LibraryRecord[] }
+  );
 
-  get onChange$(): Observable<MenuItem[]> {
-    return this.onChange.asObservable();
-  }
+  readonly libraryMenu = computed<LibraryMenuData | undefined>(() => {
+    const libraries = this.libraries();
+    if (libraries.length === 0) {
+      return undefined;
+    }
 
-  set appMenuItems(menuItems: MenuItem[]) {
-    this.applicationMenuItems = menuItems;
-  }
+    const libraryActive = this.resolveActiveLibrary(libraries);
+    if (!libraryActive) {
+      return undefined;
+    }
 
-  get appMenuItems(): MenuItem[] {
-    return this.applicationMenuItems;
-  }
+    return {
+      menu: {
+        label: libraryActive.code,
+        icon: 'fa fa-random',
+        id: MENU_IDS.LIBRARY_MENU,
+        items: libraries
+          .slice()
+          .sort((a: LibraryRecord, b: LibraryRecord) => a.metadata.code.localeCompare(b.metadata.code))
+          .map((library: LibraryRecord) => ({
+            label: `[${library.metadata.code}] ${library.metadata.name}`,
+            code: library.metadata.code,
+            pid: library.metadata.pid,
+            styleClass: library.metadata.pid === libraryActive.pid ? 'ui:font-bold' : '',
+            command: () => this.libraryService.switch({
+              pid: library.metadata.pid,
+              code: library.metadata.code,
+              name: library.metadata.name
+            })
+          }))
+      },
+      libraryActive
+    };
+  });
+
+  private readonly libraryMenu$ = toObservable(this.libraryMenu);
 
   public generateMenuLanguages(): MenuItem[] {
-    let languagesMenu = [];
+    const languagesMenu: MenuItem[] = [];
     const currentLanguage = this.translateService.currentLang;
-    this.configService.languages.map((language: string) => {
+    this.configService.languages.forEach((language: string) => {
       languagesMenu.push({
         label: this.translateService.instant(`ui_language_${language}`),
         translateLabel: `ui_language_${language}`,
@@ -79,81 +145,43 @@ export class MenuService {
           .subscribe(() => this.translateService.use(language))
       });
     });
-    languagesMenu = languagesMenu.sort((a: any, b: any) => a.label.localeCompare(b.label));
 
-    return languagesMenu;
+    return languagesMenu.sort((a: MenuItem, b: MenuItem) => String(a.label).localeCompare(String(b.label)));
   }
 
-  public generateMenuLibrary$(): Observable<object|undefined> {
-    const { currentLibrary } = this.userService.user();
-    const librariesPid = this.userService.user()?.patronLibrarian.libraries.map((library: { pid: string }) => library.pid);
-    if (librariesPid.length === 0) {
-      return of(undefined);
-    }
-    return this.libraryApiService.findByLibrariesPidAndOrderBy$(librariesPid).pipe(
-      map((results: EsResult) => results.hits.total.value > 0 ? results.hits.hits : []),
-      map((libraries: any) => {
-        let libraryActive = undefined;
-        if (!this.librarySwitchDataStorage.has()) {
-          libraryActive = libraries.find((library: any) => library.metadata.pid === currentLibrary);
-        } else {
-          const data = this.librarySwitchDataStorage.get();
-          libraryActive = libraries.find((library: any) => library.metadata.pid === data.currentLibrary);
-          if (!libraryActive) {
-            libraryActive = libraries.find((library: any) => library.metadata.pid === currentLibrary);
-          }
-        }
-        const menu = {
-          label: libraryActive.metadata.code,
-          icon: 'fa fa-random',
-          id: MENU_IDS.LIBRARY_MENU,
-          items: []
-        };
-        libraries.sort((a: any, b:any) => a.metadata.code.localeCompare(b.metadata.code))
-        .map((library: any) => menu.items.push({
-          label: `[${library.metadata.code}] ${library.metadata.name}`,
-          code: library.metadata.code,
-          pid: library.metadata.pid,
-          styleClass: library.metadata.pid === libraryActive.metadata.pid ? 'ui:font-bold' : '',
-          command: () => this.libraryService.switch({
-            pid: library.metadata.pid,
-            code: library.metadata.code,
-            name: library.metadata.name
-          })
-        }));
-
-        return { menu, libraryActive: {
-          pid: libraryActive.metadata.pid,
-          code: libraryActive.metadata.code,
-          name: libraryActive.metadata.name
-        } };
-      }));
-    ;
+  public generateMenuLibrary$(): Observable<LibraryMenuData | undefined> {
+    return this.libraryMenu$;
   }
 
   public generateAppMenu(menuItems: MenuItem[]): MenuItem[] {
-    const items = this.processMenuApp(menuItems).filter((item: any) => item);
-    this.appMenuItems = items;
+    const items = this.processMenuApp(cloneDeep(menuItems)).filter((item: MenuItem | undefined): item is MenuItem => !!item);
+    this._applicationMenuItems.set(items);
 
     return items;
   }
 
   public updateLibraryLink(library: ISwitchLibrary): void {
-    const item = this.appMenuItems
-    .find((item: MenuItem) => item.id === MENU_IDS.APP.ADMIN.MENU).items
-    .find((item: MenuItem) => item.id === MENU_IDS.APP.ADMIN.MY_LIBRARY);
+    const menuItems = cloneDeep(this.appMenuItems());
+    const item = menuItems
+      .find((menuItem: MenuItem) => menuItem.id === MENU_IDS.APP.ADMIN.MENU)?.items
+      ?.find((menuItem: MenuItem) => menuItem.id === MENU_IDS.APP.ADMIN.MY_LIBRARY);
+
+    if (!item?.routerLink) {
+      return;
+    }
+
     const routerLink = [...item.routerLink];
     routerLink[4] = library.pid;
     item.routerLink = routerLink;
-    this.updateLibraryQueryParams(library);
+    this._applicationMenuItems.set(this.updateQueryParams(menuItems, library));
   }
 
   public updateLibraryQueryParams(library: ISwitchLibrary): void {
-    this.updateQueryParams(this.appMenuItems, library);
+    this._applicationMenuItems.update((menuItems: MenuItem[]) => this.updateQueryParams(cloneDeep(menuItems), library));
   }
 
   public logout(): void {
-    this.logoutEvent.emit(true);
+    this._logoutVersion.update((logoutVersion: number) => logoutVersion + 1);
   }
 
   private processMenuApp(menuItems: MenuItem[]): MenuItem[] {
@@ -179,10 +207,40 @@ export class MenuService {
     });
   }
 
+  private resolveActiveLibrary(libraries: LibraryRecord[]): ISwitchLibrary | undefined {
+    const selectedLibrary = this.libraryService.selectedLibrary();
+    if (selectedLibrary) {
+      return selectedLibrary;
+    }
+
+    const currentLibrary = this.userService.user()?.currentLibrary;
+    let libraryActive = undefined;
+
+    if (!this.librarySwitchDataStorage.has()) {
+      libraryActive = libraries.find((library: LibraryRecord) => library.metadata.pid === currentLibrary);
+    } else {
+      const data = this.librarySwitchDataStorage.get();
+      libraryActive = libraries.find((library: LibraryRecord) => library.metadata.pid === data.currentLibrary);
+      if (!libraryActive) {
+        libraryActive = libraries.find((library: LibraryRecord) => library.metadata.pid === currentLibrary);
+      }
+    }
+
+    if (!libraryActive) {
+      return undefined;
+    }
+
+    return {
+      pid: libraryActive.metadata.pid,
+      code: libraryActive.metadata.code,
+      name: libraryActive.metadata.name
+    };
+  }
+
   private updateQueryParams(menuItems: MenuItem[], library: ISwitchLibrary): MenuItem[] {
-    menuItems.map((item: MenuItem) => {
+    menuItems.forEach((item: MenuItem) => {
       if (item.queryParams) {
-        item.queryParams = this.processQueryParams(item.queryParams, library);
+        item.queryParams = this.processQueryParams(item.queryParams as Record<string, unknown>, library);
       }
       if (item.items) {
         item.items = this.updateQueryParams(item.items, library);
@@ -192,7 +250,7 @@ export class MenuService {
     return menuItems;
   }
 
-  private processQueryParams(queryParams: object, library: ISwitchLibrary): object {
+  private processQueryParams(queryParams: Record<string, unknown>, library: ISwitchLibrary): Record<string, unknown> {
     Object.keys(queryParams).forEach((key: string) => {
       if (this.libraryKeys.includes(key)) {
         queryParams[key] = library.pid;

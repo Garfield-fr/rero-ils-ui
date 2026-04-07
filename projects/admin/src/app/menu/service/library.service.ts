@@ -14,9 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { EventEmitter, Injectable, inject } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { LibrarySwitchStorageService } from './library-switch-storage.service';
 
 export type ISwitchLibrary = {
@@ -33,10 +35,15 @@ export class LibraryService {
   private userService: UserService = inject(UserService);
   private librarySwitchStorageService: LibrarySwitchStorageService = inject(LibrarySwitchStorageService);
 
-  private switchEvent = new EventEmitter<ISwitchLibrary>();
+  private readonly _selectedLibrary = signal<ISwitchLibrary | null>(null);
+
+  readonly selectedLibrary = this._selectedLibrary.asReadonly();
 
   get switch$(): Observable<ISwitchLibrary> {
-    return this.switchEvent.asObservable();
+    return toObservable(this.selectedLibrary).pipe(
+      filter((library): library is ISwitchLibrary => library !== null),
+      map((library: ISwitchLibrary) => library)
+    );
   }
 
   switch(library: ISwitchLibrary): void {
@@ -46,6 +53,6 @@ export class LibraryService {
       libraryName: library.name
     });
     this.userService.user()!.currentLibrary = library.pid;
-    this.switchEvent.emit(library);
+    this._selectedLibrary.set(library);
   }
 }

@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
@@ -25,12 +26,12 @@ describe('MenuTranslateService', () => {
   let translate: TranslateService;
 
   const userServiceSpy = { } as any;
-  userServiceSpy.user = {
+  userServiceSpy.user = signal({
     currentLibrary: '1',
     currentOrganisation: '2',
     symbolName: 'AM',
     currentBudget: '1'
-  };
+  });
 
   const translations = {
     'user': 'utilisateur'
