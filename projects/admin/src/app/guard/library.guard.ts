@@ -37,7 +37,7 @@ export class LibraryGuard  {
   canActivate(next: ActivatedRouteSnapshot): Observable<boolean> {
     return this.getOwningLibrary$(next).pipe(
       map((owningLibrary: string) => {
-        if (owningLibrary !== this.userService.user.currentLibrary) {
+        if (owningLibrary !== this.userService.user()?.currentLibrary) {
           this.router.navigate(['/errors/403'], { skipLocationChange: true });
           return false;
         }

@@ -69,7 +69,7 @@ export class ItemAccessGuard implements CanActivate {
             // Redirect to homepage
             this.router.navigate(['/']);
           }
-          const userCurrentLibrary = this.userService.user.currentLibrary;
+          const userCurrentLibrary = this.userService.user()?.currentLibrary;
           if (userCurrentLibrary !== data.metadata.library.pid) {
             this.messageService.add({
               severity: 'warn',

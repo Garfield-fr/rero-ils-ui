@@ -57,7 +57,7 @@ export class CanAddLocalFieldsGuard  {
       return this.localFieldsApiService.getByResourceTypeAndResourcePidAndOrganisationId(
         type,
         params.ref,
-        this.userService.user.currentOrganisation
+        this.userService.user()?.currentOrganisation
       ).pipe(map(record => {
         // False if the record metadata exists.
         return !record.metadata;

@@ -47,7 +47,7 @@ export class ItemPageDetailComponent extends DetailComponent {
           tap((permission) => {
             this._recordPermissionsValue.set(
               this.recordPermissionService.membership(
-                this.userService.user,
+                this.userService.user(),
                 record?.metadata?.library?.pid,
                 permission
               )

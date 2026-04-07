@@ -96,7 +96,7 @@ export class ItemTransactionsComponent {
    */
   cancelRequest(transaction: any): void {
     this.loanService
-      .cancelLoan(this.itemPid(), transaction.metadata.pid, this.userService.user.currentLibrary)
+      .cancelLoan(this.itemPid(), transaction.metadata.pid, this.userService.user()?.currentLibrary)
       .subscribe((_itemData: any) => {
         this.messageService.add({
           severity: 'warn',

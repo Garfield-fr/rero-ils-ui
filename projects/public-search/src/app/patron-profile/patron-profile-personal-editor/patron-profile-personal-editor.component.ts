@@ -101,7 +101,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                   ? this._cssConfig[fkey]
                   : this._cssConfig.default;
                 // Deactivation of the fields if we have a patron record
-                if ((this.userService.user.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
+                if ((this.userService.user()?.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
                   field.props.disabled = true;
                 }
                 // Hide password field
@@ -161,7 +161,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
       })
     );
 
-    const userQuery = this.recordService.getRecord('users', this.userService.user.id.toString());
+    const userQuery = this.recordService.getRecord('users', this.userService.user()?.id.toString());
 
     this._subscriptions.add(
       forkJoin([schemaForm, userQuery]).subscribe(([_schema, user]: [any, any]) => {
@@ -191,7 +191,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     const data = removeEmptyValues(this.model);
     // Update user record and reload logged user
     this.recordService
-      .update('users', this.userService.user.id.toString(), data)
+      .update('users', this.userService.user()?.id.toString(), data)
       .pipe(switchMap(() => this.userService.load()))
       .subscribe({
         next: () => {
@@ -242,7 +242,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
               debounceTime(1000),
               map((res: any) => {
                 return (res.hits.hits.length === 0) ||
-                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.userService.user.id);
+                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.userService.user()?.id);
               })
             );
       },

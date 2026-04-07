@@ -106,7 +106,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * @return the list of corresponding transactions.
    */
   myLibraryEngagedFees = computed<PatronTransaction[]>(() => {
-    const libraryPID = this.userService.user.currentLibrary;
+    const libraryPID = this.userService.user()?.currentLibrary;
     return this.tabs.engagedFees.transactions().filter(t => t.library != null && t.library.pid === libraryPID);
   });
 

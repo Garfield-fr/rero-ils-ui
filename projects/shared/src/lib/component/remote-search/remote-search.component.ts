@@ -91,7 +91,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
     if (internalRoutingBaseURL) {
       this.router.navigate([internalRoutingBaseURL], {
         queryParams: {
-          ...{ page: '1', size: '10', organisation: this.userService.user.currentOrganisation },
+          ...{ page: '1', size: '10', organisation: this.userService.user()?.currentOrganisation },
           q: query
         }
       });

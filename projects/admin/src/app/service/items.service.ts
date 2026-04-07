@@ -79,7 +79,7 @@ export class ItemsService {
       item_pid: item.pid,
       pid: item.loan.pid,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this.userService.user.patronLibrarian.pid
+      transaction_user_pid: this.userService.user()?.patronLibrarian.pid
     }).pipe(
       map(data => {
         const itemData = data.metadata;
@@ -134,7 +134,7 @@ export class ItemsService {
     return this.httpClient.post<any>(`${itemApiUrl}/checkin`, {
       item_barcode: barcode,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this.userService.user.patronLibrarian.pid
+      transaction_user_pid: this.userService.user()?.patronLibrarian.pid
     }).pipe(
       map(data => {
         const item = new Item(data.metadata);

@@ -62,7 +62,7 @@ export class DocumentDetailComponent extends DetailComponent {
   ];
 
   ngOnInit(): void {
-    const libPid = this.userService.user.currentLibrary;
+    const libPid = this.userService.user()?.currentLibrary;
     if (libPid) {
       this.recordService.getRecord('libraries', libPid).subscribe((library) => {
         this.fileTitle = [

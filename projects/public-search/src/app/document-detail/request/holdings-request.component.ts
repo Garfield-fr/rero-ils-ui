@@ -94,9 +94,9 @@ export class HoldingsRequestComponent implements OnInit {
         default: throw new TypeError(`${this.recordType()} isn't supported`);
     }
 
-    if (this.userService.user && this.record()) {
+    if (this.userService.user() && this.record()) {
       const metadata = this.record()!.metadata as any;
-      this._patron = this.userService.user.getPatronByOrganisationPid(
+      this._patron = this.userService.user()?.getPatronByOrganisationPid(
         metadata.organisation.pid
       );
       if (this._patron?.patron) {

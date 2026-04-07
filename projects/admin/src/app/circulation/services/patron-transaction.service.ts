@@ -165,16 +165,16 @@ export class PatronTransactionService {
    * @returns An object with `parent`, `operator` and `library` fields fill with current context
    */
   private _buildTransactionEventsSkeleton(transaction: PatronTransaction): any {
-    const currentUser = this.userService.user;
+    const currentUser = this.userService.user();
     return {
       parent: {
         $ref: this.routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid)
       },
       operator: {
-        $ref: this.routeToolService.apiService.getRefEndpoint('patrons', currentUser.patronLibrarian.pid)
+        $ref: this.routeToolService.apiService.getRefEndpoint('patrons', currentUser?.patronLibrarian.pid)
       },
       library: {
-        $ref: this.routeToolService.apiService.getRefEndpoint('libraries', currentUser.currentLibrary)
+        $ref: this.routeToolService.apiService.getRefEndpoint('libraries', currentUser?.currentLibrary)
       }
     };
   }

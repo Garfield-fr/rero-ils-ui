@@ -64,8 +64,8 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit(): void {
-    if (this.userService.user) {
-      this.recordService.getRecord('libraries', this.userService.user.currentLibrary, { resolve: 1 }).subscribe(
+    if (this.userService.user()) {
+      this.recordService.getRecord('libraries', this.userService.user()!.currentLibrary, { resolve: 1 }).subscribe(
         (data: any) => {
           const library = new Library(data.metadata);
           this.disabledDays = library.closedDays;

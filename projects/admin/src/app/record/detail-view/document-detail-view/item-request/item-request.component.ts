@@ -86,7 +86,7 @@ export class ItemRequestComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit() {
-    this.currentUser = this.userService.user;
+    this.currentUser = this.userService.user();
     const data: any = this.dynamicDialogConfig.data;
     this.recordPid = data.recordPid;
     this.recordType = data.recordType;

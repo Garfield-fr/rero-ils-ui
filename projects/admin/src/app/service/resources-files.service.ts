@@ -58,7 +58,7 @@ export class ResourcesFilesService {
    */
   getParentRecord(pid: string): Observable<any> {
     // get the current library pid
-    const libPid = this.userService.user.currentLibrary;
+    const libPid = this.userService.user()?.currentLibrary;
     // retrieve the file record attached to the document and the current library
     return this.httpService
       .get(`${this.baseUrl}?q=metadata.document.pid:${pid} AND metadata.library.pid:${libPid}`)
@@ -95,7 +95,7 @@ export class ResourcesFilesService {
    */
   createParentRecord(docPid: string): Observable<any> {
     // get the current library pid
-    const libPid = this.userService.user.currentLibrary;
+    const libPid = this.userService.user()?.currentLibrary;
     // create the file record attached to the current library pid and the given
     // document
     return this.httpService

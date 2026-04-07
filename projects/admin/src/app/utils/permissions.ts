@@ -32,7 +32,7 @@ export class CurrentLibraryPermissionValidator {
    * @param ownerLibraryPid: the related object owner library pid.
    */
   validate(permissions: RecordPermissions, ownerLibraryPid: string){
-    if (this.userService.user.currentLibrary !== ownerLibraryPid) {
+    if (this.userService.user()?.currentLibrary !== ownerLibraryPid) {
       const disabledPermission: RecordPermission = {
         can: false,
         reasons: {

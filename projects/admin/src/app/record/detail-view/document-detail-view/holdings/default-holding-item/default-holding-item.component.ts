@@ -144,7 +144,7 @@ export class DefaultHoldingItemComponent implements OnInit {
         //   library is the same as current UI used library. So the switch library button should be displayed if the user may edit the item
         //   but are not using the same library as item owning library.
         const switchLocation = {can: permissions.update.can };
-        this.permissions = this.recordPermissionService.membership(this.userService.user, this.item().metadata.library.pid, permissions);
+        this.permissions = this.recordPermissionService.membership(this.userService.user(), this.item().metadata.library.pid, permissions);
         this.permissions.switchLocation = switchLocation;
         this.permissions.canRequest = canRequest;
       });

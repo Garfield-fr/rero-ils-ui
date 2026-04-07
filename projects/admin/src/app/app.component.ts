@@ -45,8 +45,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   private translateService: TranslateService = inject(TranslateService);
 
   /** user */
-  get user(): User {
-    return this.userService.user;
+  get user(): User | null {
+    return this.userService.user();
   }
 
   /** Init hook */

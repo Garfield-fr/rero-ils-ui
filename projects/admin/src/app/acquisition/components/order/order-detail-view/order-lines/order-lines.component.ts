@@ -64,7 +64,7 @@ export class OrderLinesComponent implements OnInit, OnDestroy {
       return false;
     }
     // owning library
-    if (this.userService.user.currentLibrary !== this.order().library.pid) {
+    if (this.userService.user()?.currentLibrary !== this.order().library.pid) {
       return false;
     }
     // order status

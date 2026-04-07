@@ -66,14 +66,14 @@ export const HoldingsStore = signalStore(
     isDocumentHarvested: computed(() => ('harvested' in store.document().metadata)),
     holdingsCurrentOrganisation: computed(
       () => store.holdings().filter(h => (store.filteredLibrary().length === 0)
-          ? h.metadata.organisation.pid === store.userService.user.currentOrganisation
-          : h.metadata.organisation.pid === store.userService.user.currentOrganisation && store.filteredLibrary().includes(h.metadata.library.pid)
+          ? h.metadata.organisation.pid === store.userService.user()?.currentOrganisation
+          : h.metadata.organisation.pid === store.userService.user()?.currentOrganisation && store.filteredLibrary().includes(h.metadata.library.pid)
       )
     ),
     holdingsOtherOrganisation: computed(
       () => store.holdings().filter(h => (store.filteredLibrary().length === 0)
-          ? h.metadata.organisation.pid !== store.userService.user.currentOrganisation
-          : h.metadata.organisation.pid !== store.userService.user.currentOrganisation && store.filteredLibrary().includes(h.metadata.library.pid)
+          ? h.metadata.organisation.pid !== store.userService.user()?.currentOrganisation
+          : h.metadata.organisation.pid !== store.userService.user()?.currentOrganisation && store.filteredLibrary().includes(h.metadata.library.pid)
       )
     ),
     filter: computed(() => {
@@ -86,12 +86,12 @@ export const HoldingsStore = signalStore(
 
       // Unique libraries for current organisation and sort.
       const currentOrganisationLibraries = [
-        ...new Map(libraries.filter(l => l.organisationPid === store.userService.user.currentOrganisation)
+        ...new Map(libraries.filter(l => l.organisationPid === store.userService.user()?.currentOrganisation)
         .map(lib => [JSON.stringify(lib), lib])).values()
       ].sort((a, b) => a.name.localeCompare(b.name));
       // Unique libraries for other organisation(s) and sort.
       const otherOrganisationLibraries = [
-        ...new Map(libraries.filter(l => l.organisationPid !== store.userService.user.currentOrganisation)
+        ...new Map(libraries.filter(l => l.organisationPid !== store.userService.user()?.currentOrganisation)
         .map(lib => [JSON.stringify(lib), lib])).values()
       ].sort((a, b) => a.name.localeCompare(b.name));
 

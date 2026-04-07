@@ -18,6 +18,8 @@ import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS } from '@rero/shared';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, take } from 'rxjs/operators';
 import { PermissionGuard } from '../guard/permission.guard';
 import { IssuesBriefViewComponent } from '../record/brief-view/issues-brief-view/issues-brief-view.component';
 import { BaseRoute } from './base-route';
@@ -75,12 +77,13 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
       },
     ];
     // TODO: Refactor this after the change of AppInitializer service with user.
-    this.routeToolService.userService.loaded$.subscribe(() => {
-      const { patronLibrarian } = this.routeToolService.userService.user;
-      if (patronLibrarian) {
-        (types[0].preFilters as any).organisation = patronLibrarian.organisation.pid;
-      }
-    });
+    toObservable(this.routeToolService.userService.user, { injector: this.routeToolService.injector })
+      .pipe(filter(u => !!u), take(1)).subscribe(() => {
+        const { patronLibrarian } = this.routeToolService.userService.user();
+        if (patronLibrarian) {
+          (types[0].preFilters as any).organisation = patronLibrarian.organisation.pid;
+        }
+      });
     return types;
   }
 }

@@ -103,7 +103,7 @@ export class HoldingHeaderComponent implements OnInit {
       ([permissions, canRequest]) => {
         this.permissions = this.recordPermissionService
           .membership(
-            this.userService.user,
+            this.userService.user(),
             this.holding().metadata.library.pid,
             permissions
           );

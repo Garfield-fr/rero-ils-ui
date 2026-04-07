@@ -55,7 +55,7 @@ export class ItemTransactionComponent {
     toObservable(this.type).pipe(
       switchMap(type => {
         if (!this._authorizedTypes.includes(type)) return of(null);
-        const { currentLibrary } = this.userService.user;
+        const currentLibrary = this.userService.user()?.currentLibrary;
         return this.itemService.getPickupLocations(this.itemPid()).pipe(
           map(locations => (locations as any[]).map((loc: any) => ({
             label: loc.pickup_name || loc.name,

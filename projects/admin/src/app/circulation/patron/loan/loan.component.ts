@@ -130,7 +130,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         }
       })
     );
-    this.currentLibraryPid = this.userService.user.currentLibrary;
+    this.currentLibraryPid = this.userService.user()?.currentLibrary;
     this.searchInputFocus = true;
   }
 
@@ -255,7 +255,7 @@ export class LoanComponent implements OnInit, OnDestroy {
             item,
             this.currentLibraryPid,
             // TODO: user or patron ?
-            this.userService.user.patronLibrarian.pid,
+            this.userService.user()?.patronLibrarian.pid,
             this.patron.pid,
             additionalParams
           )
@@ -395,7 +395,7 @@ export class LoanComponent implements OnInit, OnDestroy {
       }));
     }
     // Show additional message only for the owning library
-    if (action === ItemAction.checkin && item.library.pid === this.userService.user.currentLibrary) {
+    if (action === ItemAction.checkin && item.library.pid === this.userService.user()?.currentLibrary) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         if (message.length > 0) {

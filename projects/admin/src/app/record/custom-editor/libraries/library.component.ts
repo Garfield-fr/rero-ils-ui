@@ -117,7 +117,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   /** NgOnInit hook. */
   ngOnInit() {
     this.route.params.subscribe( (params) => {
-      const loggedUser = this.userService.user;
+      const loggedUser = this.userService.user();
       if (loggedUser) {
         this.organisationPid = loggedUser.currentOrganisation;
       }

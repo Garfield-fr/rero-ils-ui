@@ -150,15 +150,15 @@ class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
    * @param data: the initial data
    */
   private _addDefaultValuesForTemplate(data: any) {
-    const { user } = this.routeToolService.userService;
+    const user = this.routeToolService.userService.user();
     if (!Object.hasOwn(data, 'visibility')) {
       data.visibility = 'private';
     }
     data.organisation = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
     };
     data.creator = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('patrons', user.patronLibrarian.pid),
+      $ref: this.routeToolService.apiService.getRefEndpoint('patrons', user?.patronLibrarian.pid),
     };
     return data;
   }

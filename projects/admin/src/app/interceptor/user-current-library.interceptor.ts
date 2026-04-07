@@ -32,10 +32,10 @@ export class UserCurrentLibraryInterceptor implements HttpInterceptor {
    * @returns Handle of request
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (this.userService.user?.currentLibrary) {
+    if (this.userService.user()?.currentLibrary) {
       request = request.clone({
         setParams: {
-          'current_library': String(this.userService.user.currentLibrary)
+          'current_library': String(this.userService.user()!.currentLibrary)
         }
       });
     }

@@ -17,7 +17,7 @@
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { ComponentCanDeactivateGuard, EditorComponent, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
-import { PERMISSIONS, User } from '@rero/shared';
+import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { CanAddLocalFieldsGuard } from '../guard/can-add-local-fields.guard';
@@ -65,7 +65,7 @@ class LocalFieldsRoute extends BaseRoute implements RouteDataTypesInterface {
         canRead: (record: RecordData) => this.canReadLocalFields(record),
         redirectUrl: (record: RecordData) => this.getUrl(record),
         preCreateRecord: (data) => {
-          const user: User = this.routeToolService.userService.user;
+          const user = this.routeToolService.userService.user();
           if (data.parent == null) {
             data.organisation = {
               $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
@@ -108,7 +108,7 @@ class LocalFieldsRoute extends BaseRoute implements RouteDataTypesInterface {
    * @return Observable
    */
   private canReadLocalFields(record: any) {
-    const organisationPid = this.routeToolService.userService.user.currentOrganisation;
+    const organisationPid = this.routeToolService.userService.user()?.currentOrganisation;
     const recordOrganisationPid = 'organisation' in record.metadata ? record.metadata.organisation.pid : false;
     return of({ can: organisationPid === recordOrganisationPid, message: '' });
   }

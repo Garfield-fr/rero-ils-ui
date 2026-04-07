@@ -84,10 +84,10 @@ export const HoldingsSerialStore = signalStore(
   withComputed((store) => ({
     isFilterEnabled: computed(() => store.receivedItemsCount() >= 11 || '' !== store.filter()),
     isPaginatorEnabled: computed(() => store.pager.rows() < store.filterTotal()),
-    isAllowIssueCreation: computed(() => store.userService.user.currentLibrary === store.holdings().metadata.library.pid),
+    isAllowIssueCreation: computed(() => store.userService.user()?.currentLibrary === store.holdings().metadata.library.pid),
     isDisplayLocalFieldsTab: computed(() =>
       store.permissionsService.canAccess(localFieldsPermissions)
-      && store.userService.user.currentLibrary === store.holdings().metadata.library.pid
+      && store.userService.user()?.currentLibrary === store.holdings().metadata.library.pid
     ),
   })),
   withMethods((store) => ({

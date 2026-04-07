@@ -57,7 +57,7 @@ export class LibraryDetailViewComponent {
   });
 
   readonly isUserCanAddLocation = computed(() =>
-    this.userService.user.currentLibrary === this.record()?.metadata?.pid
+    this.userService.user()?.currentLibrary === this.record()?.metadata?.pid
   );
 
   private readonly _fetchedLocations = toSignal(

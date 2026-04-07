@@ -111,20 +111,20 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
         aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
         aggregationsExpand: ['type'],
         preprocessRecordEditor: (record: any) => {
-          const { user } = this.routeToolService.userService;
+          const user = this.routeToolService.userService.user();
           if (!record.pid) {
             // set the user's default library at the time of creation
             record.libraries = [];
             record.libraries.push({
-              $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary),
+              $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user?.currentLibrary),
             });
           }
           return record;
         },
         preCreateRecord: (data) => {
-          const { user } = this.routeToolService.userService;
+          const user = this.routeToolService.userService.user();
           data.organisation = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
           };
           return data;
         },
@@ -136,7 +136,7 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
                 // filter the linked items by the organisation of the current logged user
                 const queryOptions = jsonSchema?.items?.properties?.$ref?.widget?.formlyConfig?.props?.queryOptions;
                 if (queryOptions) {
-                  const { currentOrganisation } = this.routeToolService.userService.user;
+                  const currentOrganisation = this.routeToolService.userService.user()?.currentOrganisation;
                   queryOptions.filter = `AND organisation.pid:${currentOrganisation}`;
                 }
                 break;
@@ -177,13 +177,13 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const { user } = this.routeToolService.userService;
+        const user = this.routeToolService.userService.user();
         const apiService: any = this.routeToolService.apiService;
         const recordService: RecordService = this.routeToolService.recordService as RecordService;
 
         // Extract libraries from patron > libraries
         const libraries = [];
-        user.patrons.map((patron: IPatron) => {
+        user?.patrons.map((patron: IPatron) => {
           patron.libraries.map((library: ILibrary) => {
             libraries.push(library.pid);
           });

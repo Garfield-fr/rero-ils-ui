@@ -226,7 +226,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       this.tabs[tabSelected].loaded = true;
       this.patronProfileService.changeTab({ name: tabSelected, count: this.tabs[tabSelected].count });
     });
-    this.user = this.userService.user;
+    this.user = this.userService.user();
     if (this.user.isAuthenticated && this.user.isPatron) {
       const keepHistory = this.user.keep_history === undefined ? false : this.user.keep_history;
       this.tabs.history.display = keepHistory;

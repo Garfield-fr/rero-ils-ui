@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { inject, Injectable, signal, Signal } from '@angular/core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
 import { IUser, User } from '../class/user';
@@ -33,24 +33,12 @@ export class UserService {
   protected permissionsService: PermissionsService = inject(PermissionsService);
 
   // SERVICES ATTRIBUTES ======================================================
-  /** Loaded observable */
-  private _loaded: Subject<IUser> = new Subject<IUser>();
-  /** user */
-  private _user: User;
+  /** user signal */
+  private readonly _user = signal<User | null>(null);
 
   // GETTER & SETTER ==========================================================
-  /**
-   * Get loaded observable
-   * @return Observable<IUser>
-   */
-  get loaded$(): Observable<IUser> {
-    return this._loaded.asObservable();
-  }
-
-  /** Get user */
-  get user(): User {
-    return this._user;
-  }
+  /** Get user as readonly signal */
+  readonly user: Signal<User | null> = this._user.asReadonly();
 
   /** load */
   load(): Observable<IUser> {
@@ -63,9 +51,9 @@ export class UserService {
           if (loggedUser.permissions) {
           this.permissionsService.setPermissions(loggedUser.permissions);
         }
-        this._user = new User(loggedUser);
-        this._loaded.next(this._user);
-        return this._user;
+        const u = new User(loggedUser);
+        this._user.set(u);
+        return u;
       })
     );
   }

@@ -101,7 +101,7 @@ export class ItemDetailViewComponent implements OnDestroy {
   }
 
   get isDisplayLocalFieldsTab(): boolean {
-    return this.userService.user.currentLibrary === this.record()?.metadata.library.pid;
+    return this.userService.user()?.currentLibrary === this.record()?.metadata.library.pid;
   }
 
   /**

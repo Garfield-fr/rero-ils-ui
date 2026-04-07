@@ -167,12 +167,12 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
    * @return: the enrich data
    */
   private _addDefaultInformation(data: any): any {
-    const user = this.routeToolService.userService.user;
+    const user = this.routeToolService.userService.user();
     data.organisation = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
     };
     data.library = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user.currentLibrary),
+      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user?.currentLibrary),
     };
     return data;
   }

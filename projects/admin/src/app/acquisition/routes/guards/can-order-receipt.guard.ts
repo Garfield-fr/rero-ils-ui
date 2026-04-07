@@ -85,7 +85,7 @@ export class CanOrderReceiptGuard  {
   private _orderQuery(orderPid: string): Observable<boolean> {
     return this.acqOrderApiService.getOrder(orderPid).pipe(
         map((order: IAcqOrder) => {
-          if (this.userService.user.currentLibrary !== extractIdOnRef(order.library.$ref)) {
+          if (this.userService.user()?.currentLibrary !== extractIdOnRef(order.library.$ref)) {
             return false;
           }
           if (!order.is_current_budget) {

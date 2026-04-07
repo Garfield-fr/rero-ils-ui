@@ -172,7 +172,7 @@ export class ItemComponent {
       const checkinNote = this.item().getNote(ItemNoteType.CHECKIN)
       if (checkinNote && (
         (this.item().actionDone === this.itemAction.checkin) || (
-          (((this.item().actionDone === this.itemAction.receive) && this.item().library.pid === this.userService.user.currentLibrary))
+          (((this.item().actionDone === this.itemAction.receive) && this.item().library.pid === this.userService.user()?.currentLibrary))
         )
       )) {
         notes.push(checkinNote);

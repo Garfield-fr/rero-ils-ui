@@ -35,10 +35,10 @@ export class MenuTranslateService {
 
   // Available variables for menu definitions.
   public REPLACEMENT_VARIABLES = {
-    $currentLibrary: () => this.userService.user.currentLibrary,
-    $currentOrganisation: () => this.userService.user.currentOrganisation,
-    $symbolName: () => this.userService.user.symbolName,
-    $currentBudget: () => this.userService.user.currentBudget,
+    $currentLibrary: () => this.userService.user()?.currentLibrary,
+    $currentOrganisation: () => this.userService.user()?.currentOrganisation,
+    $symbolName: () => this.userService.user()?.symbolName,
+    $currentBudget: () => this.userService.user()?.currentBudget,
     $currentDayRange: () => {
       const today = new Date()
       const tomorrow = new Date(today);

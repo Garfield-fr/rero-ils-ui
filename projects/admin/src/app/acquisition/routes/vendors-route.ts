@@ -95,9 +95,9 @@ class VendorsRoute extends BaseRoute implements RouteDataTypesInterface {
         canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.VNDR_CREATE), message: '' }),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data: any) => {
-          const { user } = this.routeToolService.userService;
+          const user = this.routeToolService.userService.user();
           data.organisation = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
           };
           return data;
         },

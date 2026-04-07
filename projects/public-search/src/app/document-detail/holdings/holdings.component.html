@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@let isAuthenticated = userService.user.isAuthenticated;
+@let isAuthenticated = userService.user()?.isAuthenticated;
 
 @if(store.filter().length > 1) {
 <div class="ui:mb-3">
@@ -156,7 +156,7 @@
   </p-accordion>
 
   <div class="ui:mt-2">
-    @if(isAuthenticated && userService.user.hasRoles(['patron']) && viewcode() === 'global') {
+    @if(isAuthenticated && userService.user()?.hasRoles(['patron']) && viewcode() === 'global') {
       <div>
         <a
           pButton

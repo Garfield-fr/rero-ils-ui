@@ -69,7 +69,7 @@ export class CheckinComponent implements OnInit {
   private item: any;
 
   ngOnInit() {
-    this.loggedUser = this.userService.user;
+    this.loggedUser = this.userService.user();
     this.patronService.currentPatron$.subscribe(
       patron => this.patronInfo = patron
     );
@@ -161,7 +161,7 @@ export class CheckinComponent implements OnInit {
             }
             break;
           case ItemAction.receive:
-            if (item.library.pid === this.userService.user.currentLibrary) {
+            if (item.library.pid === this.userService.user()?.currentLibrary) {
               this.displayCirculationInformation(item, ItemNoteType.CHECKIN);
             }
             break;
@@ -340,7 +340,7 @@ export class CheckinComponent implements OnInit {
       }));
     }
     // Show additional message only for the owning library
-    if (item.library.pid === this.userService.user.currentLibrary) {
+    if (item.library.pid === this.userService.user()?.currentLibrary) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         if (message.length > 0) {
@@ -387,7 +387,7 @@ export class CheckinComponent implements OnInit {
       })}`;
     }
     // Show additional message only for the owning library
-    if (item.library.pid === this.userService.user.currentLibrary) {
+    if (item.library.pid === this.userService.user()?.currentLibrary) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         message += `<br/>${additionalMessage}`;

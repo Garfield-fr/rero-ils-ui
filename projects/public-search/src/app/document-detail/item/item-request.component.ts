@@ -74,8 +74,8 @@ export class ItemRequestComponent implements OnInit {
   private _patron: IPatron;
 
   ngOnInit(): void {
-    if (this.userService.user && this.record) {
-      this._patron = this.userService.user.getPatronByOrganisationPid(
+    if (this.userService.user() && this.record) {
+      this._patron = this.userService.user()?.getPatronByOrganisationPid(
         this.record().metadata.organisation.pid
       );
       if (this._patron?.patron) {

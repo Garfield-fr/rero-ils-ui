@@ -69,7 +69,7 @@ export class CancelRequestButtonComponent {
       this.loanService.cancelLoan(
         this.loan().metadata.item.pid,
         this.loan().metadata.pid,
-        this.userService.user.currentLibrary
+        this.userService.user()?.currentLibrary
       ).subscribe((item: any) => {
         let message = this.translateService.instant("The request has been cancelled.");
         if (item?.pending_loans?.length > 0) {

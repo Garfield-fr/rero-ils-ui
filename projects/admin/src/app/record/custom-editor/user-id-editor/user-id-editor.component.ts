@@ -165,7 +165,7 @@ export class UserIdEditorComponent implements OnInit {
           return null;
         }
         // current logged user organisation
-        const currentOrgPid = this.userService.user.currentOrganisation;
+        const currentOrgPid = this.userService.user()?.currentOrganisation;
         const patronAccounts = model.metadata.patrons;
         // user has patron account
         if (patronAccounts && patronAccounts.length > 0) {

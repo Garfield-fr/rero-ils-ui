@@ -41,11 +41,11 @@ export class LibraryService {
 
   switch(library: ISwitchLibrary): void {
     this.librarySwitchStorageService.save({
-      userId: this.userService.user.id,
+      userId: this.userService.user()!.id,
       currentLibrary: library.pid,
       libraryName: library.name
     });
-    this.userService.user.currentLibrary = library.pid;
+    this.userService.user()!.currentLibrary = library.pid;
     this.switchEvent.emit(library);
   }
 }

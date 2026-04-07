@@ -108,7 +108,7 @@ export class AccountListComponent implements OnInit {
   }
   /** OnInit hook */
   ngOnInit(): void {
-    this._libraryPid = this.userService.user.currentLibrary;
+    this._libraryPid = this.userService.user()?.currentLibrary;
     let localAccounts;
     this.acqAccountApiService
       .getAccounts(this._libraryPid, undefined, { sort: 'depth' })

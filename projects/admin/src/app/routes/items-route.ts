@@ -30,7 +30,8 @@ import {
 } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ItemType } from '../classes/items';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
@@ -248,12 +249,13 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
     ];
 
     // TODO: Refactor this after the change of AppInitializer service with user.
-    this.routeToolService.userService.loaded$.subscribe(() => {
-      const { patronLibrarian } = this.routeToolService.userService.user;
-      if (patronLibrarian) {
-        (types[0] as any).preFilters.organisation = patronLibrarian.organisation.pid;
-      }
-    });
+    toObservable(this.routeToolService.userService.user, { injector: this.routeToolService.injector })
+      .pipe(filter(u => !!u), take(1)).subscribe(() => {
+        const { patronLibrarian } = this.routeToolService.userService.user();
+        if (patronLibrarian) {
+          (types[0] as any).preFilters.organisation = patronLibrarian.organisation.pid;
+        }
+      });
 
     return types;
   }
@@ -283,10 +285,10 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const { user } = this.routeToolService.userService;
+          const user = this.routeToolService.userService.user();
           const apiService: any = this.routeToolService.apiService;
           const recordService: RecordService = this.routeToolService.recordService as RecordService;
-          const libraryPid = user.currentLibrary;
+          const libraryPid = user?.currentLibrary;
           const query = `library.pid:${libraryPid}`;
           f.props.options = recordService
             .getRecords('locations', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })

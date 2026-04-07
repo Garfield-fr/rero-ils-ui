@@ -100,7 +100,7 @@ export class LoanService {
       pid: loanPid,
       transaction_library_pid: transactionLibraryPid,
       // TODO: Fix this with multiple patron
-      transaction_user_pid: this.userService.user.patrons[0].pid
+      transaction_user_pid: this.userService.user()?.patrons[0].pid
     }).pipe(
       map(data => {
         const itemData = data.metadata;

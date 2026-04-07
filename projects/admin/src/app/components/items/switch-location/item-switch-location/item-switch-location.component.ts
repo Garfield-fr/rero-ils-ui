@@ -67,7 +67,7 @@ export class ItemSwitchLocationComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    const libraryPids = this.userService.user.patronLibrarian.libraries.map(lib => lib.pid);
+    const libraryPids = this.userService.user()?.patronLibrarian.libraries.map(lib => lib.pid);
     this.locationService
       .getLocationsByLibraries$(libraryPids)
       .pipe(

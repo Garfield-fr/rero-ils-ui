@@ -85,8 +85,8 @@ export class MenuService {
   }
 
   public generateMenuLibrary$(): Observable<object|undefined> {
-    const { currentLibrary } = this.userService.user;
-    const librariesPid = this.userService.user.patronLibrarian.libraries.map((library: { pid: string }) => library.pid);
+    const { currentLibrary } = this.userService.user();
+    const librariesPid = this.userService.user()?.patronLibrarian.libraries.map((library: { pid: string }) => library.pid);
     if (librariesPid.length === 0) {
       return of(undefined);
     }

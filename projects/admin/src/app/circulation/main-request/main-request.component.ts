@@ -87,7 +87,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit() {
-    const { user } = this.userService;
+    const user = this.userService.user();
     if (user) {
       this.libraryPid = user.currentLibrary;
       this.getRequestedLoans();

@@ -163,7 +163,7 @@ export class AccountTransferComponent implements OnInit, OnDestroy {
   // PRIVATE FUNCTIONS ========================================================
   /** Load accounts and budgets. Order accounts as a hierarchical tree */
   private _loadData(): void {
-    const libraryPid = this.userService.user.currentLibrary;
+    const libraryPid = this.userService.user()?.currentLibrary;
     this.acqAccountApiService
       .getAccounts(libraryPid, undefined, { sort: 'depth' })
       .subscribe((accounts: IAcqAccount[]) => {

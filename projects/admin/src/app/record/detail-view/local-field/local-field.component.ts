@@ -67,7 +67,7 @@ export class LocalFieldComponent {
         this.localFieldApiService.getByResourceTypeAndResourcePidAndOrganisationId(
           this._translateType(this.resourceType()),
           pid,
-          this.userService.user.currentOrganisation
+          this.userService.user()?.currentOrganisation
         ).pipe(
           catchError(() => {
             this.isLoading.set(false);

@@ -160,15 +160,15 @@ export class PatronFeeComponent implements OnInit {
         $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid)
       },
       library: {
-        $ref: this.apiService.getRefEndpoint('libraries', this.userService.user.currentLibrary)
+        $ref: this.apiService.getRefEndpoint('libraries', this.userService.user()?.currentLibrary)
       },
       status: 'open',
       event: {
         operator: {
-          $ref: this.apiService.getRefEndpoint('patrons', this.userService.user.patronLibrarian.pid)
+          $ref: this.apiService.getRefEndpoint('patrons', this.userService.user()?.patronLibrarian.pid)
         },
         library: {
-          $ref: this.apiService.getRefEndpoint('libraries', this.userService.user.currentLibrary)
+          $ref: this.apiService.getRefEndpoint('libraries', this.userService.user()?.currentLibrary)
         }
       }
     }

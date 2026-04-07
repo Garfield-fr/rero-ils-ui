@@ -220,13 +220,13 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const { user } = this.routeToolService.userService;
+          const user = this.routeToolService.userService.user();
           const apiService: any = this.routeToolService.apiService;
           const recordService: RecordService = this.routeToolService.recordService as RecordService;
 
           // Extract libraries from patron > libraries
           const libraries = [];
-          user.patrons.map((patron: IPatron) => {
+          user?.patrons.map((patron: IPatron) => {
             patron.libraries.map((library: ILibrary) => {
               libraries.push(library.pid);
             });

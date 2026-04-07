@@ -28,7 +28,7 @@ import {
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR, Tools, User } from '@rero/shared';
+import { PERMISSIONS, PERMISSION_OPERATOR, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ResolveFn, Routes } from '@angular/router';
@@ -106,10 +106,10 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
           of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.CIPO_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data) => {
-          const user: User = this.routeToolService.userService.user;
+          const user = this.routeToolService.userService.user();
           if (data.parent == null) {
             data.organisation = {
-              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
             };
           }
           return data;
@@ -159,10 +159,10 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const { user } = this.routeToolService.userService;
+        const user = this.routeToolService.userService.user();
         const apiService = this.routeToolService.apiService;
         const recordService: RecordService = this.routeToolService.recordService as RecordService;
-        const query = `organisation.pid:${user.currentOrganisation}`;
+        const query = `organisation.pid:${user?.currentOrganisation}`;
         f.props.options = recordService
           .getRecords('libraries', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
           .pipe(
