@@ -36,7 +36,8 @@ describe('LoanService', () => {
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
   const userServiceSpy = { } as any;
-  userServiceSpy.user = { ...testUserPatronWithSettings};
+  const user = { ...testUserPatronWithSettings };
+  userServiceSpy.user = vi.fn(() => user);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

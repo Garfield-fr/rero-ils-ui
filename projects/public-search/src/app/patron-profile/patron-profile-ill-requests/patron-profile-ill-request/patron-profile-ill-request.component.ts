@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Nl2brPipe, TruncateTextPipe, RecordData } from '@rero/ng-core';
-import { ArrayTranslatePipe, JoinPipe, JournalVolumePipe, NotesFilterPipe, OpenCloseButtonComponent } from '@rero/shared';
+import { Nl2brPipe, RecordData, TruncateTextPipe } from '@rero/ng-core';
+import { JournalVolumePipe, NotesFilterPipe, OpenCloseButtonComponent } from '@rero/shared';
 import { TagModule } from 'primeng/tag';
 import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
 
@@ -30,8 +30,6 @@ import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
       TranslatePipe,
       Nl2brPipe,
       TruncateTextPipe,
-      ArrayTranslatePipe,
-      JoinPipe,
       JournalVolumePipe,
       NotesFilterPipe,
       OpenCloseButtonComponent,

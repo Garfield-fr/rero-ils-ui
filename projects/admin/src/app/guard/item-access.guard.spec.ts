@@ -48,9 +48,10 @@ describe('ItemAccessGuard', () => {
     }
   };
   const userServiceSpy = { } as any;
-  userServiceSpy.user = {
+  const user = {
     currentLibrary: '10'
-  }
+  };
+  userServiceSpy.user = vi.fn(() => user);
 
   const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
   recordServiceSpy.getRecord.mockReturnValue(of(item));

@@ -131,12 +131,13 @@ describe('Holdings Serial Store', () => {
 });
 
 const userServiceSpy = { } as any;
-  userServiceSpy.user = {
+  const user = {
     patronLibrarian: {
       pid: '1'
     },
     currentLibrary: '1'
-  }
+  };
+  userServiceSpy.user = vi.fn(() => user);
 
 const holdings = {
     "created": "2025-11-18T13:37:49.970060+00:00",

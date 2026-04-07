@@ -77,12 +77,14 @@ describe('Permissions', () => {
   });
 
   it('should return permissions unchanged', () => {
-    userServiceSpy.user = { currentLibrary: 2 };
+    const user = { currentLibrary: 2 };
+    userServiceSpy.user = vi.fn(() => user);
     expect(service.validate(permissions, '2')).toEqual(permissions);
   });
 
   it('should return permissions with access denied', () => {
-    userServiceSpy.user = { currentLibrary: 3 };
+    const user = { currentLibrary: 3 };
+    userServiceSpy.user = vi.fn(() => user);
     expect(service.validate(permissions, '2')).toEqual(deniedPermissions);
   });
 });

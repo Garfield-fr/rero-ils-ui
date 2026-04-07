@@ -32,11 +32,12 @@ describe('ItemsService', () => {
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
   const userServiceSpy = { } as any;
-  userServiceSpy.user = {
+  const user = {
     patronLibrarian: {
       pid: '1'
     }
   };
+  userServiceSpy.user = vi.fn(() => user);
 
   const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
   recordServiceSpy.totalHits.mockReturnValue(1);

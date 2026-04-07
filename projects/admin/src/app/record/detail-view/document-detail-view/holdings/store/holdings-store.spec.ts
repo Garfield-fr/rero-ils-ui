@@ -313,9 +313,13 @@ class HoldingsApiServiceMock {
 }
 
 class UserServiceMock {
-  get user() {
+  private readonly _user = (() => {
     const user = new User(testUserLibrarianWithSettings);
-    user.currentOrganisation = "1";
+    user.currentOrganisation = '1';
     return user;
+  })();
+
+  user() {
+    return this._user;
   }
 }

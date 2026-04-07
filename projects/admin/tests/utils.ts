@@ -35,7 +35,7 @@ recordTestingService.getRecord.mockReturnValue(of({
 }));
 
 export const userTestingService: any = { };
-userTestingService.user =  {
+const userTestingData = {
   first_name: 'John',
   last_name: 'Doe',
   library: {
@@ -49,6 +49,10 @@ userTestingService.user =  {
   currentOrganisation: '1',
   getCurrentLibrary: () => '1'
 };
+
+const userTestingFn = vi.fn(() => userTestingData);
+Object.assign(userTestingFn, userTestingData);
+userTestingService.user = userTestingFn;
 
 export const patronTestingService = {
   getItems: vi.fn(),

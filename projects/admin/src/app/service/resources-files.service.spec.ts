@@ -82,9 +82,10 @@ describe('ResourcesFilesService', () => {
   const httpClientSpy = { delete: vi.fn(), get: vi.fn(), post: vi.fn(), put: vi.fn() };
 
   const userServiceSpy = { } as any;
-  userServiceSpy.user = {
+  const user = {
     currentLibrary: '1'
-  }
+  };
+  userServiceSpy.user = vi.fn(() => user);
 
 
   beforeEach(() => {

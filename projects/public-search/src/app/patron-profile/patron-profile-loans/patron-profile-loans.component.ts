@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
+import { _, TranslateDirective } from "@ngx-translate/core";
 import type { Error, EsResult } from '@rero/ng-core';
 import { Paginator, ShowMorePagerComponent } from '@rero/shared';
 import { PanelModule } from 'primeng/panel';
@@ -30,7 +30,7 @@ import { PatronProfileLoanComponent } from './patron-profile-loan/patron-profile
     selector: 'public-search-patron-profile-loans',
     templateUrl: './patron-profile-loans.component.html',
     standalone: true,
-    imports: [FormsModule, TranslateDirective, TranslatePipe, Select, PanelModule, ShowMorePagerComponent, PatronProfileLoanComponent],
+    imports: [FormsModule, TranslateDirective, Select, PanelModule, ShowMorePagerComponent, PatronProfileLoanComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileLoansComponent implements OnInit, OnDestroy {

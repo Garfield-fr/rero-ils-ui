@@ -88,12 +88,13 @@ describe('PatronTransactionService', () => {
   };
 
   const userServiceSpy = { } as any;
-  userServiceSpy.user = {
+  const user = {
     patronLibrarian: {
       pid: '1'
     },
     currentLibrary: '1'
-  }
+  };
+  userServiceSpy.user = vi.fn(() => user);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
