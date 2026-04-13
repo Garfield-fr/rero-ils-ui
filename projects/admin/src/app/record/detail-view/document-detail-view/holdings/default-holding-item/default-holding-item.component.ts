@@ -107,13 +107,13 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @param recordType - the record type (should be `item`)
    */
   addRequest(recordPid: string, recordType: string): void {
-    const ref: DynamicDialogRef = this.dialogService.open(ItemRequestComponent,{
+    const ref = this.dialogService.open(ItemRequestComponent,{
       header: this.translateService.instant('Item Request'),
       modal: true,
       width: '30vw',
       closable: true,
       data: { recordPid, recordType }
-    })
+    }) as DynamicDialogRef;
     ref.onClose.subscribe((value: boolean) => {
       if (value) {
         this.itemService.getByPidFromEs(recordPid).subscribe(result => {
@@ -143,7 +143,7 @@ export class DefaultHoldingItemComponent implements OnInit {
         //   The item permissions returned by server could be limited by the `membership` method. This method check if the item owning
         //   library is the same as current UI used library. So the switch library button should be displayed if the user may edit the item
         //   but are not using the same library as item owning library.
-        const switchLocation = {can: permissions.update.can };
+        const switchLocation = {can: permissions.update ? permissions.update.can : false };
         this.permissions = this.recordPermissionService.membership(this.userService.user(), this.item().metadata.library.pid, permissions);
         this.permissions.switchLocation = switchLocation;
         this.permissions.canRequest = canRequest;

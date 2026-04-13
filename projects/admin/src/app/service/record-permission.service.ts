@@ -43,7 +43,7 @@ export class RecordPermissionService {
    * @param pid - string : the resource pid (optional)
    * @return Return an observable of RecordPermissions
    */
-  getPermission(resource: string, pid?: string) {
+  getPermission(resource: string, pid?: string): Observable<RecordPermissions> {
     const url = (pid == null)
       ? `/api/permissions/${resource}`
       : `/api/permissions/${resource}/${pid}`;
