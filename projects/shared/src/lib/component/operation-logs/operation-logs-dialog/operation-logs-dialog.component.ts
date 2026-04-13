@@ -24,9 +24,9 @@ import { Button } from 'primeng/button';
 import { PermissionsDirective } from '../../../directive/permissions.directive';
 
 @Component({
-    selector: 'shared-operation-logs-dialog',
-    templateUrl: './operation-logs-dialog.component.html',
-    imports: [Bind, Button, PermissionsDirective, TranslatePipe],
+  selector: 'shared-operation-logs-dialog',
+  templateUrl: './operation-logs-dialog.component.html',
+  imports: [Bind, Button, PermissionsDirective, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OperationLogsDialogComponent {
@@ -35,10 +35,10 @@ export class OperationLogsDialogComponent {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Resource type */
-  readonly resourceType = input<string>(undefined);
+  readonly resourceType = input<string>();
 
   /** Resource pid */
-  readonly resourcePid = input<string>(undefined);
+  readonly resourcePid = input<string>();
 
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;
