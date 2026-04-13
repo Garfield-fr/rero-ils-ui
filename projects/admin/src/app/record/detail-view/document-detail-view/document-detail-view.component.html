@@ -18,7 +18,9 @@
 @if (record()) {
   <!-- ADMIN METADATA -->
   @if (recordMessage()) {
-    <p-message [text]="recordMessage()!" severity="warn" showTransitionOptions="0ms" />
+    <p-message severity="warn" showTransitionOptions="0ms">
+      {{ recordMessage() }}
+    </p-message>
   }
   <!-- HEADER -->
   <header class="ui:py-2 ui:flex ui:gap-6">

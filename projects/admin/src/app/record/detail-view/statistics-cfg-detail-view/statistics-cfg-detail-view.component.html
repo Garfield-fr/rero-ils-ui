@@ -102,7 +102,9 @@
             <admin-report-data [data]="liveData()" />
           }
           @if (liveDataError()) {
-            <p-message [text]="liveDataError()" severity="error" showTransitionOptions="0ms" />
+            <p-message severity="error" showTransitionOptions="0ms">
+              {{ liveDataError() }}
+            </p-message>
           }
         </p-tabpanel>
       </p-tabpanels>
