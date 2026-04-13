@@ -48,6 +48,8 @@ import { registerFormlyExtension } from './acquisition/formly/extension';
 import { OrderLineTypeComponent } from './acquisition/formly/type/field-order-line.type';
 import { ReceiptLinesTypeComponent } from './acquisition/formly/type/receipt-lines.type';
 import { InputNoLabelWrapperComponent } from './acquisition/formly/wrapper/input-no-label.wrapper';
+import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
+import { UserIdComponent } from './record/editor/wrappers/user-id.component';
 import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
@@ -128,7 +130,11 @@ export const appConfig: ApplicationConfig = {
           { name: 'receipt-lines', component: ReceiptLinesTypeComponent },
           { name: 'order-line', component: OrderLineTypeComponent },
         ],
-        wrappers: [{ name: 'input-no-label', component: InputNoLabelWrapperComponent }],
+        wrappers: [
+          { name: 'input-no-label', component: InputNoLabelWrapperComponent },
+          { name: 'identifiedby-value', component: IdentifiedbyValueComponent },
+          { name: 'user-id', component: UserIdComponent },
+        ],
       }),
       LoadingBarHttpClientModule
     ),
