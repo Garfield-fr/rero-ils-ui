@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, effect } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { MessageService, PrimeTemplate } from 'primeng/api';
-import { Subscription } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Tooltip } from 'primeng/tooltip';
@@ -33,51 +33,41 @@ import { Chip } from 'primeng/chip';
     imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, AutoComplete, Tooltip, PrimeTemplate, Chip, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilesCollectionsComponent implements OnInit, OnDestroy {
+export class FilesCollectionsComponent {
 
-  private messageService: MessageService = inject(MessageService);
-  private resourcesFilesService: ResourcesFilesService = inject(ResourcesFilesService);
-  private translateService: TranslateService = inject(TranslateService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private messageService = inject(MessageService);
+  private resourcesFilesService = inject(ResourcesFilesService);
+  private translateService = inject(TranslateService);
+  private organisationService = inject(OrganisationService);
 
   // current record
-  record: any;
+  record = signal<any>(null);
 
   // form control for the collection editor
   formGroup = new FormGroup({
     collections: new FormControl<string[] | null>(null)
   });
 
-  // all component subscription
-  private subscriptions = new Subscription();
+  constructor() {
+    // Sync service record changes to local signal
+    this.resourcesFilesService.currentParentRecord$.pipe(
+      takeUntilDestroyed()
+    ).subscribe(record => this.record.set(record));
 
-  /** OnInit hook */
-  ngOnInit(): void {
-      this.resourcesFilesService.currentParentRecord$.subscribe((record) => {
-        this.setRecord(record, false);
-      })
-    this.subscriptions.add(
-      this.formGroup.valueChanges.subscribe(() => this.save())
-    );
-  }
+    // Sync record signal changes to form without emitting valueChanges
+    effect(() => {
+      const rec = this.record();
+      if (rec?.metadata?.collections) {
+        this.formGroup.get('collections')!.setValue(rec.metadata.collections, { emitEvent: false });
+      } else {
+        this.formGroup.get('collections')!.setValue(null, { emitEvent: false });
+      }
+    });
 
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  /**
-   * Set the current file record.
-   *
-   * @param record - the file record instance.
-   */
-  setRecord(record, emitEvent=false): void {
-    this.record = record;
-    if (this.record?.metadata?.collections) {
-      this.formGroup.get('collections').setValue(this.record.metadata.collections, {emitEvent});
-    } else {
-      this.formGroup.get('collections').setValue(null, {emitEvent});
-    }
+    // Save on form value changes
+    this.formGroup.valueChanges.pipe(
+      takeUntilDestroyed()
+    ).subscribe(() => this.save());
   }
 
   /**
@@ -86,15 +76,9 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
    * @param name - the collection name
    * @returns - url on the public interface
    */
-  getCollectionLink(name): string {
+  getCollectionLink(name: string): string {
     const viewcode = this.organisationService.organisation().code;
     return `/${viewcode}/search/documents?q=files.collections.raw:(${name})&simple=0`;
-  }
-
-  /** Is the submit action is disabled? */
-  disabled(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    this.formGroup.touched;
   }
 
   getIndex(collection: string): number {
@@ -109,16 +93,18 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
    * Save the form and put the new value on the backend.
    */
   save(): void {
-    const coll = Array.from(new Set(this.formGroup.get('collections').value));
-    const metadata = this.record.metadata;
+    const rec = this.record();
+    if (!rec) return;
+    const coll = Array.from(new Set(this.formGroup.get('collections')!.value));
+    const metadata = rec.metadata;
     if (coll) {
       metadata.collections = coll;
     } else {
       delete metadata.collections;
     }
     this.resourcesFilesService
-      .updateParentRecordMetadata(this.record.id, { metadata: metadata })
-      .subscribe((record) => this.setRecord(record));
+      .updateParentRecordMetadata(rec.id, { metadata })
+      .subscribe(updatedRecord => this.record.set(updatedRecord));
     this.formGroup.markAsPristine();
     this.messageService.add({
       severity: 'success',
