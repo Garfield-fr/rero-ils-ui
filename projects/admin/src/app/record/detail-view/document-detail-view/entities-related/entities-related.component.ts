@@ -40,7 +40,7 @@ export class EntitiesRelatedComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    const language = this.translateService.currentLang;
+    const language = this.translateService.getCurrentLang();
     const { metadata } = this.record();
     Entity.FIELDS_WITH_REF.forEach((field: string) => {
       if (field in metadata && metadata[field].length > 0) {

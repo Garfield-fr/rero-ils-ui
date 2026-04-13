@@ -133,7 +133,7 @@ export class MenuService {
 
   public generateMenuLanguages(): MenuItem[] {
     const languagesMenu: MenuItem[] = [];
-    const currentLanguage = this.translateService.currentLang;
+    const currentLanguage = this.translateService.getCurrentLang();
     this.configService.languages.forEach((language: string) => {
       languagesMenu.push({
         label: this.translateService.instant(`ui_language_${language}`),

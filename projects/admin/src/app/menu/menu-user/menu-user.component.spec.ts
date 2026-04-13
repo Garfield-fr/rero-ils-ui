@@ -105,13 +105,13 @@ describe('AppMenuUserComponent', () => {
       label: 'french',
       code: 'fr',
       id: 'lang-fr',
-      styleClass: translateService?.currentLang === 'fr' ? 'ui:font-bold' : ''
+      styleClass: translateService?.getCurrentLang() === 'fr' ? 'ui:font-bold' : ''
     },
     {
       label: 'English',
       code: 'en',
       id: 'lang-en',
-      styleClass: translateService?.currentLang === 'en' ? 'ui:font-bold' : ''
+      styleClass: translateService?.getCurrentLang() === 'en' ? 'ui:font-bold' : ''
     },
   ]);
 

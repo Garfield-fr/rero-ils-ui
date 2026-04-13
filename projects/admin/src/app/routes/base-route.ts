@@ -159,8 +159,8 @@ export class BaseRoute {
       // TODO: Add other paths
     };
     const availableLanguages = Object.keys(searchPaths);
-    return (this.routeToolService.translateService.currentLang in availableLanguages)
-      ? searchPaths[this.routeToolService.translateService.currentLang]
+    return (this.routeToolService.translateService.getCurrentLang() in availableLanguages)
+      ? searchPaths[this.routeToolService.translateService.getCurrentLang()]
       : defaultPath;
     }
  }

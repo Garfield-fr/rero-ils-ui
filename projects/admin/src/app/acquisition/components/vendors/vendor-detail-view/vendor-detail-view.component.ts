@@ -44,7 +44,7 @@ export class VendorDetailViewComponent {
    * @return string - language
    */
   get currentLanguage() {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   filterContact(contacts: any[], type: string): any {

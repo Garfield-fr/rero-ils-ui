@@ -76,7 +76,7 @@ export const appConfig: ApplicationConfig = {
     }),
     { provide: CoreConfigService, useClass: AppConfigService },
     { provide: TranslateService, useClass: NgCoreTranslateService },
-    { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.currentLang, deps: [TranslateService] },
+    { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.getCurrentLang(), deps: [TranslateService] },
     { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
     { provide: resourceRouteToken, useClass: DocumentsRouteService, multi: true },
     { provide: resourceRouteToken, useClass: CollectionsRouteService, multi: true },

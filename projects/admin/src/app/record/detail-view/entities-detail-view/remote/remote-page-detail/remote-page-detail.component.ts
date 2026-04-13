@@ -38,7 +38,7 @@ export class RemotePageDetailComponent extends DetailComponent {
     search(record: any): void {
       let catalogKey = undefined;
       let catalogPid = undefined;
-      const orderKey = this.findOrderKeyByLanguage(this.translate.currentLang);
+      const orderKey = this.findOrderKeyByLanguage(this.translate.getCurrentLang());
       this.appSettingsService.settings.agentLabelOrder[orderKey].forEach((source: string) => {
         if (record.metadata.sources.includes(source) && !catalogKey && !catalogPid) {
           catalogKey = source;

@@ -104,7 +104,7 @@ export class DocumentDetailViewComponent {
    * @return string - language
    */
   get currentLanguage(): string {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   /** return all available permissions for current user */

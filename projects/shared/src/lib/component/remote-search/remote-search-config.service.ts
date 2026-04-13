@@ -123,7 +123,7 @@ export class RemoteSearchConfig {
 
   private getContributionName(metadata: any): string {
     if (metadata.resource_type === 'remote') {
-      const language = this.translateService.currentLang;
+      const language = this.translateService.getCurrentLang();
       const order: any = this.appSettingsService.agentLabelOrder;
       const key = (language in order) ? language : 'fallback';
       const agentSources = (key === 'fallback')
@@ -136,7 +136,7 @@ export class RemoteSearchConfig {
         }
       }
     } else {
-      const key = `authorized_access_point_${this.translateService.currentLang}`;
+      const key = `authorized_access_point_${this.translateService.getCurrentLang()}`;
       const accessPointKey = Object.keys(metadata).includes(key) ? key : 'authorized_access_point';
       return metadata[accessPointKey];
     }

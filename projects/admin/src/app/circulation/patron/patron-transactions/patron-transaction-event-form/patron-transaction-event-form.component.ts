@@ -112,7 +112,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
         required: true,
         addonLeft: [
           Tools.currencySymbol(
-            this.translateService.currentLang,
+            this.translateService.getCurrentLang(),
             this.organisationService.organisation().default_currency
           )
         ]

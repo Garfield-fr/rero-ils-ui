@@ -64,7 +64,7 @@ export class ItemComponent {
       if (item) {
         const { circulation_information } = (item.metadata as any).item_type;
         if (circulation_information) {
-          const information = circulation_information.find((obj: any) => obj.language === this.translateService.currentLang);
+          const information = circulation_information.find((obj: any) => obj.language === this.translateService.getCurrentLang());
           if (information) {
             this.circulationInformation = information.label;
           }
@@ -75,6 +75,6 @@ export class ItemComponent {
 
   /** Current interface language */
   get language() {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 }

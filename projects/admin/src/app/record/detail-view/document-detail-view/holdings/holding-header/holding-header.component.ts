@@ -55,7 +55,7 @@ export class HoldingHeaderComponent implements OnInit {
   permissions: any;
 
   get language(): string {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   get cannotRequestInfoMessage(): string {

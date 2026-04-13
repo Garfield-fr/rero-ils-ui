@@ -50,10 +50,10 @@ export class MenuUserComponent {
 
   private readonly currentLanguage = toSignal(
     this.translateService.onLangChange.pipe(
-      map(() => this.translateService.currentLang),
-      startWith(this.translateService.currentLang)
+      map(() => this.translateService.getCurrentLang()),
+      startWith(this.translateService.getCurrentLang())
     ),
-    { initialValue: this.translateService.currentLang }
+    { initialValue: this.translateService.getCurrentLang() }
   );
 
   readonly items = computed((): MenuItem[] => {

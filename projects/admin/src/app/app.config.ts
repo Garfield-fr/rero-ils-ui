@@ -89,7 +89,7 @@ export const appConfig: ApplicationConfig = {
     { provide: CoreConfigService, useClass: AppConfigService },
     {
       provide: LOCALE_ID,
-      useFactory: (translate: TranslateService) => translate.currentLang,
+      useFactory: (translate: TranslateService) => translate.getCurrentLang(),
       deps: [TranslateService],
     },
     MainTitlePipe,

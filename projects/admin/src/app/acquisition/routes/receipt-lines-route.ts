@@ -92,7 +92,7 @@ class ReceiptLinesRoute extends BaseRoute implements RouteDataTypesInterface {
     const service = this.routeToolService.getInjectorToken(OrganisationService);
     field.props.addonLeft = [
       Tools.currencySymbol(
-        this.routeToolService.translateService.currentLang,
+        this.routeToolService.translateService.getCurrentLang(),
         service.organisation().default_currency
       ),
     ];

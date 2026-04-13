@@ -67,7 +67,7 @@ export class DocumentDescriptionComponent implements OnInit {
    * @return string - language
    */
   get currentLanguage() {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   /** On init hook */

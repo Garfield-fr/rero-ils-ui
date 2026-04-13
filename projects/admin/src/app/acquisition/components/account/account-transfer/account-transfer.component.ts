@@ -76,7 +76,7 @@ export class AccountTransferComponent implements OnInit, OnDestroy {
 
   /** Get the currency symbol for the organisation */
   get currencySymbol(): string {
-    return Tools.currencySymbol(this.translateService.currentLang, this.organisation.default_currency);
+    return Tools.currencySymbol(this.translateService.getCurrentLang(), this.organisation.default_currency);
   }
 
   // CONSTRUCTOR & HOOKS ========================================================

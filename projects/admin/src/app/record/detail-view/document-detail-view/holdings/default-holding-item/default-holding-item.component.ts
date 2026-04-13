@@ -69,7 +69,7 @@ export class DefaultHoldingItemComponent implements OnInit {
   // GETTER & SETTER ==========================================================
   /** Current interface language */
   get language() {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   /**

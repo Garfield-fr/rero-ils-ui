@@ -252,7 +252,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @return array of sources
    */
   public sources(): string[] {
-    const language = this.translateService.currentLang;
+    const language = this.translateService.getCurrentLang();
     const order: any = this.appSettingsService.agentLabelOrder;
     const key = language in order ? language : 'fallback';
     const agentSources = (key === 'fallback')

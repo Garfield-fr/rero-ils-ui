@@ -53,7 +53,7 @@ export class BaseRoute {
     Object.keys(aggregations).forEach(aggregation => {
       if (aggregation.indexOf('__') > -1) {
         const splitted = aggregation.split('__');
-        if (this.translateService.currentLang === splitted[1]) {
+        if (this.translateService.getCurrentLang() === splitted[1]) {
           aggs[aggregation] = aggregations[aggregation];
         }
       } else {

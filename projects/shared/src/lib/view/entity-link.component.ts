@@ -76,7 +76,7 @@ export class EntityLinkComponent implements OnInit, OnDestroy {
         this.translateEntity(event.lang);
       })
     );
-    this.translateEntity(this.translateService.currentLang);
+    this.translateEntity(this.translateService.getCurrentLang());
   }
 
   ngOnDestroy(): void {

@@ -67,7 +67,7 @@ export class RecordPermissionService {
    */
   generateTooltipMessage(reasons: any, type: string): string {
     const translatePlural = new I18nPluralPipe(new NgLocaleLocalization(
-      this.translateService.currentLang
+      this.translateService.getCurrentLang()
     ));
     const messages = [];
 
@@ -77,7 +77,7 @@ export class RecordPermissionService {
         const pluralDict = this.pluralLinksMessages();
         Object.keys(reasons.links).forEach(link => {
           const message = (link in pluralDict)
-            ? translatePlural.transform(reasons.links[link], pluralDict[link], this.translateService.currentLang)
+            ? translatePlural.transform(reasons.links[link], pluralDict[link], this.translateService.getCurrentLang())
             : `${reasons.links[link][link]} ${link}`;
           messages.push('- ' + message);
         });

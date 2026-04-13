@@ -115,7 +115,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
 
   private processContribution(contributions: any): string | undefined {
     const authorized = 'authorized_access_point';
-    const key = `${authorized}_${this.translateService.currentLang}`;
+    const key = `${authorized}_${this.translateService.getCurrentLang()}`;
     const contrib = [];
     contributions.map((contribution: any) => {
       const keys = Object.keys(contribution.entity);
