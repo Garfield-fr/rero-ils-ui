@@ -15,31 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
-import { AbstractControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, OnInit, signal } from '@angular/core';
+import { AbstractControl, FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { User, UserService, PatronBlockedMessagePipe } from '@rero/shared';
+import { PatronBlockedMessagePipe, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Message } from 'primeng/message';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, map, shareReplay, tap } from 'rxjs/operators';
+import { RouterLink } from '@angular/router';
 import { HoldingsService } from '../../../../service/holdings.service';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
-import { Card } from 'primeng/card';
-import { PatronBlockedMessagePipe as PatronBlockedMessagePipe_1 } from '../../../../../../../shared/src/lib/pipe/patron-blocked-message.pipe';
-import { Message } from 'primeng/message';
 
 @Component({
     selector: 'admin-item-request',
     templateUrl: './item-request.component.html',
-    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, TranslatePipe, PatronBlockedMessagePipe, PatronBlockedMessagePipe_1, Message],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, TranslatePipe, PatronBlockedMessagePipe, Message],
 })
 export class ItemRequestComponent implements OnInit {
 
@@ -50,44 +49,42 @@ export class ItemRequestComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private itemService: ItemsService = inject(ItemsService);
   private holdingService: HoldingsService = inject(HoldingsService);
-  private messageService:MessageService = inject(MessageService);
+  private messageService: MessageService = inject(MessageService);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
 
   /** Record pid */
-  recordPid: string;
-  /** Record description */
-  description: string;
+  recordPid: any;
   /** Record type */
-  recordType: string;
+  recordType?: string;
   /** Service */
   service: any;
   /** form */
   form: UntypedFormGroup = new UntypedFormGroup({});
   /** form fields */
-  formFields: FormlyFieldConfig[];
+  formFields = signal<FormlyFieldConfig[] | undefined>(undefined);
   /** model */
-  model: FormModel;
+  model = signal<FormModel | undefined>(undefined);
   /** patron record */
-  patron: any;
+  patron = signal<any>(null);
   /** Dynamic message for can_request validator */
-  canRequestMessage: string;
+  canRequestMessage?: string;
   /** On submit event */
   onSubmit = new EventEmitter<any>();
   /** Requested item(s) */
   requestedBy = signal<any[] | null>(null);
   /** Request in progress */
-  requestInProgress = false;
+  requestInProgress = signal(false);
 
   /** Pickup default $ref */
-  private pickupDefaultValue: string;
+  private pickupDefaultValue?: string;
   /** Current user */
-  private currentUser: User;
+  private currentUser?: User | null;
 
   /** OnInit hook */
   ngOnInit() {
     this.currentUser = this.userService.user();
-    const data: any = this.dynamicDialogConfig.data;
+    const { data } = this.dynamicDialogConfig;
     this.recordPid = data.recordPid;
     this.recordType = data.recordType;
     this.service = (this.recordType === 'item') ? this.itemService : this.holdingService;
@@ -102,26 +99,20 @@ export class ItemRequestComponent implements OnInit {
    * @param model - Object
    */
   submit(model: FormModel) {
-    this.requestInProgress = true;
-    let body = {};
-    let key;
-    body = {
-      pickup_location_pid: model.pickup,
-      patron_pid: this.patron.pid,
-      transaction_library_pid: this.currentUser.currentLibrary,
-      transaction_user_pid: this.currentUser.patronLibrarian.pid
-    };
-    if (this.recordType === 'item') {
-      key = 'item_pid';
-      body[key] = this.recordPid;
-    } else if (this.recordType === 'holding') {
-      key = 'holding_pid';
-      body[key] = this.recordPid;
-      key = 'description';
-      body[key] = model.description;
-    }
-    this.httpClient.post(`/api/${this.recordType}/request`, body)
-      .pipe(tap(() => this.requestInProgress = false))
+    if (this.currentUser?.currentLibrary && this.currentUser.patronLibrarian.pid) {
+      this.requestInProgress.set(true);
+      const body: RequestBody = {
+        pickup_location_pid: model.pickup,
+        patron_pid: this.patron().pid,
+        transaction_library_pid: this.currentUser.currentLibrary,
+        transaction_user_pid: this.currentUser.patronLibrarian.pid,
+        ...(this.recordType === 'item'
+          ? { item_pid: this.recordPid }
+          : { holding_pid: this.recordPid, description: model.description }
+        )
+      };
+      this.httpClient.post(`/api/${this.recordType}/request`, body)
+      .pipe(tap(() => this.requestInProgress.set(false)))
       .subscribe({
         next: () => {
           this.onSubmit.next(undefined);
@@ -141,6 +132,7 @@ export class ItemRequestComponent implements OnInit {
           closable: true
         })
       });
+    }
   }
 
   /**
@@ -157,7 +149,7 @@ export class ItemRequestComponent implements OnInit {
   initForm() {
     if (this.currentUser) {
       this.getPickupLocations().subscribe(pickups => {
-        this.formFields = [
+        this.formFields.set([
           {
             key: 'patronBarcode',
             type: 'input',
@@ -176,9 +168,7 @@ export class ItemRequestComponent implements OnInit {
                 expression: (fc: AbstractControl) =>  {
                   return  this.getPatron(fc.value).pipe(
                     map((result: any) => {
-                      this.patron = (result.length === 1)
-                        ? result[0].metadata
-                        : null;
+                      this.patron.set((result.length === 1) ? result[0].metadata : null);
                       fc.markAsTouched();
                       return result.length === 1;
                     })
@@ -192,7 +182,7 @@ export class ItemRequestComponent implements OnInit {
                     catchError((error) => of({ can: false, reasons: { error: error.message } })),
                     map((result: any) => {
                       if (!result.can) {
-                        this.patron = null;
+                        this.patron.set(null);
                         const reasons = result.reasons || { error: 'Not defined error' };
                         this.canRequestMessage = Object.values(reasons)[0] as string;
                       }
@@ -217,9 +207,9 @@ export class ItemRequestComponent implements OnInit {
               filter: true
             }
           }
-        ];
+        ]);
         if (this.recordType === 'holding') {
-          this.formFields.push({
+          this.formFields.update(fields => [...(fields ?? []), {
             key: 'description',
             type: 'input',
             props: {
@@ -228,13 +218,13 @@ export class ItemRequestComponent implements OnInit {
               maxLength: 100,
               required: true,
             }
-          });
+          }]);
         }
-        this.model = {
+        this.model.set({
           patronBarcode: null,
           pickup: this.pickupDefaultValue,
           description: null,
-        };
+        });
       });
     }
   }
@@ -281,5 +271,15 @@ export class ItemRequestComponent implements OnInit {
 type FormModel = {
   patronBarcode: string;
   pickup: string;
+  description?: string;
+}
+
+type RequestBody = {
+  pickup_location_pid: string;
+  patron_pid: string;
+  transaction_library_pid: string;
+  transaction_user_pid: string;
+  item_pid?: string;
+  holding_pid?: string;
   description?: string;
 }
