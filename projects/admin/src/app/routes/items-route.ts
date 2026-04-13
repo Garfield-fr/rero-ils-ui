@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ItemSwitchLocationStandaloneComponent } from '@app/admin/components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
+import { ItemSwitchLocationComponent } from '@app/admin/components/items/switch-location/item-switch-location/item-switch-location.component';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -74,7 +74,7 @@ export const itemsRoutes: Routes = [
   },
   {
     path: 'switch_location/:pid',
-    component: ItemSwitchLocationStandaloneComponent,
+    component: ItemSwitchLocationComponent,
     title: _('Item'),
     canActivate: [CanAccessGuard],
     data: {
