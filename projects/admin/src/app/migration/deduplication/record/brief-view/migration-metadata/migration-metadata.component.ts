@@ -34,8 +34,11 @@ export class MigrationMetadataBriefComponent {
   // pipes
   protected mainTitlePipe: MainTitlePipe = inject(MainTitlePipe);
 
-  // current record
   record = input<any>();
+
+  type = input<string>();
+
+  detailUrl = input<{ link: string; external: boolean }>();
 
   // current candidate
   candidate = input<any>();

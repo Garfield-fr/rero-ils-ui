@@ -41,8 +41,11 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   protected recordService: RecordService = inject(RecordService);
   protected translateService: TranslateService = inject(TranslateService);
 
-  // current record
   record = input<any>();
+
+  type = input<string>();
+
+  detailUrl = input<{ link: string; external: boolean }>();
 
   // need a result list refresh
   refresh = output<boolean>();

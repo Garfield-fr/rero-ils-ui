@@ -31,10 +31,10 @@ import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../../shared
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDataBriefComponent {
-  // current record
   record = input<any>();
 
-  // detail URL
+  type = input<string>();
+
   detailUrl = input<{ link: string; external: boolean }>();
 
   /**

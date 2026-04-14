@@ -30,7 +30,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class MigrationDetailComponent {
 
-  // current record
   record = input<any>();
+
+  type = input<string>();
+
+  detailUrl = input<{ link: string; external: boolean }>();
 
 }
