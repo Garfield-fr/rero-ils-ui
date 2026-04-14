@@ -59,7 +59,7 @@ export class CircPolicyDetailViewComponent {
       if (!map.has(setting.patron_type.pid)) {
         map.set(setting.patron_type.pid, [setting.item_type.pid]);
       } else {
-        map.get(setting.patron_type.pid).push(setting.item_type.pid);
+        map.get(setting.patron_type.pid)!.push(setting.item_type.pid);
       }
     });
     return map;
@@ -73,7 +73,7 @@ export class CircPolicyDetailViewComponent {
     return set;
   });
 
-  readonly org_currency = computed(() => this.organisationService.organisation().default_currency);
+  readonly org_currency = computed(() => this.organisationService.organisation()?.default_currency);
   readonly checkoutIsAllowed = computed(() => {
     const r = this.record();
     return r && Object.hasOwn(r.metadata, 'checkout_duration');

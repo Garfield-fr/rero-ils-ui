@@ -90,12 +90,12 @@ class ReceiptLinesRoute extends BaseRoute implements RouteDataTypesInterface {
     // TODO :: This isn't the organisation currency that we need to use, it's the order related vendor currency
     //         But how to retrieve the order from here ??? and how get quickly currency to use into
     const service = this.routeToolService.getInjectorToken(OrganisationService);
-    field.props.addonLeft = [
-      Tools.currencySymbol(
-        this.routeToolService.translateService.getCurrentLang(),
-        service.organisation().default_currency
-      ),
-    ];
+    const org = service.organisation();
+    if (org) {
+      field.props!.addonLeft = [
+        Tools.currencySymbol(this.routeToolService.translateService.getCurrentLang(), org.default_currency!),
+      ];
+    }
     return field;
   }
 }

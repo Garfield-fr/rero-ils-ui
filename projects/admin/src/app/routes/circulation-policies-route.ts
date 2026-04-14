@@ -163,7 +163,7 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
         const apiService = this.routeToolService.apiService;
         const recordService: RecordService = this.routeToolService.recordService as RecordService;
         const query = `organisation.pid:${user?.currentOrganisation}`;
-        f.props.options = recordService
+        f.props!.options = recordService
           .getRecords('libraries', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
           .pipe(
             map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
@@ -191,7 +191,7 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        f.props.options = this.routeToolService.httpClient.get('/api/notifications/templates/list').pipe(
+        f.props!.options = this.routeToolService.httpClient.get('/api/notifications/templates/list').pipe(
           map((response: any) => {
             return response.templates.map((tpl: any) => {
               return { label: tpl, value: tpl };
@@ -210,9 +210,12 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
    */
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     const service = this.routeToolService.getInjectorToken(OrganisationService);
-    field.props.addonLeft = [
-      Tools.currencySymbol(this.routeToolService.translateService.getCurrentLang(), service.organisation().default_currency),
-    ];
+    const org = service.organisation();
+    if (org) {
+      field.props!.addonLeft = [
+        Tools.currencySymbol(this.routeToolService.translateService.getCurrentLang(), org.default_currency!),
+      ];
+    }
     return field;
   }
 
@@ -223,7 +226,7 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
    */
   private _feeAmountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     field = this._amountSymbol(field);
-    field.props.addonRight = ['/day'];
+    field.props!.addonRight = ['/day'];
     return field;
   }
 }

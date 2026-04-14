@@ -47,6 +47,7 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { registerFormlyExtension } from './acquisition/formly/extension';
 import { OrderLineTypeComponent } from './acquisition/formly/type/field-order-line.type';
 import { ReceiptLinesTypeComponent } from './acquisition/formly/type/receipt-lines.type';
+import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
 import { InputNoLabelWrapperComponent } from './acquisition/formly/wrapper/input-no-label.wrapper';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id.component';
@@ -129,6 +130,7 @@ export const appConfig: ApplicationConfig = {
         types: [
           { name: 'receipt-lines', component: ReceiptLinesTypeComponent },
           { name: 'order-line', component: OrderLineTypeComponent },
+          { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent },
         ],
         wrappers: [
           { name: 'input-no-label', component: InputNoLabelWrapperComponent },
