@@ -16,8 +16,9 @@
  */
 import { HttpClient } from "@angular/common/http";
 import { Component, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { rxResource } from "@angular/core/rxjs-interop";
 import { AppConfigService } from "@app/admin/service/app-config.service";
-import { TranslateService, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
+import { TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { NgClass, AsyncPipe } from "@angular/common";
 import { Bind } from "primeng/bind";
 import { Fieldset } from "primeng/fieldset";
@@ -36,28 +37,23 @@ import { Message } from "primeng/message";
 })
 export class StatisticsCfgDetailViewComponent {
 
-  private httpClient: HttpClient = inject(HttpClient);
-  private appConfigService: AppConfigService = inject(AppConfigService);
-  private translateService: TranslateService = inject(TranslateService);
+  private httpClient = inject(HttpClient);
+  private appConfigService = inject(AppConfigService);
 
   readonly record = input<any>();
   readonly type = input<string>('');
 
-  readonly liveData = signal<any>(null);
-  readonly liveDataError = signal<string | undefined>(undefined);
+  private liveRequested = signal(false);
 
-  getLiveValues(): void {
-    if (this.liveData() != null) {
-      return;
+  readonly liveData = rxResource({
+    params: () => this.liveRequested() ? this.record()?.metadata.pid : undefined,
+    stream: ({ params: pid }) => {
+      const baseUrl = this.appConfigService.apiEndpointPrefix;
+      return this.httpClient.get<unknown[][]>(`${baseUrl}/stats_cfg/live/${pid}`);
     }
-    this.liveDataError.set(undefined);
-    const { pid } = this.record().metadata;
-    const baseUrl = this.appConfigService.apiEndpointPrefix;
-    this.httpClient
-      .get(`${baseUrl}/stats_cfg/live/${pid}`)
-      .subscribe({
-        next: (res) => this.liveData.set(res),
-        error: () => this.liveDataError.set(this.translateService.instant('Data loading error'))
-      });
+  });
+
+  requestLiveValues(): void {
+    this.liveRequested.set(true);
   }
 }

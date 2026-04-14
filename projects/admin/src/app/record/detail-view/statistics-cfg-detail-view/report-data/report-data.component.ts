@@ -30,5 +30,5 @@ import { TranslateDirective } from "@ngx-translate/core";
 export class ReportDataComponent {
 
   // the report data to display
-  data = input<any>();
+  data = input<unknown[][]>();
 }

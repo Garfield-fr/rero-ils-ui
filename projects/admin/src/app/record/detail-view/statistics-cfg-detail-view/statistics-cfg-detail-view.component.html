@@ -91,19 +91,19 @@
     <p-tabs value="report">
       <p-tablist>
         <p-tab value="report" translate>Reports</p-tab>
-        <p-tab value="live" translate (click)="getLiveValues()">Live Values</p-tab>
+        <p-tab value="live" translate (click)="requestLiveValues()">Live Values</p-tab>
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="report">
           <admin-reports-list [pid]="rec.metadata.pid" />
         </p-tabpanel>
         <p-tabpanel value="live">
-          @if (liveData()) {
-            <admin-report-data [data]="liveData()" />
+          @if (liveData.value(); as data) {
+            <admin-report-data [data]="data" />
           }
-          @if (liveDataError()) {
+          @if (liveData.error()) {
             <p-message severity="error" showTransitionOptions="0ms">
-              {{ liveDataError() }}
+              {{ 'Data loading error' | translate }}
             </p-message>
           }
         </p-tabpanel>

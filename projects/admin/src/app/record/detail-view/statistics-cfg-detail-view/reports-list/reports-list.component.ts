@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { Component, inject, input, ChangeDetectionStrategy } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
 import { ApiService, RecordService, DateTranslatePipe } from "@rero/ng-core";
 import { map } from "rxjs/operators";
 import { Bind } from "primeng/bind";
@@ -29,16 +30,28 @@ import { TranslateDirective } from "@ngx-translate/core";
     imports: [Bind, TableModule, ButtonDirective, TranslateDirective, DateTranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReportsListComponent implements OnInit {
+export class ReportsListComponent {
 
-  private recordService: RecordService = inject(RecordService);
-  private apiService: ApiService = inject(ApiService);
+  private recordService = inject(RecordService);
+  private apiService = inject(ApiService);
 
   // persistent identifier of the current stat report configuration
-  pid = input<any>();
+  pid = input<string>();
 
   // list of the corresponding reports from elasticsearch
-  reports: any[];
+  reports = rxResource({
+    params: () => this.pid(),
+    stream: ({ params: pid }) =>
+      this.recordService
+        .getRecords("stats", { query: `config.pid:${pid}`, page: 1, itemsPerPage: 100 })
+        .pipe(
+          map((result) =>
+            this.recordService.totalHits(result.hits.total) === 0
+              ? []
+              : result.hits.hits
+          )
+        )
+  });
 
   /**
    * Get the report item URL
@@ -48,18 +61,5 @@ export class ReportsListComponent implements OnInit {
    */
   getReportUrl(pid: string): string {
     return `${this.apiService.getEndpointByType("stats")}/${pid}`;
-  }
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.recordService
-      .getRecords("stats", { query: `config.pid:${this.pid}`, page: 1, itemsPerPage: 100 })
-      .pipe(
-        map((result: any) =>
-          this.recordService.totalHits(result.hits.total) === 0
-            ? []
-            : result.hits.hits
-        )
-      ).subscribe((res: any) => (this.reports = res));
   }
 }
