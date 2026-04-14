@@ -46,6 +46,6 @@ export class CirculationLogLoanComponent {
   // COMPONENT FUNCTIONS ======================================================
   /** Close dialog */
   closeDialog(): void {
-    this.closeDialogEvent.emit(null);
+    this.closeDialogEvent.emit();
   }
 }
