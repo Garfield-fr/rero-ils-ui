@@ -41,7 +41,8 @@ export class PaymentDataPieComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit() {
-    if (this.data()?.subtypes) {
+    const data = this.data();
+    if (data?.subtypes) {
       this.values = {
         labels: [],
         datasets: [
@@ -50,7 +51,7 @@ export class PaymentDataPieComponent implements OnInit {
           },
         ],
       };
-      this.data().subtypes.map((subtype) => {
+      data.subtypes.map((subtype) => {
         this.values.labels.push(this.translateService.instant(subtype.name));
         this.values.datasets[0].data.push(subtype.total);
       });
@@ -59,9 +60,9 @@ export class PaymentDataPieComponent implements OnInit {
       plugins: {
         tooltip: {
           callbacks: {
-            label: (context) => {
+            label: (context: any) => {
               const label = context.formattedValue || '';
-              return ` ${label} ${this.organisationService.organisation().default_currency}`;
+              return ` ${label} ${this.organisationService.organisation()?.default_currency ?? ''}`;
             },
           },
         },

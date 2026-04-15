@@ -48,7 +48,7 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
   type = input<string>();
 
   /** is all data are loaded */
-  loaded = false;
+  loaded = signal(false);
   /** transaction object representation from record */
   event: WritableSignal<PatronTransactionEvent> = signal(null);
   /** Parent parent transaction */
@@ -77,7 +77,7 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
       .getPatronTransaction(this.event().parent.pid)
       .subscribe((parent: PatronTransaction) => {
         this.parent = parent;
-        this.loaded = true;
+        this.loaded.set(true);
       });
   }
 
