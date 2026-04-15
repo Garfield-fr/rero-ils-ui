@@ -85,13 +85,13 @@ class ImportDocumentsRoute extends BaseRoute {
   /**
    * Get the string used to display the search result number.
    * @param hits - list of hit results.
-   * @returns observable of the string representation of the number of results.
+   * @returns string representation of the number of results.
    */
-  getResultsText(hits: any): Observable<string> {
+  getResultsText(hits: any): string {
     const total = this.routeToolService.recordService.totalHits(hits.total) || 0;
     return total === 0
-      ? this.translateService.stream('no result')
-      : this.translateService.stream('{{ total }} results of {{ remoteTotal }}', {
+      ? this.translateService.instant('no result')
+      : this.translateService.instant('{{ total }} results of {{ remoteTotal }}', {
           total,
           remoteTotal: hits.remote_total,
         });
