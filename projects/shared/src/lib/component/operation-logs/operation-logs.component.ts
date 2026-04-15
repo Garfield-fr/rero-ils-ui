@@ -48,7 +48,7 @@ export class OperationLogsComponent {
   private readonly resourceKey: string = this.operationLogService.getResourceKeyByResourceName(this.resourceType);
 
   /** items per pages */
-  private readonly itemsPerPage = 2;
+  private readonly itemsPerPage = 5;
   /** Current page */
   private readonly page = signal(1);
   /** Total of records */
