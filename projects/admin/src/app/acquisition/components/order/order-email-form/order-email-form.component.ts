@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { IAcqOrder } from '@app/admin/acquisition/classes/order';
 import { Notification } from '@app/admin/classes/notification';
@@ -43,7 +43,7 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
   private translateService: TranslateService = inject(TranslateService);
 
   /** the related order */
-  order: IAcqOrder;
+  order!: IAcqOrder;
 
   /** Available recipient types */
   emailTypes = ['to', 'cc', 'bcc', 'reply_to'];
@@ -52,10 +52,10 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
   mandatoryEmailTypes = ['to', 'reply_to'];
 
   /** Suggested emails and PrePopulate recipients */
-  suggestions: { emails: string[], recipients: ITypeEmail[] } = { emails: [], recipients: []};
+  suggestions = signal<{ emails: string[], recipients: ITypeEmail[] }>({ emails: [], recipients: [] });
 
   /** preview message data */
-  response?: IPreview;
+  response = signal<IPreview | undefined>(undefined);
 
   /** all component subscription */
   private subscriptions = new Subscription();
@@ -66,8 +66,8 @@ export class OrderEmailFormComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.acqOrderApiService
       .getOrderPreview(this.order.pid)
       .subscribe((response: IPreview) => {
-        this.suggestions = Tools.processRecipientSuggestions(response.recipient_suggestions);
-        this.response = response;
+        this.suggestions.set(Tools.processRecipientSuggestions(response.recipient_suggestions));
+        this.response.set(response);
       })
     );
   }

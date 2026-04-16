@@ -54,7 +54,7 @@ export class PreviewEmailComponent {
   closeDialog = output<boolean>();
 
   /** Email address that is in drag mode */
-  draggedEmail: string;
+  draggedEmail: string | null = null;
 
   /** Recipients */
   recipients = { to: [], cc: [], bcc: [], reply_to: [] };
