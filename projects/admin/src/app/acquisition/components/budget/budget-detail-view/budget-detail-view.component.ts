@@ -52,7 +52,7 @@ export class BudgetDetailViewComponent {
 
   // GETTER & SETTER ==========================================================
   /** Get the currency code used for the current loaded organisation */
-  get currencyCode(): string {
-    return this.organisationService.organisation().default_currency;
+  get currencyCode(): string | undefined {
+    return this.organisationService.organisation()?.default_currency;
   }
 }
