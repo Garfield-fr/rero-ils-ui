@@ -33,6 +33,7 @@ import {
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
+import { of } from 'rxjs';
 import { PERMISSIONS, Tools } from '@rero/shared';
 
 /** Export formats configuration. */
@@ -93,7 +94,7 @@ class AccountsRoute extends BaseRoute implements RouteDataTypesInterface {
         detailComponent: AccountDetailViewComponent,
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data: any) => this._addDefaultInformation(data),
-        redirectUrl: () => import('rxjs').then(({ of }) => of('/acquisition/accounts')).then((obs) => obs) as any,
+        redirectUrl: () => of('/acquisition/accounts'),
         formFieldMap: ((field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
           const formWidget = jsonSchema.widget;
           if (formWidget?.formlyConfig?.props?.fieldMap === 'amount') {
