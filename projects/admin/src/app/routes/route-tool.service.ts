@@ -23,7 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
 import { AppSettingsService, PermissionsService, UserService } from '@rero/shared';
 import { Observable, of, Subscriber } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { RecordPermissions } from '../classes/permissions';
 import { RecordPermissionService } from '../service/record-permission.service';
 
@@ -240,7 +240,6 @@ export class RouteToolService {
       .getPermission(recordType, record.metadata.pid)
         .pipe(
           map((permission: RecordPermissions) => {
-            const { user } = this.userService;
             if (membership && "library" in record.metadata) {
               // Extract library pid
               const libraryPid =
@@ -248,7 +247,7 @@ export class RouteToolService {
                   ? record.metadata.library.$ref.split("/").pop()
                   : record.metadata.library.pid;
               permission = this.recordPermissionService.membership(
-                user,
+                this.userService.user(),
                 libraryPid,
                 permission
               );
