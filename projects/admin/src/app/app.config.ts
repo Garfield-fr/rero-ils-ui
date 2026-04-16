@@ -66,6 +66,7 @@ import { AppConfigService } from './service/app-config.service';
 import { AppInitializerService } from './service/app-initializer.service';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
+import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -131,6 +132,7 @@ export const appConfig: ApplicationConfig = {
           { name: 'receipt-lines', component: ReceiptLinesTypeComponent },
           { name: 'order-line', component: OrderLineTypeComponent },
           { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent },
+          { name: 'account-select', component: SelectAccountEditorWidgetComponent }
         ],
         wrappers: [
           { name: 'input-no-label', component: InputNoLabelWrapperComponent },
