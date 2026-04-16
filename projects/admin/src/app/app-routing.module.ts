@@ -177,7 +177,7 @@ export const routes: Routes = [
       },
       {
         path: 'acquisition',
-        loadChildren: () => import('./acquisition/acquisition-routing.module').then((m) => m.acquisitionsRoutes),
+        loadChildren: () => import('./acquisition/acquisition.routes').then((m) => m.acquisitionsRoutes),
       },
       {
         path: 'permissions/matrix',
