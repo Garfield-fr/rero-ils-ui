@@ -38,7 +38,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     return 'documents';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string): Observable<ISuggestionItem[]> {
+  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string | null): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
@@ -62,7 +62,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
           if (result.hits.total.value == 0) {
             return [];
           }
-          const hits = [];
+          const hits: ISuggestionItem[] = [];
           result.hits.hits.map((hit: any) => {
             hits.push(this.processHit(hit.metadata, queryOptions));
           });
@@ -81,8 +81,8 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
   }
 
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
-    const url = item.value.split('/');
-    const pid = url.pop();
+    const url = item.value!.split('/');
+    const pid = url.pop()!;
 
     return this.recordService
       .getRecord(queryOptions.type, pid, { resolve: 1 })
@@ -116,7 +116,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
   private processContribution(contributions: any): string | undefined {
     const authorized = 'authorized_access_point';
     const key = `${authorized}_${this.translateService.getCurrentLang()}`;
-    const contrib = [];
+    const contrib: string[] = [];
     contributions.map((contribution: any) => {
       const keys = Object.keys(contribution.entity);
       if (contribution.entity && (keys.includes(key) || keys.includes(authorized))) {
@@ -131,7 +131,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
   }
 
   private processTitle(title: any, maxLengthSuggestion = 100): string {
-    let text = this.mainTitlePipe.transform(title);
+    let text = this.mainTitlePipe.transform(title) ?? '';
     // Truncate text if the length of text great than maxLengthSuggestion
     if (text.length > maxLengthSuggestion) {
       text = text.slice(0, maxLengthSuggestion) + '…';
@@ -141,7 +141,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
   }
 
   private processIdentifiedBy(identifiedBy: any): string {
-    const ids = [];
+    const ids: string[] = [];
       const identifiers = this.extractIdentifier(identifiedBy);
       const keys = Object.keys(identifiers);
       keys.forEach((key: string) => {
@@ -164,7 +164,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       .splice(0, 6)
       .forEach((element: any) => {
         let data = element.value;
-        const key = availableIdentifiers[element.type];
+        const key = availableIdentifiers[element.type as keyof typeof availableIdentifiers];
         if (!(key in result)) {
           result[key] = new Set();
         }

@@ -34,7 +34,7 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
     return 'patrons';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, _currentPid: string): Observable<ISuggestionItem[]> {
+  getSuggestions(query: string, queryOptions: IQueryOptions, _currentPid: string | null): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
@@ -44,7 +44,7 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
       { query, page: 1, itemsPerPage: queryOptions.maxOfResult }
     ).pipe(
       map((result: any) => {
-        const patrons = [];
+        const patrons: ISuggestionItem[] = [];
         result.hits.hits.map((hit: any) => patrons.push(this.getPatronsRef(hit.metadata, query)));
 
         return patrons;
@@ -60,8 +60,8 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
     );
   }
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
-    const url = item.value.split('/');
-    const pid = url.pop();
+    const url = item.value!.split('/');
+    const pid = url.pop()!;
 
     return this.recordService
       .getRecord(queryOptions.type, pid, { resolve: 1 })
