@@ -27,8 +27,8 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
-import { PermissionGuard } from '../../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
+import { permissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { VendorBriefViewComponent } from '../components/vendors/vendor-brief-view.component';
 import { VendorDetailViewComponent } from '../components/vendors/vendor-detail-view/vendor-detail-view.component';
@@ -41,7 +41,7 @@ export const vendorsRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Vendors'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.VNDR_ACCESS, PERMISSIONS.VNDR_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -51,7 +51,7 @@ export const vendorsRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Vendor'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -60,7 +60,7 @@ export const vendorsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Vendor'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -70,7 +70,7 @@ export const vendorsRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Vendor'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.VNDR_CREATE],

@@ -28,14 +28,14 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
-import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
-import { PermissionGuard } from '../../guard/permission.guard';
+import { acqOrderLineGuard } from '../../guard/acq-order-line.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
+import { permissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrderBriefViewComponent } from '../components/order/order-brief-view/order-brief-view.component';
 import { OrderDetailViewComponent } from '../components/order/order-detail-view/order-detail-view.component';
 import { OrderReceiptViewComponent } from '../components/receipt/receipt-form/order-receipt-view.component';
-import { CanOrderReceiptGuard } from './guards/can-order-receipt.guard';
+import { canOrderReceiptGuard } from './guards/can-order-receipt.guard';
 
 export const ordersRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
   new OrdersRoute().getTypes();
@@ -45,7 +45,7 @@ export const ordersRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Orders'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.ACOR_ACCESS, PERMISSIONS.ACOR_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -55,7 +55,7 @@ export const ordersRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Order'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -64,7 +64,7 @@ export const ordersRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Order'),
-    canActivate: [CanAccessGuard, AcqOrderLineGuard],
+    canActivate: [canAccessGuard, acqOrderLineGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -75,7 +75,7 @@ export const ordersRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Order'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.ACOR_CREATE],
@@ -85,7 +85,7 @@ export const ordersRoutes: Routes = [
     path: 'receive/:pid',
     component: OrderReceiptViewComponent,
     title: _('Order'),
-    canActivate: [CanOrderReceiptGuard],
+    canActivate: [canOrderReceiptGuard],
   },
 ];
 

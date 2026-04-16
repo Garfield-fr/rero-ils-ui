@@ -32,8 +32,8 @@ import {
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { CollectionBriefViewComponent } from '../record/brief-view/collection-brief-view.component';
 import { CollectionDetailViewComponent } from '../record/detail-view/collection-detail-view/collection-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -52,7 +52,7 @@ export const collectionsRoutes: Routes = [
   {
     path: '',
     component: RecordSearchPageComponent,
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     title: _('Exhibitions/Courses'),
     data: {
       permissions: [PERMISSIONS.COLL_ACCESS, PERMISSIONS.COLL_SEARCH],
@@ -63,7 +63,7 @@ export const collectionsRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Exhibition/course'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -72,7 +72,7 @@ export const collectionsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Exhibition/course'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -82,7 +82,7 @@ export const collectionsRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Exhibition/course'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.COLL_CREATE],

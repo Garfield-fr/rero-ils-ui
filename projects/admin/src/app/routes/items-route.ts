@@ -33,8 +33,8 @@ import { of } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { ItemType } from '../classes/items';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { ItemPageDetailComponent } from '../record/detail-view/item-detail-view/item-page-detail/item-page-detail.component';
@@ -48,7 +48,7 @@ export const itemsRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Items'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.ITEM_ACCESS, PERMISSIONS.ITEM_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -57,7 +57,7 @@ export const itemsRoutes: Routes = [
   {
     path: 'detail/:pid',
     component: ItemPageDetailComponent,
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -66,7 +66,7 @@ export const itemsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Item'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -76,7 +76,7 @@ export const itemsRoutes: Routes = [
     path: 'switch_location/:pid',
     component: ItemSwitchLocationComponent,
     title: _('Item'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -85,7 +85,7 @@ export const itemsRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Item'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.HOLD_CREATE, PERMISSIONS.ITEM_CREATE],

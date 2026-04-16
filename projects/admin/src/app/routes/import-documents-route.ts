@@ -24,7 +24,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ImportSourceApiService } from '../api/import-source-api.service';
 import { ExternalSourceSetting } from '../classes/external-source';
-import { PermissionGuard } from '../guard/permission.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
@@ -39,7 +39,7 @@ export const importDocumentsRoutes: Routes = [
     path: '',
     component: ImportRecordSearchComponent,
     title: _('Import from the web'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH],
       operator: PERMISSION_OPERATOR.AND,

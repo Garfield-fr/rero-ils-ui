@@ -21,8 +21,8 @@ import { _ } from '@ngx-translate/core';
 import { ComponentCanDeactivateGuard, RecordData, RecordType } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentEditorComponent } from '../record/custom-editor/document-editor/document-editor.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
@@ -41,7 +41,7 @@ export const documentsRoutes: Routes = [
     path: '',
     component: DocumentRecordSearchComponent,
     title: _('Documents'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -51,7 +51,7 @@ export const documentsRoutes: Routes = [
     path: 'detail/:pid',
     component: DocumentDetailComponent,
     title: _('Document'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -60,7 +60,7 @@ export const documentsRoutes: Routes = [
     path: 'edit/:pid',
     component: DocumentEditorComponent,
     title: _('Document'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -70,7 +70,7 @@ export const documentsRoutes: Routes = [
     path: 'new',
     component: DocumentEditorComponent,
     title: _('Document'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.DOC_CREATE],
@@ -80,7 +80,7 @@ export const documentsRoutes: Routes = [
     path: 'duplicate',
     component: DocumentEditorComponent,
     title: _('Document'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.DOC_CREATE],

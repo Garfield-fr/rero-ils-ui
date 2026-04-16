@@ -31,8 +31,8 @@ import type { ActionStatus, EsResult } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { StatisticsCfgBriefViewComponent } from '../record/brief-view/statistics-cfg-brief-view-component';
 import { StatisticsCfgDetailViewComponent } from '../record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -45,7 +45,7 @@ export const statisticsCfgRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Report configurations'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.STAT_CFG_ACCESS, PERMISSIONS.STAT_CFG_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -55,21 +55,21 @@ export const statisticsCfgRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Report configuration'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: { action: CAN_ACCESS_ACTIONS.READ },
   },
   {
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Report configuration'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: { action: CAN_ACCESS_ACTIONS.UPDATE },
   },
   {
     path: 'new',
     component: EditorComponent,
     title: _('Report configuration'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: { permissions: [PERMISSIONS.STAT_CFG_CREATE] },
   },
 ];

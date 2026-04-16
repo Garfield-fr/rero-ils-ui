@@ -19,7 +19,7 @@ import { _ } from '@ngx-translate/core';
 import { PERMISSIONS } from '@rero/shared';
 import { recordTypeMatcher } from './routes/record-type-matcher';
 import { ErrorPageComponent } from './error/error-page/error-page.component';
-import { PermissionGuard } from './guard/permission.guard';
+import { permissionGuard } from './guard/permission.guard';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
 import { circulationPoliciesRouteResolver } from './routes/circulation-policies-route';
 import { collectionsRouteResolver } from './routes/collections-route';
@@ -184,7 +184,7 @@ export const routes: Routes = [
     path: 'permissions/matrix',
     component: PermissionDetailViewComponent,
     title: _('Permissions matrix'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.PERM_MANAGEMENT],
     },

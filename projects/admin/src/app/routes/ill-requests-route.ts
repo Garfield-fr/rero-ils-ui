@@ -28,8 +28,8 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { IllRequestsBriefViewComponent } from '../record/brief-view/ill-requests-brief-view/ill-requests-brief-view.component';
 import { IllRequestDetailViewComponent } from '../record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -42,7 +42,7 @@ export const illRequestsRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('ILL requests'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.ILL_ACCESS, PERMISSIONS.ILL_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -52,7 +52,7 @@ export const illRequestsRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('ILL request'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -61,7 +61,7 @@ export const illRequestsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('ILL request'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -71,7 +71,7 @@ export const illRequestsRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('ILL request'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.ILL_CREATE],

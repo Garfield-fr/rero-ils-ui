@@ -27,8 +27,8 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
 import { LibraryComponent } from '../record/custom-editor/libraries/library.component';
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
@@ -42,7 +42,7 @@ export const librariesRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Libraries'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.LIB_ACCESS, PERMISSIONS.LIB_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -52,7 +52,7 @@ export const librariesRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Library'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -61,7 +61,7 @@ export const librariesRoutes: Routes = [
     path: 'edit/:pid',
     component: LibraryComponent,
     title: _('Library'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -71,7 +71,7 @@ export const librariesRoutes: Routes = [
     path: 'new',
     component: LibraryComponent,
     title: _('Library'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.LIB_CREATE],

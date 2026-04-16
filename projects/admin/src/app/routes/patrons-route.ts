@@ -32,8 +32,8 @@ import {
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view/patrons-brief-view.component';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -46,7 +46,7 @@ export const patronsRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Patrons'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.PTRN_ACCESS, PERMISSIONS.PTRN_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -56,7 +56,7 @@ export const patronsRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Patron'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -65,7 +65,7 @@ export const patronsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Patron'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -75,7 +75,7 @@ export const patronsRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Patron'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.PTRN_CREATE],

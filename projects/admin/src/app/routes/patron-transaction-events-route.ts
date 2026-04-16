@@ -20,7 +20,7 @@ import { _ } from '@ngx-translate/core';
 import { ActionStatus, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
-import { PermissionGuard } from '../guard/permission.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import {
   PatronTransactionEventsBriefViewComponent,
 } from '../record/brief-view/patron-transaction-events-brief-view/patron-transaction-events-brief-view.component';
@@ -37,7 +37,7 @@ export const patronTransactionEventsRoutes: Routes = [
     path: '',
     component: PatronTransactionEventSearchViewComponent,
     title: _('Fees'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.PTTR_ACCESS, PERMISSIONS.PTTR_SEARCH],
       operator: PERMISSION_OPERATOR.AND,

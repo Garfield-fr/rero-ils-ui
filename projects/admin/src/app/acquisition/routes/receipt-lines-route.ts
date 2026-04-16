@@ -28,10 +28,10 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrganisationService } from '../../service/organisation.service';
-import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
+import { isBudgetActiveGuard } from './guards/is-budget-active.guard';
 
 export const receiptLinesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
   new ReceiptLinesRoute().getTypes();
@@ -41,7 +41,7 @@ export const receiptLinesRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Receipt line'),
-    canActivate: [CanAccessGuard, IsBudgetActiveGuard],
+    canActivate: [canAccessGuard, isBudgetActiveGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,

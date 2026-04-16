@@ -20,8 +20,8 @@ import { _ } from '@ngx-translate/core';
 import { EditorComponent, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { EntitiesLocalDetailViewComponent } from '../record/detail-view/entities-detail-view/local/entities-local-detail-view.component';
 import { LocalPageDetailComponent } from '../record/detail-view/entities-detail-view/local/local-page-detail/local-page-detail.component';
 import { BaseRoute } from './base-route';
@@ -39,7 +39,7 @@ export const entitiesLocalRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Local entity'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -48,7 +48,7 @@ export const entitiesLocalRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Local entity'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.LOCENT_CREATE],
     },

@@ -27,9 +27,9 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { LibraryGuard } from '../guard/library.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { libraryGuard } from '../guard/library.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
 import { BaseRoute } from './base-route';
 
@@ -41,7 +41,7 @@ export const locationsRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Location'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -50,7 +50,7 @@ export const locationsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Location'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -60,7 +60,7 @@ export const locationsRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Location'),
-    canActivate: [PermissionGuard, LibraryGuard],
+    canActivate: [permissionGuard, libraryGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.LOC_CREATE],

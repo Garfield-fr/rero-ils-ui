@@ -29,8 +29,8 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, Subscriber } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
 import { TemplateDetailViewComponent } from '../record/detail-view/template-detail-view/template-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -43,7 +43,7 @@ export const templatesRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Templates'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.TMPL_ACCESS, PERMISSIONS.TMPL_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -53,7 +53,7 @@ export const templatesRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Template'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -62,7 +62,7 @@ export const templatesRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Template'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,

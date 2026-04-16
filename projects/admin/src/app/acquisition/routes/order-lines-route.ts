@@ -28,13 +28,13 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
-import { AcqOrderLineGuard } from '../../guard/acq-order-line.guard';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
-import { PermissionGuard } from '../../guard/permission.guard';
+import { acqOrderLineGuard } from '../../guard/acq-order-line.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
+import { permissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { OrganisationService } from '../../service/organisation.service';
-import { CanAddOrderLineGuard } from './guards/can-add-order-line.guard';
-import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
+import { canAddOrderLineGuard } from './guards/can-add-order-line.guard';
+import { isBudgetActiveGuard } from './guards/is-budget-active.guard';
 
 export const orderLinesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
   new OrderLinesRoute().getTypes();
@@ -44,7 +44,7 @@ export const orderLinesRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Order line'),
-    canActivate: [CanAccessGuard, IsBudgetActiveGuard],
+    canActivate: [canAccessGuard, isBudgetActiveGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -54,7 +54,7 @@ export const orderLinesRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Order line'),
-    canActivate: [PermissionGuard, CanAddOrderLineGuard, AcqOrderLineGuard],
+    canActivate: [permissionGuard, canAddOrderLineGuard, acqOrderLineGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.ACOL_CREATE],

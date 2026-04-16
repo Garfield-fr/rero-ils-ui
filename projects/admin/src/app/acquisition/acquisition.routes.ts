@@ -19,7 +19,7 @@
 import { Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
-import { PermissionGuard } from '../guard/permission.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { recordTypeMatcher } from '../routes/record-type-matcher';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
 import { AccountTransferComponent } from './components/account/account-transfer/account-transfer.component';
@@ -41,7 +41,7 @@ export const acquisitionsRoutes: Routes = [
     path: 'accounts/transfer',
     component: AccountTransferComponent,
     title: _('Accounts'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.ACAC_TRANSFER],
     },
@@ -50,7 +50,7 @@ export const acquisitionsRoutes: Routes = [
     path: 'accounts',
     component: AccountListComponent,
     title: _('Accounts'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH],
       operator: PERMISSION_OPERATOR.AND,

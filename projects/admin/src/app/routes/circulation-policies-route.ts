@@ -32,8 +32,8 @@ import { PERMISSIONS, PERMISSION_OPERATOR, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ResolveFn, Routes } from '@angular/router';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
 import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
 import { OrganisationService } from '../service/organisation.service';
@@ -47,7 +47,7 @@ export const circulationPoliciesRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Circulation policies'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.CIPO_ACCESS, PERMISSIONS.CIPO_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -57,7 +57,7 @@ export const circulationPoliciesRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Circulation policy'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -66,7 +66,7 @@ export const circulationPoliciesRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Circulation policy'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -76,7 +76,7 @@ export const circulationPoliciesRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Circulation policy'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.CIPO_CREATE],

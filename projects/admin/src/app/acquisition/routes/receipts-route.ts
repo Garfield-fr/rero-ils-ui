@@ -18,9 +18,9 @@
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { ComponentCanDeactivateGuard, EditorComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { BaseRoute } from '../../routes/base-route';
-import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
+import { isBudgetActiveGuard } from './guards/is-budget-active.guard';
 
 export const receiptsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
   new ReceiptsRoute().getTypes();
@@ -30,7 +30,7 @@ export const receiptsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Receipt'),
-    canActivate: [CanAccessGuard, IsBudgetActiveGuard],
+    canActivate: [canAccessGuard, isBudgetActiveGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,

@@ -20,7 +20,7 @@ import { RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterf
 import { IssueItemStatus, PERMISSIONS } from '@rero/shared';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { filter, take } from 'rxjs/operators';
-import { PermissionGuard } from '../guard/permission.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { IssuesBriefViewComponent } from '../record/brief-view/issues-brief-view/issues-brief-view.component';
 import { BaseRoute } from './base-route';
 
@@ -32,7 +32,7 @@ export const issuesRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Late issues'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.ISSUE_MANAGEMENT],
     },

@@ -20,8 +20,8 @@ import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { DetailComponent, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
-import { PermissionGuard } from '../../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
+import { permissionGuard } from '../../guard/permission.guard';
 import { BudgetsBriefViewComponent } from '../components/budget/budget-brief-view/budgets-brief-view.component';
 import { BudgetDetailViewComponent } from '../components/budget/budget-detail-view/budget-detail-view.component';
 
@@ -33,7 +33,7 @@ export const budgetsRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Budgets'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.BUDG_ACCESS, PERMISSIONS.BUDG_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -43,7 +43,7 @@ export const budgetsRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Budget'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },

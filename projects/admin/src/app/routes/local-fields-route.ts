@@ -19,9 +19,9 @@ import { _ } from '@ngx-translate/core';
 import { ComponentCanDeactivateGuard, EditorComponent, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { CanAddLocalFieldsGuard } from '../guard/can-add-local-fields.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { canAddLocalFieldsGuard } from '../guard/can-add-local-fields.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { BaseRoute } from './base-route';
 
 export const localFieldsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
@@ -32,7 +32,7 @@ export const localFieldsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Local fields'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -42,7 +42,7 @@ export const localFieldsRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Local fields'),
-    canActivate: [PermissionGuard, CanAddLocalFieldsGuard],
+    canActivate: [permissionGuard, canAddLocalFieldsGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.LOFI_CREATE],

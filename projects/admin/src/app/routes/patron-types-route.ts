@@ -28,8 +28,8 @@ import {
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
 import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
 import { BaseRoute } from './base-route';
@@ -42,7 +42,7 @@ export const patronTypesRoutes: Routes = [
     path: '',
     component: RecordSearchPageComponent,
     title: _('Patron types'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     data: {
       permissions: [PERMISSIONS.PTTY_ACCESS, PERMISSIONS.PTTY_SEARCH],
       operator: PERMISSION_OPERATOR.AND,
@@ -52,7 +52,7 @@ export const patronTypesRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Patron type'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -61,7 +61,7 @@ export const patronTypesRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Patron type'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -71,7 +71,7 @@ export const patronTypesRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Patron type'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.PTTY_CREATE],

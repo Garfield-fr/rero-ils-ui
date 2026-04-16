@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { AccountDetailViewComponent } from '@app/admin/acquisition/components/account/account-detail-view/account-detail-view.component';
-import { CanAddAccountGuard } from '@app/admin/acquisition/routes/guards/can-add-account.guard';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '@app/admin/guard/can-access.guard';
-import { PermissionGuard } from '@app/admin/guard/permission.guard';
+import { canAddAccountGuard } from '@app/admin/acquisition/routes/guards/can-add-account.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '@app/admin/guard/can-access.guard';
+import { permissionGuard } from '@app/admin/guard/permission.guard';
 import { BaseRoute } from '@app/admin/routes/base-route';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { ResolveFn, Routes } from '@angular/router';
@@ -53,7 +53,7 @@ export const accountsRoutes: Routes = [
     path: 'detail/:pid',
     component: DetailComponent,
     title: _('Accounts'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -62,7 +62,7 @@ export const accountsRoutes: Routes = [
     path: 'edit/:pid',
     component: EditorComponent,
     title: _('Account'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -72,7 +72,7 @@ export const accountsRoutes: Routes = [
     path: 'new',
     component: EditorComponent,
     title: _('Account'),
-    canActivate: [PermissionGuard, CanAddAccountGuard],
+    canActivate: [permissionGuard, canAddAccountGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.ACAC_CREATE],

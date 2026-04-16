@@ -17,7 +17,7 @@
 import { Routes } from '@angular/router';
 import { _ } from "@ngx-translate/core";
 import { PERMISSIONS } from '@rero/shared';
-import { PermissionGuard } from '../guard/permission.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationMainComponent } from './circulation-main.component';
 import { keepHistoryGuard } from './guard/keep-history.guard';
@@ -45,7 +45,7 @@ export const circulationRoutes: Routes = [
         path: 'checkout',
         component: CheckinComponent,
         title: _('Checkout/checkin'),
-        canActivate: [ PermissionGuard ],
+        canActivate: [ permissionGuard ],
         data: {
           permissions: [ PERMISSIONS.CIRC_ADMIN ]
         }
@@ -54,7 +54,7 @@ export const circulationRoutes: Routes = [
         path: 'requests',
         component: MainRequestComponent,
         title: _('Requests'),
-        canActivate: [ PermissionGuard ],
+        canActivate: [ permissionGuard ],
         data: {
           permissions: [ PERMISSIONS.CIRC_ADMIN ]
         }
@@ -72,7 +72,7 @@ export const circulationRoutes: Routes = [
             path: 'loan',
             component: LoanComponent,
             title: _('On loan'),
-            canActivate: [ PermissionGuard ],
+            canActivate: [ permissionGuard ],
             data: {
               permissions: [ PERMISSIONS.CIRC_ADMIN ]
             }
@@ -81,7 +81,7 @@ export const circulationRoutes: Routes = [
             path: 'pickup',
             component: PickupComponent,
             title: _('To pick up'),
-            canActivate: [ PermissionGuard ],
+            canActivate: [ permissionGuard ],
             data: {
               permissions: [ PERMISSIONS.CIRC_ADMIN ]
             }
@@ -90,7 +90,7 @@ export const circulationRoutes: Routes = [
             path: 'pending',
             component: PendingComponent,
             title: _('Pending'),
-            canActivate: [ PermissionGuard ],
+            canActivate: [ permissionGuard ],
             data: {
               permissions: [ PERMISSIONS.CIRC_ADMIN ]
             }
@@ -99,7 +99,7 @@ export const circulationRoutes: Routes = [
             path: 'ill',
             component: IllRequestComponent,
             title: _('Interlibrary loan'),
-            canActivate: [ PermissionGuard ],
+            canActivate: [ permissionGuard ],
             data: {
               permissions: [ PERMISSIONS.CIRC_ADMIN ]
             }
@@ -108,7 +108,7 @@ export const circulationRoutes: Routes = [
             path: 'profile',
             component: ProfileComponent,
             title: _('Profile'),
-            canActivate: [ PermissionGuard ],
+            canActivate: [ permissionGuard ],
             data: {
               permissions: [ PERMISSIONS.CIRC_ADMIN ]
             }
@@ -117,7 +117,7 @@ export const circulationRoutes: Routes = [
             path: 'fees',
             component: PatronTransactionsComponent,
             title: _('Fees'),
-            canActivate: [ PermissionGuard ],
+            canActivate: [ permissionGuard ],
             data: {
               permissions: [ PERMISSIONS.CIRC_ADMIN ]
             }
@@ -126,7 +126,7 @@ export const circulationRoutes: Routes = [
             path: 'history',
             component: HistoryComponent,
             title: _('History'),
-            canActivate: [ keepHistoryGuard, PermissionGuard ],
+            canActivate: [ keepHistoryGuard, permissionGuard ],
             data: {
               permissions: [ PERMISSIONS.CIRC_ADMIN ]
             }

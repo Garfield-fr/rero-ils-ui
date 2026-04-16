@@ -29,8 +29,8 @@ import {
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
 import { HoldingDetailViewComponent } from '../record/detail-view/holding-detail-view/holding-detail-view.component';
 import { HoldingPageDetailComponent } from '../record/detail-view/holding-detail-view/holding-page-detail/holding-page-detail.component';
@@ -44,7 +44,7 @@ export const holdingsRoutes: Routes = [
     path: 'detail/:pid',
     component: HoldingPageDetailComponent,
     title: _('Holdings'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.READ,
     },
@@ -53,7 +53,7 @@ export const holdingsRoutes: Routes = [
     path: 'edit/:pid',
     component: HoldingEditorComponent,
     title: _('Holding'),
-    canActivate: [CanAccessGuard],
+    canActivate: [canAccessGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
@@ -63,7 +63,7 @@ export const holdingsRoutes: Routes = [
     path: 'new',
     component: HoldingEditorComponent,
     title: _('Holding'),
-    canActivate: [PermissionGuard],
+    canActivate: [permissionGuard],
     canDeactivate: [ComponentCanDeactivateGuard],
     data: {
       permissions: [PERMISSIONS.HOLD_CREATE],
