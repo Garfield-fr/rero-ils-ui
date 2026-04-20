@@ -15,19 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy} from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { MainTitlePipe } from '@rero/shared';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-migration-data',
     templateUrl: './migration-data.component.html',
-    imports: [RouterLink, Bind, Tag, TranslateDirective, DateTranslatePipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1],
+    imports: [RouterLink, Tag, TranslateDirective, DateTranslatePipe, MainTitlePipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDataBriefComponent {
@@ -37,11 +35,6 @@ export class MigrationDataBriefComponent {
 
   detailUrl = input<{ link: string; external: boolean }>();
 
-  /**
-   * Get the conversion status.
-   */
-  get status() {
-    return this.record()?.metadata?.conversion?.status;
-  }
+  status = computed(() => this.record()?.metadata?.conversion?.status);
 
 }

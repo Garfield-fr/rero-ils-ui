@@ -27,16 +27,13 @@
   </div>
   <div class="ui:my-3">
     @for (message of messages(); track $index) {
-      <p-message
-        styleClass="ui:mb-2"
-        [text]="message.detail"
-        [severity]="message.severity"
-        showTransitionOptions="0ms"
-      />
+      <p-message styleClass="ui:mb-2" [severity]="message.severity" showTransitionOptions="0ms">
+      {{ message.detail }}
+    </p-message>
     }
   </div>
   <div class="ui:text-sm ui:grid ui:grid-cols-12 ui:gap-2 data">
-    <div class="markdown ui:col-span-6 col-overflow" [innerHTML]="record().raw"></div>
+    <div class="markdown ui:col-span-6 col-overflow" [innerHTML]="record().raw | markdown"></div>
     <div
       class="json ui:col-span-6 col-overflow"
       [innerHTML]="record()?.conversion?.json | json | highlightJson"

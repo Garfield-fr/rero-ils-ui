@@ -19,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { ApiService, DateTranslatePipe } from '@rero/ng-core';
+import { ApiService, DateTranslatePipe, MarkdownPipe } from '@rero/ng-core';
 import { of, switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -31,7 +31,7 @@ import { Message } from 'primeng/message';
 @Component({
     selector: 'admin-migration-data',
     templateUrl: './migration-data.component.html',
-    imports: [Bind, Tag, TranslateDirective, JsonPipe, DateTranslatePipe, TranslatePipe, HighlightJsonPipe, Message],
+    imports: [Bind, Tag, TranslateDirective, JsonPipe, DateTranslatePipe, TranslatePipe, HighlightJsonPipe, Message, MarkdownPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDataDetailComponent {
@@ -72,7 +72,7 @@ export class MigrationDataDetailComponent {
    * @returns the list messages on the primeng format.
    */
   getMessages(): {severity: string, detail: string}[] {
-    const messages = [];
+    const messages: { severity: string, detail: string }[] = [];
     if (this.record()?.conversion.logs) {
       ['info', 'warning', 'error'].map((field) => {
         const log = this.record().conversion.logs[field];
