@@ -16,7 +16,7 @@
  */
 import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { MenuItem } from 'primeng/api';
 
@@ -28,14 +28,14 @@ type QueryParams = Record<string, unknown>;
 })
 export class MenuTranslateService {
   private translateService: TranslateService = inject(TranslateService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   // Available variables for menu definitions.
   public REPLACEMENT_VARIABLES = {
-    $currentLibrary: () => this.userService.user()?.currentLibrary,
-    $currentOrganisation: () => this.userService.user()?.currentOrganisation,
-    $symbolName: () => this.userService.user()?.symbolName,
-    $currentBudget: () => this.userService.user()?.currentBudget,
+    $currentLibrary: () => this.appStore.currentLibraryPid(),
+    $currentOrganisation: () => this.appStore.currentOrganisationPid(),
+    $symbolName: () => this.appStore.user()?.symbolName,
+    $currentBudget: () => this.appStore.currentBudgetPid(),
     $currentDayRange: () => {
       const today = new Date()
       const tomorrow = new Date(today);

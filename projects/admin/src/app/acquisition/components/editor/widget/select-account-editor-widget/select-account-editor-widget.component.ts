@@ -21,7 +21,7 @@ import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FieldType } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
@@ -40,7 +40,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
   private apiService: ApiService = inject(ApiService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private messageService = inject(MessageService);
   private translateService: TranslateService = inject(TranslateService);
 
@@ -56,7 +56,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
 
   ngOnInit(): void {
     this.loading.set(true);
-    const libraryPid = this.userService.user()?.currentLibrary;
+    const libraryPid = this.appStore.currentLibraryPid();
     this.acqAccountApiService.getAccounts(libraryPid).subscribe({
       next: (accounts: IAcqAccount[]) => {
         accounts = orderAccountsAsTree(accounts);

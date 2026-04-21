@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, effect, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Subscription } from 'rxjs';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
@@ -32,7 +32,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 export class OrderLinesComponent implements OnInit, OnDestroy {
 
   private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
-  private userService : UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** Acquisition order pid */
@@ -64,7 +64,7 @@ export class OrderLinesComponent implements OnInit, OnDestroy {
       return false;
     }
     // owning library
-    if (this.userService.user()?.currentLibrary !== this.order().library.pid) {
+    if (this.appStore.currentLibraryPid() !== this.order().library?.pid) {
       return false;
     }
     // order status

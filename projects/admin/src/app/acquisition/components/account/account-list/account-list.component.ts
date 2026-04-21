@@ -27,7 +27,7 @@ import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService, CONFIG, ExportButtonComponent, Nl2brPipe, RecordService } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, PermissionsDirective, UserService } from '@rero/shared';
+import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { MessageService, TreeNode, TreeTableNode } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -44,7 +44,7 @@ import { AccountAvailableAmountPipe } from '../../../pipes/account-available-amo
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountListComponent {
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private organisationService: OrganisationService = inject(OrganisationService);
   private apiService: ApiService = inject(ApiService);
@@ -57,7 +57,7 @@ export class AccountListComponent {
   permissions: IPermissions = PERMISSIONS;
 
   /** Library pid derived from user signal */
-  private readonly libraryPid = computed(() => this.userService.user()?.currentLibrary);
+  private readonly libraryPid = computed(() => this.appStore.currentLibraryPid());
 
   /** Root accounts — writable signal, updated on load and mutated locally */
   readonly rootAccounts = signal<TreeTableNode[]>([]);

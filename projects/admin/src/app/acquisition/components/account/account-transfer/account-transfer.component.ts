@@ -31,7 +31,7 @@ import { Router, RouterLink } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG, GetRecordPipe } from '@rero/ng-core';
-import { Tools, UserService } from '@rero/shared';
+import { AppStore, Tools } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { filter, map, switchMap, take } from 'rxjs';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
@@ -61,7 +61,7 @@ export class AccountTransferComponent {
   private formBuilder = inject(UntypedFormBuilder);
   private translateService = inject(TranslateService);
   private router = inject(Router);
-  private userService = inject(UserService);
+  private appStore = inject(AppStore);
   private messageService = inject(MessageService);
 
   protected readonly organisation = inject(OrganisationService).organisation;
@@ -74,12 +74,12 @@ export class AccountTransferComponent {
   });
 
   private readonly accountsTree = toSignal(
-    toObservable(this.userService.user).pipe(
-      filter((user) => !!user?.currentLibrary),
+    toObservable(this.appStore.currentLibraryPid).pipe(
+      filter((pid): pid is string => !!pid),
       take(1),
-      switchMap((user) =>
+      switchMap((pid) =>
         this.acqAccountApiService
-          .getAccounts(user!.currentLibrary, undefined, { sort: 'depth' })
+          .getAccounts(pid, undefined, { sort: 'depth' })
           .pipe(map(orderAccountsAsTree))
       )
     ),
