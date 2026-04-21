@@ -20,7 +20,7 @@ export type HitRecord = {
   metadata: {
     pid: string;
     name: string;
-    libraries?: Array<{ pid: string }>;
+    libraries?: { pid: string }[];
     [key: string]: unknown;
   };
 };

@@ -50,12 +50,12 @@ type LibraryMenuData = {
   libraryActive: ISwitchLibrary;
 };
 
-interface MenuState {
+type MenuState = {
   applicationMenuItems: MenuItem[];
   selectedLibrary: ISwitchLibrary | null;
   logoutCounter: number;
   libraries: LibraryRecord[];
-}
+};
 
 function resolveActiveLibrary(
   libraries: LibraryRecord[],

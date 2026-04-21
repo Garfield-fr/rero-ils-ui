@@ -43,7 +43,7 @@ export type ISettings = {
   };
 };
 
-export interface AppState {
+export type AppState = {
   user: User | null;
   settings: ISettings | null;
   permissions: string[];
@@ -52,7 +52,7 @@ export interface AppState {
   currentOrganisationPid: string | null;
   currentBudgetPid: string | null;
   currentViewCode: string | null;
-}
+};
 
 export const AppStore = signalStore(
   { providedIn: 'root' },

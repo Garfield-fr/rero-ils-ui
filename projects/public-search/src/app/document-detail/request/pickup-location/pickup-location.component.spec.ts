@@ -58,7 +58,6 @@ describe('PickupLocationComponent', () => {
     ],
     imports: [BrowserModule,
         TranslateModule.forRoot(),
-        
         FormsModule,
         ReactiveFormsModule,
         FormlyModule.forRoot(),
