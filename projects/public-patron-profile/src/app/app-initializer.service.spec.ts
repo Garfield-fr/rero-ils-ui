@@ -20,10 +20,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 
 import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
 import { of } from 'rxjs';
 import { AppInitializerService } from './app-initializer.service';
+import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
 
 
 describe('AppInitializerService', () => {
@@ -49,6 +51,8 @@ describe('AppInitializerService', () => {
       providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        { provide: AppStore, useValue: { load: vi.fn().mockReturnValue(of(null)), settings: vi.fn().mockReturnValue({ language: 'en' }) } },
+        { provide: PatronProfileMenuService, useValue: { init: vi.fn() } },
         { provide: NgCoreTranslateService, useValue: ngCoreTranslateServiceSpy },
         { provide: AppConfigService, useValue: appConfigServiceSpy }
       ]

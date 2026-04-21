@@ -19,6 +19,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppStore } from '@rero/shared';
+import { of } from 'rxjs';
 
 import { AppInitializerService } from './app-initializer.service';
 
@@ -34,7 +36,8 @@ describe('AppInitializerService', () => {
       ],
       providers: [
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        { provide: AppStore, useValue: { load: vi.fn().mockReturnValue(of(null)), settings: vi.fn().mockReturnValue({ language: 'en' }) } }
       ]
     });
     appInitializerService = TestBed.inject(AppInitializerService);

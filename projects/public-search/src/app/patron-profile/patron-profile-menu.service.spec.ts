@@ -16,18 +16,18 @@
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { testUserPatronMultipleOrganisationsWithSettings, UserApiService, UserService } from '@rero/shared';
+import { AppStore, testUserPatronMultipleOrganisationsWithSettings, User } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { of } from 'rxjs';
 import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Service: PatronProfileMenu', () => {
   let service: PatronProfileMenuService;
   let patronProfileMenuService: PatronProfileMenuService;
-  let userService: UserService;
 
-  const userApiServiceSpy = { getLoggedUser: vi.fn() };
+  const appStoreSpy = {
+    user: vi.fn().mockReturnValue(new User(cloneDeep(testUserPatronMultipleOrganisationsWithSettings)))
+  };
 
   const menu = [
     {
@@ -45,15 +45,12 @@ describe('Service: PatronProfileMenu', () => {
     imports: [],
     providers: [
         PatronProfileMenuService,
-        { provide: UserApiService, useValue: userApiServiceSpy },
+      { provide: AppStore, useValue: appStoreSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 });
     service = TestBed.inject(PatronProfileMenuService);
-    userApiServiceSpy.getLoggedUser.mockReturnValue(of(cloneDeep(testUserPatronMultipleOrganisationsWithSettings)));
-    userService = TestBed.inject(UserService);
-    userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
     patronProfileMenuService.init();
   });

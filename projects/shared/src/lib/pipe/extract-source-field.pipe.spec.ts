@@ -17,7 +17,7 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { testUserPatronWithSettings } from '../../tests/user';
-import { AppSettingsService } from '../service/app-settings.service';
+import { AppStore } from '../store/app.store';
 import { ExtractSourceFieldPipe } from './extract-source-field.pipe';
 
 
@@ -25,7 +25,7 @@ describe('Pipe: ExtractFieldSource', () => {
 
   let extractSourceFieldPipe: ExtractSourceFieldPipe;
   let translateService: TranslateService;
-  let appSettingsService: AppSettingsService;
+  let settings = testUserPatronWithSettings.settings;
 
   const metadata = {
     idref: {
@@ -52,14 +52,14 @@ describe('Pipe: ExtractFieldSource', () => {
       ],
       providers: [
         ExtractSourceFieldPipe,
+        { provide: AppStore, useValue: { settings: vi.fn(() => settings) } },
         { provide: TranslateService, useValue: translateServiceSpy }
       ]
     });
 
     extractSourceFieldPipe = TestBed.inject(ExtractSourceFieldPipe);
     translateService = TestBed.inject(TranslateService);
-    appSettingsService = TestBed.inject(AppSettingsService);
-    appSettingsService.settings = testUserPatronWithSettings.settings;
+    settings = testUserPatronWithSettings.settings;
   });
 
   it('create an instance', () => {

@@ -20,7 +20,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { RecordService } from '@rero/ng-core';
-import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { AppStore, testUserPatronWithSettings, User, UserApiService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
@@ -41,7 +41,6 @@ describe('PatronProfileFeeComponent', () => {
   let component: PatronProfileFeesComponent;
   let fixture: ComponentFixture<PatronProfileFeesComponent>;
   let patronProfileMenuService: PatronProfileMenuService;
-  let userService: UserService;
 
   const apiResponse = {
     aggregations: {},
@@ -67,6 +66,10 @@ describe('PatronProfileFeeComponent', () => {
   const userApiServiceSpy = { getLoggedUser: vi.fn() };
   userApiServiceSpy.getLoggedUser.mockReturnValue(of(testUserPatronWithSettings));
 
+  const appStoreSpy = {
+    user: vi.fn().mockReturnValue(new User(cloneDeep(testUserPatronWithSettings)))
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
     schemas: [NO_ERRORS_SCHEMA],
@@ -76,6 +79,7 @@ describe('PatronProfileFeeComponent', () => {
     ],
     providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
         { provide: PatronApiService, useValue: { getOverduePreviewByPatronPid: vi.fn().mockReturnValue(of([])) } },
         { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of(null)), MAX_REST_RESULTS_SIZE: 1000 } },
@@ -95,9 +99,6 @@ describe('PatronProfileFeeComponent', () => {
     fixture = TestBed.createComponent(PatronProfileFeesComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('feesTotal', 12.50);
-    userApiServiceSpy.getLoggedUser.mockReturnValue(of(cloneDeep(testUserPatronWithSettings)));
-    userService = TestBed.inject(UserService);
-    userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
     patronProfileMenuService.init();
     fixture.detectChanges();

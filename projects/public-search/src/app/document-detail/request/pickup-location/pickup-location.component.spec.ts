@@ -23,7 +23,6 @@ import { FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { UserService } from '@rero/shared';
 import { of } from 'rxjs';
 import { HoldingsApiService } from '../../../api/holdings-api.service';
 import { ItemApiService } from '../../../api/item-api.service';
@@ -50,8 +49,6 @@ describe('PickupLocationComponent', () => {
   const locationServiceSpy = { getPickupLocationsByRecordId: vi.fn() };
   locationServiceSpy.getPickupLocationsByRecordId.mockReturnValue(of(pickupLocations));
 
-  const userServiceSpy = {};
-
   const itemServiceSpy = {};
 
   beforeEach(async () => {
@@ -68,7 +65,6 @@ describe('PickupLocationComponent', () => {
         FormlyPrimeNGModule],
     providers: [
         { provide: LocationApiService, useValue: locationServiceSpy },
-        { provide: UserService, useValue: userServiceSpy },
         { provide: ItemApiService, useValue: itemServiceSpy },
         { provide: HoldingsApiService, useValue: {} },
         provideHttpClient(withInterceptorsFromDi()),

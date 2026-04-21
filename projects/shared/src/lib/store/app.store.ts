@@ -17,15 +17,16 @@
  */
 import { inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { RecordData, RecordService } from '@rero/ng-core';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { RecordData, RecordService } from '@rero/ng-core';
 import { EMPTY, Observable, pipe } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
 import { Organisation } from '../class/core';
-import { IUser, User } from '../class/user';
+import { User } from '../class/user';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '../util/permissions';
+import { setError, setFulfilled, setPending, withRequestStatus } from './request-status-feature';
 
 export type ISettings = {
   baseUrl: string;
@@ -41,7 +42,6 @@ export type ISettings = {
     readOnlyFields: string[];
   };
 };
-import { setError, setFulfilled, setPending, withRequestStatus } from './request-status-feature';
 
 export interface AppState {
   user: User | null;

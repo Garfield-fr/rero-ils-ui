@@ -22,7 +22,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
-import { AppSettingsService, testUserPatronWithSettings } from '@rero/shared';
+import { AppStore, testUserPatronWithSettings } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { ButtonModule } from 'primeng/button';
 import { PatronProfilePersonalComponent } from './patron-profile-personal.component';
@@ -52,11 +52,12 @@ describe('PatronProfilePersonalComponent', () => {
     country_sw: 'switzerland'
   };
 
-  const appSettingsServiceSpy: any = {};
-  appSettingsServiceSpy.settings = {
+  const appStoreSpy = {
+    settings: vi.fn().mockReturnValue({
     userProfile: {
       readOnly: false
     }
+  })
   };
 
   const fakeActivatedRoute = {
@@ -73,7 +74,7 @@ describe('PatronProfilePersonalComponent', () => {
         ButtonModule],
     providers: [
         { provide: ActivatedRoute, useValue: fakeActivatedRoute },
-        { provide: AppSettingsService, useValue: appSettingsServiceSpy },
+      { provide: AppStore, useValue: appStoreSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]

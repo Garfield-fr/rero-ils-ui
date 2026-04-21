@@ -19,15 +19,15 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { testUserPatronWithSettings, User, UserApiService } from '@rero/shared';
+import { AppStore, testUserPatronWithSettings, User } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppInitializerService } from './app-initializer.service';
 
 describe('AppInitializerService', () => {
   let appInitializerService: AppInitializerService;
 
-  const userApiServiceSpy = {
-    getLoggedUser: vi.fn().mockReturnValue(of(testUserPatronWithSettings))
+  const appStoreSpy = {
+    load: vi.fn().mockReturnValue(of(new User(testUserPatronWithSettings)))
   };
 
   beforeEach(() => {
@@ -39,7 +39,7 @@ describe('AppInitializerService', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         AppInitializerService,
-        { provide: UserApiService, useValue: userApiServiceSpy }
+        { provide: AppStore, useValue: appStoreSpy }
       ]
     });
     appInitializerService = TestBed.inject(AppInitializerService);

@@ -20,7 +20,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { AppStore, testUserPatronWithSettings, User } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -31,7 +31,6 @@ import { PatronProfileRequestComponent } from './patron-profile-request.componen
 describe('PatronProfileRequestComponent', () => {
   let component: PatronProfileRequestComponent;
   let fixture: ComponentFixture<PatronProfileRequestComponent>;
-  let userService: UserService;
   let patronProfileMenuService: PatronProfileMenuService;
 
   const record = {
@@ -48,7 +47,9 @@ describe('PatronProfileRequestComponent', () => {
     }
   };
 
-  const userApiServiceSpy = { getLoggedUser: vi.fn() };
+  const appStoreSpy = {
+    user: vi.fn().mockReturnValue(new User(cloneDeep(testUserPatronWithSettings)))
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -58,7 +59,7 @@ describe('PatronProfileRequestComponent', () => {
         PatronProfileRequestComponent
     ],
     providers: [
-        { provide: UserApiService, useValue: userApiServiceSpy },
+      { provide: AppStore, useValue: appStoreSpy },
         { provide: LoanApiService, useValue: { cancel: vi.fn().mockReturnValue(of(null)) } },
         { provide: MessageService, useValue: { add: vi.fn() } },
         { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of({ metadata: {} })), MAX_REST_RESULTS_SIZE: 1000 } },
@@ -71,9 +72,6 @@ describe('PatronProfileRequestComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PatronProfileRequestComponent);
     component = fixture.componentInstance;
-    userApiServiceSpy.getLoggedUser.mockReturnValue(of(cloneDeep(testUserPatronWithSettings)));
-    userService = TestBed.inject(UserService);
-    userService.load().subscribe();
     patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
     patronProfileMenuService.init();
     fixture.detectChanges();
