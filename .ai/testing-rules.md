@@ -1,12 +1,10 @@
 # Testing Rules
 
-Testing framework: Karma + Jasmine
-
-> Note: Vitest migration is planned for a later phase. Do not introduce Vitest now.
+Testing framework: Vitest
 
 ## Allowed testing APIs
 
-Use the Jasmine testing API:
+Use the Vitest testing API:
 
 - describe()
 - it()
@@ -16,55 +14,158 @@ Use the Jasmine testing API:
 
 Spies and mocks:
 
-- jasmine.createSpy()
-- spyOn()
+- vi.fn()
+- vi.spyOn()
+
+## Do not use
+
+The following tools must not be introduced:
+
+- Karma
+- Jasmine
+- jasmine.createSpy
+- jasmine.clock
 
 ## Angular testing
 
-Use TestBed for Angular component and service tests.
+Prefer tests that do not require Angular.
 
 Priority order:
 
-1. Pure function tests (no TestBed needed)
-2. Service tests with TestBed
+1. Pure function tests
+2. Service tests without TestBed
 3. Angular integration tests using TestBed
+
+Use TestBed only when Angular features are required:
+
+- dependency injection
+- component rendering
+- directives/pipes
 
 ## Component tests
 
 When testing components:
 
-- Use TestBed.configureTestingModule()
-- Prefer importing standalone components directly when possible
-- Mock dependencies with jasmine.createSpy() or simple stub objects
+- import standalone components directly
+- avoid large testing modules
+- mock dependencies with simple objects when possible
 
 Example pattern:
 
 describe('MyComponent', () => {
-  let component: MyComponent;
-  let fixture: ComponentFixture<MyComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MyComponent]
-    }).compileComponents();
+it('should compute value', () => {
+const result = computeSomething(2)
+expect(result).toBe(4)
+})
 
-    fixture = TestBed.createComponent(MyComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+})
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+## Test performance
+
+Tests must:
+
+- run with Vitest
+- support watch mode
+- remain fast and isolated
+
+## Zoneless testing
+
+The application runs without Zone.js.
+
+Do not use:
+
+- fakeAsync
+- tick
+- flush
+
+Prefer:
+
+- async/await
+- Promise-based testing
+
+## Migration patterns (Jasmine → Vitest)
+
+| Before | After |
+|---|---|
+| `waitForAsync(() => {` | `async () => {` |
+| `fakeAsync(() => {` | `async () => {` |
+| `tick(N)` | `await new Promise(r => setTimeout(r, N))` |
+| `tick()` | `await Promise.resolve()` |
+| `.compileComponents()` | remove (no-op in Angular 14+) |
+| `fail('msg')` | `throw new Error('msg')` |
+| `jasmine.createSpy` | `vi.fn()` |
+| `spyOn(obj, 'method')` | `vi.spyOn(obj, 'method')` |
+
+- Spy types: use `any` instead of `MockedObject<T>` for partial mocks
+- Remove `.mockName('...')` from `vi.fn()` chains (causes TS errors)
+
+## setTimeout in tests
+
+`setTimeout(() => { expect(...) }, N)` **without await** leaks into subsequent tests.
+
+Always use:
+
+```ts
+await new Promise(resolve => setTimeout(resolve, N));
+expect(...);
+```
+
+## Router navigation in tests
+
+`router.navigate()` returns a Promise — always `await` it for title/state to update.
+`await Promise.resolve()` is NOT sufficient.
+
+## NgRx Signal Store tests
+
+Every `signalStore()` and `signalStoreFeature()` file must have a co-located `.spec.ts`.
+
+Coverage target: **~100%** of public state, methods, and computed signals.
+
+### What to cover
+
+- **Initial state**: assert every state slice has the expected default value
+- **Methods**: one test per code path (success, error, edge cases)
+- **Computed signals**: test each derived value reflects state changes
+- **Helper functions** (e.g. `setPending`, `setError`): test as pure functions without TestBed
+
+### Test store pattern for features
+
+To test a `signalStoreFeature`, wrap it in a local `signalStore`:
+
+```ts
+const TestStore = signalStore(
+  withMyFeature(),
+  withMethods((store) => ({
+    applyX: () => patchState(store, setX()),
+  }))
+);
+```
+
+### Mocking dependencies
+
+- Provide the store explicitly in `TestBed.configureTestingModule` — never rely on `providedIn: 'root'`
+- Mock injected services with `vi.fn()` objects
+- For `rxMethod` / async methods, use `vi.useFakeTimers()` + `await vi.advanceTimersByTimeAsync(0)`
+
+### Async rxMethod tests
+
+```ts
+beforeEach(() => vi.useFakeTimers());
+afterEach(() => vi.useRealTimers());
+
+it('...', async () => {
+  store.loadSomething(args);
+  await vi.advanceTimersByTimeAsync(0);
+  expect(store.data()).toHaveLength(n);
 });
+```
 
-## Async testing
+## Mock teardown
 
-Zone.js is still active — fakeAsync/tick are allowed.
+Use `vi.resetAllMocks()` (not `vi.clearAllMocks()`) in `afterEach` to reset mock implementations between tests:
 
-Allowed:
+- `vi.clearAllMocks()` only resets call history — `mockReturnValue` persists into the next test
+- `vi.resetAllMocks()` also resets implementations — safe default for `afterEach`
 
-- fakeAsync()
-- tick()
-- flush()
-- async/await with fixture.whenStable()
+Re-apply needed mock implementations in `beforeEach` after resetting.
