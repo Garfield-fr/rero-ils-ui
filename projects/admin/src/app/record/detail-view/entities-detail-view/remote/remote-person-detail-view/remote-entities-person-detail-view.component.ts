@@ -20,12 +20,11 @@ import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Nl2brPipe } from '@rero/ng-core';
 import { UrlActivePipe } from '@rero/shared';
-import { UrlActivePipe as UrlActivePipe_1 } from '../../../../../../../../shared/src/lib/pipe/url-active.pipe';
 
 @Component({
     selector: 'admin-remote-entities-person-detail-view',
     templateUrl: './remote-entities-person-detail-view.component.html',
-    imports: [TranslateDirective, TranslatePipe, Nl2brPipe, UrlActivePipe, UrlActivePipe_1],
+    imports: [TranslateDirective, TranslatePipe, Nl2brPipe, UrlActivePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteEntitiesPersonDetailViewComponent {

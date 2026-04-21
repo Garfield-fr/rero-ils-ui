@@ -22,13 +22,12 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { ItemComponent } from '../item/item.component';
-import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../shared/src/lib/pipe/id-attribute.pipe';
 import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'admin-circulation-items-list',
     templateUrl: './items-list.component.html',
-    imports: [TranslateDirective, OpenCloseButtonComponent, Bind, Button, ItemComponent, IdAttributePipe, TranslatePipe, IdAttributePipe_1, CardModule],
+    imports: [TranslateDirective, OpenCloseButtonComponent, Bind, Button, ItemComponent, IdAttributePipe, TranslatePipe, CardModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemsListComponent {

@@ -25,13 +25,12 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
-import { JoinPipe as JoinPipe_1 } from '../../../../../../shared/src/lib/pipe/join.pipe';
 
 @Component({
     selector: 'admin-local-field',
     templateUrl: './local-field.component.html',
     providers: [JoinPipe],
-    imports: [TranslateDirective, Bind, Button, RouterLink, TranslatePipe, JoinPipe, JoinPipe_1],
+    imports: [TranslateDirective, Bind, Button, RouterLink, TranslatePipe, JoinPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocalFieldComponent {

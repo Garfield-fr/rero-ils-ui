@@ -21,13 +21,11 @@ import { ThumbnailComponent, ContributionComponent, InheritedCallNumberComponent
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, JsonPipe, KeyValuePipe } from '@angular/common';
 import { CallbackArrayFilterPipe, GetRecordPipe } from '@rero/ng-core';
-import { DocumentProvisionActivityPipe as DocumentProvisionActivityPipe_1 } from '../../../../../../../shared/src/lib/pipe/document-provision-activity.pipe';
-import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
 
 @Component({
     selector: 'admin-collection-items',
     templateUrl: './collection-items.component.html',
-    imports: [TranslateDirective, ThumbnailComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, AsyncPipe, JsonPipe, KeyValuePipe, CallbackArrayFilterPipe, DocumentProvisionActivityPipe, GetRecordPipe, ItemHoldingsCallNumberPipe, DocumentProvisionActivityPipe_1, ItemHoldingsCallNumberPipe_1],
+    imports: [TranslateDirective, ThumbnailComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, AsyncPipe, JsonPipe, KeyValuePipe, CallbackArrayFilterPipe, DocumentProvisionActivityPipe, GetRecordPipe, ItemHoldingsCallNumberPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionItemsComponent {

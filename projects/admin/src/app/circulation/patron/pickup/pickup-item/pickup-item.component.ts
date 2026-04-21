@@ -25,12 +25,11 @@ import { ContributionComponent, MainTitlePipe } from '@rero/shared';
 import { CancelRequestButtonComponent } from '../../cancel-request-button.component';
 import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-pickup-item',
     templateUrl: './pickup-item.component.html',
-    imports: [RouterLink, Bind, Tag, ContributionComponent, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1],
+    imports: [RouterLink, Bind, Tag, ContributionComponent, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PickupItemComponent implements OnInit {

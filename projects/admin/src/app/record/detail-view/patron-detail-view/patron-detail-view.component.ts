@@ -28,7 +28,6 @@ import { NgClass, AsyncPipe, I18nPluralPipe } from '@angular/common';
 import { Tag } from 'primeng/tag';
 import { PatronPermissionsComponent } from './patron-permissions/patron-permissions.component';
 import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
-import { JoinPipe as JoinPipe_1 } from '../../../../../../shared/src/lib/pipe/join.pipe';
 import { Message } from 'primeng/message';
 
 type PatronPhone = {
@@ -40,7 +39,7 @@ type PatronPhone = {
 @Component({
     selector: 'admin-patron-detail-view',
     templateUrl: './patron-detail-view.component.html',
-    imports: [Bind, ButtonDirective, PermissionsDirective, RouterLink, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, TranslateDirective, NgClass, Tag, LinkPermissionsDirective, PatronPermissionsComponent, AsyncPipe, I18nPluralPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, JoinPipe, Nl2brPipe, JoinPipe_1, Message],
+    imports: [Bind, ButtonDirective, PermissionsDirective, RouterLink, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, TranslateDirective, NgClass, Tag, LinkPermissionsDirective, PatronPermissionsComponent, AsyncPipe, I18nPluralPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, JoinPipe, Nl2brPipe, Message],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronDetailViewComponent {

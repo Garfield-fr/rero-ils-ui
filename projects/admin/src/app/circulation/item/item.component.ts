@@ -35,13 +35,11 @@ import { ButtonDirective, Button } from 'primeng/button';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { GetLoanCipoPipe } from '../pipe/get-loan-cipo.pipe';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../shared/src/lib/pipe/main-title.pipe';
-import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../shared/src/lib/pipe/id-attribute.pipe';
 
 @Component({
     selector: 'admin-item',
     templateUrl: './item.component.html',
-    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe, MainTitlePipe_1, IdAttributePipe_1],
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemComponent {

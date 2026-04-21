@@ -24,12 +24,11 @@ import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe, Nl2brPipe, TruncateTextPipe } from '@rero/ng-core';
-import { JournalVolumePipe as JournalVolumePipe_1 } from '../../../../../../../shared/src/lib/pipe/journal-volume.pipe';
 
 @Component({
     selector: 'admin-ill-request-item',
     templateUrl: './ill-request-item.component.html',
-    imports: [OpenCloseButtonComponent, Bind, Tag, Button, RouterLink, TranslateDirective, DateTranslatePipe, Nl2brPipe, TruncateTextPipe, JournalVolumePipe, TranslatePipe, JournalVolumePipe_1],
+    imports: [OpenCloseButtonComponent, Bind, Tag, Button, RouterLink, TranslateDirective, DateTranslatePipe, Nl2brPipe, TruncateTextPipe, JournalVolumePipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IllRequestItemComponent {

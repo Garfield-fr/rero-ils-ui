@@ -41,10 +41,6 @@ import { ItemTransactionsComponent } from './item-transactions/item-transactions
 import { ItemFeesComponent } from './item-fees/item-fees.component';
 import { LocalFieldComponent } from '../local-field/local-field.component';
 import { ItemInCollectionPipe } from '../../../pipe/item-in-collection.pipe';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
-import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../shared/src/lib/pipe/safe-url.pipe';
-import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
-import { KeyExistsPipe as KeyExistsPipe_1 } from '../../../../../../shared/src/lib/pipe/key-exists.pipe';
 import { Badge } from 'primeng/badge';
 
 @Component({
@@ -52,7 +48,7 @@ import { Badge } from 'primeng/badge';
     templateUrl: './item-detail-view.component.html',
     providers: [IssueService],
     styles: ['dl * { margin-bottom: 0; }'],
-    imports: [Bind, Button, RouterLink, RecordMaskedComponent, TranslateDirective, InheritedCallNumberComponent, AvailabilityComponent, NgClass, Tooltip, Tabs, TabList, Ripple, Tab, NgPlural, NgPluralCase, TabPanels, TabPanel, CirculationLogsDialogComponent, ItemTransactionsComponent, ItemFeesComponent, PermissionsDirective, LocalFieldComponent, AsyncPipe, JsonPipe, CurrencyPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, MainTitlePipe_1, SafeUrlPipe_1, ItemHoldingsCallNumberPipe_1, KeyExistsPipe_1, Badge],
+    imports: [Bind, Button, RouterLink, RecordMaskedComponent, TranslateDirective, InheritedCallNumberComponent, AvailabilityComponent, NgClass, Tooltip, Tabs, TabList, Ripple, Tab, NgPlural, NgPluralCase, TabPanels, TabPanel, CirculationLogsDialogComponent, ItemTransactionsComponent, ItemFeesComponent, PermissionsDirective, LocalFieldComponent, AsyncPipe, JsonPipe, CurrencyPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemDetailViewComponent implements OnDestroy {

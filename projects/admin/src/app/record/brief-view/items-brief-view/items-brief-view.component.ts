@@ -20,13 +20,12 @@ import { RouterLink } from '@angular/router';
 import { TranslateDirective } from '@ngx-translate/core';
 import { InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
 
 
 @Component({
     selector: 'admin-inventory-brief-view',
     templateUrl: './items-brief-view.component.html',
-    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, AsyncPipe, JsonPipe, ItemHoldingsCallNumberPipe, ItemHoldingsCallNumberPipe_1],
+    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, AsyncPipe, JsonPipe, ItemHoldingsCallNumberPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemsBriefViewComponent {

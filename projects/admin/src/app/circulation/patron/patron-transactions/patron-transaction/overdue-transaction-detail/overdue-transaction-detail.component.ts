@@ -24,12 +24,11 @@ import { TranslateDirective } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { MainTitlePipe } from '@rero/shared';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-overdue-transaction-detail',
     templateUrl: './overdue-transaction-detail.component.html',
-    imports: [TranslateDirective, RouterLink, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe, MainTitlePipe_1],
+    imports: [TranslateDirective, RouterLink, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverdueTransactionDetailComponent implements OnInit {

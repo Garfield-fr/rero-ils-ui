@@ -18,12 +18,11 @@
 import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SafeUrlPipe } from '@rero/shared';
-import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../shared/src/lib/pipe/safe-url.pipe';
 
 @Component({
     selector: 'admin-related-resource',
     templateUrl: './related-resource.component.html',
-    imports: [TranslatePipe, SafeUrlPipe, SafeUrlPipe_1],
+    imports: [TranslatePipe, SafeUrlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RelatedResourceComponent {

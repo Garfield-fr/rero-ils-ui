@@ -18,7 +18,6 @@ import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { KeyExistsPipe } from '@rero/shared';
-import { KeyExistsPipe as KeyExistsPipe_1 } from '../../../../../../shared/src/lib/pipe/key-exists.pipe';
 
 @Component({
     selector: 'admin-record-masked',
@@ -40,7 +39,7 @@ import { KeyExistsPipe as KeyExistsPipe_1 } from '../../../../../../shared/src/l
       }
     }
   `,
-    imports: [NgClass, TranslateDirective, TranslatePipe, KeyExistsPipe, KeyExistsPipe_1],
+    imports: [NgClass, TranslateDirective, TranslatePipe, KeyExistsPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecordMaskedComponent {

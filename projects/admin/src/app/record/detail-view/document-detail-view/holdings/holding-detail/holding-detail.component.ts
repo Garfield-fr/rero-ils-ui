@@ -21,13 +21,12 @@ import { HoldingSharedViewComponent } from '../holding-shared-view/holding-share
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
-import { NotesFilterPipe as NotesFilterPipe_1 } from '../../../../../../../../shared/src/lib/pipe/notes-filter.pipe';
 
 @Component({
     selector: 'admin-holding-detail',
     templateUrl: './holding-detail.component.html',
     styles: ['dl.metadata > dd { font-weight: normal; }'],
-    imports: [HoldingSharedViewComponent, TranslateDirective, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, NotesFilterPipe, NotesFilterPipe_1],
+    imports: [HoldingSharedViewComponent, TranslateDirective, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, NotesFilterPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingDetailComponent {

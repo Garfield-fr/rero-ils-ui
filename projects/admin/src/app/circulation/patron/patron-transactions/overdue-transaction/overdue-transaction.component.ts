@@ -27,12 +27,11 @@ import { RouterLink } from '@angular/router';
 import { TranslateDirective } from '@ngx-translate/core';
 import { PatronTransactionHistoryComponent } from '../patron-transaction/patron-transaction-history/patron-transaction-history.component';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-overdue-transaction',
     templateUrl: './overdue-transaction.component.html',
-    imports: [OpenCloseButtonComponent, RouterLink, TranslateDirective, InheritedCallNumberComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe, MainTitlePipe_1],
+    imports: [OpenCloseButtonComponent, RouterLink, TranslateDirective, InheritedCallNumberComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverdueTransactionComponent implements OnInit {

@@ -37,15 +37,13 @@ import { UploadFilesComponent } from './files-collections/upload-files/upload-fi
 import { TableModule } from 'primeng/table';
 import { I18nPluralPipe, KeyValuePipe } from '@angular/common';
 import { MarcPipe } from '../../../pipe/marc.pipe';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
-import { DocumentProvisionActivityPipe as DocumentProvisionActivityPipe_1 } from '../../../../../../shared/src/lib/pipe/document-provision-activity.pipe';
 import { Message } from 'primeng/message';
 import { ReadMoreComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-document-detail-view',
     templateUrl: './document-detail-view.component.html',
-    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, RelatedResourceComponent, Bind, Tag, EntityLinkComponent, RecordMaskedComponent, ButtonDirective, RouterLink, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, FilesComponent, HoldingsComponent, DocumentDescriptionComponent, EntitiesRelatedComponent, LocalFieldComponent, UploadFilesComponent, TableModule, I18nPluralPipe, KeyValuePipe, CallbackArrayFilterPipe, TranslatePipe, DocumentProvisionActivityPipe, MainTitlePipe, MarcPipe, MainTitlePipe_1, DocumentProvisionActivityPipe_1, Message, ReadMoreComponent],
+    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, RelatedResourceComponent, Bind, Tag, EntityLinkComponent, RecordMaskedComponent, ButtonDirective, RouterLink, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, FilesComponent, HoldingsComponent, DocumentDescriptionComponent, EntitiesRelatedComponent, LocalFieldComponent, UploadFilesComponent, TableModule, I18nPluralPipe, KeyValuePipe, CallbackArrayFilterPipe, TranslatePipe, DocumentProvisionActivityPipe, MainTitlePipe, MarcPipe, Message, ReadMoreComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailViewComponent {

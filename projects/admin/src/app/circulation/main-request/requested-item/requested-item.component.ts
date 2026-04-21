@@ -24,13 +24,11 @@ import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
-import { IdAttributePipe as IdAttributePipe_1 } from '../../../../../../shared/src/lib/pipe/id-attribute.pipe';
 
 @Component({
     selector: 'admin-requested-item',
     templateUrl: './requested-item.component.html',
-    imports: [NgClass, OpenCloseButtonComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, Bind, Button, TranslateDirective, DateTranslatePipe, IdAttributePipe, MainTitlePipe, TranslatePipe, MainTitlePipe_1, IdAttributePipe_1],
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, ContributionComponent, InheritedCallNumberComponent, Bind, Button, TranslateDirective, DateTranslatePipe, IdAttributePipe, MainTitlePipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RequestedItemComponent implements OnInit {

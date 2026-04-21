@@ -29,12 +29,11 @@ import { RouterLink } from '@angular/router';
 import { Tag } from 'primeng/tag';
 import { NgClass, JsonPipe, DatePipe } from '@angular/common';
 import { ScrollPanel } from 'primeng/scrollpanel';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/lib/pipe/main-title.pipe';
 
 @Component({
     selector: 'admin-loans-brief-view',
     templateUrl: './loans-brief-view.component.html',
-    imports: [Bind, Button, TranslateDirective, InheritedCallNumberComponent, RouterLink, Tag, NgClass, ScrollPanel, JsonPipe, DatePipe, TranslatePipe, MainTitlePipe, MainTitlePipe_1],
+    imports: [Bind, Button, TranslateDirective, InheritedCallNumberComponent, RouterLink, Tag, NgClass, ScrollPanel, JsonPipe, DatePipe, TranslatePipe, MainTitlePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoansBriefViewComponent implements OnInit {

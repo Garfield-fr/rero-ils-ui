@@ -25,13 +25,12 @@ import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { SerialHoldingItemComponent } from '../serial-holding-item/serial-holding-item.component';
 import { DefaultHoldingItemComponent } from '../default-holding-item/default-holding-item.component';
-import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../../shared/src/lib/pipe/safe-url.pipe';
 
 @Component({
     selector: 'admin-holding-content',
     providers: [ItemsStore],
     templateUrl: './holding-content.component.html',
-    imports: [Bind, InputGroup, FormsModule, InputText, InputGroupAddon, TranslateDirective, SerialHoldingItemComponent, DefaultHoldingItemComponent, PaginatorComponent, TranslatePipe, SafeUrlPipe, SafeUrlPipe_1],
+    imports: [Bind, InputGroup, FormsModule, InputText, InputGroupAddon, TranslateDirective, SerialHoldingItemComponent, DefaultHoldingItemComponent, PaginatorComponent, TranslatePipe, SafeUrlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingContentComponent {

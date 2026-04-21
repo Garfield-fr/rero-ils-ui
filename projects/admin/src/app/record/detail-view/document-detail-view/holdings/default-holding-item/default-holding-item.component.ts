@@ -34,13 +34,11 @@ import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ItemInCollectionPipe } from '../../../../../pipe/item-in-collection.pipe';
-import { SafeUrlPipe as SafeUrlPipe_1 } from '../../../../../../../../shared/src/lib/pipe/safe-url.pipe';
-import { ItemHoldingsCallNumberPipe as ItemHoldingsCallNumberPipe_1 } from '../../../../../../../../shared/src/lib/pipe/item-holdings-call-number.pipe';
 
 @Component({
     selector: 'admin-default-holding-item',
     templateUrl: './default-holding-item.component.html',
-    imports: [TranslateDirective, RecordMaskedComponent, RouterLink, InheritedCallNumberComponent, AvailabilityComponent, HoldingItemNoteComponent, HoldingItemTemporaryItemTypeComponent, Bind, Button, Tooltip, AsyncPipe, JsonPipe, TranslatePipe, ItemHoldingsCallNumberPipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, SafeUrlPipe_1, ItemHoldingsCallNumberPipe_1],
+    imports: [TranslateDirective, RecordMaskedComponent, RouterLink, InheritedCallNumberComponent, AvailabilityComponent, HoldingItemNoteComponent, HoldingItemTemporaryItemTypeComponent, Bind, Button, Tooltip, AsyncPipe, JsonPipe, TranslatePipe, ItemHoldingsCallNumberPipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DefaultHoldingItemComponent implements OnInit {

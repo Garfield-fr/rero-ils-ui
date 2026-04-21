@@ -27,12 +27,11 @@ import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { JoinPipe } from '@rero/shared';
-import { JoinPipe as JoinPipe_1 } from '../../../../../../shared/src/lib/pipe/join.pipe';
 
 @Component({
     selector: 'admin-profile',
     templateUrl: './profile.component.html',
-    imports: [TranslateDirective, NgClass, NgPlural, NgPluralCase, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, JoinPipe, TranslatePipe, JoinPipe_1],
+    imports: [TranslateDirective, NgClass, NgPlural, NgPluralCase, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, JoinPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent implements OnInit, OnDestroy {

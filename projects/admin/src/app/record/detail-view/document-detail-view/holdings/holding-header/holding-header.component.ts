@@ -29,12 +29,11 @@ import { RouterLink } from '@angular/router';
 import { Tooltip } from 'primeng/tooltip';
 import { HoldingDetailComponent } from '../holding-detail/holding-detail.component';
 import { Nl2brPipe } from '@rero/ng-core';
-import { GetTranslatedLabelPipe as GetTranslatedLabelPipe_1 } from '../../../../../../../../shared/src/lib/pipe/get-translated-label.pipe';
 
 @Component({
     selector: 'admin-holding-header',
     templateUrl: './holding-header.component.html',
-    imports: [RecordMaskedComponent, Bind, Button, RouterLink, Tooltip, HoldingDetailComponent, TranslatePipe, GetTranslatedLabelPipe, Nl2brPipe, GetTranslatedLabelPipe_1],
+    imports: [RecordMaskedComponent, Bind, Button, RouterLink, Tooltip, HoldingDetailComponent, TranslatePipe, GetTranslatedLabelPipe, Nl2brPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingHeaderComponent implements OnInit {

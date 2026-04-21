@@ -25,13 +25,12 @@ import { Tag } from 'primeng/tag';
 import { TranslateDirective } from '@ngx-translate/core';
 import { CancelRequestButtonComponent } from '../../cancel-request-button.component';
 import { AsyncPipe } from '@angular/common';
-import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../../shared/src/lib/pipe/main-title.pipe';
 import { Badge } from 'primeng/badge';
 
 @Component({
     selector: 'admin-pending-item',
     templateUrl: './pending-item.component.html',
-    imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, MainTitlePipe_1, Badge],
+    imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PendingItemComponent implements OnInit {

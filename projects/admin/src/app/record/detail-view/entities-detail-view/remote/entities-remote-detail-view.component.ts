@@ -26,12 +26,11 @@ import { RemoteEntitiesPersonDetailViewComponent } from './remote-person-detail-
 import { RemoteEntitiesOrganisationDetailViewComponent } from './remote-organisation-detail-view/remote-entities-organisation-detail-view.component';
 import { RemoteTopicDetailViewComponent } from './remote-topic-detail-view/remote-topic-detail-view.component';
 import { UpperCasePipe } from '@angular/common';
-import { ExtractSourceFieldPipe as ExtractSourceFieldPipe_1 } from '../../../../../../../shared/src/lib/pipe/extract-source-field.pipe';
 
 @Component({
     selector: 'admin-remote-entities-remote-detail-view',
     templateUrl: './entities-remote-detail-view.component.html',
-    imports: [Bind, Tag, Panel, RemoteEntitiesPersonDetailViewComponent, RemoteEntitiesOrganisationDetailViewComponent, RemoteTopicDetailViewComponent, TranslateDirective, UpperCasePipe, TranslatePipe, ExtractSourceFieldPipe, ExtractSourceFieldPipe_1],
+    imports: [Bind, Tag, Panel, RemoteEntitiesPersonDetailViewComponent, RemoteEntitiesOrganisationDetailViewComponent, RemoteTopicDetailViewComponent, TranslateDirective, UpperCasePipe, TranslatePipe, ExtractSourceFieldPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteEntitiesDetailViewComponent {
