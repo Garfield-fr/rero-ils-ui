@@ -21,7 +21,7 @@ import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { Error, RecordUiService } from "@rero/ng-core";
 import type { EsResult } from "@rero/ng-core";
-import { testUserLibrarianWithSettings, User, UserService } from "@rero/shared";
+import { AppStore, testUserLibrarianWithSettings, User } from "@rero/shared";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Observable, of, Subject } from "rxjs";
 import { HoldingsApiService } from "../../../../../api/holdings-api.service";
@@ -39,7 +39,7 @@ describe('Holdings Store', () => {
         UserServiceMock,
         HoldingsApiServiceMock,
         { provide: HoldingsApiService, useExisting: HoldingsApiServiceMock },
-        { provide: UserService, useExisting: UserServiceMock },
+        { provide: AppStore, useExisting: UserServiceMock },
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -321,5 +321,9 @@ class UserServiceMock {
 
   user() {
     return this._user;
+  }
+
+  currentOrganisationPid() {
+    return '1';
   }
 }

@@ -17,22 +17,20 @@
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { userTestingService } from 'projects/admin/tests/utils';
 import { filter, firstValueFrom, of } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
 import { AcqOrderStatus } from '../../classes/order';
-import { CanOrderReceiptGuard } from './can-order-receipt.guard';
+import { canOrderReceiptGuard } from './can-order-receipt.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-describe('CanOrderReceiptGuard', () => {
-  let guard: CanOrderReceiptGuard;
+describe('canOrderReceiptGuard', () => {
   let acqOrderApiService: AcqOrderApiService;
   let acqReceiptApiService: AcqReceiptApiService;
   let router: Router;
@@ -100,18 +98,24 @@ describe('CanOrderReceiptGuard', () => {
   activatedRouteSnapshotSpy.params = { pid: '1' };
   activatedRouteSnapshotSpy.queryParams = { };
 
+  const appStoreSpy = { currentLibraryPid: () => '1' } as any;
+
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      canOrderReceiptGuard(route, {} as RouterStateSnapshot)
+    ) as any;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot()],
     providers: [
-        { provide: UserService, useValue: userTestingService },
+        { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordUiService, useValue: {} },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 });
-    guard = TestBed.inject(CanOrderReceiptGuard);
     acqOrderApiService = TestBed.inject(AcqOrderApiService);
     acqReceiptApiService = TestBed.inject(AcqReceiptApiService);
     router = TestBed.inject(Router);
@@ -124,21 +128,21 @@ describe('CanOrderReceiptGuard', () => {
   }
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(canOrderReceiptGuard).toBeTruthy();
   });
 
   it('should return a 400 error if any parameters are missing', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.params = {};
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });
 
   it('should return true if the order in status ordered (new receipt)', async () => {
     vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(order));
-    const access = await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
     expect(access).toBeTruthy();
   });
 
@@ -146,7 +150,7 @@ describe('CanOrderReceiptGuard', () => {
     const orderReceived = cloneDeep(order);
     orderReceived.status = AcqOrderStatus.RECEIVED;
     vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(orderReceived));
-    const access = await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
     expect(access).toBeTruthy();
   });
 
@@ -155,7 +159,7 @@ describe('CanOrderReceiptGuard', () => {
     orderReceived.is_current_budget = false;
     vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(orderReceived));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
     await navPromise;
     expect(router.url).toBe('/errors/403');
   });
@@ -167,7 +171,7 @@ describe('CanOrderReceiptGuard', () => {
     vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(order));
     vi.spyOn(acqReceiptApiService, 'getReceipt').mockReturnValue(of(receipt));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/403');
   });
@@ -177,7 +181,7 @@ describe('CanOrderReceiptGuard', () => {
     activatedRoute.queryParams.receipt = '1';
     vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(order));
     vi.spyOn(acqReceiptApiService, 'getReceipt').mockReturnValue(of(receipt));
-    const access = await firstValueFrom(guard.canActivate(activatedRoute));
+    const access = await firstValueFrom(runGuard(activatedRoute));
     expect(access).toBeTruthy();
   });
 });

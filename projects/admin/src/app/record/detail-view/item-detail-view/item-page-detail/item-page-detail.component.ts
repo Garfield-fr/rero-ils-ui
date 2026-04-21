@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, signal, ChangeDetectionStrategy} from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, inject, signal, ChangeDetectionStrategy} from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IssueService } from '@app/admin/service/issue.service';
 import { OperationLogsService, OperationLogsDialogComponent } from '@rero/shared';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -33,6 +33,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemPageDetailComponent extends DetailComponent {
+  private readonly _destroyRef = inject(DestroyRef);
   private operationLogsService: OperationLogsService = inject(OperationLogsService);
   private issueService: IssueService = inject(IssueService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
@@ -85,7 +86,7 @@ export class ItemPageDetailComponent extends DetailComponent {
   /** Open claim dialog */
   openClaimEmailDialog(): void {
     const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.record());
-    ref.onClose.subscribe((record: any) => {
+    ref.onClose.pipe(takeUntilDestroyed(this._destroyRef)).subscribe((record: any) => {
       if (record) {
         // Force re-fetch by navigating to the same page
         this.router.navigate([], { relativeTo: this.route });

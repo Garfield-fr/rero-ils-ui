@@ -16,15 +16,14 @@
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter, firstValueFrom } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
-import { CanAddAccountGuard } from './can-add-account.guard';
+import { canAddAccountGuard } from './can-add-account.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-describe('CanAddAccountGuard', () => {
-  let guard: CanAddAccountGuard;
+describe('canAddAccountGuard', () => {
   let router: Router;
 
   const routes = [
@@ -43,7 +42,6 @@ describe('CanAddAccountGuard', () => {
         TranslateModule.forRoot()],
     providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 });
-    guard = TestBed.inject(CanAddAccountGuard);
     router = TestBed.inject(Router);
   });
 
@@ -54,12 +52,16 @@ describe('CanAddAccountGuard', () => {
   }
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(canAddAccountGuard).toBeTruthy();
   });
 
   it('should return a 400 error if the order parameter is not present in the url', async () => {
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    await firstValueFrom(
+      TestBed.runInInjectionContext(() =>
+        canAddAccountGuard(activatedRouteSnapshotSpy, {} as RouterStateSnapshot)
+      ) as any
+    );
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });

@@ -17,16 +17,15 @@
 import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { cloneDeep } from 'lodash-es';
 import { filter, firstValueFrom, of, throwError } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
-import { CanAddOrderLineGuard } from './can-add-order-line.guard';
+import { canAddOrderLineGuard } from './can-add-order-line.guard';
 
-describe('CanAddOrderLineGuard', () => {
-  let guard: CanAddOrderLineGuard;
+describe('canAddOrderLineGuard', () => {
   let recordService: RecordService;
   let router: Router;
   let httpClient: HttpClient;
@@ -56,13 +55,17 @@ describe('CanAddOrderLineGuard', () => {
   const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.queryParams = { };
 
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      canAddOrderLineGuard(route, {} as RouterStateSnapshot)
+    ) as any;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot()],
     providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 });
-    guard = TestBed.inject(CanAddOrderLineGuard);
     recordService = TestBed.inject(RecordService);
     router = TestBed.inject(Router);
     httpClient = TestBed.inject(HttpClient);
@@ -75,13 +78,13 @@ describe('CanAddOrderLineGuard', () => {
   }
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(canAddOrderLineGuard).toBeTruthy();
   });
 
   it('should return a 400 error if the order parameter is not present in the url', async () => {
     const activatedRouteSnapshot = cloneDeep(activatedRouteSnapshotSpy);
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRouteSnapshot));
+    await firstValueFrom(runGuard(activatedRouteSnapshot));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });
@@ -91,7 +94,7 @@ describe('CanAddOrderLineGuard', () => {
     activatedRouteSnapshot.queryParams.order = 12;
     const record = cloneDeep(order);
     vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
-    const access = await firstValueFrom(guard.canActivate(activatedRouteSnapshot));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshot));
     expect(access).toBeTruthy();
   });
 
@@ -102,7 +105,7 @@ describe('CanAddOrderLineGuard', () => {
     record.metadata.is_current_budget = false;
     vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRouteSnapshot));
+    await firstValueFrom(runGuard(activatedRouteSnapshot));
     await navPromise;
     expect(router.url).toBe('/errors/403');
   });
@@ -120,7 +123,7 @@ describe('CanAddOrderLineGuard', () => {
     });
     vi.spyOn(httpClient, 'get').mockReturnValue(throwError(errorResponse));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRouteSnapshot));
+    await firstValueFrom(runGuard(activatedRouteSnapshot));
     await navPromise;
     expect(router.url).toBe('/errors/404');
   });

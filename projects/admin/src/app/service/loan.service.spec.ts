@@ -19,7 +19,7 @@ import { HttpClient } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { RecordService } from "@rero/ng-core";
-import { circulationPolicy, testUserPatronWithSettings, UserService } from "@rero/shared";
+import { AppStore, circulationPolicy, testUserPatronWithSettings } from "@rero/shared";
 import { ConfirmationService } from "primeng/api";
 import { loanPending } from "projects/shared/src/public-api";
 import { apiResponse } from "projects/shared/src/tests/api";
@@ -35,9 +35,9 @@ describe('LoanService', () => {
 
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
-  const userServiceSpy = { } as any;
+  const appStoreSpy = { } as any;
   const user = { ...testUserPatronWithSettings };
-  userServiceSpy.user = vi.fn(() => user);
+  appStoreSpy.user = vi.fn(() => user);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -49,7 +49,7 @@ describe('LoanService', () => {
         ConfirmationService,
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: AppStore, useValue: appStoreSpy }
       ]
     });
 

@@ -22,13 +22,13 @@ import { HoldingsApiService } from "@app/admin/api/holdings-api.service";
 import { HoldingsService, PredictionIssue } from "@app/admin/service/holdings.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { RecordUiService } from "@rero/ng-core";
-import { EsResult, PermissionsService, UserService } from "@rero/shared";
+import { AppStore, EsResult } from "@rero/shared";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Observable, of } from "rxjs";
 import { HoldingsSerialStore } from "./holdings-serial-store";
 
 describe('Holdings Serial Store', () => {
-  let permissionService: PermissionsService;
+  let appStore: InstanceType<typeof AppStore>;
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -39,11 +39,10 @@ describe('Holdings Serial Store', () => {
         holdingsApiServiceMock,
         { provide: HoldingsService, useExisting: holdingsServiceMock },
         { provide: HoldingsApiService, useExisting: holdingsApiServiceMock },
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(of(true)) } },
         MessageService,
         ConfirmationService,
-        PermissionsService,
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -51,7 +50,7 @@ describe('Holdings Serial Store', () => {
         TranslateModule.forRoot()
       ]
     });
-    permissionService = TestBed.inject(PermissionsService);
+    appStore = TestBed.inject(AppStore);
   });
 
   afterEach(() => {
@@ -98,7 +97,7 @@ describe('Holdings Serial Store', () => {
   });
 
   it('should return if an issue can be added', async () => {
-    vi.spyOn(permissionService, 'canAccess').mockReturnValue(true);
+    vi.spyOn(appStore, 'canAccess').mockReturnValue(true);
     const store = TestBed.inject(HoldingsSerialStore);
     store.setHoldings(holdings);
     await vi.advanceTimersByTimeAsync(500);
@@ -130,14 +129,10 @@ describe('Holdings Serial Store', () => {
   });
 });
 
-const userServiceSpy = { } as any;
-  const user = {
-    patronLibrarian: {
-      pid: '1'
-    },
-    currentLibrary: '1'
-  };
-  userServiceSpy.user = vi.fn(() => user);
+const appStoreSpy = {
+  currentLibraryPid: vi.fn(() => '1'),
+  canAccess: vi.fn(() => false)
+} as any;
 
 const holdings = {
     "created": "2025-11-18T13:37:49.970060+00:00",

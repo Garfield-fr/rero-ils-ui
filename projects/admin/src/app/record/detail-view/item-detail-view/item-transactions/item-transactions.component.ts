@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, effect, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, effect, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { forkJoin, of, Subscription, switchMap } from 'rxjs';
+import { forkJoin, of, switchMap } from 'rxjs';
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
@@ -62,7 +62,7 @@ export class ItemTransactionsComponent {
   readonly borrowedBy = computed(() => this._loans()[0] as any[]);
   readonly requestedBy = signal<any[]>([]);
 
-  private readonly _dialogSubscription = new Subscription();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     effect(() => this.requestedBy.set(this._loans()[1] as any[]));
@@ -80,14 +80,12 @@ export class ItemTransactionsComponent {
       closable: true,
       data: { recordPid: this.itemPid(), recordType: 'item' }
     });
-    this._dialogSubscription.add(
-      ref.onClose.subscribe((value: boolean) => {
-        if (value) {
-          this.requestEvent.emit(null);
-          this._refreshRequestList();
-        }
-      })
-    );
+    ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value: boolean) => {
+      if (value) {
+        this.requestEvent.emit(null);
+        this._refreshRequestList();
+      }
+    });
   }
 
   /**

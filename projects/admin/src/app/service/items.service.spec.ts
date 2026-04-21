@@ -19,7 +19,7 @@ import { HttpClient } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { ApiService, RecordService } from "@rero/ng-core";
-import { ItemStatus, UserService } from "@rero/shared";
+import { AppStore, ItemStatus } from "@rero/shared";
 import { apiResponse } from "projects/shared/src/tests/api";
 import { of } from "rxjs";
 import { Item, ItemAction, ItemNoteType } from "../classes/items";
@@ -31,13 +31,13 @@ describe('ItemsService', () => {
 
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
-  const userServiceSpy = { } as any;
+  const appStoreSpy = { } as any;
   const user = {
     patronLibrarian: {
       pid: '1'
     }
   };
-  userServiceSpy.user = vi.fn(() => user);
+  appStoreSpy.user = vi.fn(() => user);
 
   const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
   recordServiceSpy.totalHits.mockReturnValue(1);
@@ -95,7 +95,7 @@ describe('ItemsService', () => {
         ItemsService,
         { provide: ApiService, useValue: { getEndpointByType: vi.fn().mockReturnValue('/api/') } },
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordService, useValue: recordServiceSpy }
       ]
     });

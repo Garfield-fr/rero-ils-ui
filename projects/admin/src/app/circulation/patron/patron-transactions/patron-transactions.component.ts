@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, model, ModelSignal, OnDestroy, OnInit, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, model, ModelSignal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -23,7 +24,6 @@ import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-transl
 import { AppStore } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
 import { CirculationStatsService } from '../service/circulation-stats.service';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
@@ -45,7 +45,7 @@ import { CurrencyPipe } from '@angular/common';
     imports: [Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, TranslateDirective, Tag, AccordionContent, Button, SplitButton, PatronTransactionComponent, OverdueTransactionComponent, CurrencyPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronTransactionsComponent implements OnInit, OnDestroy {
+export class PatronTransactionsComponent {
 
   private dialogService: DialogService = inject(DialogService);
   private organisationService: OrganisationService = inject(OrganisationService);
@@ -88,9 +88,18 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
   /** Current patron */
   private patron: any = undefined;
-  /** Component subscriptions */
-  private subscriptions = new Subscription();
 
+  constructor() {
+    this.activePanel.set("0");
+    this.tabs.overduePreviewFees.transactions = this.circulationStatsService.overdueTransactions;
+    this.tabs.engagedFees.transactions = this.circulationStatsService.engagedTransactions;
+    this.patronService.currentPatron$.pipe(takeUntilDestroyed()).subscribe(patron => this.patron = patron);
+    toObservable(this.activePanel).pipe(takeUntilDestroyed()).subscribe(val => {
+      if (val === "2") {
+        this.loadFeesHistory();
+      }
+    });
+  }
 
   // GETTER & SETTER ======================================================================
   /**
@@ -109,28 +118,6 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     const libraryPID = this.appStore.currentLibraryPid();
     return this.tabs.engagedFees.transactions().filter(t => t.library != null && t.library.pid === libraryPID);
   });
-
-  // CONSTRUCTOR & HOOKS ==================================================================
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.activePanel.set("0");
-    this.tabs.overduePreviewFees.transactions = this.circulationStatsService.overdueTransactions;
-    this.tabs.engagedFees.transactions = this.circulationStatsService.engagedTransactions;
-    this.patronService.currentPatron$.subscribe(patron => this.patron = patron);
-    this.subscriptions.add(
-      this.activePanel. subscribe(val => {
-        // lazy loading history
-        if (val === "2") {
-          this.loadFeesHistory();
-        }
-      })
-    );
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
 
   // COMPONENT FUNCTIONS ==================================================================
   /** load all PatronTransactions for the patron without 'status' restriction */
@@ -189,9 +176,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
         organisationPid: this.patron.organisation.pid
       }
     });
-    this.subscriptions.add(
-      this.dynamicDialogRef.onClose.subscribe(() => this.reloadEngagedFees())
-    );
+    this.dynamicDialogRef.onClose.subscribe(() => this.reloadEngagedFees());
   }
 
   // PRIVATE COMPONENTS FUNCTIONS =============================================

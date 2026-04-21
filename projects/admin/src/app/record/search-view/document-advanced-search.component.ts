@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, DestroyRef, inject, output, ChangeDetectionStrategy} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
 import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-form/document-advanced-search-form.component';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -40,11 +40,12 @@ import { Button } from 'primeng/button';
     imports: [Bind, Button, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
+export class DocumentAdvancedSearchComponent {
 
   private dialogService: DialogService = inject(DialogService);
   private route: ActivatedRoute = inject(ActivatedRoute);
   private translateService: TranslateService = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   /** Simple search */
   simple = true;
@@ -52,27 +53,18 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
   /** Query event */
   queryString = output<string>();
 
-  /** all component subscription */
-  private subscription = new Subscription();
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.subscription.add(this.route.queryParams.subscribe((params: any) => {
+  constructor() {
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((params: any) => {
       if (params.simple) {
         if (Array.isArray(params.simple)) {
-          this.simple =  params.simple.length > 0 ? ('1' === params.simple[0]) : true;
+          this.simple = params.simple.length > 0 ? ('1' === params.simple[0]) : true;
         } else {
           this.simple = ('1' === params.simple);
         }
       } else {
         this.simple = true;
       }
-    }));
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-      this.subscription.unsubscribe();
+    });
   }
 
   /** Opening the advanced search dialog */
@@ -83,12 +75,10 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
       closable: true,
       header: this.translateService.instant('Build advanced query'),
     });
-    this.subscription.add(
-      ref.onClose.subscribe((queryString?: string) => {
+    ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((queryString?: string) => {
         if (queryString) {
           this.queryString.emit(queryString);
         }
-      })
-    );
+      });
   }
 }

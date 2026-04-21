@@ -17,25 +17,21 @@
 
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { RecordService } from '@rero/ng-core';
-import { organisation, UserService } from '@rero/shared';
-import { of } from 'rxjs';
+import { AppStore, organisation } from '@rero/shared';
 import { OrganisationService } from './organisation.service';
 
 describe('OrganisationService', () => {
   let service: OrganisationService;
 
-  const mockUser = signal<any>({ currentOrganisation: '1' });
-  const userServiceSpy = { user: mockUser };
-  const recordServiceSpy = { getRecord: vi.fn() };
-  recordServiceSpy.getRecord.mockReturnValue(of({ ...organisation }));
+  const appStoreSpy = {
+    organisation: signal<any>({ ...organisation }),
+  } as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         OrganisationService,
-        { provide: RecordService, useValue: recordServiceSpy },
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
       ]
     });
     service = TestBed.inject(OrganisationService);
@@ -45,12 +41,7 @@ describe('OrganisationService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should expose organisation as a signal', () => {
-    expect(service.organisation).toBeDefined();
-  });
-
-  it('should resolve organisation from user currentOrganisation', () => {
-    TestBed.flushEffects();
-    expect(recordServiceSpy.getRecord).toHaveBeenCalledWith('organisations', '1');
+  it('should expose organisation signal from AppStore', () => {
+    expect(service.organisation).toBe(appStoreSpy.organisation);
   });
 });

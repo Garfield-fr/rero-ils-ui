@@ -17,19 +17,17 @@
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { userTestingService } from 'projects/admin/tests/utils';
 import { filter, firstValueFrom } from 'rxjs';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
-import { LibraryGuard } from './library.guard';
+import { libraryGuard } from './library.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
-describe('LibraryGuard', () => {
-  let guard: LibraryGuard;
+describe('libraryGuard', () => {
   let router: Router;
 
   const routes = [
@@ -42,17 +40,23 @@ describe('LibraryGuard', () => {
   const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.queryParams = { library: '1' };
 
+  const appStoreSpy = { currentLibraryPid: vi.fn(() => '1') } as any;
+
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      libraryGuard(route, {} as RouterStateSnapshot)
+    ) as any;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot()],
     providers: [
-        { provide: UserService, useValue: userTestingService },
+        { provide: AppStore, useValue: appStoreSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 });
-    guard = TestBed.inject(LibraryGuard);
     router = TestBed.inject(Router);
   });
 
@@ -63,11 +67,11 @@ describe('LibraryGuard', () => {
   }
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(libraryGuard).toBeTruthy();
   });
 
   it('should return true if the same library', async () => {
-    const access = await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
     expect(access).toBeTruthy();
   });
 
@@ -75,7 +79,7 @@ describe('LibraryGuard', () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.queryParams = { library: '2' };
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/403');
   });

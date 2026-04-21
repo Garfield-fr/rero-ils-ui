@@ -21,7 +21,7 @@ import { RecordService } from "@rero/ng-core";
 import { of } from "rxjs";
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType, PatronTransactionStatus } from "@app/admin/classes/patron-transaction";
 import { apiResponse } from "projects/shared/src/tests/api";
-import { UserService } from "@rero/shared";
+import { AppStore } from "@rero/shared";
 import { RouteToolService } from "@app/admin/routes/route-tool.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService, ToastMessageOptions } from "primeng/api";
@@ -87,14 +87,14 @@ describe('PatronTransactionService', () => {
     }
   };
 
-  const userServiceSpy = { } as any;
+  const appStoreSpy = { } as any;
   const user = {
     patronLibrarian: {
       pid: '1'
     },
     currentLibrary: '1'
   };
-  userServiceSpy.user = vi.fn(() => user);
+  appStoreSpy.user = vi.fn(() => user);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -105,7 +105,7 @@ describe('PatronTransactionService', () => {
         PatronTransactionService,
         RouteToolService,
         RecordService,
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         MessageService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()

@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
@@ -48,6 +49,7 @@ export class CheckinComponent implements OnInit {
   private router: Router = inject(Router);
   private translate: TranslateService = inject(TranslateService);
   private patronService: PatronService = inject(PatronService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public placeholder = _('Please enter a patron card number or an item barcode.');
   public searchText = '';
@@ -70,7 +72,7 @@ export class CheckinComponent implements OnInit {
 
   ngOnInit() {
     this.loggedUser = this.appStore.user();
-    this.patronService.currentPatron$.subscribe(
+    this.patronService.currentPatron$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
       patron => this.patronInfo = patron
     );
     this.currentLibraryPid = this.loggedUser.currentLibrary;

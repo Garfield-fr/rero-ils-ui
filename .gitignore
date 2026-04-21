@@ -57,3 +57,10 @@ Thumbs.db
 # test proxy
 dev.proxy.conf.json
 MIGRATION.md
+
+# AI tools working directories
+.claude/
+.cursor/
+.copilot/
+.aider*
+.ai-cache/

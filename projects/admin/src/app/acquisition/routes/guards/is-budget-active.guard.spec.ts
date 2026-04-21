@@ -16,17 +16,16 @@
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { cloneDeep } from 'lodash-es';
 import { filter, firstValueFrom, of } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
-import { IsBudgetActiveGuard } from './is-budget-active.guard';
+import { isBudgetActiveGuard } from './is-budget-active.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-describe('IsBudgetActiveGuard', () => {
-  let guard: IsBudgetActiveGuard;
+describe('isBudgetActiveGuard', () => {
   let recordService: RecordService;
   let router: Router;
 
@@ -61,13 +60,17 @@ describe('IsBudgetActiveGuard', () => {
   activatedRouteSnapshotSpy.params = { type: 'acq_receipt', pid: '1' };
   activatedRouteSnapshotSpy.queryParams = { };
 
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      isBudgetActiveGuard(route, {} as RouterStateSnapshot)
+    ) as any;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot()],
     providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 });
-    guard = TestBed.inject(IsBudgetActiveGuard);
     recordService = TestBed.inject(RecordService);
     router = TestBed.inject(Router);
   });
@@ -79,13 +82,13 @@ describe('IsBudgetActiveGuard', () => {
   }
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(isBudgetActiveGuard).toBeTruthy();
   });
 
   it('should return true if the record has the flag true on is_current_budget', async () => {
     const record = cloneDeep(receipt);
     vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
-    const access = await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
     expect(access).toBeTruthy();
   });
 
@@ -94,7 +97,7 @@ describe('IsBudgetActiveGuard', () => {
     record.metadata.is_current_budget = false;
     vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
     await navPromise;
     expect(router.url).toBe('/errors/403');
   });
@@ -105,7 +108,7 @@ describe('IsBudgetActiveGuard', () => {
     record.metadata.is_current_budget = false;
     vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
     await navPromise;
     expect(router.url).toBe('/errors/403');
   });

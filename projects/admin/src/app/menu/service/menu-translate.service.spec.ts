@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { TestBed } from '@angular/core/testing';
-import { signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { MenuTranslateService } from './menu-translate.service';
 
@@ -25,13 +24,12 @@ describe('MenuTranslateService', () => {
   let service: MenuTranslateService;
   let translate: TranslateService;
 
-  const userServiceSpy = { } as any;
-  userServiceSpy.user = signal({
-    currentLibrary: '1',
-    currentOrganisation: '2',
-    symbolName: 'AM',
-    currentBudget: '1'
-  });
+  const appStoreSpy = {
+    currentLibraryPid: () => '1',
+    currentOrganisationPid: () => '2',
+    user: () => ({ symbolName: 'AM' }),
+    currentBudgetPid: () => '1'
+  } as any;
 
   const translations = {
     'user': 'utilisateur'
@@ -116,7 +114,7 @@ describe('MenuTranslateService', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         TranslateService
       ]
     });

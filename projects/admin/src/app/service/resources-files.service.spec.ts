@@ -19,7 +19,7 @@ import { TestBed } from "@angular/core/testing";
 import { ResourcesFilesService } from "./resources-files.service";
 import { HttpClient } from "@angular/common/http";
 import { ApiService, File } from "@rero/ng-core";
-import { UserService } from "@rero/shared";
+import { AppStore } from "@rero/shared";
 import { of } from "rxjs";
 
 describe('ResourcesFilesService', () => {
@@ -81,11 +81,9 @@ describe('ResourcesFilesService', () => {
 
   const httpClientSpy = { delete: vi.fn(), get: vi.fn(), post: vi.fn(), put: vi.fn() };
 
-  const userServiceSpy = { } as any;
-  const user = {
-    currentLibrary: '1'
-  };
-  userServiceSpy.user = vi.fn(() => user);
+  const appStoreSpy = {
+    currentLibraryPid: vi.fn(() => '1')
+  } as any;
 
 
   beforeEach(() => {
@@ -94,7 +92,7 @@ describe('ResourcesFilesService', () => {
         ResourcesFilesService,
         ApiService,
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: AppStore, useValue: appStoreSpy }
       ]
     });
 

@@ -19,13 +19,14 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterStateSnapshot, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { PERMISSION_OPERATOR, PERMISSIONS, PermissionsService } from '@rero/shared';
+import { AppStore, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { patchState } from '@ngrx/signals';
 import { filter, firstValueFrom } from 'rxjs';
 import { ErrorPageComponent } from 'projects/admin/src/app/error/error-page/error-page.component';
 import { permissionGuard } from './permission.guard';
 
 describe('permissionGuard', () => {
-  let permissionsService: PermissionsService;
+  let appStore: InstanceType<typeof AppStore>;
   let router: Router;
 
   const routes = [
@@ -46,7 +47,7 @@ describe('permissionGuard', () => {
       imports: [RouterModule.forRoot(routes), TranslateModule.forRoot()],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
     });
-    permissionsService = TestBed.inject(PermissionsService);
+    appStore = TestBed.inject(AppStore);
     router = TestBed.inject(Router);
   });
 
@@ -57,12 +58,12 @@ describe('permissionGuard', () => {
   }
 
   it('should allow access when one matching permission is present (OR)', () => {
-    permissionsService.setPermissions([PERMISSIONS.DOC_SEARCH]);
+    patchState(appStore as any, { permissions: [PERMISSIONS.DOC_SEARCH] });
     expect(runGuard(routeSnapshot)).toBe(true);
   });
 
   it('should deny access and redirect to 403 when no matching permission', async () => {
-    permissionsService.setPermissions([PERMISSIONS.ITTY_SEARCH]);
+    patchState(appStore as any, { permissions: [PERMISSIONS.ITTY_SEARCH] });
     const navPromise = waitForNavigation();
     expect(runGuard(routeSnapshot)).toBe(false);
     await navPromise;
@@ -70,7 +71,7 @@ describe('permissionGuard', () => {
   });
 
   it('should deny access when route data has no permissions', async () => {
-    permissionsService.setPermissions([PERMISSIONS.ILL_SEARCH]);
+    patchState(appStore as any, { permissions: [PERMISSIONS.ILL_SEARCH] });
     const snapshot = structuredClone(routeSnapshot);
     snapshot.data = {};
     const navPromise = waitForNavigation();
@@ -80,7 +81,7 @@ describe('permissionGuard', () => {
   });
 
   it('should deny access when not all permissions are present (AND)', async () => {
-    permissionsService.setPermissions([PERMISSIONS.DOC_CREATE, PERMISSIONS.HOLD_CREATE]);
+    patchState(appStore as any, { permissions: [PERMISSIONS.DOC_CREATE, PERMISSIONS.HOLD_CREATE] });
     const snapshot = structuredClone(routeSnapshot);
     snapshot.data = { ...snapshot.data, operator: PERMISSION_OPERATOR.AND };
     const navPromise = waitForNavigation();
@@ -90,7 +91,7 @@ describe('permissionGuard', () => {
   });
 
   it('should allow access when all permissions are present (AND)', () => {
-    permissionsService.setPermissions([PERMISSIONS.DOC_SEARCH, PERMISSIONS.DOC_CREATE, PERMISSIONS.ILL_SEARCH]);
+    patchState(appStore as any, { permissions: [PERMISSIONS.DOC_SEARCH, PERMISSIONS.DOC_CREATE, PERMISSIONS.ILL_SEARCH] });
     const snapshot = structuredClone(routeSnapshot);
     snapshot.data = { ...snapshot.data, operator: PERMISSION_OPERATOR.AND };
     expect(runGuard(snapshot)).toBe(true);

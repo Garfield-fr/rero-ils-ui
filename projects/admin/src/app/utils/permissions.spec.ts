@@ -17,7 +17,7 @@
 
 import { TestBed } from "@angular/core/testing";
 import { CurrentLibraryPermissionValidator } from "./permissions";
-import { UserService } from "@rero/shared";
+import { AppStore } from "@rero/shared";
 
 describe('Permissions', () => {
   let service: CurrentLibraryPermissionValidator;
@@ -59,13 +59,13 @@ describe('Permissions', () => {
     }
   }
 
-  const userServiceSpy = { } as any;
+  const appStoreSpy = { currentLibraryPid: vi.fn() } as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         CurrentLibraryPermissionValidator,
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: AppStore, useValue: appStoreSpy }
       ]
     });
 
@@ -77,14 +77,12 @@ describe('Permissions', () => {
   });
 
   it('should return permissions unchanged', () => {
-    const user = { currentLibrary: 2 };
-    userServiceSpy.user = vi.fn(() => user);
+    appStoreSpy.currentLibraryPid.mockReturnValue('2');
     expect(service.validate(permissions, '2')).toEqual(permissions);
   });
 
   it('should return permissions with access denied', () => {
-    const user = { currentLibrary: 3 };
-    userServiceSpy.user = vi.fn(() => user);
+    appStoreSpy.currentLibraryPid.mockReturnValue('3');
     expect(service.validate(permissions, '2')).toEqual(deniedPermissions);
   });
 });

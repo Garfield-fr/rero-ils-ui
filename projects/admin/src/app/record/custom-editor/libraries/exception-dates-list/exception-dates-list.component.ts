@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, DestroyRef, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
@@ -34,6 +35,7 @@ export class ExceptionDatesListComponent {
   private dialogService: DialogService = inject(DialogService);
   private translateService: TranslateService = inject(TranslateService);
 
+  private readonly destroyRef = inject(DestroyRef);
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
   exceptionDates = input([]);
@@ -48,7 +50,7 @@ export class ExceptionDatesListComponent {
         exceptionDate: this.exceptionDates()[index]
       }
     });
-    this.dynamicDialogRef.onClose.subscribe((value?: any) => {
+    this.dynamicDialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value?: any) => {
       if (value) {
         this.exceptionDates()[index] = value;
       }

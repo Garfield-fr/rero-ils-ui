@@ -17,22 +17,20 @@
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { userTestingService } from 'projects/admin/tests/utils';
 import { filter, firstValueFrom } from 'rxjs';
 import { of } from 'rxjs';
 import { LocalFieldApiService } from '../api/local-field-api.service';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
-import { CanAddLocalFieldsGuard } from './can-add-local-fields.guard';
+import { canAddLocalFieldsGuard } from './can-add-local-fields.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-describe('CanAddLocalFieldsGuard', () => {
+describe('canAddLocalFieldsGuard', () => {
 
-  let guard: CanAddLocalFieldsGuard;
   let localFieldApiService: LocalFieldApiService;
   let router: Router;
 
@@ -48,18 +46,24 @@ describe('CanAddLocalFieldsGuard', () => {
 
   let record = {};
 
+  const appStoreSpy = { currentOrganisationPid: vi.fn(() => '1') } as any;
+
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      canAddLocalFieldsGuard(route, {} as RouterStateSnapshot)
+    ) as any;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot()],
     providers: [
-        { provide: UserService, useValue: userTestingService },
+        { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordUiService, useValue: {} },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 });
-    guard = TestBed.inject(CanAddLocalFieldsGuard);
     localFieldApiService = TestBed.inject(LocalFieldApiService);
     router = TestBed.inject(Router);
   });
@@ -71,7 +75,7 @@ describe('CanAddLocalFieldsGuard', () => {
   }
 
   it('should create a service', () => {
-    expect(guard).toBeTruthy();
+    expect(canAddLocalFieldsGuard).toBeTruthy();
   });
 
   it('should return a 400 error if any parameters are missing', async () => {
@@ -79,7 +83,7 @@ describe('CanAddLocalFieldsGuard', () => {
     activatedRoute.queryParams = {};
     vi.spyOn(localFieldApiService, 'getByResourceTypeAndResourcePidAndOrganisationId').mockReturnValue(of(record));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });
@@ -87,7 +91,7 @@ describe('CanAddLocalFieldsGuard', () => {
   it('should return false if the current document has a local fields', async () => {
     record = { metadata: { } };
     vi.spyOn(localFieldApiService, 'getByResourceTypeAndResourcePidAndOrganisationId').mockReturnValue(of(record));
-    const access = await firstValueFrom(guard.canActivate(activatedRouteSnapshotSpy));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
     expect(access).toBeFalsy();
   });
 
@@ -96,7 +100,7 @@ describe('CanAddLocalFieldsGuard', () => {
     activatedRoute.queryParams = { type: 'foo', ref: '240' };
     vi.spyOn(localFieldApiService, 'getByResourceTypeAndResourcePidAndOrganisationId').mockReturnValue(of(record));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });

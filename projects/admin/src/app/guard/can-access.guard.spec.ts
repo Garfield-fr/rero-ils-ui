@@ -16,21 +16,18 @@
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { userTestingService } from 'projects/admin/tests/utils';
 import { firstValueFrom, filter } from 'rxjs';
 import { of } from 'rxjs';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { RecordPermissionService } from '../service/record-permission.service';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from './can-access.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from './can-access.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
-describe('CanAccessGuard', () => {
-  let guard: CanAccessGuard;
+describe('canAccessGuard', () => {
   let router: Router;
   let recordPermissionService: RecordPermissionService;
 
@@ -71,6 +68,11 @@ describe('CanAccessGuard', () => {
   const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.params = { type: 'items', pid: '1' };
 
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      canAccessGuard(route, {} as RouterStateSnapshot)
+    ) as any;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -78,12 +80,10 @@ describe('CanAccessGuard', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-          { provide: UserService, useValue: userTestingService },
           provideHttpClient(withInterceptorsFromDi()),
           provideHttpClientTesting()
       ]
     });
-    guard = TestBed.inject(CanAccessGuard);
     router = TestBed.inject(Router);
     recordPermissionService = TestBed.inject(RecordPermissionService);
   });
@@ -96,7 +96,7 @@ describe('CanAccessGuard', () => {
   }
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(canAccessGuard).toBeTruthy();
   });
 
   it('should return a 400 error if any parameters are missing', async () => {
@@ -104,7 +104,7 @@ describe('CanAccessGuard', () => {
     activatedRoute.data = {};
     activatedRoute.params = {};
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });
@@ -114,7 +114,7 @@ describe('CanAccessGuard', () => {
     activatedRoute.data = { action: CAN_ACCESS_ACTIONS.READ };
     activatedRoute.params = {};
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });
@@ -124,7 +124,7 @@ describe('CanAccessGuard', () => {
     activatedRoute.data = {};
     activatedRoute.params = { type: 'patrons', pid: 1 };
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });
@@ -134,7 +134,7 @@ describe('CanAccessGuard', () => {
     activatedRoute.data = { action: 'foo' };
     activatedRoute.params = { type: 'patrons', pid: 1 };
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });
@@ -144,7 +144,7 @@ describe('CanAccessGuard', () => {
     activatedRoute.data = { action: CAN_ACCESS_ACTIONS.READ };
     activatedRoute.params = { foo: 'bar' };
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/400');
   });
@@ -156,7 +156,7 @@ describe('CanAccessGuard', () => {
     const perms = cloneDeep(permissions);
     vi.spyOn(recordPermissionService, 'getPermission').mockReturnValue(of(perms));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/403');
   });
@@ -168,7 +168,7 @@ describe('CanAccessGuard', () => {
     const perms = cloneDeep(permissions);
     perms.read.can = true;
     vi.spyOn(recordPermissionService, 'getPermission').mockReturnValue(of(perms));
-    const access = await firstValueFrom(guard.canActivate(activatedRoute));
+    const access = await firstValueFrom(runGuard(activatedRoute));
     expect(access).toBe(true);
   });
 
@@ -178,7 +178,7 @@ describe('CanAccessGuard', () => {
     activatedRoute.params = { type: 'patrons', pid: 1 };
     vi.spyOn(recordPermissionService, 'getPermission').mockReturnValue(of(permissions));
     const navPromise = waitForNavigation();
-    await firstValueFrom(guard.canActivate(activatedRoute));
+    await firstValueFrom(runGuard(activatedRoute));
     await navPromise;
     expect(router.url).toBe('/errors/403');
   });
