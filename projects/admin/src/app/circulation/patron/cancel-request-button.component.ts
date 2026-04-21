@@ -18,7 +18,7 @@ import { Component, inject, input, output, ChangeDetectionStrategy} from '@angul
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -45,7 +45,7 @@ import { TooltipModule } from 'primeng/tooltip';
 export class CancelRequestButtonComponent {
 
   loanService: LoanService = inject(LoanService);
-  userService: UserService = inject(UserService);
+  appStore = inject(AppStore);
   translateService: TranslateService = inject(TranslateService);
   messageService: MessageService = inject(MessageService);
 
@@ -69,7 +69,7 @@ export class CancelRequestButtonComponent {
       this.loanService.cancelLoan(
         this.loan().metadata.item.pid,
         this.loan().metadata.pid,
-        this.userService.user()?.currentLibrary
+        this.appStore.currentLibraryPid()
       ).subscribe((item: any) => {
         let message = this.translateService.instant("The request has been cancelled.");
         if (item?.pending_loans?.length > 0) {

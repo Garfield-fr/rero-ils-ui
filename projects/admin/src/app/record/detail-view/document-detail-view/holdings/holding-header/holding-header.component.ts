@@ -18,7 +18,7 @@ import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { EsRecord, UserService, GetTranslatedLabelPipe } from '@rero/shared';
+import { AppStore, EsRecord, GetTranslatedLabelPipe } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
@@ -40,7 +40,7 @@ import { GetTranslatedLabelPipe as GetTranslatedLabelPipe_1 } from '../../../../
 export class HoldingHeaderComponent implements OnInit {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private holdingService: HoldingsService = inject(HoldingsService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
 
@@ -103,7 +103,7 @@ export class HoldingHeaderComponent implements OnInit {
       ([permissions, canRequest]) => {
         this.permissions = this.recordPermissionService
           .membership(
-            this.userService.user(),
+            this.appStore.user(),
             this.holding().metadata.library.pid,
             permissions
           );

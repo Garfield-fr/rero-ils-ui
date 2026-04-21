@@ -16,7 +16,7 @@
  */
 import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
-import { AppSettingsService, Entity } from '@rero/shared';
+import { AppStore, Entity } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -29,7 +29,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class RemotePageDetailComponent extends DetailComponent {
 
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
 
     /**
    * Launch an expert search on the document view.
@@ -39,7 +39,7 @@ export class RemotePageDetailComponent extends DetailComponent {
       let catalogKey = undefined;
       let catalogPid = undefined;
       const orderKey = this.findOrderKeyByLanguage(this.translate.getCurrentLang());
-      this.appSettingsService.settings.agentLabelOrder[orderKey].forEach((source: string) => {
+      this.appStore.settings()?.agentLabelOrder[orderKey].forEach((source: string) => {
         if (record.metadata.sources.includes(source) && !catalogKey && !catalogPid) {
           catalogKey = source;
           catalogPid = record.metadata[source].pid;
@@ -62,9 +62,9 @@ export class RemotePageDetailComponent extends DetailComponent {
      * @returns The matched language code
      */
     private findOrderKeyByLanguage(language: string): string {
-      let orderKey = Object.keys(this.appSettingsService.settings.agentLabelOrder).find((key: string) => key === language);
+      let orderKey = Object.keys(this.appStore.settings()?.agentLabelOrder).find((key: string) => key === language);
       if (!orderKey) {
-        orderKey = this.appSettingsService.settings.agentLabelOrder.fallback;
+        orderKey = this.appStore.settings()?.agentLabelOrder.fallback;
       }
 
       return orderKey;

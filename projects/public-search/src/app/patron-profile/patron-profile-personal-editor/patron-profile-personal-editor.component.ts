@@ -25,7 +25,7 @@ import { _ } from "@ngx-translate/core";
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { CONFIG, RecordService, processJsonSchema, removeEmptyValues, resolve$ref } from '@rero/ng-core';
-import { AppSettingsService, UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -45,8 +45,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   private recordService: RecordService = inject(RecordService);
   private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
   private translateService: TranslateService = inject(TranslateService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -80,7 +79,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     const schemaForm = this.recordService.getSchemaForm('users').pipe(
       tap((schema: any) => {
         if (schema) {
-          const disabledFields = this.appSettingsService.settings.userProfile.readOnlyFields;
+          const disabledFields = this.appStore.settings().userProfile.readOnlyFields;
           this.fields = [
             this.formlyJsonschema.toFieldConfig(processJsonSchema(resolve$ref(schema.schema, schema.schema.properties)), {
 
@@ -101,7 +100,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                   ? this._cssConfig[fkey]
                   : this._cssConfig.default;
                 // Deactivation of the fields if we have a patron record
-                if ((this.userService.user()?.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
+                if ((this.appStore.user()?.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
                   field.props.disabled = true;
                 }
                 // Hide password field
@@ -161,7 +160,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
       })
     );
 
-    const userQuery = this.recordService.getRecord('users', this.userService.user()?.id.toString());
+    const userQuery = this.recordService.getRecord('users', this.appStore.user()?.id.toString());
 
     this._subscriptions.add(
       forkJoin([schemaForm, userQuery]).subscribe(([_schema, user]: [any, any]) => {
@@ -191,8 +190,8 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     const data = removeEmptyValues(this.model);
     // Update user record and reload logged user
     this.recordService
-      .update('users', this.userService.user()?.id.toString(), data)
-      .pipe(switchMap(() => this.userService.load()))
+      .update('users', this.appStore.user()?.id.toString(), data)
+      .pipe(switchMap(() => this.appStore.load()))
       .subscribe({
         next: () => {
           this.messageService.add({
@@ -242,7 +241,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
               debounceTime(1000),
               map((res: any) => {
                 return (res.hits.hits.length === 0) ||
-                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.userService.user()?.id);
+                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.appStore.user()?.id);
               })
             );
       },

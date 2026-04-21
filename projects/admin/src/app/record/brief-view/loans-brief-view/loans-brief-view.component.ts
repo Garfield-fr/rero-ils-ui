@@ -17,7 +17,7 @@
  */
 import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
-import { PermissionsService, InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
+import { AppStore, InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { DialogService } from 'primeng/dynamicdialog';
 import { LoanState } from '../../../classes/loans';
@@ -40,7 +40,7 @@ import { MainTitlePipe as MainTitlePipe_1 } from '../../../../../../shared/src/l
 export class LoansBriefViewComponent implements OnInit {
 
   private dialogService: DialogService = inject(DialogService);
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -66,7 +66,7 @@ export class LoansBriefViewComponent implements OnInit {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this.permissionsService.canAccessDebugMode();
+    return this.appStore.canAccessDebugMode();
   }
 
   // HOOKS ======================================================

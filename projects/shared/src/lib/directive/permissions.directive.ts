@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { AfterViewInit, Directive, ElementRef, inject, input } from '@angular/core';
-import { PermissionsService } from '../service/permissions.service';
+import { AppStore } from '../store/app.store';
 import { PERMISSION_OPERATOR } from '../util/permissions';
 
 @Directive({
@@ -25,7 +25,7 @@ import { PERMISSION_OPERATOR } from '../util/permissions';
 export class PermissionsDirective implements AfterViewInit {
 
   protected el: ElementRef = inject(ElementRef);
-  protected permissionsService: PermissionsService = inject(PermissionsService);
+  protected appStore = inject(AppStore);
 
   readonly permissions = input<string[] | string>([]);
   readonly operator = input<PERMISSION_OPERATOR>(PERMISSION_OPERATOR.OR);
@@ -36,7 +36,7 @@ export class PermissionsDirective implements AfterViewInit {
       ? [this.permissions() as string]
       : this.permissions() as string[];
     // Remove element if not allowed
-    if (!this.permissionsService.canAccess(perms, this.operator())) {
+    if (!this.appStore.canAccess(perms, this.operator())) {
       this.el.nativeElement.remove();
     }
   }

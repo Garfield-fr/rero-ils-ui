@@ -73,7 +73,7 @@ class OrderLinesRoute extends BaseRoute implements RouteDataTypesInterface {
       {
         key: this.name,
         label: _('Order lines'),
-        canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOL_CREATE), message: '' }),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ACOL_CREATE), message: '' }),
         preCreateRecord: (data: any) => this._addDefaultInformation(data),
         preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
         redirectUrl: (record: RecordData) =>

@@ -19,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Confirmation, ConfirmationService } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -33,7 +33,7 @@ export class LoanService {
 
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
 
@@ -100,7 +100,7 @@ export class LoanService {
       pid: loanPid,
       transaction_library_pid: transactionLibraryPid,
       // TODO: Fix this with multiple patron
-      transaction_user_pid: this.userService.user()?.patrons[0].pid
+      transaction_user_pid: this.appStore.user()?.patrons[0].pid
     }).pipe(
       map(data => {
         const itemData = data.metadata;

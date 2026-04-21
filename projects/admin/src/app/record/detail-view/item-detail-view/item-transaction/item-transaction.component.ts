@@ -19,7 +19,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslatePipe } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { SelectChangeEvent, Select } from 'primeng/select';
 import { map, of, switchMap } from 'rxjs';
 import { RouterLink } from '@angular/router';
@@ -38,7 +38,7 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 })
 export class ItemTransactionComponent {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private itemService: ItemsService = inject(ItemsService);
   private loanService: LoanService = inject(LoanService);
 
@@ -55,7 +55,7 @@ export class ItemTransactionComponent {
     toObservable(this.type).pipe(
       switchMap(type => {
         if (!this._authorizedTypes.includes(type)) return of(null);
-        const currentLibrary = this.userService.user()?.currentLibrary;
+        const currentLibrary = this.appStore.currentLibraryPid();
         return this.itemService.getPickupLocations(this.itemPid()).pipe(
           map(locations => (locations as any[]).map((loc: any) => ({
             label: loc.pickup_name || loc.name,

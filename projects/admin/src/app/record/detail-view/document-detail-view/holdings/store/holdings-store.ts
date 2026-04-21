@@ -19,7 +19,7 @@ import { toObservable } from "@angular/core/rxjs-interop";
 import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { RecordUiService } from "@rero/ng-core";
-import { EsRecord, nonNullable, setFulfilled, setPending, UserService, withRequestStatus } from "@rero/shared";
+import { AppStore, EsRecord, nonNullable, setFulfilled, setPending, withRequestStatus } from "@rero/shared";
 import { MultiSelectChangeEvent } from "primeng/multiselect";
 import { pipe, switchMap, tap } from "rxjs";
 import { HoldingsApiService } from "../../../../../api/holdings-api.service";
@@ -58,7 +58,7 @@ export const HoldingsStore = signalStore(
   withState<HoldingsState>(initialHoldingsState),
   withRequestStatus(),
   withProps(() => ({
-    userService: inject(UserService),
+    appStore: inject(AppStore),
     holdingsApiService: inject(HoldingsApiService),
     recordUiService: inject(RecordUiService),
   })),
@@ -66,14 +66,14 @@ export const HoldingsStore = signalStore(
     isDocumentHarvested: computed(() => ('harvested' in store.document().metadata)),
     holdingsCurrentOrganisation: computed(
       () => store.holdings().filter(h => (store.filteredLibrary().length === 0)
-          ? h.metadata.organisation.pid === store.userService.user()?.currentOrganisation
-          : h.metadata.organisation.pid === store.userService.user()?.currentOrganisation && store.filteredLibrary().includes(h.metadata.library.pid)
+          ? h.metadata.organisation.pid === store.appStore.currentOrganisationPid()
+          : h.metadata.organisation.pid === store.appStore.currentOrganisationPid() && store.filteredLibrary().includes(h.metadata.library.pid)
       )
     ),
     holdingsOtherOrganisation: computed(
       () => store.holdings().filter(h => (store.filteredLibrary().length === 0)
-          ? h.metadata.organisation.pid !== store.userService.user()?.currentOrganisation
-          : h.metadata.organisation.pid !== store.userService.user()?.currentOrganisation && store.filteredLibrary().includes(h.metadata.library.pid)
+          ? h.metadata.organisation.pid !== store.appStore.currentOrganisationPid()
+          : h.metadata.organisation.pid !== store.appStore.currentOrganisationPid() && store.filteredLibrary().includes(h.metadata.library.pid)
       )
     ),
     filter: computed(() => {
@@ -86,12 +86,12 @@ export const HoldingsStore = signalStore(
 
       // Unique libraries for current organisation and sort.
       const currentOrganisationLibraries = [
-        ...new Map(libraries.filter(l => l.organisationPid === store.userService.user()?.currentOrganisation)
+        ...new Map(libraries.filter(l => l.organisationPid === store.appStore.currentOrganisationPid())
         .map(lib => [JSON.stringify(lib), lib])).values()
       ].sort((a, b) => a.name.localeCompare(b.name));
       // Unique libraries for other organisation(s) and sort.
       const otherOrganisationLibraries = [
-        ...new Map(libraries.filter(l => l.organisationPid !== store.userService.user()?.currentOrganisation)
+        ...new Map(libraries.filter(l => l.organisationPid !== store.appStore.currentOrganisationPid())
         .map(lib => [JSON.stringify(lib), lib])).values()
       ].sort((a, b) => a.name.localeCompare(b.name));
 

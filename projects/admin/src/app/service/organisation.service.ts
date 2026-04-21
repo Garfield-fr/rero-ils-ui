@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,31 +16,15 @@
  */
 
 import { inject, Injectable, Signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { RecordData, RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Organisation } from '@rero/shared/types/rero-shared';
-import { filter, switchMap } from 'rxjs';
-import { map } from 'rxjs/operators';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrganisationService {
 
-  private recordService: RecordService = inject(RecordService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
-  readonly organisation: Signal<Organisation | null> = toSignal(
-    toObservable(this.userService.user).pipe(
-      filter((user) => !!user?.currentOrganisation),
-      switchMap((user) =>
-        this.recordService
-          .getRecord<RecordData<Organisation>>('organisations', user.currentOrganisation)
-          .pipe(map((orgRecord) => orgRecord.metadata))
-      )
-    ),
-    { initialValue: null }
-  );
+  readonly organisation: Signal<Organisation | null> = this.appStore.organisation;
 }

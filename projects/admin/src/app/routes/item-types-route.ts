@@ -101,10 +101,10 @@ class ItemTypesRoute extends BaseRoute implements RouteDataTypesInterface {
         detailComponent: ItemTypeDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
         canAdd: () =>
-          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ITTY_CREATE) } as ActionStatus),
+          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ITTY_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           data.organisation = {
             $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
           };

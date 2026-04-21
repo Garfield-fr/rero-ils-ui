@@ -107,13 +107,13 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
           Accept: 'application/rero+json',
         },
         canAdd: () =>
-          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.STAT_CFG_CREATE) } as ActionStatus),
+          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.STAT_CFG_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         formFieldMap: ((field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
           return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
         }) as any,
         preCreateRecord: (data) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           data.library = {
             $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user?.currentLibrary),
           };
@@ -139,8 +139,8 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
       field.hooks = {
         ...field.hooks,
         onInit: (field: FormlyFieldConfig): void => {
-          const user = this.routeToolService.userService.user();
-          const { baseUrl } = this.routeToolService.settingsService;
+          const user = this.routeToolService.appStore.user();
+          const baseUrl = this.routeToolService.appStore.settings()?.baseUrl;
           const prefix = this.routeToolService.apiService.getEndpointByType('libraries');
           if (user?.currentLibrary != null && field.formControl.value == null) {
             field.formControl.setValue(`${baseUrl}${prefix}/${user.currentLibrary}`);

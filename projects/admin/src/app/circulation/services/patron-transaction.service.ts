@@ -25,7 +25,7 @@ import { RouteToolService } from '@app/admin/routes/route-tool.service';
 import { TranslateService } from '@ngx-translate/core';
 import type { EsResult } from '@rero/ng-core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -36,7 +36,7 @@ import { map } from 'rxjs/operators';
 export class PatronTransactionService {
 
   private recordService: RecordService = inject(RecordService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private routeToolService: RouteToolService = inject(RouteToolService);
   private translateService: TranslateService = inject(TranslateService);
   private messageService: MessageService = inject(MessageService);
@@ -165,7 +165,7 @@ export class PatronTransactionService {
    * @returns An object with `parent`, `operator` and `library` fields fill with current context
    */
   private _buildTransactionEventsSkeleton(transaction: PatronTransaction): any {
-    const currentUser = this.userService.user();
+    const currentUser = this.appStore.user();
     return {
       parent: {
         $ref: this.routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid)

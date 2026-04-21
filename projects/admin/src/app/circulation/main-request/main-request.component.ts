@@ -19,7 +19,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, SearchInputComponent } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { interval } from 'rxjs';
@@ -65,7 +65,7 @@ type RequestedLoanItem = {
 })
 export class MainRequestComponent {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private itemsService: ItemsService = inject(ItemsService);
   private translateService: TranslateService = inject(TranslateService);
   private messageService = inject(MessageService);
@@ -120,7 +120,7 @@ export class MainRequestComponent {
   private readonly sortCriteria = signal('-requestdate');
   private readonly refreshTick = signal(0);
 
-  readonly libraryPid = computed(() => this.userService.user()?.currentLibrary ?? null);
+  readonly libraryPid = computed(() => this.appStore.currentLibraryPid());
 
   readonly items = computed<RequestedLoanItem[] | null>(() => {
     const items = this.rawItems();

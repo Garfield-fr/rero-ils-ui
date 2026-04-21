@@ -150,7 +150,7 @@ class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
    * @param data: the initial data
    */
   private _addDefaultValuesForTemplate(data: any) {
-    const user = this.routeToolService.userService.user();
+    const user = this.routeToolService.appStore.user();
     if (!Object.hasOwn(data, 'visibility')) {
       data.visibility = 'private';
     }

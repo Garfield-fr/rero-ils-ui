@@ -18,10 +18,9 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { cloneDeep } from 'lodash-es';
 import { NgCoreTranslateService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
-import { MenuService } from '../service/menu.service';
+import { AppStore } from '@rero/shared';
 import { MenuTranslateService } from '../service/menu-translate.service';
-import { LibraryService } from '../service/library.service';
+import { MenuStore } from '../store/menu.store';
 import { Router, RouterLink } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { map, startWith } from 'rxjs/operators';
@@ -42,10 +41,9 @@ import { Badge } from 'primeng/badge';
 export class MenuUserComponent {
 
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  private userService: UserService = inject(UserService);
-  private menuService: MenuService = inject(MenuService);
+  private appStore = inject(AppStore);
+  private menuStore = inject(MenuStore);
   private menuTranslateService: MenuTranslateService = inject(MenuTranslateService);
-  private libraryService: LibraryService = inject(LibraryService);
   private router: Router = inject(Router);
 
   private readonly currentLanguage = toSignal(
@@ -57,22 +55,22 @@ export class MenuUserComponent {
   );
 
   readonly items = computed((): MenuItem[] => {
-    this.userService.user();
+    this.appStore.user();
     this.currentLanguage();
 
     const items = this.buildMenuItems();
-    const libraryMenu = this.menuService.libraryMenu()?.menu;
+    const libraryMenu = this.menuStore.libraryMenu()?.menu;
 
     return [libraryMenu, ...items].filter((item: MenuItem | undefined): item is MenuItem => !!item);
   });
 
   private readonly syncLibrarySelection = effect(() => {
-    const library = this.libraryService.selectedLibrary();
+    const library = this.menuStore.selectedLibrary();
     if (!library) {
       return;
     }
 
-    this.menuService.updateLibraryQueryParams(library);
+    this.menuStore.updateLibraryQueryParams(library);
     void this.router.navigate(['/']);
   });
 
@@ -80,11 +78,11 @@ export class MenuUserComponent {
     const userMenu = cloneDeep(MENU_USER);
     const menu = this.findRequiredItem(userMenu, MENU_IDS.USER.MENU);
     const languageMenu = this.findRequiredItem(menu.items ?? [], MENU_IDS.USER.LANGUAGE);
-    languageMenu.items = this.menuService.generateMenuLanguages();
+    languageMenu.items = this.menuStore.generateMenuLanguages();
 
     const items = this.menuTranslateService.process(userMenu);
     const logout = this.findRequiredItem(this.findRequiredItem(items, MENU_IDS.USER.MENU).items ?? [], MENU_IDS.USER.LOGOUT);
-    logout.command = () => this.menuService.logout();
+    logout.command = () => this.menuStore.logout();
 
     return items;
   }

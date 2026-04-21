@@ -19,7 +19,7 @@ import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, extractIdOnRef, RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -30,7 +30,7 @@ import { map, switchMap } from 'rxjs/operators';
  */
 export const itemAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
   const router = inject(Router);
-  const userService = inject(UserService);
+  const appStore = inject(AppStore);
   const recordService = inject(RecordService);
   const translateService = inject(TranslateService);
   const messageService = inject(MessageService);
@@ -57,7 +57,7 @@ export const itemAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot): O
           if (data === null) {
             return deny('Access denied');
           }
-          if (userService.user()?.currentLibrary !== data.metadata.library.pid) {
+          if (appStore.currentLibraryPid() !== data.metadata.library.pid) {
             return deny('Access denied');
           }
           return true;

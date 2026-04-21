@@ -18,7 +18,7 @@
 import { Component, computed, effect, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RecordService, UpperCaseFirstPipe } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { map, of, switchMap } from 'rxjs';
 import { Library } from '../../../classes/library';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -46,7 +46,7 @@ import { Badge } from 'primeng/badge';
 export class LibraryDetailViewComponent {
 
   private recordService: RecordService = inject(RecordService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   readonly record = input<any>();
   readonly type = input<string>('');
@@ -57,7 +57,7 @@ export class LibraryDetailViewComponent {
   });
 
   readonly isUserCanAddLocation = computed(() =>
-    this.userService.user()?.currentLibrary === this.record()?.metadata?.pid
+    this.appStore.currentLibraryPid() === this.record()?.metadata?.pid
   );
 
   private readonly _fetchedLocations = toSignal(

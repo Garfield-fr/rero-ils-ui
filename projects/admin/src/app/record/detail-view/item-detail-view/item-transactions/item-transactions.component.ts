@@ -20,7 +20,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, UserService, PermissionsDirective } from '@rero/shared';
+import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { forkJoin, of, Subscription, switchMap } from 'rxjs';
@@ -42,7 +42,7 @@ export class ItemTransactionsComponent {
   private dialogService: DialogService = inject(DialogService);
   private loanService: LoanService = inject(LoanService);
   private translateService: TranslateService = inject(TranslateService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   readonly itemPid = input<string>();
   readonly requestEvent = output<any>();
@@ -96,7 +96,7 @@ export class ItemTransactionsComponent {
    */
   cancelRequest(transaction: any): void {
     this.loanService
-      .cancelLoan(this.itemPid(), transaction.metadata.pid, this.userService.user()?.currentLibrary)
+      .cancelLoan(this.itemPid(), transaction.metadata.pid, this.appStore.currentLibraryPid())
       .subscribe((_itemData: any) => {
         this.messageService.add({
           severity: 'warn',

@@ -20,7 +20,7 @@ import { AbstractControl, FormsModule, ReactiveFormsModule, UntypedFormGroup } f
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { PatronBlockedMessagePipe, User, UserService } from '@rero/shared';
+import { AppStore, PatronBlockedMessagePipe, User } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -42,7 +42,7 @@ import { LoanService } from '../../../../service/loan.service';
 })
 export class ItemRequestComponent implements OnInit {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private loanService: LoanService = inject(LoanService);
@@ -83,7 +83,7 @@ export class ItemRequestComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit() {
-    this.currentUser = this.userService.user();
+    this.currentUser = this.appStore.user();
     const { data } = this.dynamicDialogConfig;
     this.recordPid = data.recordPid;
     this.recordType = data.recordType;

@@ -106,12 +106,12 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
         detailComponent: CollectionDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
         canAdd: () =>
-          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.COLL_CREATE) } as ActionStatus),
+          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.COLL_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
         aggregationsExpand: ['type'],
         preprocessRecordEditor: (record: any) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           if (!record.pid) {
             // set the user's default library at the time of creation
             record.libraries = [];
@@ -122,7 +122,7 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
           return record;
         },
         preCreateRecord: (data) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           data.organisation = {
             $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
           };
@@ -136,7 +136,7 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
                 // filter the linked items by the organisation of the current logged user
                 const queryOptions = jsonSchema?.items?.properties?.$ref?.widget?.formlyConfig?.props?.queryOptions;
                 if (queryOptions) {
-                  const currentOrganisation = this.routeToolService.userService.user()?.currentOrganisation;
+                  const currentOrganisation = this.routeToolService.appStore.currentOrganisationPid();
                   queryOptions.filter = `AND organisation.pid:${currentOrganisation}`;
                 }
                 break;
@@ -177,7 +177,7 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const user = this.routeToolService.userService.user();
+        const user = this.routeToolService.appStore.user();
         const apiService: any = this.routeToolService.apiService;
         const recordService: RecordService = this.routeToolService.recordService as RecordService;
 

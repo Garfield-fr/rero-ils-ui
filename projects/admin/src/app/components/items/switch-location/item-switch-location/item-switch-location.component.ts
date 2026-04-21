@@ -23,7 +23,7 @@ import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Error, extractIdOnRef } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService, SelectItemGroup } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -45,7 +45,7 @@ export class ItemSwitchLocationComponent implements OnInit {
   private itemApiService: ItemApiService = inject(ItemApiService);
   private locationService: LocationService = inject(LocationService);
   private translateService: TranslateService = inject(TranslateService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -133,7 +133,7 @@ export class ItemSwitchLocationComponent implements OnInit {
 
   /** Load pickup locations and build dropdown options */
   private _initLocations(): void {
-    const user = this.userService.user();
+    const user = this.appStore.user();
     if (!user) { return; }
     const libraryPids = user.patronLibrarian?.libraries?.map(lib => lib.pid) ?? [];
     this.locationService

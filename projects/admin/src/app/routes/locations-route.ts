@@ -82,7 +82,7 @@ class LocationsRoute extends BaseRoute implements RouteDataTypesInterface {
         label: _('Locations'),
         detailComponent: LocationDetailViewComponent,
         canAdd: () =>
-          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.LOC_CREATE) } as ActionStatus),
+          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.LOC_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preprocessRecordEditor: (record: any) => {
           // Location resource use a asynchronous validator ('valueAlreadyExists').

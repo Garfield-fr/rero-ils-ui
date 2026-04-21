@@ -62,12 +62,10 @@ export * from './lib/pipe/patron-blocked-message.pipe';
 export * from './lib/pipe/provision-activity.pipe';
 export * from './lib/pipe/safe-url.pipe';
 export * from './lib/pipe/url-active.pipe';
-export * from './lib/service/app-settings.service';
 export * from './lib/service/i-availability.service';
 export * from './lib/service/operation-logs.service';
-export * from './lib/service/permissions.service';
-export * from './lib/service/user.service';
 
+export * from './lib/store/app.store';
 export * from './lib/store/paginator-feature';
 export * from './lib/store/request-status-feature';
 export * from './lib/store/viewcode-feature';

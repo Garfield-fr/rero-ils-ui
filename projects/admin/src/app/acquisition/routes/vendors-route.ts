@@ -92,10 +92,10 @@ class VendorsRoute extends BaseRoute implements RouteDataTypesInterface {
         component: VendorBriefViewComponent,
         detailComponent: VendorDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
-        canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.VNDR_CREATE), message: '' }),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.VNDR_CREATE), message: '' }),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data: any) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           data.organisation = {
             $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
           };

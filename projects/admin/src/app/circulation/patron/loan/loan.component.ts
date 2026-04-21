@@ -20,7 +20,7 @@ import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe, SearchInputComponent } from '@rero/ng-core';
-import { ItemStatus, User, UserService } from '@rero/shared';
+import { AppStore, ItemStatus, User } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SelectChangeEvent } from 'primeng/select';
@@ -53,7 +53,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   private itemsService: ItemsService = inject(ItemsService);
   private translateService: TranslateService = inject(TranslateService);
   private patronService: PatronService = inject(PatronService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private messageService: MessageService = inject(MessageService);
   private circulationSettingsService: CirculationSettingsService = inject(CirculationSettingsService);
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
@@ -130,7 +130,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         }
       })
     );
-    this.currentLibraryPid = this.userService.user()?.currentLibrary;
+    this.currentLibraryPid = this.appStore.currentLibraryPid();
     this.searchInputFocus = true;
   }
 
@@ -255,7 +255,7 @@ export class LoanComponent implements OnInit, OnDestroy {
             item,
             this.currentLibraryPid,
             // TODO: user or patron ?
-            this.userService.user()?.patronLibrarian.pid,
+            this.appStore.user()?.patronLibrarian.pid,
             this.patron.pid,
             additionalParams
           )
@@ -395,7 +395,7 @@ export class LoanComponent implements OnInit, OnDestroy {
       }));
     }
     // Show additional message only for the owning library
-    if (action === ItemAction.checkin && item.library.pid === this.userService.user()?.currentLibrary) {
+    if (action === ItemAction.checkin && item.library.pid === this.appStore.currentLibraryPid()) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         if (message.length > 0) {

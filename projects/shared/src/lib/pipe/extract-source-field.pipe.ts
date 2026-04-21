@@ -16,7 +16,7 @@
  */
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AppSettingsService } from '../service/app-settings.service';
+import { AppStore } from '../store/app.store';
 
 @Pipe({
     name: 'extractSourceField',
@@ -24,7 +24,7 @@ import { AppSettingsService } from '../service/app-settings.service';
 })
 export class ExtractSourceFieldPipe implements PipeTransform {
 
-  protected appSettingsService: AppSettingsService = inject(AppSettingsService);
+  protected appStore = inject(AppStore);
   protected translateService: TranslateService = inject(TranslateService);
 
   /**
@@ -36,7 +36,7 @@ export class ExtractSourceFieldPipe implements PipeTransform {
   transform(metadata: any, field: string): any {
     let contributionsLabel: any;
     try {
-      contributionsLabel = this.appSettingsService.agentLabelOrder;
+      contributionsLabel = this.appStore.settings()?.agentLabelOrder;
     } catch {
       return null;
     }

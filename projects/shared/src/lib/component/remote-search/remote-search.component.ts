@@ -19,7 +19,7 @@ import { Component, inject, OnDestroy, OnInit, DOCUMENT, input, ChangeDetectionS
 import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
 import type { AutoCompleteRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
-import { UserService } from '../../service/user.service';
+import { AppStore } from '../../store/app.store';
 import { RemoteSearchConfig } from './remote-search-config.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { SearchAutocompleteComponent, UpperCaseFirstPipe } from '@rero/ng-core';
@@ -37,7 +37,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private remoteSearchBarConfig: RemoteSearchConfig = inject(RemoteSearchConfig);
   private document: Document = inject(DOCUMENT);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
   // You must use lowercase variable names for this to work in a web component.
@@ -91,7 +91,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
     if (internalRoutingBaseURL) {
       this.router.navigate([internalRoutingBaseURL], {
         queryParams: {
-          ...{ page: '1', size: '10', organisation: this.userService.user()?.currentOrganisation },
+          ...{ page: '1', size: '10', organisation: this.appStore.currentOrganisationPid() },
           q: query
         }
       });

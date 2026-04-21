@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { AfterViewInit, Directive, ElementRef, inject, input, Renderer2 } from '@angular/core';
-import { PermissionsService } from '../service/permissions.service';
+import { AppStore } from '../store/app.store';
 import { PERMISSION_OPERATOR } from '../util/permissions';
 
 @Directive({
@@ -26,7 +26,7 @@ export class LinkPermissionsDirective implements AfterViewInit {
 
   protected el: ElementRef = inject(ElementRef);
   protected renderer: Renderer2 = inject(Renderer2);
-  protected permissionsService: PermissionsService = inject(PermissionsService);
+  protected appStore = inject(AppStore);
 
   readonly linkPermissions = input<string[] | string>([]);
   readonly linkPermissionsOperator = input<PERMISSION_OPERATOR>(PERMISSION_OPERATOR.OR);
@@ -36,7 +36,7 @@ export class LinkPermissionsDirective implements AfterViewInit {
     const perms = typeof this.linkPermissions() === 'string'
       ? [this.linkPermissions() as string]
       : this.linkPermissions() as string[];
-    if (!this.permissionsService.canAccess(perms, this.linkPermissionsOperator())) {
+    if (!this.appStore.canAccess(perms, this.linkPermissionsOperator())) {
       const el: HTMLElement = this.el.nativeElement;
       const parent = el.parentNode;
       this.renderer.removeChild(parent, el);

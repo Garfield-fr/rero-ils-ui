@@ -57,7 +57,7 @@ class EntitiesRoute extends BaseRoute implements RouteDataTypesInterface {
         component: EntityBriefViewComponent,
         canAdd: () =>
           of({
-            can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.LOCENT_CREATE),
+            can: this.routeToolService.appStore.canAccess(PERMISSIONS.LOCENT_CREATE),
             routerLink: ['/records', this.recordType, 'new'],
           } as ActionStatus),
         canUpdate: (record: RecordData) => this._buildUpdatePermission(record),

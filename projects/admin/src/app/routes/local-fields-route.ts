@@ -65,7 +65,7 @@ class LocalFieldsRoute extends BaseRoute implements RouteDataTypesInterface {
         canRead: (record: RecordData) => this.canReadLocalFields(record),
         redirectUrl: (record: RecordData) => this.getUrl(record),
         preCreateRecord: (data) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           if (data.parent == null) {
             data.organisation = {
               $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
@@ -108,7 +108,7 @@ class LocalFieldsRoute extends BaseRoute implements RouteDataTypesInterface {
    * @return Observable
    */
   private canReadLocalFields(record: any) {
-    const organisationPid = this.routeToolService.userService.user()?.currentOrganisation;
+    const organisationPid = this.routeToolService.appStore.currentOrganisationPid();
     const recordOrganisationPid = 'organisation' in record.metadata ? record.metadata.organisation.pid : false;
     return of({ can: organisationPid === recordOrganisationPid, message: '' });
   }

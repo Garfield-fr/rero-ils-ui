@@ -20,7 +20,7 @@ import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { IssueItemStatus, UserService, OpenCloseButtonComponent, InheritedCallNumberComponent } from '@rero/shared';
+import { AppStore, IssueItemStatus, OpenCloseButtonComponent, InheritedCallNumberComponent } from '@rero/shared';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { HoldingsSerialStore } from '../../holdings-serial-store';
@@ -47,7 +47,7 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   private translateService: TranslateService = inject(TranslateService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private issueService: IssueService = inject(IssueService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the issue to display */
@@ -92,7 +92,7 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
     this.recordPermissionService
       .getPermission('items', this.issue().metadata.pid)
       .subscribe(permission => this.recordPermissions =  this.recordPermissionService.membership(
-        this.userService.user(),
+        this.appStore.user(),
         this.issue().metadata.library.pid,
         permission
       ));

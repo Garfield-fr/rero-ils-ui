@@ -16,7 +16,7 @@
  */
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
-import { PERMISSION_OPERATOR, PermissionsService } from '@rero/shared';
+import { AppStore, PERMISSION_OPERATOR } from '@rero/shared';
 
 /**
  * Functional guard checking whether the logged-in user holds the required
@@ -35,13 +35,13 @@ import { PERMISSION_OPERATOR, PermissionsService } from '@rero/shared';
  * }
  */
 export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot): boolean => {
-  const permissionsService = inject(PermissionsService);
+  const appStore = inject(AppStore);
   const router = inject(Router);
 
   const permissions: string[] = route.data['permissions'] ?? [];
   const operator: string = route.data['operator'] ?? PERMISSION_OPERATOR.OR;
 
-  if (!permissionsService.canAccess(permissions, operator)) {
+  if (!appStore.canAccess(permissions, operator)) {
     router.navigate(['/errors/403'], { skipLocationChange: true });
     return false;
   }

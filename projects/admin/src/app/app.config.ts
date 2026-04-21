@@ -17,7 +17,6 @@
 import {
   ApplicationConfig,
   importProvidersFrom,
-  inject,
   LOCALE_ID,
   provideAppInitializer,
 } from '@angular/core';
@@ -63,7 +62,7 @@ import { MefRemoteService } from './record/editor/formly/primeng/remote-autocomp
 import { PatronsRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/patrons-remote.service';
 import { routes } from './app.routes';
 import { AppConfigService } from './service/app-config.service';
-import { AppInitializerService } from './service/app-initializer.service';
+import { initializeApp } from './service/app-initializer';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
@@ -72,10 +71,7 @@ import { EntityAutocompleteComponent } from './record/editor/formly/primeng/enti
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withRouterConfig({ paramsInheritanceStrategy: 'always' })),
-    provideAppInitializer(() => {
-      const appInitializerService = inject(AppInitializerService);
-      return appInitializerService.load();
-    }),
+    provideAppInitializer(() => initializeApp()),
     {
       provide: APP_BASE_HREF,
       useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),

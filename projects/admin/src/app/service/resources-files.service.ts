@@ -18,7 +18,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { ApiService, File } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class ResourcesFilesService {
 
   private httpService: HttpClient = inject(HttpClient);
   private apiService: ApiService = inject(ApiService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   //api base URL
   baseUrl: string;
@@ -58,7 +58,7 @@ export class ResourcesFilesService {
    */
   getParentRecord(pid: string): Observable<any> {
     // get the current library pid
-    const libPid = this.userService.user()?.currentLibrary;
+    const libPid = this.appStore.currentLibraryPid();
     // retrieve the file record attached to the document and the current library
     return this.httpService
       .get(`${this.baseUrl}?q=metadata.document.pid:${pid} AND metadata.library.pid:${libPid}`)
@@ -95,7 +95,7 @@ export class ResourcesFilesService {
    */
   createParentRecord(docPid: string): Observable<any> {
     // get the current library pid
-    const libPid = this.userService.user()?.currentLibrary;
+    const libPid = this.appStore.currentLibraryPid();
     // create the file record attached to the current library pid and the given
     // document
     return this.httpService

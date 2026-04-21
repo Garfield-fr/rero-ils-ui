@@ -17,7 +17,7 @@
 import { inject, Injectable } from "@angular/core";
 import { AutoCompleteRecordType, NgCoreTranslateService, TruncateTextPipe } from "@rero/ng-core";
 import { MainTitlePipe } from "../../pipe/main-title.pipe";
-import { AppSettingsService } from "../../service/app-settings.service";
+import { AppStore } from "../../store/app.store";
 import { Entity } from "../../class/entity";
 
 @Injectable({
@@ -28,7 +28,7 @@ export class RemoteSearchConfig {
   protected mainTitlePipe: MainTitlePipe = inject(MainTitlePipe);
   protected truncatePipe: TruncateTextPipe = inject(TruncateTextPipe);
   protected translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  protected appSettingsService: AppSettingsService = inject(AppSettingsService);
+  protected appStore = inject(AppStore);
 
   private isAdmin = false;
 
@@ -124,7 +124,7 @@ export class RemoteSearchConfig {
   private getContributionName(metadata: any): string {
     if (metadata.resource_type === 'remote') {
       const language = this.translateService.getCurrentLang();
-      const order: any = this.appSettingsService.agentLabelOrder;
+      const order: any = this.appStore.settings()?.agentLabelOrder;
       const key = (language in order) ? language : 'fallback';
       const agentSources = (key === 'fallback')
         ? order[order[key]]

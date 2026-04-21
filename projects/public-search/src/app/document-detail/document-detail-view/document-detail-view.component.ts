@@ -19,7 +19,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateDirective, TranslateService } from '@ngx-translate/core';
-import { AppSettingsService, DocumentDescriptionComponent, FilesComponent } from '@rero/shared';
+import { AppStore, DocumentDescriptionComponent, FilesComponent } from '@rero/shared';
 import { GetRecordPipe } from '@rero/ng-core';
 import { MenuItem } from 'primeng/api';
 import { Ripple } from 'primeng/ripple';
@@ -34,7 +34,7 @@ import { ElectronicHoldingsComponent } from './holdings/electronic-holdings/elec
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailViewComponent implements OnInit {
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
   viewcode = input<string>();
@@ -47,7 +47,7 @@ export class DocumentDetailViewComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     // Set view code to app settings
-    this.appSettingsService.currentViewCode = this.viewcode();
+    this.appStore.setCurrentViewCode(this.viewcode());
     this.exportItems = [
       {
         icon: "fa fa-file-code-o",

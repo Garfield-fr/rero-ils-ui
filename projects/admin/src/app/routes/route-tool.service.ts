@@ -21,7 +21,7 @@ import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
-import { AppSettingsService, PermissionsService, UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Observable, of, Subscriber } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { RecordPermissions } from '../classes/permissions';
@@ -35,11 +35,11 @@ export class RouteToolService {
   injector: Injector = inject(Injector);
 
   /**
-   * Proxy for permissions service
-   * @return PermissionsService
+   * Proxy for app store
+   * @return AppStore
    */
-  get permissionsService(): PermissionsService {
-    return this.injector.get(PermissionsService);
+  get appStore() {
+    return this.injector.get(AppStore);
   }
 
   /**
@@ -55,22 +55,6 @@ export class RouteToolService {
    */
   get organisationService() {
     return this.injector.get(OrganisationService);
-  }
-
-  /**
-   * Proxy for user service
-   * @return UserService
-   */
-  get userService() {
-    return this.injector.get(UserService);
-  }
-
-  /**
-   * Proxy for settings service
-   * @return AppSettingsService
-   */
-  get settingsService() {
-    return this.injector.get(AppSettingsService);
   }
 
   /**
@@ -247,7 +231,7 @@ export class RouteToolService {
                   ? record.metadata.library.$ref.split("/").pop()
                   : record.metadata.library.pid;
               permission = this.recordPermissionService.membership(
-                this.userService.user(),
+                this.appStore.user(),
                 libraryPid,
                 permission
               );

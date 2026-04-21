@@ -77,9 +77,9 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
       },
     ];
     // TODO: Refactor this after the change of AppInitializer service with user.
-    toObservable(this.routeToolService.userService.user, { injector: this.routeToolService.injector })
+    toObservable(this.routeToolService.appStore.user, { injector: this.routeToolService.injector })
       .pipe(filter(u => !!u), take(1)).subscribe(() => {
-        const { patronLibrarian } = this.routeToolService.userService.user();
+        const { patronLibrarian } = this.routeToolService.appStore.user();
         if (patronLibrarian) {
           (types[0].preFilters as any).organisation = patronLibrarian.organisation.pid;
         }

@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { effect, inject, Injectable } from '@angular/core';
-import { LibraryService } from '@app/admin/menu/service/library.service';
-import { MenuService } from '@app/admin/menu/service/menu.service';
+import { MenuStore } from '@app/admin/menu/store/menu.store';
 import { LocalStorageService } from '@rero/ng-core';
 
 @Injectable({
@@ -25,8 +24,7 @@ import { LocalStorageService } from '@rero/ng-core';
 export class LoanFixedDateService {
 
   private localeStorageService: LocalStorageService = inject(LocalStorageService);
-  private libraryService: LibraryService = inject(LibraryService);
-  private menuService: MenuService = inject(MenuService);
+  private menuStore = inject(MenuStore);
 
   /** The key to local Storage */
   private _dueDateKey = 'due_date_remember';
@@ -36,13 +34,13 @@ export class LoanFixedDateService {
 
   constructor() {
     effect(() => {
-      if (this.libraryService.selectedLibrary()) {
+      if (this.menuStore.selectedLibrary()) {
         this.remove();
       }
     });
 
     effect(() => {
-      if (this.menuService.logoutVersion() > 0) {
+      if (this.menuStore.logoutCounter() > 0) {
         this.remove();
       }
     });

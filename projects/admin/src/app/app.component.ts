@@ -17,7 +17,7 @@
 
 import { AfterViewInit, Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
-import { User, UserService, RemoteSearchComponent } from '@rero/shared';
+import { AppStore, User, RemoteSearchComponent } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
 import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
@@ -38,7 +38,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private keyboardShortcutsService: KeyboardShortcutsService = inject(KeyboardShortcutsService);
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private dialogService: DialogService = inject(DialogService);
@@ -46,7 +46,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   /** user */
   get user(): User | null {
-    return this.userService.user();
+    return this.appStore.user();
   }
 
   /** Init hook */

@@ -16,7 +16,7 @@
  */
 import { AfterViewInit, Component, inject, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
 import { ApiService, RemoteAutocompleteComponent } from '@rero/ng-core';
-import { PERMISSIONS, PermissionsService } from '@rero/shared';
+import { AppStore, PERMISSIONS } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-local-form.component';
@@ -104,7 +104,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class EntityAutocompleteComponent extends RemoteAutocompleteComponent implements OnDestroy, AfterViewInit {
 
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
   private dialogService: DialogService = inject(DialogService);
   private apiService: ApiService = inject(ApiService);
 
@@ -117,7 +117,7 @@ export class EntityAutocompleteComponent extends RemoteAutocompleteComponent imp
   }
 
   ngAfterViewInit(): void {
-    this.isAuthorizedToAddLocalEntity = this.permissionsService.canAccess(PERMISSIONS.LOCENT_CREATE);
+    this.isAuthorizedToAddLocalEntity = this.appStore.canAccess(PERMISSIONS.LOCENT_CREATE);
     super.ngAfterViewInit();
   }
 

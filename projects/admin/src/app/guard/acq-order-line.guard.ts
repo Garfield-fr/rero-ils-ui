@@ -17,7 +17,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { checkLibraryAccess } from './library.guard';
@@ -28,7 +28,7 @@ import { checkLibraryAccess } from './library.guard';
  */
 export const acqOrderLineGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
   const recordService = inject(RecordService);
-  const userService = inject(UserService);
+  const appStore = inject(AppStore);
   const router = inject(Router);
 
   const orderPid = route.queryParams.order ?? route.params.pid;
@@ -38,5 +38,5 @@ export const acqOrderLineGuard: CanActivateFn = (route: ActivatedRouteSnapshot):
     map(library => extractIdOnRef((library as any)?.$ref))
   );
 
-  return checkLibraryAccess(owningLibrary$, userService, router);
+  return checkLibraryAccess(owningLibrary$, appStore, router);
 };

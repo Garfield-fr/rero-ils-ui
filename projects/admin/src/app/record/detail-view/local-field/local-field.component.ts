@@ -19,7 +19,7 @@ import { Component, computed, inject, input, signal, Signal, ChangeDetectionStra
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { LocalFieldApiService } from '@app/admin/api/local-field-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { IPermissions, JoinPipe, PERMISSIONS, UserService } from '@rero/shared';
+import { AppStore, IPermissions, JoinPipe, PERMISSIONS } from '@rero/shared';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -37,7 +37,7 @@ import { JoinPipe as JoinPipe_1 } from '../../../../../../shared/src/lib/pipe/jo
 export class LocalFieldComponent {
 
   private localFieldApiService: LocalFieldApiService = inject(LocalFieldApiService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
 
   // INPUTS ===================================================================
@@ -67,7 +67,7 @@ export class LocalFieldComponent {
         this.localFieldApiService.getByResourceTypeAndResourcePidAndOrganisationId(
           this._translateType(this.resourceType()),
           pid,
-          this.userService.user()?.currentOrganisation
+          this.appStore.currentOrganisationPid()
         ).pipe(
           catchError(() => {
             this.isLoading.set(false);

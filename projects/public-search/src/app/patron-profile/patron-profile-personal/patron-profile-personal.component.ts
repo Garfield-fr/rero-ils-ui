@@ -19,7 +19,7 @@ import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core'
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
-import { AppSettingsService, IPatron, IUser, JoinPipe } from '@rero/shared';
+import { AppStore, IPatron, IUser, JoinPipe } from '@rero/shared';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
@@ -31,7 +31,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export class PatronProfilePersonalComponent {
 
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
 
   /** User record */
   user = input<IUser>();
@@ -48,6 +48,6 @@ export class PatronProfilePersonalComponent {
    * @returns true if the user settings is read only.
    */
   get disabledButtonOnReadyOnly(): boolean {
-    return !this.appSettingsService.settings.userProfile.readOnly;
+    return !this.appStore.settings().userProfile.readOnly;
   }
 }

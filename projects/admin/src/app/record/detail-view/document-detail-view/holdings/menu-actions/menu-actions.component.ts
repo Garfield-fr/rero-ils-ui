@@ -17,7 +17,7 @@
 import { Component, computed, effect, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { IPermissions, PERMISSIONS, PermissionsService, PermissionsDirective } from '@rero/shared';
+import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { EsRecord } from 'projects/shared/src/public-api';
 import { forkJoin } from 'rxjs';
 import { Bind } from 'primeng/bind';
@@ -32,7 +32,7 @@ import { Menu } from 'primeng/menu';
 })
 export class MenuActionsComponent {
 
-  protected permissionsService = inject(PermissionsService);
+  protected appStore = inject(AppStore);
   protected recordPermissionService = inject(RecordPermissionService);
   protected translateService = inject(TranslateService);
 
@@ -69,13 +69,13 @@ export class MenuActionsComponent {
           label: this.translateService.instant('an item'),
           routerLink: ['/', 'records', 'items', 'new'],
           queryParams: { document: this.document().metadata.pid },
-          visible: this.permissionsService.canAccess(PERMISSIONS.ITEM_CREATE)
+          visible: this.appStore.canAccess(PERMISSIONS.ITEM_CREATE)
         },
         {
           label: this.translateService.instant('a holdings'),
           routerLink: ['/', 'records', 'holdings', 'new'],
           queryParams: { document: this.document().metadata.pid },
-          visible: this.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE)
+          visible: this.appStore.canAccess(PERMISSIONS.HOLD_CREATE)
         }
       ];
   });

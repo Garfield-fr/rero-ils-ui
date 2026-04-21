@@ -19,7 +19,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
-import { Tools, UserService } from '@rero/shared';
+import { AppStore, Tools } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -44,7 +44,7 @@ export class PatronFeeComponent implements OnInit {
   private recordService: RecordService = inject(RecordService);
   private translateService: TranslateService = inject(TranslateService);
   private organisationService: OrganisationService = inject(OrganisationService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private apiService: ApiService = inject(ApiService);
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
@@ -160,15 +160,15 @@ export class PatronFeeComponent implements OnInit {
         $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid)
       },
       library: {
-        $ref: this.apiService.getRefEndpoint('libraries', this.userService.user()?.currentLibrary)
+        $ref: this.apiService.getRefEndpoint('libraries', this.appStore.currentLibraryPid())
       },
       status: 'open',
       event: {
         operator: {
-          $ref: this.apiService.getRefEndpoint('patrons', this.userService.user()?.patronLibrarian.pid)
+          $ref: this.apiService.getRefEndpoint('patrons', this.appStore.user()?.patronLibrarian.pid)
         },
         library: {
-          $ref: this.apiService.getRefEndpoint('libraries', this.userService.user()?.currentLibrary)
+          $ref: this.apiService.getRefEndpoint('libraries', this.appStore.currentLibraryPid())
         }
       }
     }

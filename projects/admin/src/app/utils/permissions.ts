@@ -17,13 +17,13 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { RecordPermission, RecordPermissions } from '../classes/permissions';
 
 @Injectable()
 export class CurrentLibraryPermissionValidator {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   /**
    * Update the permissions analyzing the current library. If the library isn't
@@ -32,7 +32,7 @@ export class CurrentLibraryPermissionValidator {
    * @param ownerLibraryPid: the related object owner library pid.
    */
   validate(permissions: RecordPermissions, ownerLibraryPid: string){
-    if (this.userService.user()?.currentLibrary !== ownerLibraryPid) {
+    if (this.appStore.currentLibraryPid() !== ownerLibraryPid) {
       const disabledPermission: RecordPermission = {
         can: false,
         reasons: {

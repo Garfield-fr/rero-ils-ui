@@ -63,7 +63,7 @@ class ReceiptLinesRoute extends BaseRoute implements RouteDataTypesInterface {
         editorSettings: {
           longMode: true,
         },
-        canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACRL_CREATE), message: '' }),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ACRL_CREATE), message: '' }),
         preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
         redirectUrl: (_record: RecordData) => {

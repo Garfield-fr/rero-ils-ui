@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService, SearchInputComponent } from '@rero/ng-core';
-import { ItemStatus, User, UserService } from '@rero/shared';
+import { AppStore, ItemStatus, User } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
@@ -42,7 +42,7 @@ export class CheckinComponent implements OnInit {
 
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
   private itemsService: ItemsService = inject(ItemsService);
   private router: Router = inject(Router);
@@ -69,7 +69,7 @@ export class CheckinComponent implements OnInit {
   private item: any;
 
   ngOnInit() {
-    this.loggedUser = this.userService.user();
+    this.loggedUser = this.appStore.user();
     this.patronService.currentPatron$.subscribe(
       patron => this.patronInfo = patron
     );
@@ -161,7 +161,7 @@ export class CheckinComponent implements OnInit {
             }
             break;
           case ItemAction.receive:
-            if (item.library.pid === this.userService.user()?.currentLibrary) {
+            if (item.library.pid === this.appStore.currentLibraryPid()) {
               this.displayCirculationInformation(item, ItemNoteType.CHECKIN);
             }
             break;
@@ -340,7 +340,7 @@ export class CheckinComponent implements OnInit {
       }));
     }
     // Show additional message only for the owning library
-    if (item.library.pid === this.userService.user()?.currentLibrary) {
+    if (item.library.pid === this.appStore.currentLibraryPid()) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         if (message.length > 0) {
@@ -387,7 +387,7 @@ export class CheckinComponent implements OnInit {
       })}`;
     }
     // Show additional message only for the owning library
-    if (item.library.pid === this.userService.user()?.currentLibrary) {
+    if (item.library.pid === this.appStore.currentLibraryPid()) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         message += `<br/>${additionalMessage}`;

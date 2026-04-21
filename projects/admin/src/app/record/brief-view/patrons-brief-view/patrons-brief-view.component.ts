@@ -17,7 +17,7 @@
 
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 
-import { PERMISSIONS, PermissionsService } from '@rero/shared';
+import { AppStore, PERMISSIONS } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
@@ -34,7 +34,7 @@ import { DateTranslatePipe } from '@rero/ng-core';
 })
 export class PatronsBriefViewComponent {
 
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
 
   /** the record to display */
   record = input<any>();
@@ -48,7 +48,7 @@ export class PatronsBriefViewComponent {
    * @return true if the circulation permission is allowed
    */
    get circulationAccess(): boolean {
-    return this.permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
+    return this.appStore.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
 
   /**

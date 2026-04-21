@@ -17,12 +17,11 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { map, startWith } from 'rxjs/operators';
 import { MENU_APP } from '../menu-definition/menu-app';
-import { LibraryService } from '../service/library.service';
 import { MenuTranslateService } from '../service/menu-translate.service';
-import { MenuService } from '../service/menu.service';
+import { MenuStore } from '../store/menu.store';
 import { Bind } from 'primeng/bind';
 import { Menubar } from 'primeng/menubar';
 import { Ripple } from 'primeng/ripple';
@@ -39,10 +38,9 @@ import { MenuUserComponent } from '../menu-user/menu-user.component';
 export class MenuAppComponent {
 
   private translateService: TranslateService = inject(TranslateService);
-  private userService: UserService = inject(UserService);
-  private menuService: MenuService = inject(MenuService);
+  private appStore = inject(AppStore);
+  private menuStore = inject(MenuStore);
   private menuTranslateService: MenuTranslateService = inject(MenuTranslateService);
-  private libraryService: LibraryService = inject(LibraryService);
 
   private readonly currentLanguage = toSignal(
     this.translateService.onLangChange.pipe(
@@ -54,23 +52,23 @@ export class MenuAppComponent {
 
   readonly items = computed(() => {
     this.currentLanguage();
-    return this.menuTranslateService.process(this.menuService.appMenuItems());
+    return this.menuTranslateService.process(this.menuStore.applicationMenuItems());
   });
 
   private readonly initializeMenu = effect(() => {
-    if (!this.userService.user()) {
+    if (!this.appStore.user()) {
       return;
     }
 
-    this.menuService.generateAppMenu(MENU_APP);
+    this.menuStore.generateAppMenu(MENU_APP);
   });
 
   private readonly syncLibrarySelection = effect(() => {
-    const library = this.libraryService.selectedLibrary();
+    const library = this.menuStore.selectedLibrary();
     if (!library) {
       return;
     }
 
-    this.menuService.updateLibraryLink(library);
+    this.menuStore.updateLibraryLink(library);
   });
 }

@@ -24,7 +24,7 @@ import { Loan, LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
-import { ItemStatus, PermissionsService, UserService, OpenCloseButtonComponent, InheritedCallNumberComponent, ContributionComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
+import { AppStore, ItemStatus, OpenCloseButtonComponent, InheritedCallNumberComponent, ContributionComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
 import { map } from 'rxjs/operators';
 import { CirculationStatsService } from '../patron/service/circulation-stats.service';
 import { NgClass, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
@@ -50,8 +50,7 @@ export class ItemComponent {
   private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private itemService: ItemsService = inject(ItemsService);
-  private permissionsService: PermissionsService = inject(PermissionsService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
 
@@ -98,7 +97,7 @@ export class ItemComponent {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this.permissionsService.canAccessDebugMode();
+    return this.appStore.canAccessDebugMode();
   }
   constructor() {
     effect(() => {
@@ -172,7 +171,7 @@ export class ItemComponent {
       const checkinNote = this.item().getNote(ItemNoteType.CHECKIN)
       if (checkinNote && (
         (this.item().actionDone === this.itemAction.checkin) || (
-          (((this.item().actionDone === this.itemAction.receive) && this.item().library.pid === this.userService.user()?.currentLibrary))
+          (((this.item().actionDone === this.itemAction.receive) && this.item().library.pid === this.appStore.currentLibraryPid()))
         )
       )) {
         notes.push(checkinNote);

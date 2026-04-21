@@ -16,7 +16,7 @@
  */
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -26,12 +26,12 @@ import { catchError, map } from 'rxjs/operators';
  */
 export function checkLibraryAccess(
   owningLibrary$: Observable<string>,
-  userService: UserService,
+  appStore: InstanceType<typeof AppStore>,
   router: Router
 ): Observable<boolean> {
   return owningLibrary$.pipe(
     map((owningLibrary: string) => {
-      if (owningLibrary !== userService.user()?.currentLibrary) {
+      if (owningLibrary !== appStore.currentLibraryPid()) {
         router.navigate(['/errors/403'], { skipLocationChange: true });
         return false;
       }
@@ -49,7 +49,7 @@ export function checkLibraryAccess(
  * `library` query parameter. Redirects to /errors/403 if denied, /errors/500 on error.
  */
 export const libraryGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
-  const userService = inject(UserService);
+  const appStore = inject(AppStore);
   const router = inject(Router);
-  return checkLibraryAccess(of(route.queryParams.library), userService, router);
+  return checkLibraryAccess(of(route.queryParams.library), appStore, router);
 };

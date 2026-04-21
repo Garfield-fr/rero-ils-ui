@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
-import { PermissionsService, OpenCloseButtonComponent } from '@rero/shared';
+import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { ScrollPanel } from 'primeng/scrollpanel';
@@ -32,7 +32,7 @@ import { DateTranslatePipe } from '@rero/ng-core';
 })
 export class CirculationLogComponent {
 
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Operation log record */
@@ -60,7 +60,7 @@ export class CirculationLogComponent {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this.permissionsService.canAccessDebugMode();
+    return this.appStore.canAccessDebugMode();
   }
 
   // COMPONENT FUNCTIONS ======================================================

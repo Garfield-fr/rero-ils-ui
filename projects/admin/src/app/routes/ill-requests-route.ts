@@ -95,7 +95,7 @@ class IllRequestsRoute extends BaseRoute implements RouteDataTypesInterface {
         detailComponent: IllRequestDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
         canAdd: () =>
-          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ILL_CREATE) } as ActionStatus),
+          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ILL_CREATE) } as ActionStatus),
         canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
         canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
         aggregationsExpand: ['request_status', 'loan_status', 'requester'],

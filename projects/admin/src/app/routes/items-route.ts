@@ -249,9 +249,9 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
     ];
 
     // TODO: Refactor this after the change of AppInitializer service with user.
-    toObservable(this.routeToolService.userService.user, { injector: this.routeToolService.injector })
+    toObservable(this.routeToolService.appStore.user, { injector: this.routeToolService.injector })
       .pipe(filter(u => !!u), take(1)).subscribe(() => {
-        const { patronLibrarian } = this.routeToolService.userService.user();
+        const { patronLibrarian } = this.routeToolService.appStore.user();
         if (patronLibrarian) {
           (types[0] as any).preFilters.organisation = patronLibrarian.organisation.pid;
         }
@@ -285,7 +285,7 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           const apiService: any = this.routeToolService.apiService;
           const recordService: RecordService = this.routeToolService.recordService as RecordService;
           const libraryPid = user?.currentLibrary;

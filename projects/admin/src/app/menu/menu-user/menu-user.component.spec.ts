@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,21 +19,18 @@ import { signal } from '@angular/core';
 
 import { MenuUserComponent } from './menu-user.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MenuService } from '../service/menu.service';
 import { MenuTranslateService } from '../service/menu-translate.service';
-import { UserService } from '@rero/shared';
-import { LibrarySwitchStorageService } from '../service/library-switch-storage.service';
+import { AppStore } from '@rero/shared';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { By } from '@angular/platform-browser';
-import { ISwitchLibrary, LibraryService } from '../service/library.service';
+import { ISwitchLibrary, MenuStore } from '../store/menu.store';
 import { MENU_IDS } from '../menu-definition/menu-ids';
 import { MenubarModule } from 'primeng/menubar';
 
 describe('AppMenuUserComponent', () => {
   let component: MenuUserComponent;
   let fixture: ComponentFixture<MenuUserComponent>;
-  let libraryService: LibraryService;
   let translateService: TranslateService;
 
   beforeAll(() => {
@@ -99,8 +96,17 @@ describe('AppMenuUserComponent', () => {
   };
 
   const libraryMenuSignal = signal({ menu: menuItems[0], libraryActive: librarySwitch });
-  const menuServiceSpy = { libraryMenu: libraryMenuSignal, generateMenuLanguages: vi.fn(), updateLibraryQueryParams: vi.fn(), logout: vi.fn() };
-  menuServiceSpy.generateMenuLanguages.mockImplementation(() => [
+  const selectedLibrarySignal = signal<ISwitchLibrary | null>(null);
+
+  const menuStoreSpy = {
+    libraryMenu: libraryMenuSignal,
+    selectedLibrary: selectedLibrarySignal,
+    generateMenuLanguages: vi.fn(),
+    updateLibraryQueryParams: vi.fn(),
+    logout: vi.fn(),
+  } as any;
+
+  menuStoreSpy.generateMenuLanguages.mockImplementation(() => [
     {
       label: 'french',
       code: 'fr',
@@ -118,19 +124,15 @@ describe('AppMenuUserComponent', () => {
   const menuTranslateServiceSpy = { process: vi.fn() };
   menuTranslateServiceSpy.process.mockImplementation((items: MenuItem[]) => items);
 
-  const userServiceSpy = { } as any;
-  userServiceSpy.user = signal({
-    id: 1,
-    currentLibrary: 'foo'
-  });
-
-  const librarySwitchStorageServiceSpy = { save: vi.fn() };
+  const appStoreSpy = { } as any;
+  appStoreSpy.user = signal({ id: 1 });
 
   const routerSpy = { navigate: vi.fn() };
 
   beforeEach(async () => {
-    menuServiceSpy.updateLibraryQueryParams.mockReset();
+    menuStoreSpy.updateLibraryQueryParams.mockReset();
     routerSpy.navigate.mockReset();
+    selectedLibrarySignal.set(null);
 
     await TestBed.configureTestingModule({
     imports: [
@@ -139,12 +141,10 @@ describe('AppMenuUserComponent', () => {
         MenuUserComponent,
     ],
     providers: [
-        { provide: MenuService, useValue: menuServiceSpy },
+        { provide: MenuStore, useValue: menuStoreSpy },
         { provide: MenuTranslateService, useValue: menuTranslateServiceSpy },
-        { provide: UserService, useValue: userServiceSpy },
-        { provide: LibrarySwitchStorageService, useValue: librarySwitchStorageServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         { provide: Router, useValue: routerSpy },
-        LibraryService,
         TranslateService
     ]
 })
@@ -153,7 +153,6 @@ describe('AppMenuUserComponent', () => {
     fixture = TestBed.createComponent(MenuUserComponent);
     component = fixture.componentInstance;
 
-    libraryService = TestBed.inject(LibraryService);
     translateService = TestBed.inject(TranslateService);
     fixture.detectChanges();
     translateService.use('en');
@@ -169,7 +168,7 @@ describe('AppMenuUserComponent', () => {
 
   it('should change the library menu', () => {
     expect(component.items().find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU)?.items?.[0].styleClass).toBeUndefined();
-    libraryService.switch(librarySwitch);
+    selectedLibrarySignal.set(librarySwitch);
     libraryMenuSignal.set({
       menu: {
         ...menuItems[0],
@@ -179,7 +178,7 @@ describe('AppMenuUserComponent', () => {
       libraryActive: librarySwitch
     });
     fixture.detectChanges();
-    expect(menuServiceSpy.updateLibraryQueryParams).toHaveBeenCalledWith(librarySwitch);
+    expect(menuStoreSpy.updateLibraryQueryParams).toHaveBeenCalledWith(librarySwitch);
     expect(component.items().find((item: MenuItem) => item.id === MENU_IDS.LIBRARY_MENU)?.items?.[0].styleClass).toEqual('ui:font-bold');
   });
 

@@ -135,7 +135,7 @@ class DocumentsRoute extends BaseRoute {
           ],
         },
       ],
-      canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.DOC_CREATE), message: '' }),
+      canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.DOC_CREATE), message: '' }),
       permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
       preprocessRecordEditor: (record: any) => {
         record = this.removeKey(record, '_text');

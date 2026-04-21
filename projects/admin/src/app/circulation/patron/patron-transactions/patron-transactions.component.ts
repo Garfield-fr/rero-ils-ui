@@ -20,7 +20,7 @@ import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
@@ -50,7 +50,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);
   private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
   private patronService: PatronService = inject(PatronService);
 
@@ -106,7 +106,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * @return the list of corresponding transactions.
    */
   myLibraryEngagedFees = computed<PatronTransaction[]>(() => {
-    const libraryPID = this.userService.user()?.currentLibrary;
+    const libraryPID = this.appStore.currentLibraryPid();
     return this.tabs.engagedFees.transactions().filter(t => t.library != null && t.library.pid === libraryPID);
   });
 

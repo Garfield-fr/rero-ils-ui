@@ -17,7 +17,7 @@
 import { I18nPluralPipe, NgClass } from '@angular/common';
 import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { AvailabilityComponent, DescriptionZoneComponent, GetTranslatedLabelPipe, HoldingsNoteType, NotesFilterPipe, UserService } from '@rero/shared';
+import { AvailabilityComponent, DescriptionZoneComponent, GetTranslatedLabelPipe, HoldingsNoteType, NotesFilterPipe, AppStore } from '@rero/shared';
 import { Nl2brPipe } from '@rero/ng-core';
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { ButtonDirective } from 'primeng/button';
@@ -40,7 +40,7 @@ export class HoldingsComponent implements OnInit {
 
   protected holdingsApiService = inject(HoldingsApiService);
   protected translateService = inject(TranslateService);
-  protected userService = inject(UserService);
+  protected userService = inject(AppStore);
 
   protected store = inject(HoldingsStore);
 

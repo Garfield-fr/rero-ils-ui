@@ -17,7 +17,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { extractIdOnRef } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../api/acq-order-api.service';
@@ -28,12 +28,12 @@ import { IAcqReceipt } from '../../classes/receipt';
 function orderQuery(
   orderPid: string,
   acqOrderApiService: AcqOrderApiService,
-  userService: UserService
+  appStore: InstanceType<typeof AppStore>
 ): Observable<boolean> {
   const validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED, AcqOrderStatus.RECEIVED];
   return acqOrderApiService.getOrder(orderPid).pipe(
     map((order: IAcqOrder) => {
-      if (userService.user()?.currentLibrary !== extractIdOnRef(order.library?.$ref ?? '')) {
+      if (appStore.currentLibraryPid() !== extractIdOnRef(order.library?.$ref ?? '')) {
         return false;
       }
       if (!order.is_current_budget) {
@@ -65,7 +65,7 @@ export const canOrderReceiptGuard: CanActivateFn = (route: ActivatedRouteSnapsho
   const acqOrderApiService = inject(AcqOrderApiService);
   const acqReceiptApiService = inject(AcqReceiptApiService);
   const router = inject(Router);
-  const userService = inject(UserService);
+  const appStore = inject(AppStore);
 
   const orderPid = route.params.pid;
   const receiptPid = route.queryParams.receipt;
@@ -75,7 +75,7 @@ export const canOrderReceiptGuard: CanActivateFn = (route: ActivatedRouteSnapsho
     return of(false);
   }
 
-  const order$ = orderQuery(orderPid, acqOrderApiService, userService);
+  const order$ = orderQuery(orderPid, acqOrderApiService, appStore);
 
   if (!receiptPid) {
     return order$.pipe(

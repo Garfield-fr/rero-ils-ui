@@ -16,7 +16,7 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -24,10 +24,10 @@ import { Observable } from 'rxjs';
 })
 export class AppInitializerService {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
     /** load */
     load(): Observable<any> {
-      return this.userService.load();
+      return this.appStore.load();
     }
 }

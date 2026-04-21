@@ -18,7 +18,7 @@ import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
 import { OperationLogsService, OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
+import { AppStore, IPermissions, PERMISSIONS } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
@@ -37,7 +37,7 @@ export class DocumentDetailComponent extends DetailComponent {
 
   private dialogService: DialogService = inject(DialogService);
   private operationLogsService: OperationLogsService = inject(OperationLogsService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   fileTitle = 'files';
   /** return all available permissions for current user */
@@ -62,7 +62,7 @@ export class DocumentDetailComponent extends DetailComponent {
   ];
 
   ngOnInit(): void {
-    const libPid = this.userService.user()?.currentLibrary;
+    const libPid = this.appStore.currentLibraryPid();
     if (libPid) {
       this.recordService.getRecord('libraries', libPid).subscribe((library) => {
         this.fileTitle = [

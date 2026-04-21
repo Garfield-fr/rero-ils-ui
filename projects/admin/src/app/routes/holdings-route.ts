@@ -94,7 +94,7 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
         detailComponent: HoldingDetailViewComponent,
         canRead: (record: RecordData) => this.canRead(record),
         canAdd: () =>
-          of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE) } as ActionStatus),
+          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.HOLD_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
         preCreateRecord: (data) => {
           data.document = {
@@ -141,7 +141,7 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           const apiService: any = this.routeToolService.apiService;
           const recordService: RecordService = this.routeToolService.recordService as RecordService;
           const libraryPid = user?.currentLibrary;

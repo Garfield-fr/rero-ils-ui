@@ -19,7 +19,7 @@ import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule 
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { CONFIG, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues, SearchInputComponent } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { of } from 'rxjs';
@@ -43,7 +43,7 @@ export class UserIdEditorComponent implements OnInit {
   private recordService: RecordService = inject(RecordService);
   private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   searchText = '';
 
@@ -165,7 +165,7 @@ export class UserIdEditorComponent implements OnInit {
           return null;
         }
         // current logged user organisation
-        const currentOrgPid = this.userService.user()?.currentOrganisation;
+        const currentOrgPid = this.appStore.currentOrganisationPid();
         const patronAccounts = model.metadata.patrons;
         // user has patron account
         if (patronAccounts && patronAccounts.length > 0) {

@@ -19,8 +19,8 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { map, startWith } from 'rxjs/operators';
-import { MenuService } from '../service/menu.service';
 import { MenuTranslateService } from '../service/menu-translate.service';
+import { MenuStore } from '../store/menu.store';
 import { Bind } from 'primeng/bind';
 import { Card } from 'primeng/card';
 import { Ripple } from 'primeng/ripple';
@@ -36,7 +36,7 @@ import { TieredMenu } from 'primeng/tieredmenu';
 export class MenuDashboardComponent {
 
   private translateService: TranslateService = inject(TranslateService);
-  private menuService: MenuService = inject(MenuService);
+  private menuStore = inject(MenuStore);
   private menuTranslateService: MenuTranslateService = inject(MenuTranslateService);
 
   private readonly currentLanguage = toSignal(
@@ -49,6 +49,6 @@ export class MenuDashboardComponent {
 
   readonly items = computed(() => {
     this.currentLanguage();
-    return this.menuTranslateService.process(this.menuService.appMenuItems());
+    return this.menuTranslateService.process(this.menuStore.applicationMenuItems());
   });
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, OnInit, output, signal, computed, ChangeDetectionStrategy} from '@angular/core';
-import { IPatron, UserService } from '@rero/shared';
+import { IPatron, AppStore } from '@rero/shared';
 import { RecordData } from '@rero/ng-core';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
@@ -35,7 +35,7 @@ export class HoldingsRequestComponent implements OnInit {
 
   private itemApiService: ItemApiService = inject(ItemApiService);
   private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record: item or holding */
@@ -94,9 +94,9 @@ export class HoldingsRequestComponent implements OnInit {
         default: throw new TypeError(`${this.recordType()} isn't supported`);
     }
 
-    if (this.userService.user() && this.record()) {
+    if (this.appStore.user() && this.record()) {
       const metadata = this.record()!.metadata as any;
-      this._patron = this.userService.user()?.getPatronByOrganisationPid(
+      this._patron = this.appStore.user()?.getPatronByOrganisationPid(
         metadata.organisation.pid
       );
       if (this._patron?.patron) {

@@ -21,7 +21,7 @@ import { ItemsService } from '@app/admin/service/items.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordUiService, Nl2brPipe } from '@rero/ng-core';
-import { UserService, InheritedCallNumberComponent, AvailabilityComponent, ItemHoldingsCallNumberPipe, SafeUrlPipe } from '@rero/shared';
+import { AppStore, InheritedCallNumberComponent, AvailabilityComponent, ItemHoldingsCallNumberPipe, SafeUrlPipe } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
@@ -48,7 +48,7 @@ export class DefaultHoldingItemComponent implements OnInit {
   public itemApiService: ItemApiService = inject(ItemApiService);
   protected recordUiService: RecordUiService = inject(RecordUiService);
   protected recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  protected userService: UserService = inject(UserService);
+  protected appStore = inject(AppStore);
   protected itemService: ItemsService = inject(ItemsService);
   protected translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
@@ -144,7 +144,7 @@ export class DefaultHoldingItemComponent implements OnInit {
         //   library is the same as current UI used library. So the switch library button should be displayed if the user may edit the item
         //   but are not using the same library as item owning library.
         const switchLocation = {can: permissions.update ? permissions.update.can : false };
-        this.permissions = this.recordPermissionService.membership(this.userService.user(), this.item().metadata.library.pid, permissions);
+        this.permissions = this.recordPermissionService.membership(this.appStore.user(), this.item().metadata.library.pid, permissions);
         this.permissions.switchLocation = switchLocation;
         this.permissions.canRequest = canRequest;
       });

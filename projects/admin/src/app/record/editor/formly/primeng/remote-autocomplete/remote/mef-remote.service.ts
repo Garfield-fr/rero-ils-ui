@@ -19,7 +19,7 @@ import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
-import { AppSettingsService, Entity } from '@rero/shared';
+import { AppStore, Entity } from '@rero/shared';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
 
@@ -30,7 +30,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
 
   private httpClient: HttpClient = inject(HttpClient);
   private translateService: TranslateService = inject(TranslateService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
   private apiService: ApiService = inject(ApiService);
 
@@ -250,7 +250,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
    */
   public sources(): string[] {
     const language = this.translateService.getCurrentLang();
-    const order: any = this.appSettingsService.agentLabelOrder;
+    const order: any = this.appStore.settings()?.agentLabelOrder;
     const key = language in order ? language : 'fallback';
     const agentSources = (key === 'fallback')
       ? order[order[key]]

@@ -20,7 +20,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService, CallbackArrayFilterPipe, RecordData } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, PermissionsService, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
+import { AppStore, IPermissions, PERMISSIONS, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
 import { of, switchMap } from 'rxjs';
 import { DocumentApiService } from '../../../api/document-api.service';
 import { RelatedResourceComponent } from './related-resource/related-resource.component';
@@ -54,7 +54,7 @@ export class DocumentDetailViewComponent {
   private activatedRouter: ActivatedRoute = inject(ActivatedRoute);
   private recordService: RecordService = inject(RecordService);
   private documentApiService: DocumentApiService = inject(DocumentApiService);
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
 
   readonly record = input<RecordData | undefined>();
 
@@ -115,7 +115,7 @@ export class DocumentDetailViewComponent {
    * @return boolean - if False, hide the local fields tab
    */
   get showLocalFieldsTab(): boolean {
-    return this.permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
+    return this.appStore.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
   }
 
   /**
@@ -123,7 +123,7 @@ export class DocumentDetailViewComponent {
    * @return boolean - if False, hide the local fields tab
    */
   get showFilesTab(): boolean {
-    return this.permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
+    return this.appStore.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
 
   selectedTab(): string {

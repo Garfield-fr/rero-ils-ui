@@ -20,7 +20,7 @@ import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import { Library } from '@app/admin/classes/library';
 import { DateValidators } from '@app/admin/utils/validators';
 import { RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
@@ -39,7 +39,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES ====================================
@@ -64,8 +64,8 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit(): void {
-    if (this.userService.user()) {
-      this.recordService.getRecord('libraries', this.userService.user()!.currentLibrary, { resolve: 1 }).subscribe(
+    if (this.appStore.user()) {
+      this.recordService.getRecord('libraries', this.appStore.currentLibraryPid(), { resolve: 1 }).subscribe(
         (data: any) => {
           const library = new Library(data.metadata);
           this.disabledDays = library.closedDays;

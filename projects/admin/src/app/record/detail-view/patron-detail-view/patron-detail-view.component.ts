@@ -16,7 +16,7 @@
  */
 
 import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { IPermissions, PERMISSIONS, PermissionsService, PermissionsDirective, LinkPermissionsDirective, JoinPipe } from '@rero/shared';
+import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective, LinkPermissionsDirective, JoinPipe } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
 import { Bind } from 'primeng/bind';
 import { ButtonDirective } from 'primeng/button';
@@ -45,7 +45,7 @@ type PatronPhone = {
 })
 export class PatronDetailViewComponent {
 
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
 
   readonly record = input<any>();
   readonly type = input<string>('');
@@ -58,7 +58,7 @@ export class PatronDetailViewComponent {
     return meta ? this._processPhones(meta) : [];
   });
 
-  readonly canAccessDisplayPermissions = computed(() => this.permissionsService.canAccess(PERMISSIONS.PERM_MANAGEMENT));
+  readonly canAccessDisplayPermissions = computed(() => this.appStore.canAccess(PERMISSIONS.PERM_MANAGEMENT));
 
   getRoleTagSeverity(role: string): string {
     return roleTagSeverity(role);

@@ -130,7 +130,7 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
             ],
           },
         ],
-        canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.PTRN_CREATE) } as ActionStatus),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.PTRN_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
         canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
@@ -220,7 +220,7 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const user = this.routeToolService.userService.user();
+          const user = this.routeToolService.appStore.user();
           const apiService: any = this.routeToolService.apiService;
           const recordService: RecordService = this.routeToolService.recordService as RecordService;
 

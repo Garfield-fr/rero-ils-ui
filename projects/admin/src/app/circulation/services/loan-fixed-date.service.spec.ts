@@ -19,25 +19,21 @@ import { signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { LoanFixedDateService } from "./loan-fixed-date.service";
 import { LocalStorageService } from "@rero/ng-core";
-import { LibraryService } from "@app/admin/menu/service/library.service";
-import { MenuService } from "@app/admin/menu/service/menu.service";
+import { MenuStore } from "@app/admin/menu/store/menu.store";
 
 describe('LoanFixedDateService', () => {
   let service: LoanFixedDateService;
 
-  const libraryServiceSpy = { } as any;
-  libraryServiceSpy.selectedLibrary = signal(null);
-
-  const menuServiceSpy = { } as any;
-  menuServiceSpy.logoutVersion = signal(0);
+  const menuStoreSpy = { } as any;
+  menuStoreSpy.selectedLibrary = signal(null);
+  menuStoreSpy.logoutCounter = signal(0);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         LoanFixedDateService,
         LocalStorageService,
-        { provide: LibraryService, useValue: libraryServiceSpy },
-        { provide: MenuService, useValue: menuServiceSpy }
+        { provide: MenuStore, useValue: menuStoreSpy }
       ]
     });
 

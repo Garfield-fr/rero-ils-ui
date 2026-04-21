@@ -19,7 +19,7 @@ import { afterNextRender, Component, inject, model, OnDestroy, OnInit, ChangeDet
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
-import { IPatron, UserService } from '@rero/shared';
+import { IPatron, AppStore } from '@rero/shared';
 import JsBarcode from 'jsbarcode';
 import { forkJoin, of, Subscription } from 'rxjs';
 import { BadgeModule } from 'primeng/badge';
@@ -92,7 +92,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   private loanApiService: LoanApiService = inject(LoanApiService);
   private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
   private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
   private translateService: TranslateService = inject(TranslateService);
@@ -226,7 +226,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       this.tabs[tabSelected].loaded = true;
       this.patronProfileService.changeTab({ name: tabSelected, count: this.tabs[tabSelected].count });
     });
-    this.user = this.userService.user();
+    this.user = this.appStore.user();
     if (this.user.isAuthenticated && this.user.isPatron) {
       const keepHistory = this.user.keep_history === undefined ? false : this.user.keep_history;
       this.tabs.history.display = keepHistory;

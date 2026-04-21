@@ -20,7 +20,7 @@ import { IssueService } from '@app/admin/service/issue.service';
 import { OperationLogsService, OperationLogsDialogComponent } from '@rero/shared';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { of, switchMap, tap } from 'rxjs';
 import { Bind } from 'primeng/bind';
@@ -36,7 +36,7 @@ export class ItemPageDetailComponent extends DetailComponent {
   private operationLogsService: OperationLogsService = inject(OperationLogsService);
   private issueService: IssueService = inject(IssueService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   readonly recordPermissions = toSignal(
     toObservable(this.record as any).pipe(
@@ -47,7 +47,7 @@ export class ItemPageDetailComponent extends DetailComponent {
           tap((permission) => {
             this._recordPermissionsValue.set(
               this.recordPermissionService.membership(
-                this.userService.user(),
+                this.appStore.user(),
                 record?.metadata?.library?.pid,
                 permission
               )

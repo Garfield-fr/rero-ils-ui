@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { IPatron, UserService } from '@rero/shared';
+import { IPatron, AppStore } from '@rero/shared';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -23,7 +23,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class PatronProfileMenuService {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   /** On change Observable */
   private _onChange = new Subject<IMenu>();
@@ -82,7 +82,7 @@ export class PatronProfileMenuService {
 
   /** OnInit hook */
   init(): void {
-    const user = this.userService.user();
+    const user = this.appStore.user();
     if (user?.isAuthenticated) {
       this._patrons = user.patrons.filter((patron) => patron.roles.includes('patron'));
       this._currentPatron = this._patrons[0];

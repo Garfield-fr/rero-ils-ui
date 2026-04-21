@@ -20,7 +20,7 @@ import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordService, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 
-import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, UserService, InheritedCallNumberComponent, AvailabilityComponent, PermissionsDirective, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
+import { AppStore, IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, InheritedCallNumberComponent, AvailabilityComponent, PermissionsDirective, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { Subscription } from 'rxjs';
 import { Item, ItemNote } from '../../../classes/items';
@@ -62,7 +62,7 @@ export class ItemDetailViewComponent implements OnDestroy {
   private holdingService: HoldingsService = inject(HoldingsService);
   private operationLogsService: OperationLogsService= inject(OperationLogsService);
   private organisationService: OrganisationService = inject(OrganisationService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   /** Document record */
   record = model<any>();
@@ -103,7 +103,7 @@ export class ItemDetailViewComponent implements OnDestroy {
   }
 
   get isDisplayLocalFieldsTab(): boolean {
-    return this.userService.user()?.currentLibrary === this.record()?.metadata.library.pid;
+    return this.appStore.currentLibraryPid() === this.record()?.metadata.library.pid;
   }
 
   /**

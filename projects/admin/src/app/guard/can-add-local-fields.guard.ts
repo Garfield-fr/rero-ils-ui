@@ -16,7 +16,7 @@
  */
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocalFieldApiService } from '../api/local-field-api.service';
@@ -32,7 +32,7 @@ const typeMap: Record<string, string> = {
  * the current organisation. Redirects to /errors/400 on missing params or unknown type.
  */
 export const canAddLocalFieldsGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
-  const userService = inject(UserService);
+  const appStore = inject(AppStore);
   const localFieldsApiService = inject(LocalFieldApiService);
   const router = inject(Router);
 
@@ -49,6 +49,6 @@ export const canAddLocalFieldsGuard: CanActivateFn = (route: ActivatedRouteSnaps
   }
 
   return localFieldsApiService
-    .getByResourceTypeAndResourcePidAndOrganisationId(mappedType, ref, userService.user()!.currentOrganisation)
+    .getByResourceTypeAndResourcePidAndOrganisationId(mappedType, ref, appStore.currentOrganisationPid()!)
     .pipe(map(record => !record.metadata));
 };

@@ -17,7 +17,7 @@
  */
 import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { AvailabilityComponent, NotesFilterPipe, SafeUrlPipe, UserService } from '@rero/shared';
+import { AvailabilityComponent, NotesFilterPipe, SafeUrlPipe, AppStore } from '@rero/shared';
 import { Nl2brPipe, RecordData } from '@rero/ng-core';
 import { ItemApiService } from '../../api/item-api.service';
 import { ItemRequestComponent } from './item-request.component';
@@ -33,7 +33,7 @@ export class ItemComponent {
 
   private translateService = inject(TranslateService);
   public itemApiService = inject(ItemApiService);
-  public userService = inject(UserService);
+  public userService = inject(AppStore);
 
   /** Item record */
   item = input<RecordData>();

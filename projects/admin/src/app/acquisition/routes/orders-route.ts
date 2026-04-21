@@ -102,7 +102,7 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
       component: OrderBriefViewComponent,
       detailComponent: OrderDetailViewComponent,
       searchFilters: [this.expertSearchFilter()],
-      canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACOR_CREATE), message: '' }),
+      canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ACOR_CREATE), message: '' }),
       permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
       preCreateRecord: (data: any) => this._addDefaultInformation(data),
       preUpdateRecord: (data: any) => this._cleanRecord(data),
@@ -167,7 +167,7 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
    * @return: the enrich data
    */
   private _addDefaultInformation(data: any): any {
-    const user = this.routeToolService.userService.user();
+    const user = this.routeToolService.appStore.user();
     data.organisation = {
       $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
     };

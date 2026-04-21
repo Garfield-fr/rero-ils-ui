@@ -1,6 +1,6 @@
 /*
 * RERO ILS UI
-* Copyright (C) 2020-2024 RERO
+* Copyright (C) 2020-2025 RERO
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
 */
 
 import { inject, Injectable } from '@angular/core';
-import { AppSettingsService, UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
@@ -29,13 +29,12 @@ import { NgCoreTranslateService } from '@rero/ng-core';
 export class AppInitializerService {
 
   private routeCollectionService: RouteCollectionService = inject(RouteCollectionService);
-  private userService: UserService = inject(UserService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private appConfigService: AppConfigService = inject(AppConfigService);
 
   load(): Observable<any> {
-    return this.userService.load().pipe(
+    return this.appStore.load().pipe(
       tap(() => {
         this.routeCollectionService.load();
       }),
@@ -44,11 +43,12 @@ export class AppInitializerService {
   }
 
   private initTranslateService(): Observable<any> {
-    let {language} = this.appSettingsService.settings;
+    let language = this.appStore.settings()?.language;
     if (language == null) {
       const browserLang = this.translateService.getBrowserLang();
-      language = browserLang.match(this.appConfigService.languages.join('|')) ?
-        browserLang : this.appConfigService.defaultLanguage;
+      language = browserLang.match(this.appConfigService.languages.join('|'))
+        ? browserLang
+        : this.appConfigService.defaultLanguage;
     }
     this.translateService.initialize();
     return this.translateService.use(language);

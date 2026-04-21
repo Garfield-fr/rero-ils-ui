@@ -21,7 +21,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, CONFIG, RecordService, removeEmptyValues, UniqueValidator, UpperCaseFirstPipe } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
@@ -63,7 +63,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   private libraryForm: LibraryFormService = inject(LibraryFormService);
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private apiService: ApiService = inject(ApiService);
   private translateService: TranslateService = inject(TranslateService);
   private countryCodeTranslatePipe: CountryCodeTranslatePipe = inject(CountryCodeTranslatePipe);
@@ -121,9 +121,9 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   /** NgOnInit hook. */
   ngOnInit() {
     this.route.params.subscribe( (params) => {
-      const loggedUser = this.userService.user();
+      const loggedUser = this.appStore.user();
       if (loggedUser) {
-        this.organisationPid.set(loggedUser.currentOrganisation);
+        this.organisationPid.set(this.appStore.currentOrganisationPid());
       }
       this.libraryForm.create();
       this.eventForm = this.libraryForm.getBuildEvent().subscribe((_buildEvent: any) => {

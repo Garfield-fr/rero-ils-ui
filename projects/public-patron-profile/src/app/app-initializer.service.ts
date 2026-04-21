@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 
 import { inject, Injectable } from '@angular/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
-import { AppSettingsService, UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
 import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
 import { Observable } from 'rxjs';
@@ -28,14 +28,13 @@ import { switchMap, tap } from 'rxjs/operators';
 })
 export class AppInitializerService {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
   private appConfigService: AppConfigService = inject(AppConfigService);
 
   load(): Observable<any> {
-    return this.userService.load().pipe(
+    return this.appStore.load().pipe(
       tap(() => {
         this.patronProfileMenuService.init();
       }),
@@ -44,11 +43,12 @@ export class AppInitializerService {
   }
 
   private initTranslateService(): Observable<any> {
-    let {language} = this.appSettingsService.settings;
+    let language = this.appStore.settings()?.language;
     if (language == null) {
       const browserLang = this.translateService.getBrowserLang();
-      language = browserLang.match(this.appConfigService.languages.join('|')) ?
-        browserLang : this.appConfigService.defaultLanguage;
+      language = browserLang.match(this.appConfigService.languages.join('|'))
+        ? browserLang
+        : this.appConfigService.defaultLanguage;
     }
     this.translateService.initialize();
     return this.translateService.use(language);
