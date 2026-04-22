@@ -22,7 +22,7 @@
           <ng-core-search-input
             [placeholder]="'Checkout/checkin: please enter an item barcode.' | translate"
             [searchText]="searchText"
-            (search)="searchValueUpdated($event)"
+            (searchQuery)="searchValueUpdated($event)"
             [focus]="searchInputFocus"
             [disabled]="searchInputDisabled"
           />
@@ -46,11 +46,12 @@
     <!-- Sorting loans -->
     <div class="ui:col-span-6 ui:flex ui:items-start ui:justify-end">
       <p-select
+        [(ngModel)]="sortCriteria"
         [options]="[
-          {value:'-transactiondate', label:'Transaction date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
-          {value:'transactiondate', label:'Transaction date' | translate, icon:'fa fa-sort-numeric-asc'},
-          {value:'-duedate', label:'Due date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
-          {value:'duedate', label:'Due date' | translate, icon:'fa fa-sort-numeric-asc'},
+          {value:'-transaction_date', label:'Transaction date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
+          {value:'transaction_date', label:'Transaction date' | translate, icon:'fa fa-sort-numeric-asc'},
+          {value:'-due_date', label:'Due date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
+          {value:'due_date', label:'Due date' | translate, icon:'fa fa-sort-numeric-asc'},
           {value:'-location', label:'Location (desc)' | translate, icon: 'fa fa-sort-numeric-desc'},
           {value:'location', label:'Location' | translate, icon: 'fa fa-sort-numeric-asc'}
         ]"

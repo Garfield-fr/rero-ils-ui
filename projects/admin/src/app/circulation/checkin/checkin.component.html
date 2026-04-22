@@ -23,7 +23,7 @@
       [searchText]="searchText"
       [focus]="searchInputFocus"
       [disabled]="searchInputDisabled"
-      (search)="searchValueUpdated($event)"
+      (searchQuery)="searchValueUpdated($event)"
     />
     @if(patronInfo) {
       <admin-circulation-patron-detailed

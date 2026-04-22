@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
 import { CirculationStatsService } from '../service/circulation-stats.service';
 import { TranslateDirective } from '@ngx-translate/core';
@@ -33,21 +33,16 @@ export class PendingComponent implements OnInit {
   private patronService: PatronService = inject(PatronService);
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
-  /** Array of loans */
-  loans: [];
+  loans = signal<any[] | undefined>(undefined);
+  private patron = signal<any>(undefined);
 
-  private patron: any;
-
-  /**
-   * Init
-   */
   ngOnInit() {
     this.patronService.currentPatron$.subscribe((patron: any) => {
-      this.patron = patron;
+      this.patron.set(patron);
       if (patron) {
         this.patronService.getItemsRequested(patron.pid)
         .subscribe(loans => {
-          this.loans = loans;
+          this.loans.set(loans);
         });
       }
     });
@@ -58,9 +53,7 @@ export class PendingComponent implements OnInit {
    * @param loanId, the canceled loan id
    */
   cancelRequest(loanId: any): void {
-    // Remove loan in list
-    const index = this.loans.findIndex((element: any) => element.id == loanId);
-    this.loans.splice(index, 1);
-    this.circulationStatsService.updateStats(this.patron.pid);
+    this.loans.update(loans => (loans ?? []).filter((element: any) => element.id !== loanId));
+    this.circulationStatsService.updateStats(this.patron().pid);
   }
 }

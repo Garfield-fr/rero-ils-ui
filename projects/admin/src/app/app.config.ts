@@ -69,6 +69,7 @@ import { SelectAccountEditorWidgetComponent } from './acquisition/components/edi
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { FieldCustomInputTypeComponent } from './record/editor/type/field-custom.type';
 import { RepeatTypeComponent } from './record/editor/type/repeat-section.type';
+import { PasswordGeneratorComponent } from '@rero/ng-core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -136,6 +137,7 @@ export const appConfig: ApplicationConfig = {
           { name: 'entity-autocomplete', component: EntityAutocompleteComponent as any },
           { name: 'custom-field', component: FieldCustomInputTypeComponent },
           { name: 'repeat', component: RepeatTypeComponent },
+          { name: 'passwordGenerator', component: PasswordGeneratorComponent },
         ],
         wrappers: [
           { name: 'input-no-label', component: InputNoLabelWrapperComponent },

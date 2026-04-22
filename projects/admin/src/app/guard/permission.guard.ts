@@ -41,7 +41,8 @@ export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot): b
   const permissions: string[] = route.data['permissions'] ?? [];
   const operator: string = route.data['operator'] ?? PERMISSION_OPERATOR.OR;
 
-  if (!appStore.canAccess(permissions, operator)) {
+  const result = appStore.canAccess(permissions, operator);
+  if (!result) {
     router.navigate(['/errors/403'], { skipLocationChange: true });
     return false;
   }

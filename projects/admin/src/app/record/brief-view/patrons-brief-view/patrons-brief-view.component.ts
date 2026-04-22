@@ -16,10 +16,9 @@
  */
 
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-
+import { Router, RouterLink } from '@angular/router';
 import { AppStore, PERMISSIONS } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
-import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { Tag } from 'primeng/tag';
@@ -35,6 +34,7 @@ import { DateTranslatePipe } from '@rero/ng-core';
 export class PatronsBriefViewComponent {
 
   private appStore = inject(AppStore);
+  private router = inject(Router);
 
   /** the record to display */
   record = input<any>();
@@ -58,5 +58,9 @@ export class PatronsBriefViewComponent {
    */
   getRoleTagSeverity(role: string): string {
     return roleTagSeverity(role);
+  }
+
+  goToCirculation(barcode: string): void {
+    this.router.navigate(['/circulation', 'patron', barcode, 'loan']);
   }
 }

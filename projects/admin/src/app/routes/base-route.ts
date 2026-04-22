@@ -140,8 +140,7 @@ export class BaseRoute {
    * @returns Observable boolean
    */
   protected canRead(record: any) {
-    const organisationPid = this.routeToolService.appStore.user()
-      ?.currentOrganisation;
+    const organisationPid = this.routeToolService.appStore.currentOrganisationPid();
     const recordOrganisationPid = ('organisation' in record.metadata)
       ? record.metadata.organisation.pid
       : false;

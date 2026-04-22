@@ -14,16 +14,16 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (patron && items) {
+@if (patron() && items().length) {
   <admin-circulation-patron-detailed
-    [patron]="patron"
+    [patron]="patron()"
     [barcode]="barcode"
     [displayCirculationMessages]="true"
     (clearPatron)="clearPatron()"
   />
   <p-tabs [value]="activeTab()">
     <p-tablist>
-      @for(item of items; track item.id) {
+      @for(item of items(); track item.id) {
         <p-tab [value]="item.id" [routerLink]="item.routerLink">
           <span>{{ item.label | translate }}</span>
           @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {

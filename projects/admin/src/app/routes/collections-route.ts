@@ -122,9 +122,8 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
           return record;
         },
         preCreateRecord: (data) => {
-          const user = this.routeToolService.appStore.user();
           data.organisation = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
+            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
           };
           return data;
         },

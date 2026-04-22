@@ -98,9 +98,8 @@ class LibrariesRoute extends BaseRoute implements RouteDataTypesInterface {
           of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.LIB_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data) => {
-          const user = this.routeToolService.appStore.user();
           data.organisation = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
+            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
           };
           return data;
         },

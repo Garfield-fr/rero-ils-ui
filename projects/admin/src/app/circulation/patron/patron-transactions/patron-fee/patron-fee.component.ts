@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -52,7 +52,7 @@ export class PatronFeeComponent implements OnInit {
   /** form */
   form: FormGroup = new FormGroup({});
   /** form fields */
-  formFields: FormlyFieldConfig[];
+  formFields = signal<FormlyFieldConfig[] | undefined>(undefined);
   /** model */
   model: FeeFormModel;
 
@@ -104,7 +104,7 @@ export class PatronFeeComponent implements OnInit {
 
   /** Init form model */
   private _initForm(properties: any): void {
-    this.formFields = [{
+    this.formFields.set([{
       key: 'type',
       type: 'select',
       props: {
@@ -142,7 +142,7 @@ export class PatronFeeComponent implements OnInit {
         required: true,
         dateFormat: 'yy-mm-dd'
       }
-    }];
+    }]);
 
     // Default model value
     this.model = {

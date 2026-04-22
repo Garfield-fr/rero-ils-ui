@@ -65,10 +65,9 @@ class LocalFieldsRoute extends BaseRoute implements RouteDataTypesInterface {
         canRead: (record: RecordData) => this.canReadLocalFields(record),
         redirectUrl: (record: RecordData) => this.getUrl(record),
         preCreateRecord: (data) => {
-          const user = this.routeToolService.appStore.user();
           if (data.parent == null) {
             data.organisation = {
-              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation),
+              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
             };
             data.parent = {
               $ref: this.routeToolService.apiService.getRefEndpoint(

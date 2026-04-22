@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, model, ModelSignal, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, signal, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
@@ -50,15 +50,11 @@ export class MainComponent implements OnInit, OnDestroy {
   /** shortcuts for patron tabs */
   private _shortcuts = [];
 
-  /** the current logged patron */
-  patron: any = undefined;
-
-  /** the current patron barcode */
+  patron = signal<any>(undefined);
   barcode: string;
+  items = signal<MenuItem[]>([]);
 
-  items: MenuItem[] | undefined = [];
-
-  activeTab: ModelSignal<string> = model.required<string>();
+  activeTab = signal<string>('');
 
   subscription = new Subscription();
 
@@ -84,12 +80,12 @@ export class MainComponent implements OnInit, OnDestroy {
     }));
     this.subscription.add(this.router.events.subscribe((event: NavigationEnd | any) => {
       if (event instanceof NavigationEnd) {
-        this.activeTab.set(this.router.url.split('/').pop());
+        this.activeTab.set(this.router.url.split('/').pop() ?? '');
       }
     }
     ));
     // Active the active tab
-   this.activeTab.set(this.router.url.split('/').pop());
+    this.activeTab.set(this.router.url.split('/').pop() ?? '');
   }
 
 
@@ -109,14 +105,14 @@ export class MainComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.patronService.getPatron(barcode)
       .pipe(
-        tap((patron: any) => this.patron = patron),
-        tap(() => this.initializeTabs(this.patron.keep_history)),
+        tap((patron: any) => this.patron.set(patron)),
+        tap(() => this.initializeTabs(this.patron().keep_history)),
         // load statistics
         switchMap((patron: any) =>
           this.circulationStatsService.getStats(patron.pid)
         ),
-        switchMap(() => this.circulationStatsService.updateFees(this.patron.pid)),
-        tap(() => this.initializeShortcuts(this.patron.keep_history)),
+        switchMap(() => this.circulationStatsService.updateFees(this.patron().pid)),
+        tap(() => this.initializeShortcuts(this.patron().keep_history)),
         tap(() => {
           this._unregisterShortcuts();
           this._registerShortcuts();
@@ -208,7 +204,7 @@ export class MainComponent implements OnInit, OnDestroy {
         routerLink: ['/circulation', 'patron', this.barcode, 'history']
       });
     }
-    this.items = items;
+    this.items.set(items);
   }
 
   private initializeShortcuts(keepHistory: boolean): void {

@@ -19,7 +19,7 @@
     <ng-core-search-input
       [placeholder]="placeholder | translate"
       [searchText]="searchText()"
-      (search)="searchValueUpdated($event)"
+      (searchQuery)="searchValueUpdated($event)"
       [focus]="searchInputFocus()"
       [disabled]="searchInputDisabled()"
     />

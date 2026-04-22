@@ -100,7 +100,7 @@ export class CheckinComponent implements OnInit {
     this.itemsService.checkin(itemBarcode, this.loggedUser.currentLibrary).subscribe({
       next: (item) => {
         // TODO: remove this when policy will be in place
-        if (item === null || item.location.organisation.pid !== this.loggedUser.currentOrganisation) {
+        if (item === null || item.location.organisation.pid !== this.appStore.currentOrganisationPid()) {
           this.messageService.add({
             severity: 'error',
             summary: this.translate.instant('Checkin'),
@@ -239,8 +239,7 @@ export class CheckinComponent implements OnInit {
    */
   getPatronOrItem(barcode: string) {
     this.item = undefined;
-    const loggerOrg = this.loggedUser.currentOrganisation;
-    const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
+    const query = `patron.barcode:${barcode} AND organisation.pid:${this.appStore.currentOrganisationPid()}`;
     const patronQuery = this.recordService
       .getRecords('patrons', { query, page: 1, itemsPerPage: 1 })
       .pipe(map((result: any) => result.hits));

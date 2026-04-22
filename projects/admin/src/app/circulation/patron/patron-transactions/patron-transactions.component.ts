@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, model, ModelSignal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, model, ModelSignal, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
@@ -69,10 +69,10 @@ export class PatronTransactionsComponent {
       transactions: null as WritableSignal<PatronTransaction[]>,
     },
     overduePreviewFees: {
-      transactions: null as  WritableSignal<{fees: LoanOverduePreview, loan: Loan}[]>,
+      transactions: null as WritableSignal<{fees: LoanOverduePreview, loan: Loan}[]>,
     },
     historyFees: {
-      transactions: null as PatronTransaction[]
+      transactions: signal<PatronTransaction[]>([])
     }
   };
 
@@ -126,7 +126,7 @@ export class PatronTransactionsComponent {
       this.patronTransactionService
         .patronTransactionsByPatron$(this.patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
         .subscribe(transactions => {
-          this.tabs.historyFees.transactions = transactions;
+          this.tabs.historyFees.transactions.set(transactions);
         });
     }
   }

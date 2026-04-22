@@ -51,10 +51,11 @@ export class PatronService {
    */
   getPatron(barcode: string): Observable<any> {
     return this.recordService
-      .getRecords('patrons', { query: `barcode:${barcode}`, page: 1, itemsPerPage: 1 })
+      .getRecords('patrons', { query: `patron.barcode:${barcode}`, page: 1, itemsPerPage: 1 })
       .pipe(
         switchMap((response: EsResult) => {
-          switch (this.recordService.totalHits(response.hits.total)) {
+          const total = this.recordService.totalHits(response.hits.total);
+          switch (total) {
             case 0: {
               this.currentPatron.next(undefined);
               break;

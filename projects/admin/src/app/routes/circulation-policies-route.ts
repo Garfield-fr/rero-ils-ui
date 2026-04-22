@@ -106,10 +106,9 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
           of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.CIPO_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data) => {
-          const user = this.routeToolService.appStore.user();
           if (data.parent == null) {
             data.organisation = {
-              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
+              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
             };
           }
           return data;
@@ -159,10 +158,9 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const user = this.routeToolService.appStore.user();
         const apiService = this.routeToolService.apiService;
         const recordService: RecordService = this.routeToolService.recordService as RecordService;
-        const query = `organisation.pid:${user?.currentOrganisation}`;
+        const query = `organisation.pid:${this.routeToolService.appStore.currentOrganisationPid()}`;
         f.props!.options = recordService
           .getRecords('libraries', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
           .pipe(

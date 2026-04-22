@@ -32,7 +32,7 @@
           icon="fa fa-exchange"
           class="ui:my-0 ui:py-0"
           outlined
-          [routerLink]="['/circulation', 'patron', record().metadata.patron.barcode[0]]"
+          (onClick)="goToCirculation(record().metadata.patron.barcode[0])"
         />
       }
     </div>

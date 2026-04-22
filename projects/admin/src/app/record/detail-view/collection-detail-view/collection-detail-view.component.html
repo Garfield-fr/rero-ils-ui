@@ -52,7 +52,6 @@
         <dd>
           <ul class="ui:list-none">
             @for (library of rec.metadata.libraries; track $index; let last=$last) {
-              {{library | json}}
               <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
           </ul>

@@ -155,7 +155,7 @@ class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
       data.visibility = 'private';
     }
     data.organisation = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user?.currentOrganisation),
+      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
     };
     data.creator = {
       $ref: this.routeToolService.apiService.getRefEndpoint('patrons', user?.patronLibrarian.pid),

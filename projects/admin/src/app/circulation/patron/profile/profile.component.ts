@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription, switchMap, tap } from 'rxjs';
 import { PatronService } from '../../../service/patron.service';
@@ -41,21 +41,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private recordPermission: RecordPermissionService = inject(RecordPermissionService);
   private translateService: TranslateService = inject(TranslateService);
 
-  /** Current patron */
-  patron: any;
+  patron = signal<any>(undefined);
+  private permissions = signal<any>(undefined);
 
   /** Observable subscription */
   private subscription = new Subscription();
 
-  /** Patron permission */
-  private permissions: any;
-
   ngOnInit() {
     this.subscription.add(
       this.patronService.currentPatron$.pipe(
-        tap((patron: any) => this.patron = patron),
+        tap((patron: any) => this.patron.set(patron)),
         switchMap((patron: any) => this.recordPermission.getPermission('patrons', patron.pid)),
-        tap(permissions => this.permissions = permissions),
+        tap(permissions => this.permissions.set(permissions)),
       ).subscribe()
     );
   }
@@ -66,7 +63,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @returns True if the logged user can edit the current patron.
    */
   canUpdate() {
-    return this.permissions && this.permissions.update && this.permissions.update.can === true;
+    const p = this.permissions();
+    return p && p.update && p.update.can === true;
   }
 
   /** Component destroy */

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
 import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
@@ -24,6 +24,7 @@ import { AppStore, ItemStatus, User } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SelectChangeEvent } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
 import { delay, forkJoin, Subscription, switchMap, tap } from 'rxjs';
 import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
 import { CirculationStatsService } from '../service/circulation-stats.service';
@@ -39,6 +40,7 @@ import { SelectModule } from 'primeng/select';
     templateUrl: './loan.component.html',
     providers: [DateTranslatePipe, LoanFixedDateService],
     imports: [
+        FormsModule,
         SearchInputComponent,
         CirculationSettingsComponent,
         Bind,
@@ -57,6 +59,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   private messageService: MessageService = inject(MessageService);
   private circulationSettingsService: CirculationSettingsService = inject(CirculationSettingsService);
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   dialogRef: DynamicDialogRef | undefined;
 
@@ -66,9 +69,9 @@ export class LoanComponent implements OnInit, OnDestroy {
   /** Current patron */
   public patron: User;
   /** List of checked out items */
-  public checkedOutItems = [];
+  public checkedOutItems: Item[] = [];
   /** List of checked in items */
-  public checkedInItems = [];
+  public checkedInItems: Item[] = [];
   /** Focus attribute of the search input */
   searchInputFocus = false;
   /** Disabled attribute of the search input */
@@ -81,7 +84,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   /** Observable subscription */
   private subscription = new Subscription();
   /** checkout list sort criteria */
-  private sortCriteria = '-transaction_date';
+  sortCriteria = '-transaction_date';
 
   // GETTER & SETTER ================================================
   /** Return the circulation special settings */
@@ -116,14 +119,20 @@ export class LoanComponent implements OnInit, OnDestroy {
               // loanedItems is an array of brief item data (pid, barcode). For each one, we need to
               // call the detail item service to get full data about it
               loanedItems.map((item: any) => (item.loading = true));
-              this.checkedOutItems = loanedItems;
-              // for each checkedOutElement call the detail item service.
-              loanedItems.forEach((data: any, index) => {
-                this.patronService.getItem(data.barcode).subscribe((item) => (loanedItems[index] = item));
-              });
-              // we need to know which items are ready to pickup to decrement the counter if a checkout
-              // operation is done on one of this items.
+              this.checkedOutItems = [...loanedItems];
               this.pickupItems = pickupItems;
+              this.cdr.markForCheck();
+              // for each checkedOutElement call the detail item service.
+              loanedItems.forEach((data: any, index: number) => {
+                this.patronService.getItem(data.barcode).subscribe((item) => {
+                  this.checkedOutItems = [
+                    ...this.checkedOutItems.slice(0, index),
+                    item,
+                    ...this.checkedOutItems.slice(index + 1)
+                  ];
+                  this.cdr.markForCheck();
+                });
+              });
             },
             error: (_error) => { /* intentional no-op */ },
           });
@@ -317,7 +326,10 @@ export class LoanComponent implements OnInit, OnDestroy {
             }
           })
         ),
-        tap(() => this._resetSearchInput()),
+        tap(() => {
+          this._resetSearchInput();
+          this.cdr.markForCheck();
+        }),
         delay(200),
         switchMap(() => this.circulationStatsService.getStats(this.patron.pid))
       )
@@ -485,13 +497,13 @@ export class LoanComponent implements OnInit, OnDestroy {
    */
   selectingSortCriteria(sortCriteria: SelectChangeEvent): void {
     switch (sortCriteria.value) {
-      case 'duedate':
+      case 'due_date':
         this.checkedOutItems.sort((a, b) => a.loan.end_date.diff(b.loan.end_date));
         break;
-      case '-duedate':
+      case '-due_date':
         this.checkedOutItems.sort((a, b) => b.loan.end_date.diff(a.loan.end_date));
         break;
-      case 'transactiondate':
+      case 'transaction_date':
         this.checkedOutItems.sort((a, b) => a.loan.transaction_date.diff(b.loan.transaction_date));
         break;
       case 'location':
@@ -503,14 +515,18 @@ export class LoanComponent implements OnInit, OnDestroy {
       default:
         this.checkedOutItems.sort((a, b) => b.loan.transaction_date.diff(a.loan.transaction_date));
     }
+    this.checkedOutItems = [...this.checkedOutItems];
+    this.cdr.markForCheck();
   }
 
   /** Reset search input */
   private _resetSearchInput(): void {
-      this.searchInputDisabled = false;
-      this.searchText = '';
-      setTimeout(() => {
-        this.searchInputFocus = true;
-      });
+    this.searchInputDisabled = false;
+    this.searchText = '';
+    this.cdr.markForCheck();
+    setTimeout(() => {
+      this.searchInputFocus = true;
+      this.cdr.markForCheck();
+    });
   }
 }

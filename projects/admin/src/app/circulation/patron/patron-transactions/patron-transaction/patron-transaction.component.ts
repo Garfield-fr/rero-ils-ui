@@ -41,6 +41,7 @@ import { Select } from 'primeng/select';
     selector: 'admin-patron-transaction',
     templateUrl: './patron-transaction.component.html',
     imports: [NgClass, OpenCloseButtonComponent, FormsModule, TranslateDirective, OverdueTransactionDetailComponent, DefaultTransactionDetailComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe, Select],
+    providers: [CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionComponent implements OnChanges {
