@@ -63,12 +63,4 @@ export class MenuAppComponent {
     this.menuStore.generateAppMenu(MENU_APP);
   });
 
-  private readonly syncLibrarySelection = effect(() => {
-    const library = this.menuStore.selectedLibrary();
-    if (!library) {
-      return;
-    }
-
-    this.menuStore.updateLibraryLink(library);
-  });
 }

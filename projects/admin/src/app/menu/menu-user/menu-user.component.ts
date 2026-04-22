@@ -71,6 +71,7 @@ export class MenuUserComponent {
     }
 
     this.menuStore.updateLibraryQueryParams(library);
+    this.menuStore.clearSelectedLibrary();
     void this.router.navigate(['/']);
   });
 

@@ -155,7 +155,23 @@ export const MenuStore = signalStore(
           libraryName: library.name,
         });
         appStore.setCurrentLibrary(library.pid);
-        patchState(store, { selectedLibrary: library });
+        const menuItems = cloneDeep(store.applicationMenuItems());
+        const item = menuItems
+          .find((m: MenuItem) => m.id === MENU_IDS.APP.ADMIN.MENU)?.items
+          ?.find((m: MenuItem) => m.id === MENU_IDS.APP.ADMIN.MY_LIBRARY);
+        if (item?.routerLink) {
+          const routerLink = [...item.routerLink];
+          routerLink[4] = library.pid;
+          item.routerLink = routerLink;
+        }
+        patchState(store, {
+          selectedLibrary: library,
+          applicationMenuItems: updateQueryParams(menuItems, library, libraryKeys),
+        });
+      },
+
+      clearSelectedLibrary(): void {
+        patchState(store, { selectedLibrary: null });
       },
 
       generateAppMenu(menuItems: MenuItem[]): void {

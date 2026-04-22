@@ -103,6 +103,7 @@ describe('AppMenuUserComponent', () => {
     selectedLibrary: selectedLibrarySignal,
     generateMenuLanguages: vi.fn(),
     updateLibraryQueryParams: vi.fn(),
+    clearSelectedLibrary: vi.fn(),
     logout: vi.fn(),
   } as any;
 

@@ -94,17 +94,14 @@ describe('RecordPermissionService', () => {
   });
 
   it('should return a list of permissions based on the current library', () => {
-    const user = {
-      currentLibrary: '1'
-    };
     const permissions = {...testRecordPermission};
     const membershipPermissions = {...testRecordPermission, ...{
       update: { can: false },
       delete: { can: false, reasons: { others: { record_not_in_current_library : '' }}}
     }}
-    // the user's library is different from the current library
-    expect(service.membership(user, '2', permissions)).toEqual(membershipPermissions);
-    // the user's library is the same as the current Library
-    expect(service.membership(user, '1', permissions)).toEqual(permissions);
+    // the current library is different from the record's library
+    expect(service.membership('1', '2', permissions)).toEqual(membershipPermissions);
+    // the current library matches the record's library
+    expect(service.membership('1', '1', permissions)).toEqual(permissions);
   });
 });
