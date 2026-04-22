@@ -67,6 +67,8 @@ import { RecordHandleErrorService } from './service/record.handle-error.service'
 import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
+import { FieldCustomInputTypeComponent } from './record/editor/type/field-custom.type';
+import { RepeatTypeComponent } from './record/editor/type/repeat-section.type';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -132,6 +134,8 @@ export const appConfig: ApplicationConfig = {
           { name: 'account-select', component: SelectAccountEditorWidgetComponent },
           // TODO: See why you need to add “any” for the component to be recognized
           { name: 'entity-autocomplete', component: EntityAutocompleteComponent as any },
+          { name: 'custom-field', component: FieldCustomInputTypeComponent },
+          { name: 'repeat', component: RepeatTypeComponent },
         ],
         wrappers: [
           { name: 'input-no-label', component: InputNoLabelWrapperComponent },

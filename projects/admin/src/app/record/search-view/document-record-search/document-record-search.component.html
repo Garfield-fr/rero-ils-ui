@@ -15,4 +15,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-core-record-search-page />
+<ng-core-record-search class="core:my-1">
+@if (showLink()) {
+    <div class="ui:my-6">
+      <a href="#" (click)="linkToGlobalDocuments($event)" translate>
+        Expand to all organisations
+      </a>
+    </div>
+  }
+  @if (isAdvancedSearchEnable) {
+    <admin-document-advanced-search afterInputSearch />
+  }
+</ng-core-record-search>
