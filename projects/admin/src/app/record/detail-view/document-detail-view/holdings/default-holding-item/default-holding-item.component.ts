@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, linkedSignal, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ItemsService } from '@app/admin/service/items.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -54,13 +54,15 @@ export class DefaultHoldingItemComponent implements OnInit {
   // COMPONENT ATTRIBUTES =====================================================
   /** Holding record */
   holding = input<any>();
-  /** Item Record */
-  item = input<any>();
+  /** Item Record (input) */
+  itemInput = input<any>(undefined, { alias: 'item' });
   /** Event for delete Item */
   deleteItem = output();
   /** Restrict the functionality of interface */
   isCurrentOrganisation = input(true);
 
+  /** Item record (writable, updated after request) */
+  item = linkedSignal(() => this.itemInput());
   /** Item permissions */
   permissions = signal<any>(undefined);
 
@@ -115,7 +117,7 @@ export class DefaultHoldingItemComponent implements OnInit {
     ref.onClose.subscribe((value: boolean) => {
       if (value) {
         this.itemService.getByPidFromEs(recordPid).subscribe(result => {
-          this.item = result;
+          this.item.set(result);
           this._getPermissions();
         });
       }

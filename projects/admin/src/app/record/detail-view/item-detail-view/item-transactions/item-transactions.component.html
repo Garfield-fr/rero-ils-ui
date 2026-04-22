@@ -57,7 +57,7 @@
             <admin-item-transaction
               type="loan_request"
               [transaction]="request"
-              [itemPid]="itemPid"
+              [itemPid]="itemPid()"
               (cancelRequestEvent)="cancelRequest($event)"
               (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
             />

@@ -57,7 +57,7 @@ export class ItemTransactionComponent {
         if (!this._authorizedTypes.includes(type)) return of(null);
         const currentLibrary = this.appStore.currentLibraryPid();
         return this.itemService.getPickupLocations(this.itemPid()).pipe(
-          map(locations => (locations as any[]).map((loc: any) => ({
+          map(locations => ((locations as any[]) ?? []).map((loc: any) => ({
             label: loc.pickup_name || loc.name,
             value: loc.pid,
             _isDefault: loc.library.pid === currentLibrary

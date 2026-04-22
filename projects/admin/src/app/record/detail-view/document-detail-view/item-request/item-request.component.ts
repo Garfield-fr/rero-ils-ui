@@ -20,15 +20,15 @@ import { AbstractControl, FormsModule, ReactiveFormsModule, UntypedFormGroup } f
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { AppStore, PatronBlockedMessagePipe, User } from '@rero/shared';
+import { AppStore, PatronBlockedMessagePipe } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
-import { Observable, of } from 'rxjs';
-import { catchError, debounceTime, map, shareReplay, tap } from 'rxjs/operators';
+import { Observable, of, timer } from 'rxjs';
+import { catchError, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { RouterLink } from '@angular/router';
 import { HoldingsService } from '../../../../service/holdings.service';
 import { ItemsService } from '../../../../service/items.service';
@@ -78,12 +78,9 @@ export class ItemRequestComponent implements OnInit {
 
   /** Pickup default $ref */
   private pickupDefaultValue?: string;
-  /** Current user */
-  private currentUser?: User | null;
 
   /** OnInit hook */
   ngOnInit() {
-    this.currentUser = this.appStore.user();
     const { data } = this.dynamicDialogConfig;
     this.recordPid = data.recordPid;
     this.recordType = data.recordType;
@@ -99,13 +96,15 @@ export class ItemRequestComponent implements OnInit {
    * @param model - Object
    */
   submit(model: FormModel) {
-    if (this.currentUser?.currentLibrary && this.currentUser.patronLibrarian.pid) {
+    const user = this.appStore.user();
+    const libraryPid = this.appStore.currentLibraryPid();
+    if (libraryPid && user?.patronLibrarian?.pid) {
       this.requestInProgress.set(true);
       const body: RequestBody = {
         pickup_location_pid: model.pickup,
         patron_pid: this.patron().pid,
-        transaction_library_pid: this.currentUser.currentLibrary,
-        transaction_user_pid: this.currentUser.patronLibrarian.pid,
+        transaction_library_pid: libraryPid,
+        transaction_user_pid: user.patronLibrarian.pid,
         ...(this.recordType === 'item'
           ? { item_pid: this.recordPid }
           : { holding_pid: this.recordPid, description: model.description }
@@ -147,7 +146,7 @@ export class ItemRequestComponent implements OnInit {
    * Init form
    */
   initForm() {
-    if (this.currentUser) {
+    if (this.appStore.user()) {
       this.getPickupLocations().subscribe(pickups => {
         this.formFields.set([
           {
@@ -164,34 +163,40 @@ export class ItemRequestComponent implements OnInit {
               }
             },
             asyncValidators: {
-              userExist: {
-                expression: (fc: AbstractControl) =>  {
-                  return  this.getPatron(fc.value).pipe(
-                    map((result: any) => {
-                      this.patron.set((result.length === 1) ? result[0].metadata : null);
+              patronCheck: {
+                expression: (fc: AbstractControl) => {
+                  return this.getPatron(fc.value).pipe(
+                    switchMap((result: any): Observable<{ valid: boolean }> => {
+                      const found = result.length === 1;
+                      this.patron.set(found ? result[0].metadata : null);
                       fc.markAsTouched();
-                      return result.length === 1;
-                    })
+                      if (!found) {
+                        this.canRequestMessage = undefined;
+                        return of({ valid: false });
+                      }
+                      return this.service.canRequest(this.recordPid, this.appStore.currentLibraryPid(), fc.value).pipe(
+                        catchError((error) => of({ can: false, reasons: { error: error.message } })),
+                        map((canRequest: any): { valid: boolean } => {
+                          if (!canRequest.can) {
+                            this.patron.set(null);
+                            const reasons = canRequest.reasons || { error: 'Not defined error' };
+                            this.canRequestMessage = Object.values(reasons)[0] as string;
+                            return { valid: false };
+                          }
+                          this.canRequestMessage = undefined;
+                          return { valid: true };
+                        })
+                      );
+                    }),
+                    map((state: { valid: boolean }) => state.valid)
                   );
                 },
-                message: () => this.translateService.instant('Patron not found.')
-              },
-              can_request: {
-                expression: (fc: AbstractControl) =>  {
-                  return this.service.canRequest(this.recordPid, this.currentUser.currentLibrary, fc.value).pipe(
-                    catchError((error) => of({ can: false, reasons: { error: error.message } })),
-                    map((result: any) => {
-                      if (!result.can) {
-                        this.patron.set(null);
-                        const reasons = result.reasons || { error: 'Not defined error' };
-                        this.canRequestMessage = Object.values(reasons)[0] as string;
-                      }
-                      fc.markAsTouched();
-                      return result.can;
-                    })
-                  )
-                },
-                message: () => this.translateService.instant(this.canRequestMessage)
+                message: () => {
+                  if (this.canRequestMessage) {
+                    return this.translateService.instant(this.canRequestMessage);
+                  }
+                  return this.translateService.instant('Patron not found.');
+                }
               }
             }
           },
@@ -235,11 +240,11 @@ export class ItemRequestComponent implements OnInit {
    * @return observable with pickup locations information (name and pid)
    */
   private getPickupLocations(): Observable<any[]> {
-    const { currentLibrary } = this.currentUser;
+    const currentLibraryPid = this.appStore.currentLibraryPid();
     return this.service.getPickupLocations(this.recordPid).pipe(
       map((locations: any) => locations.map((loc: any) => {
         const libraryPid = loc.library.$ref.split('/').pop();
-        if (this.pickupDefaultValue === undefined && libraryPid === currentLibrary) {
+        if (this.pickupDefaultValue === undefined && libraryPid === currentLibraryPid) {
           this.pickupDefaultValue = loc.pid;
         }
         return {
@@ -257,8 +262,8 @@ export class ItemRequestComponent implements OnInit {
    */
   private getPatron(barcode: string): Observable<any[] | Error> {
     const query = `barcode:${barcode}`;
-    return this.recordService.getRecords('patrons', { query, page: 1, itemsPerPage: 1 }).pipe(
-      debounceTime(500),
+    return timer(500).pipe(
+      switchMap(() => this.recordService.getRecords('patrons', { query, page: 1, itemsPerPage: 1 })),
       map((result: any) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
       shareReplay(1)
     );
