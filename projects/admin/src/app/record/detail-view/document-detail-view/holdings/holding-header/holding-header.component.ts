@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -51,19 +51,19 @@ export class HoldingHeaderComponent implements OnInit {
   /** shortcut for holding type */
   holdingType: 'electronic' | 'serial' | 'standard';
   /** Holding permissions */
-  permissions: any;
+  permissions = signal<any>(undefined);
 
   get language(): string {
     return this.translateService.getCurrentLang();
   }
 
   get cannotRequestInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
+    return this.recordPermissionService.generateTooltipMessage(this.permissions()?.canRequest?.reasons, 'request');
   }
 
   get deleteInfoMessage(): string {
     return this.recordPermissionService.generateTooltipMessage(
-      this.permissions.delete.reasons,
+      this.permissions()?.delete?.reasons,
       'delete'
     );
   }
@@ -100,13 +100,14 @@ export class HoldingHeaderComponent implements OnInit {
     const canRequestObs = this.holdingService.canRequest(this.holding().metadata.pid);
     forkJoin([permissionObs, canRequestObs]).subscribe(
       ([permissions, canRequest]) => {
-        this.permissions = this.recordPermissionService
+        const resolved = this.recordPermissionService
           .membership(
-            this.appStore.user(),
+            this.appStore.currentLibraryPid(),
             this.holding().metadata.library.pid,
             permissions
           );
-        this.permissions.canRequest = canRequest;
+        resolved.canRequest = canRequest;
+        this.permissions.set(resolved);
     });
   }
 }

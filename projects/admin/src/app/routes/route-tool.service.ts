@@ -231,7 +231,7 @@ export class RouteToolService {
                   ? record.metadata.library.$ref.split("/").pop()
                   : record.metadata.library.pid;
               permission = this.recordPermissionService.membership(
-                this.appStore.user(),
+                this.appStore.currentLibraryPid(),
                 libraryPid,
                 permission
               );

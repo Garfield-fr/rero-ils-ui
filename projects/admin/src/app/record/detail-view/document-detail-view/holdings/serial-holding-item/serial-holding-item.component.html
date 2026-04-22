@@ -21,7 +21,7 @@
         @if (item().metadata._masked) {
           <admin-record-masked [record]="item()" />
         }
-        @if (permissions) {
+        @if (permissions()) {
           <a [routerLink]="['/records', 'items', 'detail', item().metadata.pid]" name="barcode">
             {{ item().metadata.barcode }}
           </a>
@@ -43,7 +43,7 @@
         <div class="ui:grow">
           <shared-inherited-call-number class-="ui:grow" [item]="item()" />
         </div>
-        @if (permissions) {
+        @if (permissions()) {
           <div class="ui:flex ui:gap-1 ui:justify-end">
             <p-button
               class="ui:pointer-events-auto"
@@ -54,13 +54,13 @@
               (onClick)="addRequest(item().metadata.pid, 'item')"
               [pTooltip]="cannotRequestTooltipContent"
               tooltipPosition="top"
-              [disabled]="!permissions.canRequest?.can"
-              [tooltipDisabled]="permissions.canRequest?.can"
+              [disabled]="!permissions().canRequest?.can"
+              [tooltipDisabled]="permissions().canRequest?.can"
             />
             <ng-template #cannotRequestTooltipContent>
               <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
             </ng-template>
-            @if (permissions.update && permissions.update.can) {
+            @if (permissions().update && permissions().update.can) {
               <p-button
                 icon="fa fa-pencil"
                 size="small"
@@ -78,8 +78,8 @@
               outlined
               [pTooltip]="deleteTooltipContent"
               tooltipPosition="top"
-              [disabled]="!permissions.delete?.can"
-              [tooltipDisabled]="permissions.delete?.can"
+              [disabled]="!permissions().delete?.can"
+              [tooltipDisabled]="permissions().delete?.can"
               (onClick)="delete()"
             />
             <ng-template #deleteTooltipContent>
@@ -89,14 +89,14 @@
         }
       </div>
       <div class="ui:col-span-12 ui:pt-0">
-        @if (permissions) {
+        @if (permissions()) {
           @for (note of item().metadata.notes; track $index) {
             <admin-holding-item-note [note]="note" />
           }
           <admin-holding-item-temporary-item-type [record]="item()" />
         }
         <!-- TEMPORARY LOCATION -->
-        @if (permissions && item().metadata.temporary_location) {
+        @if (permissions() && item().metadata.temporary_location) {
           <dl class="metadata">
             <dt translate>Temporary location</dt>
             <dd>
@@ -106,7 +106,7 @@
         }
         <!-- ITEM IN COLLECTION -->
         @let itemPid = item().metadata.pid;
-        @if (permissions && itemPid) {
+        @if (permissions() && itemPid) {
           @let collections = itemPid | itemInCollection | async;
           @if (collections && collections.length > 0) {
             <dl class="metadata">

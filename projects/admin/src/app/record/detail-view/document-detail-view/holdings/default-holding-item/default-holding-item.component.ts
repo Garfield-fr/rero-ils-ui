@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { ItemsService } from '@app/admin/service/items.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -62,7 +62,7 @@ export class DefaultHoldingItemComponent implements OnInit {
   isCurrentOrganisation = input(true);
 
   /** Item permissions */
-  permissions: any;
+  permissions = signal<any>(undefined);
 
   // GETTER & SETTER ==========================================================
   /** Current interface language */
@@ -82,12 +82,12 @@ export class DefaultHoldingItemComponent implements OnInit {
 
   /** Message containing the reasons why the item cannot be deleted. */
   get deleteInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.permissions.delete.reasons, 'delete');
+    return this.recordPermissionService.generateTooltipMessage(this.permissions()?.delete?.reasons, 'delete');
   }
 
   /** Message containing the reasons wht the item cannot be requested. */
   get cannotRequestInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.permissions.canRequest.reasons, 'request');
+    return this.recordPermissionService.generateTooltipMessage(this.permissions()?.canRequest?.reasons, 'request');
   }
 
   /** OnInit hook */
@@ -142,9 +142,10 @@ export class DefaultHoldingItemComponent implements OnInit {
         //   library is the same as current UI used library. So the switch library button should be displayed if the user may edit the item
         //   but are not using the same library as item owning library.
         const switchLocation = {can: permissions.update ? permissions.update.can : false };
-        this.permissions = this.recordPermissionService.membership(this.appStore.user(), this.item().metadata.library.pid, permissions);
-        this.permissions.switchLocation = switchLocation;
-        this.permissions.canRequest = canRequest;
+        const resolved = this.recordPermissionService.membership(this.appStore.currentLibraryPid(), this.item().metadata.library.pid, permissions);
+        resolved.switchLocation = switchLocation;
+        resolved.canRequest = canRequest;
+        this.permissions.set(resolved);
       });
   }
 

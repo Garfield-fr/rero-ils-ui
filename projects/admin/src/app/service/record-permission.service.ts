@@ -123,14 +123,14 @@ export class RecordPermissionService {
 
   /**
    * Membership
-   * @param user - any
+   * @param currentLibraryPid - string
    * @param libraryPid - string
    * @param permission - any
    * @param membership - Check record ownership
    * @returns permissions of current record
    */
-  membership(user: any, libraryPid: string, permission: any, membership = true): any {
-    if (membership && user.currentLibrary !== libraryPid) {
+  membership(currentLibraryPid: string | null, libraryPid: string, permission: any, membership = true): any {
+    if (membership && currentLibraryPid !== libraryPid) {
       const membershipExcludePermission = {
         update: { can: false },
         delete: { can: false, reasons: { others: { record_not_in_current_library : '' }}}

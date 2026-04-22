@@ -92,7 +92,7 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
     this.recordPermissionService
       .getPermission('items', this.issue().metadata.pid)
       .subscribe(permission => this.recordPermissions =  this.recordPermissionService.membership(
-        this.appStore.user(),
+        this.appStore.currentLibraryPid(),
         this.issue().metadata.library.pid,
         permission
       ));
