@@ -55,14 +55,14 @@ export class DefaultHoldingItemComponent implements OnInit {
   /** Holding record */
   holding = input<any>();
   /** Item Record (input) */
-  itemInput = input<any>(undefined, { alias: 'item' });
+  item = input<any>(undefined);
   /** Event for delete Item */
   deleteItem = output();
   /** Restrict the functionality of interface */
   isCurrentOrganisation = input(true);
 
   /** Item record (writable, updated after request) */
-  item = linkedSignal(() => this.itemInput());
+  editableItem = linkedSignal(() => this.item());
   /** Item permissions */
   permissions = signal<any>(undefined);
 
@@ -77,8 +77,8 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @returns number of request related to this item.
    */
   get itemRequestCounter(): number {
-    return (this.item().metadata.availability && this.item().metadata.availability.request)
-      ? this.item().metadata.availability.request
+    return (this.editableItem().metadata.availability && this.editableItem().metadata.availability.request)
+      ? this.editableItem().metadata.availability.request
       : 0;
   }
 
@@ -117,7 +117,7 @@ export class DefaultHoldingItemComponent implements OnInit {
     ref.onClose.subscribe((value: boolean) => {
       if (value) {
         this.itemService.getByPidFromEs(recordPid).subscribe(result => {
-          this.item.set(result);
+          this.editableItem.set(result);
           this._getPermissions();
         });
       }
@@ -129,14 +129,14 @@ export class DefaultHoldingItemComponent implements OnInit {
    * @param itemPid - Item pid
    */
   delete(): void {
-    this.deleteItem.emit(this.item());
+    this.deleteItem.emit(this.editableItem());
   }
 
   // PRIVATE COMPONENT FUNCTIONS ==============================================
   /** Get permissions */
   private _getPermissions(): void {
-    const permissionObs$ = this.recordPermissionService.getPermission('items', this.item().metadata.pid);
-    const canRequestObs$ = this.itemService.canRequest(this.item().metadata.pid);
+    const permissionObs$ = this.recordPermissionService.getPermission('items', this.editableItem().metadata.pid);
+    const canRequestObs$ = this.itemService.canRequest(this.editableItem().metadata.pid);
     forkJoin([permissionObs$, canRequestObs$]).subscribe(
       ([permissions, canRequest]) => {
         // DEV NOTES :: Why using switch location.
@@ -144,7 +144,7 @@ export class DefaultHoldingItemComponent implements OnInit {
         //   library is the same as current UI used library. So the switch library button should be displayed if the user may edit the item
         //   but are not using the same library as item owning library.
         const switchLocation = {can: permissions.update ? permissions.update.can : false };
-        const resolved = this.recordPermissionService.membership(this.appStore.currentLibraryPid(), this.item().metadata.library.pid, permissions);
+        const resolved = this.recordPermissionService.membership(this.appStore.currentLibraryPid(), this.editableItem().metadata.library.pid, permissions);
         resolved.switchLocation = switchLocation;
         resolved.canRequest = canRequest;
         this.permissions.set(resolved);
