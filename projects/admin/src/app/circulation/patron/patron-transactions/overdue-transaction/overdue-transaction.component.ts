@@ -15,20 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Item } from '@app/admin/classes/items';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { DateTranslatePipe, GetRecordPipe, RecordService, TruncateTextPipe } from '@rero/ng-core';
-import { InheritedCallNumberComponent, MainTitlePipe, OpenCloseButtonComponent } from '@rero/shared';
 import { TranslateDirective } from '@ngx-translate/core';
-import { PatronTransactionHistoryComponent } from '../patron-transaction/patron-transaction-history/patron-transaction-history.component';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe, RecordService, TruncateTextPipe } from '@rero/ng-core';
+import { AppStore, InheritedCallNumberComponent, MainTitlePipe, OpenCloseButtonComponent } from '@rero/shared';
 import { forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { PatronTransactionHistoryComponent } from '../patron-transaction/patron-transaction-history/patron-transaction-history.component';
 
 @Component({
   selector: 'admin-overdue-transaction',
@@ -38,8 +37,8 @@ import { map, switchMap } from 'rxjs/operators';
 })
 export class OverdueTransactionComponent {
 
-  private organisationService = inject(OrganisationService);
-  private recordService = inject(RecordService);
+  private appStore = inject(AppStore);
+  private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES ====================================================
   transaction = input<{loan: Loan, fees: LoanOverduePreview}>();
@@ -74,6 +73,6 @@ export class OverdueTransactionComponent {
   readonly document = computed(() => this.loanData()?.document ?? null);
 
   get organisation() {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 }

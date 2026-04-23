@@ -20,7 +20,6 @@ import { canAddAccountGuard } from '@app/admin/acquisition/routes/guards/can-add
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '@app/admin/guard/can-access.guard';
 import { permissionGuard } from '@app/admin/guard/permission.guard';
 import { BaseRoute } from '@app/admin/routes/base-route';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
@@ -131,10 +130,10 @@ class AccountsRoute extends BaseRoute implements RouteDataTypesInterface {
    * @return The updated configuration.
    */
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
-    const service = this.routeToolService.getInjectorToken(OrganisationService);
-    if (service.organisation()) {
+    const org = this.routeToolService.appStore.organisation();
+    if (org) {
       field.props.addonLeft = [
-        Tools.currencySymbol(this.routeToolService.translateService.getCurrentLang(), service.organisation().default_currency),
+        Tools.currencySymbol(this.routeToolService.translateService.getCurrentLang(), org.default_currency),
       ];
     }
     return field;

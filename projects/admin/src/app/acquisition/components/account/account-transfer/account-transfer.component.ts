@@ -28,7 +28,6 @@ import {
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG, GetRecordPipe } from '@rero/ng-core';
 import { AppStore, Tools } from '@rero/shared';
@@ -64,7 +63,7 @@ export class AccountTransferComponent {
   private appStore = inject(AppStore);
   private messageService = inject(MessageService);
 
-  protected readonly organisation = inject(OrganisationService).organisation;
+  protected readonly organisation = this.appStore.organisation;
 
   // COMPONENT ATTRIBUTES =======================================================
   protected readonly form: UntypedFormGroup = this.formBuilder.group({

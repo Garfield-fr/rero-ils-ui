@@ -23,7 +23,6 @@ import { RouterLink } from '@angular/router';
 import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ApiService, CONFIG, ExportButtonComponent, Nl2brPipe, RecordService } from '@rero/ng-core';
@@ -46,7 +45,6 @@ import { AccountAvailableAmountPipe } from '../../../pipes/account-available-amo
 export class AccountListComponent {
   private appStore = inject(AppStore);
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private apiService: ApiService = inject(ApiService);
   private translateService: TranslateService = inject(TranslateService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
@@ -91,7 +89,7 @@ export class AccountListComponent {
     effect(() => this.rootAccounts.set(_loaded()));
   }
 
-  readonly organisation = this.organisationService.organisation;
+  readonly organisation = this.appStore.organisation;
 
   // GETTER & SETTER ============================================================
   /** Get a message containing the reasons why record list cannot be exported */

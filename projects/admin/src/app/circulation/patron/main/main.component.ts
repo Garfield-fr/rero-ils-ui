@@ -16,9 +16,9 @@
  */
 import { Component, inject, signal, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { HotkeysService } from '@ngneat/hotkeys';
+import { AppStore } from '@rero/shared';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription, switchMap, tap } from 'rxjs';
@@ -41,7 +41,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   private patronService: PatronService = inject(PatronService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private translateService: TranslateService = inject(TranslateService);
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
@@ -66,7 +66,7 @@ export class MainComponent implements OnInit, OnDestroy {
    * @return current organisation
    */
   get organisation() {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 
   /** OnInit hook */

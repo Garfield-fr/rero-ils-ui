@@ -24,7 +24,6 @@ import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-transaction-api.service';
-import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
 import { CirculationStatsService } from '../../service/circulation-stats.service';
 import { switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
@@ -43,7 +42,6 @@ export class PatronFeeComponent implements OnInit {
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private recordService: RecordService = inject(RecordService);
   private translateService: TranslateService = inject(TranslateService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private appStore = inject(AppStore);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private apiService: ApiService = inject(ApiService);
@@ -123,7 +121,7 @@ export class PatronFeeComponent implements OnInit {
         addonLeft: [
           Tools.currencySymbol(
             this.translateService.getCurrentLang(),
-            this.organisationService.organisation().default_currency
+            this.appStore.organisation().default_currency
           )
         ]
       }

@@ -18,7 +18,7 @@
 import { Component, computed, inject, input, OnInit, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
 
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
+import { AppStore } from '@rero/shared';
 
 import { PatronTransactionsService } from '../../../service/patron-transactions.service';
 import { PatronTransactionEventOverdueComponent } from './patron-transaction-event-overdue.component';
@@ -36,7 +36,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class PatronTransactionEventsBriefViewComponent implements OnInit {
 
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
   private patronTransactionService: PatronTransactionsService = inject(PatronTransactionsService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -54,7 +54,7 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
   /** Parent parent transaction */
   parent: PatronTransaction;
   /** current organisation */
-  readonly organisation = computed(() => this.organisationService.organisation());
+  readonly organisation = computed(() => this.appStore.organisation());
   /** reference to PatronTransactionEventType */
   eventTypes = PatronTransactionEventType;
   severity = computed(() => {

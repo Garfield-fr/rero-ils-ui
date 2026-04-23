@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { OrganisationService } from '../../../../../service/organisation.service';
 import { PaymentData } from '../../interfaces';
+import { AppStore } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Divider } from 'primeng/divider';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -31,7 +31,7 @@ import { CurrencyPipe } from '@angular/common';
 })
 export class PaymentsDataTableComponent {
 
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   data = input<PaymentData>();
@@ -39,6 +39,6 @@ export class PaymentsDataTableComponent {
   // GETTER & SETTER ==========================================================
   /** Organisation currency */
   get org_currency() {
-    return this.organisationService.organisation()?.default_currency;
+    return this.appStore.organisation()?.default_currency;
   }
 }

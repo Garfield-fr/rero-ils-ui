@@ -17,8 +17,8 @@
  */
 import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { OrganisationService } from '../../../../../service/organisation.service';
 import { PaymentData } from '../../interfaces';
+import { AppStore } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { UIChart } from 'primeng/chart';
 
@@ -29,7 +29,7 @@ import { UIChart } from 'primeng/chart';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentDataPieComponent implements OnInit {
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -62,7 +62,7 @@ export class PaymentDataPieComponent implements OnInit {
           callbacks: {
             label: (context: any) => {
               const label = context.formattedValue || '';
-              return ` ${label} ${this.organisationService.organisation()?.default_currency ?? ''}`;
+              return ` ${label} ${this.appStore.organisation()?.default_currency ?? ''}`;
             },
           },
         },

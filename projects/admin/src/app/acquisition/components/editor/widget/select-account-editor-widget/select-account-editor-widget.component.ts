@@ -17,7 +17,6 @@
  */
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FieldType } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@rero/ng-core';
@@ -38,7 +37,6 @@ import { SelectModule } from 'primeng/select';
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {
   // services
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private apiService: ApiService = inject(ApiService);
   private appStore = inject(AppStore);
   private messageService = inject(MessageService);
@@ -52,7 +50,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   /** loading state */
   loading = signal(false);
   /** organisation default currency */
-  readonly defaultCurrency = computed(() => this.organisationService.organisation()?.default_currency);
+  readonly defaultCurrency = computed(() => this.appStore.organisation()?.default_currency);
 
   ngOnInit(): void {
     this.loading.set(true);

@@ -18,10 +18,9 @@ import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core
 import { UntypedFormGroup, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Tools } from '@rero/shared';
+import { AppStore, Tools } from '@rero/shared';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
@@ -42,7 +41,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private translateService: TranslateService = inject(TranslateService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
 
   /** the transactions to perform with this form */
@@ -113,7 +112,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
         addonLeft: [
           Tools.currencySymbol(
             this.translateService.getCurrentLang(),
-            this.organisationService.organisation().default_currency
+            this.appStore.organisation().default_currency
           )
         ]
       },
@@ -187,7 +186,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 
   /**

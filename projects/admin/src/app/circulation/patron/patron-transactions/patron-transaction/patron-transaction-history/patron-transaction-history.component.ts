@@ -16,8 +16,8 @@
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { AppStore } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Timeline } from 'primeng/timeline';
 import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
@@ -33,14 +33,14 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 export class PatronTransactionHistoryComponent {
 
   private translateService: TranslateService = inject(TranslateService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   events = input.required<[]>();
 
   patronTransactionEventType = PatronTransactionEventType;
 
   get organisation() {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 
   eventLabel(event: any): string {

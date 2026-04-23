@@ -32,7 +32,6 @@ import { acqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { permissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
-import { OrganisationService } from '../../service/organisation.service';
 import { canAddOrderLineGuard } from './guards/can-add-order-line.guard';
 import { isBudgetActiveGuard } from './guards/is-budget-active.guard';
 
@@ -112,8 +111,7 @@ class OrderLinesRoute extends BaseRoute implements RouteDataTypesInterface {
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     // TODO :: This isn't the organisation currency that we need to use, it's the order related vendor currency
     //         But how to retrieve the order from here ??? and how get quickly currency to use into
-    const service = this.routeToolService.getInjectorToken(OrganisationService);
-    const org = service.organisation();
+    const org = this.routeToolService.appStore.organisation();
     if (org) {
       field.props!.addonLeft = [
         Tools.currencySymbol(this.routeToolService.translateService.getCurrentLang(), org.default_currency!),

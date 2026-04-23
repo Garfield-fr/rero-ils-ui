@@ -17,7 +17,6 @@
 import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { PatronTransactionApiService } from '@app/admin/api/patron-transaction-api.service';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { of, switchMap } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
@@ -26,6 +25,7 @@ import { Tag } from 'primeng/tag';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { GetRecordPipe } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 
 @Component({
     selector: 'admin-item-fees',
@@ -36,7 +36,7 @@ import { GetRecordPipe } from '@rero/ng-core';
 export class ItemFeesComponent {
 
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   readonly itemPid = input<string>();
 
@@ -56,6 +56,6 @@ export class ItemFeesComponent {
   );
 
   get organisation() {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 }

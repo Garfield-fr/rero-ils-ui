@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { OrganisationService } from '../../../service/organisation.service';
 import { TranslateDirective } from '@ngx-translate/core';
+import { AppStore } from '@rero/shared';
 import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
@@ -30,7 +30,7 @@ import { GetRecordPipe } from '@rero/ng-core';
 })
 export class PatronTypesDetailViewComponent {
 
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   readonly record = input<any>();
 
@@ -41,6 +41,6 @@ export class PatronTypesDetailViewComponent {
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 }

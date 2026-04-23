@@ -28,11 +28,11 @@ import { DocumentEditorComponent } from '../record/custom-editor/document-editor
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { DocumentRecordSearchComponent } from '../record/search-view/document-record-search/document-record-search.component';
-import { OrganisationService } from '../service/organisation.service';
+import { AppStore } from '@rero/shared';
 import { BaseRoute } from './base-route';
 
 export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => {
-  const org = inject(OrganisationService).organisation();
+  const org = inject(AppStore).organisation();
   return new DocumentsRoute().getTypesForOrg(org);
 };
 

@@ -19,12 +19,12 @@
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, switchMap } from 'rxjs';
-import { OrganisationService } from '../../../../service/organisation.service';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
 import { GetRecordPipe } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 import { NegativeAmountPipe } from '../../../pipes/negative-amount.pipe';
 import { MessageModule } from 'primeng/message';
 import { PanelModule } from 'primeng/panel';
@@ -38,7 +38,7 @@ import { PanelModule } from 'primeng/panel';
 export class AccountDetailViewComponent {
 
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** Record data */
@@ -58,6 +58,6 @@ export class AccountDetailViewComponent {
   // GETTER & SETTER ============================================================
   /** Get the current budget pid for the organisation */
   get organisation(): any {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 }

@@ -26,7 +26,6 @@ import { Subscription } from 'rxjs';
 import { Item, ItemNote } from '../../../classes/items';
 import { HoldingsService } from '../../../service/holdings.service';
 import { OperationLogsService } from '@rero/shared';
-import { OrganisationService } from '../../../service/organisation.service';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
@@ -57,7 +56,6 @@ export class ItemDetailViewComponent implements OnDestroy {
   private recordService: RecordService = inject(RecordService);
   private holdingService: HoldingsService = inject(HoldingsService);
   private operationLogsService: OperationLogsService= inject(OperationLogsService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private appStore = inject(AppStore);
 
   /** Document record */
@@ -107,7 +105,7 @@ export class ItemDetailViewComponent implements OnDestroy {
    * @return string
    */
   get organisationCurrency(): string {
-    return this.organisationService.organisation().default_currency;
+    return this.appStore.organisation().default_currency;
   }
 
   /** returns an array of claim dates in DESC order */

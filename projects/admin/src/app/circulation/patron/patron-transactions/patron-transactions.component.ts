@@ -19,7 +19,6 @@ import { Component, computed, inject, model, ModelSignal, signal, WritableSignal
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { AppStore } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
@@ -48,7 +47,6 @@ import { CurrencyPipe } from '@angular/common';
 export class PatronTransactionsComponent {
 
   private dialogService: DialogService = inject(DialogService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
@@ -107,7 +105,7 @@ export class PatronTransactionsComponent {
    * @return current organisation
    */
   get organisation(): any {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 
   /**

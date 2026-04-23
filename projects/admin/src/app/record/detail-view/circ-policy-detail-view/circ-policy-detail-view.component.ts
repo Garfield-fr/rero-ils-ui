@@ -16,8 +16,8 @@
  */
 
 import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { OrganisationService } from '../../../service/organisation.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AppStore } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
@@ -32,7 +32,7 @@ import { GetRecordPipe } from '@rero/ng-core';
 })
 export class CircPolicyDetailViewComponent {
 
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   readonly record = input<any>();
   readonly type = input<string>('');
@@ -73,7 +73,7 @@ export class CircPolicyDetailViewComponent {
     return set;
   });
 
-  readonly org_currency = computed(() => this.organisationService.organisation()?.default_currency);
+  readonly org_currency = computed(() => this.appStore.organisation()?.default_currency);
   readonly checkoutIsAllowed = computed(() => {
     const r = this.record();
     return r && Object.hasOwn(r.metadata, 'checkout_duration');

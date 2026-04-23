@@ -36,7 +36,6 @@ import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
 import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
-import { OrganisationService } from '../service/organisation.service';
 import { BaseRoute } from './base-route';
 
 export const circulationPoliciesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
@@ -207,8 +206,7 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
    * @return FormlyFieldConfig
    */
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
-    const service = this.routeToolService.getInjectorToken(OrganisationService);
-    const org = service.organisation();
+    const org = this.routeToolService.appStore.organisation();
     if (org) {
       field.props!.addonLeft = [
         Tools.currencySymbol(this.routeToolService.translateService.getCurrentLang(), org.default_currency!),

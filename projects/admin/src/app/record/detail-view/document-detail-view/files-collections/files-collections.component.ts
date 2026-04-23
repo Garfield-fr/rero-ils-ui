@@ -17,10 +17,10 @@
 import { Component, inject, ChangeDetectionStrategy, signal, effect } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 import { MessageService, PrimeTemplate } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { AutoComplete } from 'primeng/autocomplete';
@@ -38,7 +38,7 @@ export class FilesCollectionsComponent {
   private messageService = inject(MessageService);
   private resourcesFilesService = inject(ResourcesFilesService);
   private translateService = inject(TranslateService);
-  private organisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   // current record
   record = signal<any>(null);
@@ -77,7 +77,7 @@ export class FilesCollectionsComponent {
    * @returns - url on the public interface
    */
   getCollectionLink(name: string): string {
-    const viewcode = this.organisationService.organisation().code;
+    const viewcode = this.appStore.organisation().code;
     return `/${viewcode}/search/documents?q=files.collections.raw:(${name})&simple=0`;
   }
 

@@ -19,14 +19,15 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, si
 import { ActivatedRoute } from '@angular/router';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { PatronTransactionEventFormComponent } from '../patron-transaction-event-form/patron-transaction-event-form.component';
+import {
+  PatronTransactionEventFormComponent
+} from '../patron-transaction-event-form/patron-transaction-event-form.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { CurrencyPipe, NgClass, AsyncPipe } from '@angular/common';
 import { SelectChangeEvent } from 'primeng/select';
-import { OpenCloseButtonComponent } from '@rero/shared';
+import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
 import { FormsModule } from '@angular/forms';
 import { OverdueTransactionDetailComponent } from './overdue-transaction-detail/overdue-transaction-detail.component';
 import { DefaultTransactionDetailComponent } from './default-transaction-detail/default-transaction-detail.component';
@@ -43,12 +44,12 @@ import { Select } from 'primeng/select';
 })
 export class PatronTransactionComponent {
 
-  private dialogService = inject(DialogService);
-  private organisationService = inject(OrganisationService);
-  private patronTransactionService = inject(PatronTransactionService);
-  private router = inject(ActivatedRoute);
-  private translateService = inject(TranslateService);
-  private currencyPipe = inject(CurrencyPipe);
+  private dialogService: DialogService = inject(DialogService);
+  private appStore = inject(AppStore);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  private router: ActivatedRoute = inject(ActivatedRoute);
+  private translateService: TranslateService = inject(TranslateService);
+  private currencyPipe: CurrencyPipe = inject(CurrencyPipe);
 
   // COMPONENT ATTRIBUTES ============================================
   transaction = input<PatronTransaction>();
@@ -64,7 +65,7 @@ export class PatronTransactionComponent {
       {
         label: [
           this.translateService.instant('Pay'),
-          this.currencyPipe.transform(t.total_amount, this.organisationService.organisation()?.default_currency)
+          this.currencyPipe.transform(t.total_amount, this.appStore.organisation()?.default_currency)
         ].join(' '),
         command: () => this.patronTransactionAction('pay', 'full')
       },
@@ -101,7 +102,7 @@ export class PatronTransactionComponent {
   }
 
   get organisation() {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 
   isDisputed(): boolean {

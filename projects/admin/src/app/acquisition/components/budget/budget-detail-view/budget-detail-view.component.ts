@@ -17,8 +17,8 @@
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { filter, switchMap } from 'rxjs';
+import { AppStore } from '@rero/shared';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CurrencyPipe } from '@angular/common';
@@ -33,7 +33,7 @@ import { MessageModule } from 'primeng/message';
 export class BudgetDetailViewComponent {
 
   private budgetApiService: AcqBudgetApiService = inject(AcqBudgetApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Record data */
@@ -53,6 +53,6 @@ export class BudgetDetailViewComponent {
   // GETTER & SETTER ==========================================================
   /** Get the currency code used for the current loaded organisation */
   get currencyCode(): string | undefined {
-    return this.organisationService.organisation()?.default_currency;
+    return this.appStore.organisation()?.default_currency;
   }
 }

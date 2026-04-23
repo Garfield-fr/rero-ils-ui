@@ -22,7 +22,6 @@ import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
 import { Loan, LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
 import { AppStore, ItemStatus, OpenCloseButtonComponent, InheritedCallNumberComponent, ContributionComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
 import { map } from 'rxjs/operators';
@@ -45,7 +44,6 @@ import { GetLoanCipoPipe } from '../pipe/get-loan-cipo.pipe';
 export class ItemComponent {
 
   private recordService: RecordService = inject(RecordService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private itemService: ItemsService = inject(ItemsService);
   private appStore = inject(AppStore);
@@ -87,7 +85,7 @@ export class ItemComponent {
    * @returns current organisation
    */
   get organisation(): Organisation {
-    return this.organisationService.organisation();
+    return this.appStore.organisation();
   }
 
   /**

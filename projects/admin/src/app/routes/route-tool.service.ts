@@ -18,12 +18,12 @@ import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AbstractType, inject, Injectable, InjectionToken, Injector, Type } from '@angular/core';
 import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionStatus, ApiService, RecordService } from '@rero/ng-core';
+import type { JsonObject, RecordData } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { Observable, of, Subscriber } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { RecordPermissions } from '../classes/permissions';
 import { RecordPermissionService } from '../service/record-permission.service';
 
@@ -48,13 +48,6 @@ export class RouteToolService {
    */
   get translateService() {
     return this.injector.get(TranslateService);
-  }
-
-  /** Proxy for organisation service
-   *  @return OrganisationService
-   */
-  get organisationService() {
-    return this.injector.get(OrganisationService);
   }
 
   /**
@@ -155,12 +148,12 @@ export class RouteToolService {
    *     - 'can' - Boolean: to know if the resource could be updated
    *     - 'message' - String: unused until now
    */
-  canUpdate(record: any, recordType: string): Observable<ActionStatus> {
-    return new Observable((observer: Subscriber<any>): void => {
+  canUpdate(record: RecordData, recordType: string): Observable<ActionStatus> {
+    return new Observable((observer: Subscriber<ActionStatus>): void => {
       this.recordPermissionService
-        .getPermission(recordType, record.metadata.pid)
+        .getPermission(recordType, record.metadata['pid'] as string)
         .subscribe((permission: RecordPermissions) => {
-          observer.next({ can: permission.update.can, message: "" });
+          observer.next({ can: permission.update?.can ?? false, message: "" });
         });
     });
   }
@@ -173,17 +166,18 @@ export class RouteToolService {
    *     - 'can' - Boolean: to know if the resource could be deleted
    *     - 'message' - String: the message to display if the record cannot be deleted
    */
-  canDelete(record: any, recordType: string): Observable<ActionStatus> {
-    return new Observable((observer: Subscriber<any>): void => {
+  canDelete(record: RecordData, recordType: string): Observable<ActionStatus> {
+    return new Observable((observer: Subscriber<ActionStatus>): void => {
       this.recordPermissionService
-        .getPermission(recordType, record.metadata.pid)
+        .getPermission(recordType, record.metadata['pid'] as string)
         .subscribe((permission: RecordPermissions) => {
+          const canDelete = permission.delete?.can ?? false;
           observer.next({
-            can: permission.delete.can,
-            message: permission.delete.can
+            can: canDelete,
+            message: canDelete
               ? ""
               : this.recordPermissionService.generateTooltipMessage(
-                  permission.delete.reasons,
+                  (permission.delete?.reasons ?? {}) as unknown as JsonObject,
                   'delete'
                 ),
           });
@@ -199,12 +193,12 @@ export class RouteToolService {
    *     - 'can' - Boolean: to know if the resource could be readable
    *     - 'message' - String: unused until now
    */
-  canRead(record: any, recordType: string): Observable<ActionStatus> {
-    return new Observable((observer: Subscriber<any>): void => {
+  canRead(record: RecordData, recordType: string): Observable<ActionStatus> {
+    return new Observable((observer: Subscriber<ActionStatus>): void => {
       this.recordPermissionService
-        .getPermission(recordType, record.metadata.pid)
+        .getPermission(recordType, record.metadata['pid'] as string)
         .subscribe((permission: RecordPermissions) => {
-          observer.next({ can: permission.read.can, message: "" });
+          observer.next({ can: permission.read?.can ?? false, message: "" });
         });
     });
   }
@@ -219,32 +213,32 @@ export class RouteToolService {
    *      - canUpdate permission
    *      - canDelete permission
    */
-  permissions( record: any, recordType: string, membership = false): Observable<any> {
+  permissions(record: RecordData, recordType: string, membership = false): Observable<Record<string, ActionStatus>> {
     return this.recordPermissionService
-      .getPermission(recordType, record.metadata.pid)
+      .getPermission(recordType, record.metadata['pid'] as string)
         .pipe(
           map((permission: RecordPermissions) => {
             if (membership && "library" in record.metadata) {
-              // Extract library pid
-              const libraryPid =
-                "$ref" in record.metadata.library
-                  ? record.metadata.library.$ref.split("/").pop()
-                  : record.metadata.library.pid;
+              const library = record.metadata['library'] as Record<string, string>;
+              const libraryPid = ("$ref" in library
+                ? library['$ref'].split("/").pop()
+                : library['pid']) ?? '';
               permission = this.recordPermissionService.membership(
                 this.appStore.currentLibraryPid(),
                 libraryPid,
                 permission
               );
             }
+            const canDelete = permission.delete?.can ?? false;
             return {
-              canRead: { can: permission.read.can, message: "" },
-              canUpdate: { can: permission.update.can, message: "" },
+              canRead: { can: permission.read?.can ?? false, message: "" },
+              canUpdate: { can: permission.update?.can ?? false, message: "" },
               canDelete: {
-                can: permission.delete.can,
-                message: permission.delete.can
+                can: canDelete,
+                message: canDelete
                   ? ""
                   : this.recordPermissionService.generateTooltipMessage(
-                      permission.delete.reasons,
+                      (permission.delete?.reasons ?? {}) as unknown as JsonObject,
                       'delete'
                     ),
               },
@@ -273,8 +267,8 @@ export class RouteToolService {
    * @param aggregations - Object
    * @return Observable
    */
-  aggregationFilter(aggregations: object): Observable<any> {
-    return new Observable((observer: Subscriber<any>): void => {
+  aggregationFilter(aggregations: object): Observable<Record<string, unknown>> {
+    return new Observable((observer: Subscriber<Record<string, unknown>>): void => {
       observer.next(this._aggFilter(aggregations));
       this.translateService.onLangChange.subscribe(() => {
         observer.next(this._aggFilter(aggregations));
@@ -287,8 +281,8 @@ export class RouteToolService {
    * @param aggregations - Object
    * @return array
    */
-  private _aggFilter(aggregations: object) {
-    const aggs = {};
+  private _aggFilter(aggregations: object): Record<string, unknown> {
+    const aggs: Record<string, unknown> = {};
     Object.keys(aggregations).map((aggregation) => {
       if (aggregation.indexOf("__") > -1) {
         const splitted = aggregation.split("__");
