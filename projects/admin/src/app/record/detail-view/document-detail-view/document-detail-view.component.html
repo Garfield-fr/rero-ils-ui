@@ -252,36 +252,36 @@
    <p-tabs [value]="selectedTab()">
     <p-tablist>
       @if (record().metadata.pid) {
-      <p-tab value="get">
-        <i class="fa fa-list-ul"></i>&nbsp;
-        {{ "Get" | translate }}
+      <p-tab value="get" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+        <i class="fa fa-list-ul"></i>
+        <span translate>Get</span>
       </p-tab>
       }
-      <p-tab value="description">
-        <i class="fa fa-bars"></i>&nbsp;
-        {{ "Description" | translate }}
+      <p-tab value="description" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+        <i class="fa fa-bars"></i>
+        <span translate>Description</span>
       </p-tab>
       @if (!record().metadata.harvested && record().metadata.pid) {
-        <p-tab value="entity">
-          <i class="fa fa-cubes"></i>&nbsp;
-          {{ "Related Entities" | translate }}
+        <p-tab value="entity" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+          <i class="fa fa-cubes"></i>
+          <span translate>Related Entities</span>
         </p-tab>
       }
       @if (!record().metadata.harvested && record().metadata.pid && showLocalFieldsTab) {
-        <p-tab value="local">
-          <i class="fa fa-list-ul"></i>&nbsp;
-          {{ "Local fields" | translate }}
+        <p-tab value="local" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+           <i class="fa fa-list-ul"></i>
+          <span translate>Local fields</span>
         </p-tab>
       }
       @if (!record().metadata.harvested && record().metadata.pid && showFilesTab) {
-        <p-tab value="file">
-          <i class="fa fa-file"></i>&nbsp;
-          {{ "Files" | translate }}
+        <p-tab value="file" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+          <i class="fa fa-file"></i>
+          <span translate>Files</span>
         </p-tab>
       }
       @if (marcRecord) {
-        <p-tab value="marc">
-          <i class="fa fa-list-ul"></i>&nbsp;
+        <p-tab value="marc" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+          <i class="fa fa-list-ul"></i>
           <span translate>Marc</span>
         </p-tab>
       }

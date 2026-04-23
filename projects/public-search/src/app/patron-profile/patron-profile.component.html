@@ -33,9 +33,8 @@
     <p-tablist>
       @for (tab of tabsOrder; track $index) {
         @if (tab.value.display) {
-          <p-tab [value]="tab.key">
-            <div class="ui:flex ui:gap-1">
-              <div>{{ tab.value.title }}</div>
+          <p-tab [value]="tab.key" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+              <span>{{ tab.value.title }}</span>
               @if (tab.value.count >= 0) {
                 <p-badge [value]="tab.value.count" severity="info" />
               }
@@ -47,7 +46,6 @@
                   tooltipPosition="top"
                 />
               }
-            </div>
           </p-tab>
         }
       }
