@@ -104,6 +104,28 @@ export class CounterComponent {
   store = inject(CounterStore);
 }
 
+## Defensive cloning of input signals
+
+When a component maintains a writable local copy of an `input()` signal (via `linkedSignal`),
+use `cloneDeep` from `lodash-es` to avoid mutating the parent object through shared references.
+
+```typescript
+import { cloneDeep } from 'lodash-es';
+
+export class MyComponent {
+  item = input<Item | undefined>();
+
+  // TODO: replace cloneDeep with structuredClone when lodash-es is removed
+  editableItem = linkedSignal(() => {
+    const item = this.item();
+    return item ? cloneDeep(item) : item;
+  });
+}
+```
+
+> **Refactoring note**: once `lodash-es` is no longer a project dependency,
+> replace `cloneDeep` with the native `structuredClone`.
+
 ## Template control flow
 
 Use new control flow syntax — not structural directives.

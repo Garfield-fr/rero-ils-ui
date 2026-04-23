@@ -24,6 +24,7 @@ import { LocationService } from '@app/admin/service/location.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Error, extractIdOnRef } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { MessageService, SelectItemGroup } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -57,7 +58,11 @@ export class ItemSwitchLocationComponent implements OnInit {
   filterLimit = input(10);
 
   /** Writable copy of item, tracks the input signal and allows internal mutation */
-  currentItem = linkedSignal<ItemMetadata | undefined>(() => this.item());
+  // TODO: replace cloneDeep with structuredClone when lodash-es is removed
+  editableItem = linkedSignal<ItemMetadata | undefined>(() => {
+    const item = this.item();
+    return item ? cloneDeep(item) : item;
+  });
   /** Options of the dropdown menu */
   options = signal<SelectItemGroup[]>([]);
   /** Name of the initial location */
@@ -81,7 +86,7 @@ export class ItemSwitchLocationComponent implements OnInit {
       this.activeRoute.paramMap
         .pipe(switchMap(params => this.itemApiService.getItem(params.get('pid')!)))
         .subscribe(record => {
-          this.currentItem.set(record);
+          this.editableItem.set(cloneDeep(record));
           this._initLocations();
         });
     } else {
@@ -95,10 +100,10 @@ export class ItemSwitchLocationComponent implements OnInit {
   /** Handle form submission */
   submit(): void {
     this.itemApiService
-      .updateLocation(this.currentItem(), this.form.value.target)
+      .updateLocation(this.editableItem(), this.form.value.target)
       .subscribe({
         next: (result: any) => {
-          this.currentItem.set(result.metadata);
+          this.editableItem.set(cloneDeep(result.metadata));
           this._afterUpdate(result.metadata);
         },
         error: (err: Error) => this.messageService.add({
@@ -113,7 +118,7 @@ export class ItemSwitchLocationComponent implements OnInit {
 
   /** Handle cancel: emit or redirect without changes */
   cancel(): void {
-    this._afterUpdate(this.currentItem()!);
+    this._afterUpdate(this.editableItem()!);
   }
 
   // COMPONENT PRIVATE FUNCTIONS ==============================================
@@ -143,7 +148,7 @@ export class ItemSwitchLocationComponent implements OnInit {
         this.options.set(this._buildOptions(locations));
         this.initialLocationName.set(
           locations
-            .filter(loc => loc.pid === extractIdOnRef(this.currentItem()!.location.$ref))
+            .filter(loc => loc.pid === extractIdOnRef(this.editableItem()!.location.$ref))
             .pop()?.name ?? ''
         );
       });
@@ -177,7 +182,7 @@ export class ItemSwitchLocationComponent implements OnInit {
         currentParent.items.push({
           label: location.name,
           value: location.pid,
-          disabled: location.pid === extractIdOnRef(this.currentItem()!.location.$ref)
+          disabled: location.pid === extractIdOnRef(this.editableItem()!.location.$ref)
         });
       });
     appendLibrary(currentParent);

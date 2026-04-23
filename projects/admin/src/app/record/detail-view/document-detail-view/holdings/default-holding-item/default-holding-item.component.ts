@@ -23,6 +23,7 @@ import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-transl
 import { RecordUiService, Nl2brPipe } from '@rero/ng-core';
 import { AppStore, InheritedCallNumberComponent, AvailabilityComponent, ItemHoldingsCallNumberPipe, SafeUrlPipe } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { cloneDeep } from 'lodash-es';
 import { forkJoin } from 'rxjs';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
 import { RecordMaskedComponent } from '../../../record-masked/record-masked.component';
@@ -62,7 +63,11 @@ export class DefaultHoldingItemComponent implements OnInit {
   isCurrentOrganisation = input(true);
 
   /** Item record (writable, updated after request) */
-  editableItem = linkedSignal(() => this.item());
+  // TODO: refactor to use structuredClone when lodash-es dependency is removed
+  editableItem = linkedSignal(() => {
+    const item = this.item();
+    return item ? cloneDeep(item) : item;
+  });
   /** Item permissions */
   permissions = signal<any>(undefined);
 
@@ -117,7 +122,7 @@ export class DefaultHoldingItemComponent implements OnInit {
     ref.onClose.subscribe((value: boolean) => {
       if (value) {
         this.itemService.getByPidFromEs(recordPid).subscribe(result => {
-          this.editableItem.set(result);
+          this.editableItem.set(cloneDeep(result));
           this._getPermissions();
         });
       }
