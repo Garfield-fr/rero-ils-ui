@@ -34,7 +34,7 @@
       </div>
       <div class="ui:flex ui:gap-2 ui:justify-end">
         @if (refreshInterval() > 0) {
-          <p-select [options]="refreshOptions" (onChange)="selectingIntervalTimer($event.value)">
+          <p-select [options]="refreshOptions" optionValue="value" [ngModel]="refreshInterval().toString()" (onChange)="selectingIntervalTimer($event.value)">
             <ng-template #selectedItem let-item>
               <div class="ui:flex ui:items-center ui:gap-2">
                 <i [class]="item.icon"></i>
@@ -51,7 +51,7 @@
 
         }
         <!-- Sorting loans -->
-        <p-select [options]="sortingCriteria()" (onChange)="selectingSortCriteria($event.value)">
+        <p-select [options]="sortingCriteria()" optionValue="value" [ngModel]="sortCriteria()" (onChange)="selectingSortCriteria($event.value)">
           <ng-template #selectedItem let-item>
             <div class="ui:flex ui:items-center ui:gap-2">
               <i [class]="item.icon"></i>

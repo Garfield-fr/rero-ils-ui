@@ -33,7 +33,7 @@
         </div>
       }
     }
-    @if (item) {
+    @if (item(); as item) {
       <div class="ui:col-span-2" translate>Item</div>
       <div class="ui:col-span-10">
         <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>

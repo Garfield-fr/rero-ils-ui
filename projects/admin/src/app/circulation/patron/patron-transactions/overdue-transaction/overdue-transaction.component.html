@@ -18,23 +18,25 @@
   <div class="ui:p-2">
     <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-start">
       <div class="ui:col-span-2 ui:flex ui:gap-2">
-        <shared-open-close-button (status)="isCollapsed = $event" />
+        <shared-open-close-button (status)="isCollapsed.set($event)" />
         {{ transaction().loan.end_date | dateTranslate :'shortDate' }}
       </div>
       <div class="ui:col-span-8">
-        @if (document && document.title | mainTitle; as title) {
-          <a [routerLink]="['/records','documents','detail', document.pid]">
-            {{ title | truncateText: 15 }}
-          </a>
+        @if (document(); as doc) {
+          @if (doc.title | mainTitle; as title) {
+            <a [routerLink]="['/records','documents','detail', doc.pid]">
+              {{ title | truncateText: 15 }}
+            </a>
+          }
         }
       </div>
       <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transaction().fees.total | currency: organisation.default_currency }}</div>
     </div>
-    @if (!isCollapsed) {
+    @if (!isCollapsed()) {
       <div class="ui:mt-2">
         <h6 translate>Details</h6>
         <section class="ui:mb-4">
-          @if (item) {
+          @if (item(); as item) {
             <div class="ui:grid ui:grid-cols-12">
               <div class="ui:col-span-2" translate>Item</div>
               <div class="ui:col-span-10">
@@ -63,4 +65,3 @@
     }
   </div>
 }
-

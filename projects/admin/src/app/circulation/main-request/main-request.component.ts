@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject, Injector, linkedSignal, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, SearchInputComponent } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
-import { interval } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { interval, of } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { ItemsService } from '../../service/items.service';
 import { Bind } from 'primeng/bind';
 import { ToggleSwitch } from 'primeng/toggleswitch';
@@ -108,8 +108,6 @@ export class MainRequestComponent {
   readonly placeholder = _('Please enter an item barcode.');
   /** search text used into the search input component */
   readonly searchText = signal('');
-  /** requested items loaded */
-  private readonly rawItems = signal<RequestedLoanItem[] | null>(null);
   /** the interval (in millis) between 2 calls of requested items (0 = no refresh) */
   readonly refreshInterval = signal(0);
   /** Focus attribute of the search input */
@@ -117,46 +115,40 @@ export class MainRequestComponent {
   /** Disabled attribute of the search input */
   readonly searchInputDisabled = signal(false);
   /** the sort criteria used */
-  private readonly sortCriteria = signal('-requestdate');
-  private readonly refreshTick = signal(0);
+  readonly sortCriteria = linkedSignal(() => this.sortingCriteria()[0].value);
+  private readonly itemOverrides = signal<Map<string, RequestedLoanItem>>(new Map());
+  private readonly injector = inject(Injector);
 
   readonly libraryPid = computed(() => this.appStore.currentLibraryPid());
+
+  private readonly rawItems = toSignal(
+    toObservable(this.libraryPid, { injector: this.injector }).pipe(
+      switchMap(libraryPid => {
+        if (!libraryPid) {
+          return of<RequestedLoanItem[] | null>(null);
+        }
+        return toObservable(this.refreshInterval, { injector: this.injector }).pipe(
+          switchMap(refreshInterval => refreshInterval > 0
+            ? interval(refreshInterval).pipe(startWith(0), switchMap(() => this.itemsService.getRequestedLoans(libraryPid)))
+            : this.itemsService.getRequestedLoans(libraryPid)
+          )
+        );
+      })
+    ),
+    { injector: this.injector, initialValue: null }
+  );
 
   readonly items = computed<RequestedLoanItem[] | null>(() => {
     const items = this.rawItems();
     const sortCriteria = this.sortCriteria();
+    const overrides = this.itemOverrides();
     if (!items) {
       return null;
     }
-    return this.sortRequestedLoans(items, sortCriteria);
-  });
-
-  private readonly loadRequestedLoansEffect = effect((onCleanup) => {
-    const libraryPid = this.libraryPid();
-    this.refreshTick();
-    if (!libraryPid) {
-      this.rawItems.set(null);
-      return;
-    }
-
-    const subscription = this.itemsService.getRequestedLoans(libraryPid).subscribe((items: RequestedLoanItem[]) => {
-      this.rawItems.set(items);
-    });
-
-    onCleanup(() => subscription.unsubscribe());
-  });
-
-  private readonly autoRefreshEffect = effect((onCleanup) => {
-    const refreshInterval = this.refreshInterval();
-    if (refreshInterval <= 0) {
-      return;
-    }
-
-    const subscription = interval(refreshInterval).subscribe(() => {
-      this.refreshTick.update((tick: number) => tick + 1);
-    });
-
-    onCleanup(() => subscription.unsubscribe());
+    const merged = overrides.size > 0
+      ? items.map((item: RequestedLoanItem) => overrides.get(item.pid) ?? item)
+      : items;
+    return this.sortRequestedLoans(merged, sortCriteria);
   });
 
   // PRIVATE FUNCTIONS ========================================================================
@@ -234,9 +226,7 @@ export class MainRequestComponent {
 
       this.itemsService.doValidateRequest(item, libraryPid).subscribe(
         newItem => {
-          this.rawItems.update((currentItems: RequestedLoanItem[] | null) =>
-            currentItems?.map((currItem: RequestedLoanItem) => (currItem.pid === newItem.pid) ? newItem : currItem) ?? currentItems
-          );
+          this.itemOverrides.update(overrides => new Map(overrides).set(newItem.pid, newItem));
           this.messageService.add({
             severity: 'warn',
             summary: this.translateService.instant('request'),
@@ -277,8 +267,5 @@ export class MainRequestComponent {
   private _resetSearchInput(): void {
     this.searchInputDisabled.set(false);
     this.searchText.set('');
-    setTimeout(() => {
-      this.searchInputFocus.set(true);
-    });
   }
 }

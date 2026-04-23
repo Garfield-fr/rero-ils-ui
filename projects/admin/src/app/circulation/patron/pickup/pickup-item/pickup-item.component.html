@@ -14,21 +14,21 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (item) {
+@if (item(); as item) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2">
     <div class="ui:col-span-2">
       <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
     </div>
     <div class="ui:col-span-4">
-      @if (document.title | mainTitle; as title) {
-        <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
+      @if (document().title | mainTitle; as title) {
+        <a [routerLink]="['/records', 'documents', 'detail', document().pid]">
           {{ title }}
         </a>
         @if (item.enumerationAndChronology) {
           <p-tag severity="info" [value]="item.enumerationAndChronology" />
         }<br/>
       }
-      <shared-contribution [contributions]="document?.contribution" />
+      <shared-contribution [contributions]="document()?.contribution" />
     </div>
     <div class="ui:col-span-3">
       {{ loan().metadata.pickup_location_pid | getRecord: 'locations' : 'field' : 'pickup_name' | async }}

@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (document) {
+@if (document()) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2" [ngClass]="getCallout()" id="request-{{ item().barcode }}">
     <div class="ui:col-span-3">
       <div class="ui:flex ui:items-start ui:gap-2">
@@ -23,12 +23,12 @@
       </div>
     </div>
     <div name="title" class="ui:col-span-4">
-      @if (document.title | mainTitle; as title) {
-        <a [routerLink]="['/records','documents','detail', document.pid]">
+      @if (document().title | mainTitle; as title) {
+        <a [routerLink]="['/records','documents','detail', document().pid]">
           {{ title }}
         </a><br/>
       }
-      <shared-contribution [contributions]="document?.contribution" />
+      <shared-contribution [contributions]="document()?.contribution" />
     </div>
     <div class="ui:col-span-2">
       <shared-inherited-call-number [item]="item()" />
