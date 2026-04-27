@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AbstractCanDeactivateComponent, CONFIG, RecordService, EditorComponent } from '@rero/ng-core';
@@ -35,6 +35,7 @@ import { EditorService } from '../../../service/editor.service';
  */
 export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
 
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private editorService: EditorService = inject(EditorService);
   private translateService: TranslateService = inject(TranslateService);
   private route: ActivatedRoute = inject(ActivatedRoute);
@@ -57,6 +58,7 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
       record => {
         if (record) {
           this.model = record.metadata;
+          this.cdr.markForCheck();
         } else {
           this.messageService.add({
             severity: 'warn',
@@ -81,6 +83,7 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
           delete (record.metadata.pid);
           delete (record.metadata.harvested);
           this.model = record.metadata;
+          this.cdr.markForCheck();
           this.messageService.add({
             severity: 'success',
             summary: this.translateService.instant('Duplicate'),
