@@ -75,16 +75,16 @@
         </a>
       </dd>
       <!-- LIBRARY -->
-      @if (location) {
+      @if (location()) {
         <dt translate>Library</dt>
         <dd>
-          {{ location.metadata.library.pid | getRecord: 'libraries': 'field': 'name' | async }}
+          {{ location().metadata.library.pid | getRecord: 'libraries': 'field': 'name' | async }}
         </dd>
       }
       <!-- LOCATION -->
-      @if (location) {
+      @if (location()) {
         <dt translate>Location</dt>
-        <dd>{{ location.metadata.name }}</dd>
+        <dd>{{ location().metadata.name }}</dd>
       }
       <!-- TEMPORARY LOCATION -->
       @if (record()?.metadata.temporary_location) {

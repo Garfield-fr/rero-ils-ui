@@ -26,9 +26,9 @@
         </div>
     </ng-template>
 
-    @defer (when loaded) {
-      @if (records.length > 0) {
-        @for (record of records; track $index) {
+    @defer (when loaded()) {
+      @if (records().length > 0) {
+        @for (record of records(); track $index) {
           <div class="ui:odd:bg-surface-50 ui:my-1">
             <public-search-patron-profile-fee [record]="record" />
           </div>

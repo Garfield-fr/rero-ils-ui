@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
@@ -63,7 +63,7 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   /** IssueItemStatus reference */
   issueItemStatusRef = IssueItemStatus;
   /** Record permissions */
-  recordPermissions: any = {};
+  readonly recordPermissions = signal<any>({});
 
   private subscription = new Subscription();
 
@@ -91,11 +91,11 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.recordPermissionService
       .getPermission('items', this.issue().metadata.pid)
-      .subscribe(permission => this.recordPermissions =  this.recordPermissionService.membership(
+      .subscribe(permission => this.recordPermissions.set(this.recordPermissionService.membership(
         this.appStore.currentLibraryPid(),
         this.issue().metadata.library.pid,
         permission
-      ));
+      )));
     this.isClaimAllowed = this.issueService.isClaimAllowed(this.issue().metadata.issue.status);
   }
 
@@ -120,8 +120,8 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    * @return the delete info message use hover the delete button
    */
   deleteInfoMessage(): string {
-    return (this.recordPermissions?.delete?.reasons)
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.delete.reasons, 'delete')
+    return (this.recordPermissions()?.delete?.reasons)
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions().delete.reasons, 'delete')
       : '';
   }
 

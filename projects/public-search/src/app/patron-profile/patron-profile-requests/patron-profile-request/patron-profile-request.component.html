@@ -51,11 +51,11 @@
           size="small"
           id="request-cancel-{{ m.pid }}"
           (onClick)="cancel()"
-          [disabled]="cancelInProgress"
+          [disabled]="cancelInProgress()"
           [label]="'Cancel' | translate"
           outlined
           severity="danger"
-          [icon]="!(!cancelInProgress || actionDone)? 'fa fa-spinner': 'fa fa-trash'"
+          [icon]="!(!cancelInProgress() || actionDone()) ? 'fa fa-spinner': 'fa fa-trash'"
         />
       }
     </div>

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '../../../api/item-api.service';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
@@ -37,11 +37,11 @@ export class CirculationStatsComponent implements OnInit {
   itemPid = input<any>();
 
   /** Computed stats for current item */
-  stats: any;
+  readonly stats = signal<any>(null);
 
   /** OnInit hook */
   ngOnInit(): void {
     this.itemApiService.getStatsByItemPid(this.itemPid())
-      .subscribe((stats: any) => this.stats = stats)
+      .subscribe((stats: any) => this.stats.set(stats))
   }
 }

@@ -36,9 +36,9 @@
         <div class="ui:col-span-2" translate>Due date</div>
       </div>
     </ng-template>
-  @defer (when loaded) {
+  @defer (when loaded()) {
     @if (paginator.getRecordsCount() > 0) {
-      @for (loan of records; track $index) {
+      @for (loan of records(); track $index) {
         <div class="ui:odd:bg-surface-50 ui:my-1">
           <public-search-patron-profile-loan [record]="loan" id="loan-{{ loan.metadata.pid }}" />
         </div>

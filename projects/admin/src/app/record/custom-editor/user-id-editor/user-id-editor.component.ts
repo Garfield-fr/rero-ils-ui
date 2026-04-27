@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
@@ -57,7 +57,7 @@ export class UserIdEditorComponent implements OnInit {
   schema = null;
 
   /** form initial values */
-  model: any = {};
+  readonly model = signal<any>({});
 
   /** angular form group for ngx-formly */
   form: UntypedFormGroup;
@@ -130,7 +130,7 @@ export class UserIdEditorComponent implements OnInit {
           : this.recordService.getRecord('users', this.userID);
       }),
       map((user: any) => user.metadata)
-    ).subscribe(model => this.model = model);
+    ).subscribe(model => this.model.set(model));
   }
 
   /**
@@ -143,7 +143,7 @@ export class UserIdEditorComponent implements OnInit {
       this.loadedUserID = null;
       this.passwordField.props.required = true;
       this.form.reset();
-      this.model = {};
+      this.model.set({});
       return;
     }
     this.recordService.getRecords('users', { query }).pipe(
@@ -190,7 +190,9 @@ export class UserIdEditorComponent implements OnInit {
         this.loadedUserID = model.id;
         this.passwordField.props.required = false;
         this.form.reset();
-        return this.model = model.metadata || null;
+        const metadata = model.metadata || null;
+        this.model.set(metadata);
+        return metadata;
       }),
     ).subscribe();
   }

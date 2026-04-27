@@ -85,13 +85,13 @@ export class PatronTransactionsComponent {
   });
 
   /** Current patron */
-  private patron: any = undefined;
+  private readonly patron = signal<any>(undefined);
 
   constructor() {
     this.activePanel.set("0");
     this.tabs.overduePreviewFees.transactions = this.circulationStatsService.overdueTransactions;
     this.tabs.engagedFees.transactions = this.circulationStatsService.engagedTransactions;
-    this.patronService.currentPatron$.pipe(takeUntilDestroyed()).subscribe(patron => this.patron = patron);
+    this.patronService.currentPatron$.pipe(takeUntilDestroyed()).subscribe(patron => this.patron.set(patron));
     toObservable(this.activePanel).pipe(takeUntilDestroyed()).subscribe(val => {
       if (val === "2") {
         this.loadFeesHistory();
@@ -120,9 +120,9 @@ export class PatronTransactionsComponent {
   // COMPONENT FUNCTIONS ==================================================================
   /** load all PatronTransactions for the patron without 'status' restriction */
   loadFeesHistory(): void {
-    if (this.patron) {
+    if (this.patron()) {
       this.patronTransactionService
-        .patronTransactionsByPatron$(this.patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
+        .patronTransactionsByPatron$(this.patron().pid, undefined, PatronTransactionStatus.CLOSED.toString())
         .subscribe(transactions => {
           this.tabs.historyFees.transactions.set(transactions);
         });
@@ -170,8 +170,8 @@ export class PatronTransactionsComponent {
       width: '30vw',
       closable: true,
       data: {
-        patron: this.patron,
-        organisationPid: this.patron.organisation.pid
+        patron: this.patron(),
+        organisationPid: this.patron().organisation.pid
       }
     });
     this.dynamicDialogRef.onClose.subscribe(() => this.reloadEngagedFees());
@@ -180,6 +180,6 @@ export class PatronTransactionsComponent {
   // PRIVATE COMPONENTS FUNCTIONS =============================================
   /** Notify than engaged fees for the current patron should be reloaded. */
   private reloadEngagedFees(): void {
-    this.patronTransactionService.emitPatronTransactionByPatron(this.patron.pid, undefined, 'open');
+    this.patronTransactionService.emitPatronTransactionByPatron(this.patron().pid, undefined, 'open');
   }
 }

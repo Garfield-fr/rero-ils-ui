@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { _, TranslateDirective } from "@ngx-translate/core";
 import type { Error, EsResult } from '@rero/ng-core';
 import { Paginator, ShowMorePagerComponent } from '@rero/shared';
@@ -39,10 +39,10 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
   /** First call of get record */
-  loaded = false;
+  readonly loaded = signal(false);
 
   /** requests records */
-  records = [];
+  readonly records = signal<any[]>([]);
 
   /** Document section is collapsed */
   isCollapsed = true;
@@ -64,7 +64,7 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.paginator.more$.subscribe((page: number) => {
         this._historyQuery(page).subscribe((response: EsResult) => {
-          this.records = this.records.concat(response.hits.hits);
+          this.records.update(r => [...r, ...response.hits.hits]);
         });
       })
     );
@@ -72,12 +72,12 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
       this.patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
         if (event.name === 'history') {
           if (event.count === 0) {
-            this.loaded = true;
+            this.loaded.set(true);
           } else {
             this._historyQuery(1).subscribe((response: EsResult) => {
               this.paginator.setRecordsCount(response.hits.total.value);
-              this.records = response.hits.hits;
-              this.loaded = true;
+              this.records.set(response.hits.hits);
+              this.loaded.set(true);
             });
           }
         }
@@ -86,7 +86,7 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
     /** Reset content of history tab if cancel request */
     this.subscription.add(
       this.patronProfileService.cancelRequestEvent$.subscribe(() => {
-        this.records = [];
+        this.records.set([]);
         this.paginator.setRecordsCount(0);
       })
     );
@@ -94,8 +94,8 @@ export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.patronProfileMenuService.onChange$.subscribe(() => {
         this.paginator.setRecordsCount(0);
-        this.records = [];
-        this.loaded = false;
+        this.records.set([]);
+        this.loaded.set(false);
       })
     );
   }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe, RecordData } from '@rero/ng-core';
 import { OpenCloseButtonComponent } from '@rero/shared';
@@ -48,13 +48,13 @@ export class PatronProfileRequestComponent {
   isCollapsed = true;
 
   /** Renew action done */
-  actionDone = false;
+  readonly actionDone = signal(false);
 
   /** Cancel action success */
-  actionSuccess = false;
+  readonly actionSuccess = signal(false);
 
   /** Cancel in progress */
-  cancelInProgress = false;
+  readonly cancelInProgress = signal(false);
 
   /** Get current viewcode */
   get viewcode(): string {
@@ -64,7 +64,7 @@ export class PatronProfileRequestComponent {
   /** Cancel a request */
   cancel(): void {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
-    this.cancelInProgress = true;
+    this.cancelInProgress.set(true);
     const metadata = this.record()?.metadata as any;
     this.loanApiService.cancel({
       pid: metadata?.pid,
@@ -73,7 +73,7 @@ export class PatronProfileRequestComponent {
     }).subscribe((cancelLoan: any) => {
       if (cancelLoan !== undefined) {
         this.patronProfileService.cancelRequest(metadata?.pid);
-        this.actionDone = true;
+        this.actionDone.set(true);
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Success'),
@@ -81,7 +81,7 @@ export class PatronProfileRequestComponent {
           life: CONFIG.MESSAGE_LIFE
         });
       } else {
-        this.cancelInProgress = false;
+        this.cancelInProgress.set(false);
         this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Error'),

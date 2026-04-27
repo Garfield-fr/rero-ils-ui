@@ -96,7 +96,7 @@
     </div>
     <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end ui:mt-4 ui:pr-1">
       <!-- CLAIMS BUTTON -->
-      @if (recordPermissions?.update?.can) {
+      @if (recordPermissions()?.update?.can) {
         @if (isClaimAllowed) {
           <p-button
             icon="fa fa-gavel"
@@ -127,8 +127,8 @@
         outlined
         [pTooltip]="tooltipContent"
         tooltipPosition="top"
-        [disabled]="!recordPermissions.delete?.can"
-        [tooltipDisabled]="recordPermissions.delete?.can"
+        [disabled]="!recordPermissions()?.delete?.can"
+        [tooltipDisabled]="recordPermissions()?.delete?.can"
         (onClick)="store.deleteItem(issue())"
       />
       <ng-template #tooltipContent>

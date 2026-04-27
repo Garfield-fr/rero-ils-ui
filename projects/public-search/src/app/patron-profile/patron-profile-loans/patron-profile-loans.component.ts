@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { _, TranslateDirective } from "@ngx-translate/core";
 import type { Error, EsResult } from '@rero/ng-core';
@@ -42,10 +42,10 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
   private _subscription = new Subscription();
 
   /** First get record */
-  loaded = false;
+  readonly loaded = signal(false);
 
   /** loans records */
-  records = [];
+  readonly records = signal<any[]>([]);
 
   /** sort criteria */
   sortCriteria = 'duedate';
@@ -90,7 +90,7 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
     this._subscription.add(
       this.paginator.more$.subscribe((page: number) => {
         this._loanQuery(page).subscribe((response: EsResult) => {
-          this.records = this.records.concat(response.hits.hits);
+          this.records.update(r => [...r, ...response.hits.hits]);
           this.page = page;
         });
       })
@@ -106,8 +106,8 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
   private _initialLoad(): void {
     this._loanQuery(1).subscribe((response: EsResult) => {
       this.paginator.setRecordsCount(response.hits.total.value);
-      this.records = response.hits.hits;
-      this.loaded = true;
+      this.records.set(response.hits.hits);
+      this.loaded.set(true);
     });
   }
 
@@ -129,9 +129,9 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
         .setPage(1)
         .setRecordsCount(response.hits.total.value);
 
-      this.records = response.hits.hits;
+      this.records.set(response.hits.hits);
       this.page = 1;
-      this.loaded = true;
+      this.loaded.set(true);
     });
   }
 
@@ -144,9 +144,9 @@ export class PatronProfileLoansComponent implements OnInit, OnDestroy {
     this.paginator.setRecordsPerPage(this.page * this.nRecords);
 
     this._loanQuery(1).subscribe((response: EsResult) => {
-      this.records = response.hits.hits;
+      this.records.set(response.hits.hits);
       this.paginator.setRecordsPerPage(this.nRecords);
-      this.loaded = true;
+      this.loaded.set(true);
     });
   }
 

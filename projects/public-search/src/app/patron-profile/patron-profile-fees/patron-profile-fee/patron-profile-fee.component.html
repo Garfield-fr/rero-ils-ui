@@ -24,8 +24,8 @@
       <div class="ui:col-span-2">{{ record().createdAt | dateTranslate: 'short' }}</div>
       <div class="ui:col-span-7">
         <div class="ui:flex ui:flex-col">
-          @if (isCollapsed && document) {
-            <a href="/{{ organisation.code }}/documents/{{ document.metadata.pid }}">{{ document.metadata.title | mainTitle }}</a>
+          @if (isCollapsed && document()) {
+            <a href="/{{ organisation.code }}/documents/{{ document().metadata.pid }}">{{ document().metadata.title | mainTitle }}</a>
           }
           <div>
             {{ record().type | translate }}
@@ -54,13 +54,13 @@
             </p-panel>
           }
           <!-- DOCUMENT METADATA -->
-          @if (document) {
-            <p-panel styleClass="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ document.metadata.pid }}-document">
+          @if (document()) {
+            <p-panel styleClass="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ document().metadata.pid }}-document">
               <dl class="metadata ui:mx-5">
                 <!-- TITLE -->
                 <dt translate>Title</dt>
                 <dd>
-                  <a href="/{{ organisation.code }}/documents/{{ document.metadata.pid }}">{{ document.metadata.title | mainTitle }}</a>
+                  <a href="/{{ organisation.code }}/documents/{{ document().metadata.pid }}">{{ document().metadata.title | mainTitle }}</a>
                 </dd>
                 <!-- CALL NUMBER -->
                 @if (record().loan.item?.call_number) {

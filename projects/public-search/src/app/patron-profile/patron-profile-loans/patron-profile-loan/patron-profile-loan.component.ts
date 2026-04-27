@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { I18nPluralPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { ArrayTranslatePipe, IOrganisation, JoinPipe, OpenCloseButtonComponent } from '@rero/shared';
@@ -67,16 +67,13 @@ export class PatronProfileLoanComponent implements OnInit {
   /** Document section is collapsed */
   isCollapsed = true;
   /** Renew action done */
-  actionDone = false;
+  readonly actionDone = signal(false);
   /** Renew action success */
-  actionSuccess = false;
+  readonly actionSuccess = signal(false);
   /** Request in progress */
-  renewInProgress = false;
+  readonly renewInProgress = signal(false);
   /** Loan can extend */
-  canExtend = {
-    can: false,
-    reasons: {}
-  };
+  readonly canExtend = signal<CanExtend>({ can: false, reasons: {} });
   /** Fees */
   fees = 0;
 
@@ -100,21 +97,21 @@ export class PatronProfileLoanComponent implements OnInit {
 
     /** Get the cannot extend reasons messages as an array for template pipes */
   get reasons(): string[] {
-    return Object.values(this.canExtend?.reasons || {});
+    return Object.values(this.canExtend()?.reasons || {});
   }
 
   /** OnInit hook */
   ngOnInit(): void {
     this.loanApiService
       .canExtend(this.record()?.metadata?.pid)
-      .subscribe((response: CanExtend) => this.canExtend = response);
+      .subscribe((response: CanExtend) => this.canExtend.set(response));
   }
 
   // COMPONENTS FUNCTIONS =====================================================
   /** Renew the current loan */
   renew(): void {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
-    this.renewInProgress = true;
+    this.renewInProgress.set(true);
     const metadata = this.record()?.metadata;
     this.loanApiService.renew({
       pid: metadata?.pid,
@@ -122,11 +119,11 @@ export class PatronProfileLoanComponent implements OnInit {
       transaction_location_pid: metadata?.item.location.pid,
       transaction_user_pid: patronPid
     })
-      .pipe(finalize(() => this.renewInProgress = false))
+      .pipe(finalize(() => this.renewInProgress.set(false)))
       .subscribe((extendLoan: any) => {
-      this.actionDone = true;
+      this.actionDone.set(true);
       if (extendLoan !== undefined) {
-        this.actionSuccess = true;
+        this.actionSuccess.set(true);
         const metadata = this.record()?.metadata;
         if (metadata) {
           ['end_date', 'extension_count', 'is_late', 'due_soon_date'].map(field => metadata[field] = extendLoan[field]);

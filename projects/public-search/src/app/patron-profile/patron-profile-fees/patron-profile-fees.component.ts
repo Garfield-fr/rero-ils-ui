@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
@@ -36,7 +36,6 @@ import { fee, overdueFee } from './types';
 })
 export class PatronProfileFeesComponent implements OnInit {
 
-  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
   private patronApiService: PatronApiService = inject(PatronApiService);
@@ -45,10 +44,10 @@ export class PatronProfileFeesComponent implements OnInit {
   feesTotal = input<number>();
 
   /** First call of get record */
-  loaded = false;
+  readonly loaded = signal(false);
 
   /** requests records */
-  records = [];
+  readonly records = signal<any[]>([]);
 
   get currency() {
     return this.patronProfileMenuService.currentPatron.organisation.currency;
@@ -62,9 +61,10 @@ export class PatronProfileFeesComponent implements OnInit {
 
     forkJoin([queryFees, queryOverdue]).subscribe({
       next: ([feesResponse, overdueResponse]: [EsResult, overdueFee[]]) => {
+        const records: any[] = [];
         feesResponse.hits.hits.map((record: any) => {
           if (record.metadata?.loan) {
-            const result = this.records.filter((fee: fee) => record.metadata?.loan?.pid === fee.loan?.pid);
+            const result = records.filter((fee: fee) => record.metadata?.loan?.pid === fee.loan?.pid);
             if (result.length === 1) {
               if (record.metadata.note) {
                 result[0].notes.push(record.metadata.note);
@@ -72,36 +72,35 @@ export class PatronProfileFeesComponent implements OnInit {
               result[0].totalAmount += record.metadata.total_amount;
               result[0].transactions.push(record);
             } else {
-              this.createFee(record);
+              records.push(this.buildFee(record));
             }
           } else {
-            this.createFee(record);
+            records.push(this.buildFee(record));
           }
         });
         overdueResponse.map((overdue: overdueFee) => {
-          const result = this.records.filter((record: fee) => record.loan?.pid === overdue.loan.pid);
+          const result = records.filter((record: fee) => record.loan?.pid === overdue.loan.pid);
           if (result.length === 1) {
             result[0].totalAmount += overdue.fees.total;
             result[0].overdue = overdue.fees.total;
           } else {
-            const overdueRecord = {
+            records.push({
               type: 'overdue',
               createdAt: new Date(),
               loan: overdue.loan,
               totalAmount: overdue.fees.total,
               overdue: overdue.fees.total
-            }
-            this.records.push(overdueRecord);
+            });
           }
         });
-        this.records.sort((a, b) => a.createdAt - b.createdAt);
-        this.loaded = true;
-        this.cdr.markForCheck();
+        records.sort((a, b) => a.createdAt - b.createdAt);
+        this.records.set(records);
+        this.loaded.set(true);
       }});
   }
 
-  private createFee(record): void {
-    const fee: fee = {
+  private buildFee(record): fee {
+    const result: fee = {
       type: record.metadata.type,
       notes: [],
       createdAt: new Date(record.metadata.creation_date),
@@ -109,11 +108,11 @@ export class PatronProfileFeesComponent implements OnInit {
       transactions: [record]
     };
     if (record.metadata.note) {
-      fee.notes.push(record.metadata.note);
+      result.notes.push(record.metadata.note);
     }
     if (record.metadata.loan) {
-      fee.loan = record.metadata.loan;
+      result.loan = record.metadata.loan;
     }
-    this.records.push(fee);
+    return result;
   }
 }

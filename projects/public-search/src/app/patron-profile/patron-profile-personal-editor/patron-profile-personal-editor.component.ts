@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Location } from '@angular/common';
-import { Component, input, OnDestroy, OnInit, inject, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, OnDestroy, OnInit, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -57,7 +57,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   /** Formly fields configuration populate by the JSONSchema */
   fields: FormlyFieldConfig[];
   /** form initial values */
-  model: any = {};
+  readonly model = signal<any>(null);
   /** angular form group for ngx-formly */
   form: UntypedFormGroup = new UntypedFormGroup({});
 
@@ -164,7 +164,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
     this._subscriptions.add(
       forkJoin([schemaForm, userQuery]).subscribe(([_schema, user]: [any, any]) => {
-        this.model = user.metadata;
+        this.model.set(user.metadata);
       })
     );
   }

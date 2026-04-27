@@ -28,7 +28,7 @@
       </public-search-patron-profile-document>
       <dl class="ui:md:hidden">
         <dt translate>Due date</dt>
-        <dd [ngClass]="{ 'ui:font-bold text-success': actionSuccess}">{{ record()?.metadata.end_date | dateTranslate :'shortDate' }}</dd>
+        <dd [ngClass]="{ 'ui:font-bold text-success': actionSuccess()}">{{ record()?.metadata.end_date | dateTranslate :'shortDate' }}</dd>
       </dl>
       <div class="ui:md:hidden">
         <ng-container [ngTemplateOutlet]="tags" />
@@ -38,7 +38,7 @@
   <!-- DUE DATE & BADGES -->
   <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
     <div>
-      <span [ngClass]="{ 'ui:font-bold text-success': actionSuccess}">
+      <span [ngClass]="{ 'ui:font-bold text-success': actionSuccess()}">
         {{ record()?.metadata.end_date | dateTranslate :'shortDate' }}
       </span>
     </div>
@@ -51,11 +51,11 @@
       class="ui:pointer-events-auto"
       [pTooltip]="reasons | arrayTranslate | join:' / '"
       tooltipPosition="top"
-      [tooltipDisabled]="canExtend.can"
+      [tooltipDisabled]="canExtend().can"
       (onClick)="renew()"
-      [disabled]="renewInProgress || actionDone || !canExtend.can"
+      [disabled]="renewInProgress() || actionDone() || !canExtend().can"
       [label]="'Renew' | translate"
-      [icon]="renewInProgress? 'fa fa-spin fa-spinner': 'fa fa-refresh'"
+      [icon]="renewInProgress() ? 'fa fa-spin fa-spinner': 'fa fa-refresh'"
     />
   </div>
 </div>

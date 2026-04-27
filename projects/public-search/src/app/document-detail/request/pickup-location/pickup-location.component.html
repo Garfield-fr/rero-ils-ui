@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (fields.length > 0 && showForm) {
+@if (fields().length > 0 && showForm) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2" id="pickup-location-{{ record()?.metadata.pid }}">
     @if (recordType() === 'holding' && itemCount() > 0) {
       <p-message
@@ -26,7 +26,7 @@
     }
     <form class="ui:col-span-12" [formGroup]="form" (ngSubmit)="submit()">
       <div class="ui:mb-2">
-        <formly-form [model]="model" [fields]="fields" [form]="form"/>
+        <formly-form [model]="model" [fields]="fields()" [form]="form"/>
       </div>
       @if (!requestInProgress) {
         <p-button
@@ -58,8 +58,8 @@
 @if (requested && !showForm) {
   <div class="ui:p-2">
     <p-message
-      [text]="requestMessage.message"
-      [severity]="requestMessage.success? 'success' : 'error'"
+      [text]="requestMessage()?.message"
+      [severity]="requestMessage()?.success ? 'success' : 'error'"
       showTransitionOptions="0ms"
     />
   </div>

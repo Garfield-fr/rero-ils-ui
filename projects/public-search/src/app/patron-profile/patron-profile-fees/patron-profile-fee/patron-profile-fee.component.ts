@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe, RecordService } from '@rero/ng-core';
 import { MainTitlePipe, OpenCloseButtonComponent, IOrganisation } from '@rero/shared';
@@ -60,7 +60,7 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   /** Array of event records */
   events = [];
 
-  document = null;
+  readonly document = signal<any>(null);
 
   subscription = new Subscription();
 
@@ -72,7 +72,7 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
     if (this.record()?.loan) {
       this.subscription.add(
         this.recordService.getRecord('documents', this.record()?.loan.document_pid)
-          .subscribe(document => this.document = document)
+          .subscribe(document => this.document.set(document))
       );
     }
   }

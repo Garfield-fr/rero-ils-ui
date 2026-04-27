@@ -15,14 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe, NgClass } from '@angular/common';
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe, RecordData } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared';
 import type { EsResult } from '@rero/ng-core';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
-import { Subscription } from 'rxjs';
 import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
 import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
 
@@ -33,28 +32,20 @@ import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
   imports: [CurrencyPipe, NgClass, TranslateDirective, TranslatePipe, DateTranslatePipe, TagModule, TimelineModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
+export class PatronProfileFeeEventComponent implements OnInit {
     private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);
     private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
     event = input<RecordData>();
 
-    transactionEvents;
-
-    private subscription = new Subscription();
+    readonly transactionEvents = signal<any[]>([]);
 
     get organisation(): IOrganisation {
       return this.patronProfileMenuService.currentPatron.organisation;
     }
 
     ngOnInit(): void {
-      this.subscription.add(
-        this.patronTransactionEventApiService.getEvents((this.event()!.metadata as any).pid).subscribe((response: EsResult) =>
-        this.transactionEvents = response.hits.hits
-      ));
-    }
-
-    ngOnDestroy(): void {
-      this.subscription.unsubscribe();
+      this.patronTransactionEventApiService.getEvents((this.event()!.metadata as any).pid)
+        .subscribe((response: EsResult) => this.transactionEvents.set(response.hits.hits));
     }
 }

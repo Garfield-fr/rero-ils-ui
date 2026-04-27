@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { APP_BASE_HREF, CurrencyPipe, KeyValue, KeyValuePipe } from '@angular/common';
-import { afterNextRender, Component, inject, model, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { afterNextRender, Component, inject, model, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
@@ -112,7 +112,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   activeTab = model<undefined | string >(undefined);
 
   /** Tabs */
-  tabs: Tabs = {
+  readonly tabs = signal<Tabs>({
     loan: {
       loaded: false,
       count: 0,
@@ -153,7 +153,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       order: 5,
       display: true
     },
-  };
+  });
 
   /** Current patron pid */
   private _patronPid: string;
@@ -189,7 +189,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
    * @returns `string | null` - Returns the key of the matching tab if found; otherwise, returns `null`.
    */
   getTabKeyByIndex(index): string | null {
-    for (const [key, value] of Object.entries(this.tabs)) {
+    for (const [key, value] of Object.entries(this.tabs())) {
       if (value.order === index) {
         return key;
       }
@@ -223,13 +223,13 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       this.viewcode = pathParts[1];
     }
     this.activeTab.subscribe((tabSelected: string) => {
-      this.tabs[tabSelected].loaded = true;
-      this.patronProfileService.changeTab({ name: tabSelected, count: this.tabs[tabSelected].count });
+      this.tabs.update(t => ({ ...t, [tabSelected]: { ...t[tabSelected], loaded: true } }));
+      this.patronProfileService.changeTab({ name: tabSelected, count: this.tabs()[tabSelected].count });
     });
     this.user = this.appStore.user();
     if (this.user.isAuthenticated && this.user.isPatron) {
       const keepHistory = this.user.keep_history === undefined ? false : this.user.keep_history;
-      this.tabs.history.display = keepHistory;
+      this.tabs.update(t => ({ ...t, history: { ...t.history, display: keepHistory } }));
       this.subscription.add(
         this.patronProfileMenuService.onChange$.subscribe((menu: IMenu) => {
           this._patronPid = menu.value;
@@ -251,15 +251,19 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
               EsResult
             ]) => {
               this.activeTab.set('loan');
-              Object.values(this.tabs).map(tab => tab.loaded = false);
-              this.tabs.loan.count = +this.recordService.totalHits(loanResponse.hits.total);
-              this.tabs.fee.feeTotal = (feeResponse.aggregations as any).total.value;
-              overdueResponse.map((fee: overdueFee) => this.tabs.fee.feeTotal += +fee.fees.total);
-              this.tabs.request.count = +this.recordService.totalHits(requestResponse.hits.total);
-              this.tabs.illRequest.count = +this.recordService.totalHits(illRequestResponse.hits.total);
-              if (historyResponse?.hits?.total) {
-                this.tabs.history.count = +this.recordService.totalHits(historyResponse.hits.total);
-              }
+              const feeTotal = overdueResponse.reduce(
+                (acc: number, fee: overdueFee) => acc + +fee.fees.total,
+                (feeResponse.aggregations as any).total.value
+              );
+              this.tabs.update(t => ({
+                ...t,
+                loan: { ...t.loan, loaded: false, count: +this.recordService.totalHits(loanResponse.hits.total) },
+                request: { ...t.request, loaded: false, count: +this.recordService.totalHits(requestResponse.hits.total) },
+                fee: { ...t.fee, loaded: false, feeTotal },
+                illRequest: { ...t.illRequest, loaded: false, count: +this.recordService.totalHits(illRequestResponse.hits.total) },
+                history: { ...t.history, loaded: false, count: historyResponse?.hits?.total ? +this.recordService.totalHits(historyResponse.hits.total) : t.history.count },
+                personalDetails: { ...t.personalDetails, loaded: false },
+              }));
             }
           );
         })
@@ -267,15 +271,13 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       /** Update tab history if cancel a request */
       this.subscription.add(
         this.patronProfileService.cancelRequestEvent$.subscribe(() => {
-          this.tabs.request.count--;
+          this.tabs.update(t => ({ ...t, request: { ...t.request, count: t.request.count - 1 } }));
           if (keepHistory) {
-            this.tabs.history.loaded = false;
             this.operationLogsApiService.getHistory(this._patronPid, 1, 1).subscribe((historyResponse: EsResult) => {
-              this.tabs.history = {
-                ...this.tabs.history,
-                loaded: false,
-                count: +this.recordService.totalHits(historyResponse.hits.total),
-              };
+              this.tabs.update(t => ({
+                ...t,
+                history: { ...t.history, loaded: false, count: +this.recordService.totalHits(historyResponse.hits.total) },
+              }));
             });
           }
         })
@@ -288,8 +290,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
-  afterRe
 
   /**
    * Find patron Pid with current view code

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, input, model, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, model, OnDestroy, signal, ChangeDetectionStrategy} from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordService, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
@@ -70,7 +70,7 @@ export class ItemDetailViewComponent implements OnDestroy {
   permissionOperator = PERMISSION_OPERATOR;
 
   /** Location record */
-  location: any;
+  readonly location = signal<any>(null);
   /** Load operation logs on show */
   showOperationLogs = false;
   /** reference to ItemIssueStatus */
@@ -83,7 +83,7 @@ export class ItemDetailViewComponent implements OnDestroy {
     effect(() => {
       const record = this.record();
       if (record != null) {
-        this.recordService.getRecord('locations', record.metadata.location.pid, { resolve: 1 }).subscribe(data => this.location = data);
+        this.recordService.getRecord('locations', record.metadata.location.pid, { resolve: 1 }).subscribe(data => this.location.set(data));
       }
     });
   }

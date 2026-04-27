@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import type { ToastMessageOptions } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
 import { Subscription } from 'rxjs';
@@ -24,7 +24,7 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 @Component({
     selector: 'public-search-patron-profile-message',
     template: `
-    @for (message of messages; track $index) {
+    @for (message of messages(); track $index) {
       <p-message
         styleClass="ui:mb-2"
         [text]="message.text"
@@ -38,7 +38,6 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileMessageComponent implements OnInit, OnDestroy {
-  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private patronApiService: PatronApiService = inject(PatronApiService);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
@@ -46,7 +45,7 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
   private _subscription = new Subscription();
 
   /** patron messages */
-  messages: ToastMessageOptions[] = [];
+  readonly messages = signal<ToastMessageOptions[]>([]);
 
   /** OnInit hook */
   ngOnInit(): void {
@@ -68,10 +67,9 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.patronApiService.getMessages(patronPid).subscribe(
       (messages: Message[]) => {
-        this.messages = messages.map((message: Message): ToastMessageOptions => ({
+        this.messages.set(messages.map((message: Message): ToastMessageOptions => ({
           text: message.content, severity: message.type
-        }));
-        this.cdr.markForCheck();
+        })));
       }
     );
   }
