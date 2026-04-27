@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
@@ -46,17 +47,22 @@ export class OrderReceiptViewComponent implements OnInit {
   private messageService = inject(MessageService);
   private apiService:ApiService = inject(ApiService);
 
+  private readonly _paramMap = toSignal(this.route.paramMap);
+  private readonly _queryParamMap = toSignal(this.route.queryParamMap);
+
   // COMPONENTS ATTRIBUTES ====================================================
-  /** order pid */
-  orderPid: string;
+  /** order pid derived from route params */
+  readonly orderPid = computed(() => this._paramMap()?.get('pid'));
+  /** receipt pid derived from query params (present when editing an existing receipt) */
+  private readonly receiptPid = computed(() => this._queryParamMap()?.get('receipt'));
   /** order Record */
   orderRecord: any;
   /** Receipt Record */
-  receiptRecord: any;
+  private readonly receiptRecord = signal<any>(null);
   /** is save button has clicked */
-  orderSend = false;
+  readonly orderSend = signal(false);
   /** All elements loaded */
-  loaded = false;
+  readonly loaded = signal(false);
   /** Formly configuration */
   form = new UntypedFormGroup({});
   /** Model */
@@ -66,11 +72,10 @@ export class OrderReceiptViewComponent implements OnInit {
   knownDataCollapsed = true;
 
   /** Form fields */
-  fields: FormlyFieldConfig[];
+  readonly fields = signal<FormlyFieldConfig[]>([]);
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.orderPid = this.route.snapshot.paramMap.get('pid');
     this._generateForm();
   }
 
@@ -80,17 +85,17 @@ export class OrderReceiptViewComponent implements OnInit {
    * @param model - ReceiptModel
    */
   onSubmit(model: IAcqReceiptModel): void {
-    this.orderSend = true;
-    let record: IAcqReceipt = (!this.receiptRecord)
+    this.orderSend.set(true);
+    let record: IAcqReceipt = (!this.receiptRecord())
       ? this.orderReceipt.processBaseRecord(model)
-      : this.orderReceipt.processExistingRecord(this.receiptRecord);
+      : this.orderReceipt.processExistingRecord(this.receiptRecord());
     record = this.orderReceiptForm.processForm(model, record);
 
-    const receiptApi$ = (!this.receiptRecord)
+    const receiptApi$ = (!this.receiptRecord())
       ? this.acqReceiptApiService.createReceipt(record).pipe(tap(receipt => model.pid = receipt.pid))
       : this.acqReceiptApiService.updateReceipt(record.pid, record);
     receiptApi$
-      .pipe(finalize(() => this.orderSend = false))
+      .pipe(finalize(() => this.orderSend.set(false)))
       .subscribe({
         next: (receipt: IAcqReceipt) => this.createLinesAndMessage(model, receipt),
         error: (err) => this.messageService.add({
@@ -111,35 +116,33 @@ export class OrderReceiptViewComponent implements OnInit {
     this.model = this.orderReceipt.model;
 
     // Try to load the receipt depending of the url argument
-    const receiptPid = this.route.snapshot.queryParams.receipt;
+    const receiptPid = this.receiptPid();
     if (receiptPid) {
       this.model.pid = receiptPid;
       this.acqReceiptApiService
         .getReceipt(receiptPid)
         .subscribe((receipt: IAcqReceipt) => {
-          this.receiptRecord = receipt;
+          this.receiptRecord.set(receipt);
           this.model.reference = receipt.reference;
           this.model.notes = receipt.notes;
           if (receipt.amount_adjustments) {
             this.model.amountAdjustments =
-              receipt.amount_adjustments.map((adj:AcqReceiptAmountAdjustment) => {
-                return {
-                  label: adj.label,
-                  amount: adj.amount,
-                  acqAccount: this.apiService.getRefEndpoint('acq_accounts', adj.acq_account.pid)
-                };
-            });
+              receipt.amount_adjustments.map((adj: AcqReceiptAmountAdjustment) => ({
+                label: adj.label,
+                amount: adj.amount,
+                acqAccount: this.apiService.getRefEndpoint('acq_accounts', adj.acq_account.pid!)
+              }));
           }
         });
     }
     this.orderReceiptForm
       .setModel(this.model)
-      .createForm(this.orderPid)
+      .createForm(this.orderPid()!)
       .subscribe((loaded: boolean) => {
         this.orderRecord = this.orderReceiptForm.getOrderRecord();
         this.model = this.orderReceiptForm.getModel();
-        this.fields = this.orderReceiptForm.getConfig();
-        this.loaded = loaded;
+        this.fields.set(this.orderReceiptForm.getConfig());
+        this.loaded.set(loaded);
       });
   }
 
@@ -186,6 +189,6 @@ export class OrderReceiptViewComponent implements OnInit {
 
   /** Redirect to order detail view */
   redirectToOrder(): void {
-    this.router.navigate(['/acquisition', 'records', 'acq_orders', 'detail', this.orderPid], { queryParams: {tab: 'reception'}});
+    this.router.navigate(['/acquisition', 'records', 'acq_orders', 'detail', this.orderPid()], { queryParams: {tab: 'reception'}});
   }
 }
