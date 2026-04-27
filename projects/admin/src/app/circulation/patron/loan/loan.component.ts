@@ -308,7 +308,13 @@ export class LoanComponent implements OnInit, OnDestroy {
               }
               case ItemAction.extend_loan: {
                 const index = this.checkedOutItems.findIndex((currItem) => currItem.pid === newItem.pid);
-                this.checkedOutItems[index] = newItem;
+                if (index > -1) {
+                  this.checkedOutItems = [
+                    ...this.checkedOutItems.slice(0, index),
+                    newItem,
+                    ...this.checkedOutItems.slice(index + 1)
+                  ];
+                }
                 break;
               }
             }
