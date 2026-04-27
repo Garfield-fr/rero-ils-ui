@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { MenuItem } from 'primeng/api';
@@ -29,39 +28,36 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'admin-circulation-settings',
     templateUrl: './circulation-settings.component.html',
+    providers: [DateTranslatePipe],
     imports: [Bind, Menu, Button],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CirculationSettingsComponent implements OnInit {
+export class CirculationSettingsComponent {
 
   private translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
-  private loanFixedDateService: LoanFixedDateService = inject(LoanFixedDateService);
   private dateTranslatePipe: DateTranslatePipe = inject(DateTranslatePipe);
   private circulationSettingsService: CirculationSettingsService = inject(CirculationSettingsService);
 
-  items: MenuItem[] = [];
+  items: MenuItem[] = [
+    {
+      label: this.translateService.instant('Check-out for a fix date'),
+      code: 'fix-date',
+      command: () => this.openFixedEndDateDialog()
+    },
+    {
+      label: this.translateService.instant('Override blockings'),
+      code: 'override',
+      command: () => this.overrideBlocking()
+    }
+  ];
 
   dialogRef: DynamicDialogRef | undefined;
 
-  ngOnInit(): void {
-    this.items = [
-      {
-        label: this.translateService.instant('Check-out for a fix date'),
-        code: 'fix-date',
-        command: () => this.openFixedEndDateDialog()
-      },
-      {
-        label: this.translateService.instant('Override blockings'),
-        code: 'override',
-        command: () => this.overrideBlocking()
-      }
-    ];
-
-    // Assignment of end date if present in locale storage
-    const fixedDateValue = this.loanFixedDateService.get();
-    if (fixedDateValue) {
-      this.setCheckoutDateSetting(new Date(fixedDateValue), true);
+  constructor() {
+    const fixedDate = this.circulationSettingsService.storedDueDate();
+    if (fixedDate) {
+      this.setCheckoutDateSetting(new Date(fixedDate), true);
     }
   }
 
@@ -72,12 +68,9 @@ export class CirculationSettingsComponent implements OnInit {
       focusOnShow: false,
       width: '30vw',
     });
-    this.dialogRef.onClose.subscribe((result?: any) => {
+    this.dialogRef.onClose.subscribe((result?: { action: string; content: { endDate: Date; remember: boolean } }) => {
       if (result && 'action' in result && result.action === 'submit') {
-        const date = this.setCheckoutDateSetting(result.content.endDate, result.content.remember);
-        if (result.content.remember) {
-          this.loanFixedDateService.set(date);
-        }
+        this.setCheckoutDateSetting(result.content.endDate, result.content.remember);
       }
     });
   }
@@ -90,12 +83,12 @@ export class CirculationSettingsComponent implements OnInit {
     });
   }
 
-  private setCheckoutDateSetting(endDate: Date, remember: boolean): string {
-    endDate.setHours(23,59);
+  private setCheckoutDateSetting(endDate: Date, remember: boolean): void {
+    endDate.setHours(23, 59);
     const formattedDate = this.dateTranslatePipe.transform(endDate, 'shortDate');
-    const setting = {
+    const setting: ICirculationSetting = {
       key: 'endDate',
-      label: this.translateService.instant('Active chosen due date: {{ endDate }}', {endDate: formattedDate}),
+      label: this.translateService.instant('Active chosen due date: {{ endDate }}', { endDate: formattedDate }),
       value: endDate.toISOString(),
       extra: {
         remember,
@@ -103,11 +96,9 @@ export class CirculationSettingsComponent implements OnInit {
       }
     };
     this._setCheckoutSetting(setting);
-
-    return setting.value;
   }
 
-  private _setCheckoutSetting(setting: ICirculationSetting) {
+  private _setCheckoutSetting(setting: ICirculationSetting): void {
     this.circulationSettingsService.remove(setting.key);
     this.circulationSettingsService.add(setting);
   }

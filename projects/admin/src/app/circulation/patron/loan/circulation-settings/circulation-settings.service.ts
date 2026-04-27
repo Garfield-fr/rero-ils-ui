@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 
 export type ICirculationSetting = {
   key: string;    /** the setting internal key */
   label: string;  /** the setting label to display to user */
-  value: any;     /** the setting value */
-  extra?: any;     /** extra element for customization */
+  value: unknown; /** the setting value */
+  extra?: {
+    remember?: boolean;
+    severity?: string;
+  };
 }
 
 @Injectable({
@@ -31,27 +34,31 @@ export class CirculationSettingsService {
 
   private loanFixedDateService: LoanFixedDateService = inject(LoanFixedDateService);
 
-  private checkoutCirculationSettings: ICirculationSetting[] = [];
+  private readonly _settings = signal<ICirculationSetting[]>([]);
 
-  add(circulationSetting: ICirculationSetting): void {
-    this.checkoutCirculationSettings.push(circulationSetting);
+  readonly settings = this._settings.asReadonly();
+  readonly hasSettings = computed(() => this._settings().length > 0);
+  readonly storedDueDate = this.loanFixedDateService.dueDate;
+
+  add(setting: ICirculationSetting): void {
+    this._settings.update(s => [...s, setting]);
+    if (setting.key === 'endDate' && setting.extra?.remember && typeof setting.value === 'string') {
+      this.loanFixedDateService.set(setting.value);
+    }
   }
 
-  clear() {
-    this.checkoutCirculationSettings = [];
+  clear(): void {
+    this._settings.set([]);
   }
 
-  getSettings(): ICirculationSetting[] {
-    return this.checkoutCirculationSettings;
-  }
-
-  remove(key: string): ICirculationSetting | ICirculationSetting[] | null {
-    const idx = this.checkoutCirculationSettings.findIndex(setting => setting.key === key);
+  remove(key: string): void {
+    const idx = this._settings().findIndex(s => s.key === key);
     if (idx >= 0) {
-      if (key === 'endDate' && this.checkoutCirculationSettings[idx].extra.remember) {
+      if (key === 'endDate' && this._settings()[idx].extra?.remember) {
+        console.log('Removing checkout date setting:', this._settings()[idx]);
         this.loanFixedDateService.remove();
       }
-      return this.checkoutCirculationSettings.splice(idx, 1);
+      this._settings.update(s => s.filter((_, i) => i !== idx));
     }
   }
 }

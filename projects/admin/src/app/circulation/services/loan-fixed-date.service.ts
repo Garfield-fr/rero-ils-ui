@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023-2024 RERO
+ * Copyright (C) 2023-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { effect, inject, Injectable } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { MenuStore } from '@app/admin/menu/store/menu.store';
 import { LocalStorageService } from '@rero/ng-core';
 
@@ -26,11 +26,13 @@ export class LoanFixedDateService {
   private localeStorageService: LocalStorageService = inject(LocalStorageService);
   private menuStore = inject(MenuStore);
 
-  /** The key to local Storage */
-  private _dueDateKey = 'due_date_remember';
+  private readonly _dueDateKey = 'due_date_remember';
+  private readonly _keyExpiration = 43200; // 12 hours in seconds
 
-  /** Expiration 12 hours (definition in seconds) */
-  private _keyExpiration = 43200;
+  private readonly _dueDate = signal<string | undefined>(this._readFromStorage());
+
+  readonly dueDate = this._dueDate.asReadonly();
+  readonly hasValue = computed(() => this._dueDate() !== undefined);
 
   constructor() {
     effect(() => {
@@ -47,48 +49,47 @@ export class LoanFixedDateService {
   }
 
   /**
-   * Test the existence of the value in locale storage
-   * @returns true if the value exists
-   */
-  hasValue(): boolean {
-    return this.localeStorageService.has(this._dueDateKey);
-  }
-
-  /**
-   * Save value in locale storage
+   * Save value in locale storage and update the signal
    * @param value - Date in string format
    */
   set(value: string): void {
+    console.log('Setting checkout date to:', value);
     this.localeStorageService.set(this._dueDateKey, value);
+    this._dueDate.set(value);
   }
 
   /**
-   * Getting the date from locale storage
+   * Getting the date from the signal (validated on init and on each remove/set)
    * @returns The date in string format or undefined
    */
   get(): string | undefined {
-    // We have a value in local storage
-    if (this.localeStorageService.has(this._dueDateKey)) {
-      if (this.localeStorageService.isExpired(this._dueDateKey, this._keyExpiration)) {
-        this.remove();
-      } else {
-        const endDate = this.localeStorageService.get(this._dueDateKey);
-        // We compare the retrieved date with today's date
-        const endDay = new Date(new Date(endDate).toDateString()).getTime();
-        const now = new Date(new Date().toDateString()).getTime();
-        if (endDay >= now) {
-          return endDate;
-        }
-        // If the date is lower, we delete it.
-        this.remove();
-      }
-    }
+    return this._dueDate();
   }
 
   /**
-   * Remove value in locale storage
+   * Remove value from locale storage and clear the signal
    */
   remove(): void {
     this.localeStorageService.remove(this._dueDateKey);
+    this._dueDate.set(undefined);
+  }
+
+  /** Read, validate and return the stored date; clears storage if invalid */
+  private _readFromStorage(): string | undefined {
+    if (!this.localeStorageService.has(this._dueDateKey)) {
+      return undefined;
+    }
+    if (this.localeStorageService.isExpired(this._dueDateKey, this._keyExpiration)) {
+      this.localeStorageService.remove(this._dueDateKey);
+      return undefined;
+    }
+    const endDate = this.localeStorageService.get(this._dueDateKey);
+    const endDay = new Date(new Date(endDate).toDateString()).getTime();
+    const now = new Date(new Date().toDateString()).getTime();
+    if (endDay >= now) {
+      return endDate;
+    }
+    this.localeStorageService.remove(this._dueDateKey);
+    return undefined;
   }
 }

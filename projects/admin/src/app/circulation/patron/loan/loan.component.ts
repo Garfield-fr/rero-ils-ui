@@ -15,30 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
 import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { CONFIG, DateTranslatePipe, SearchInputComponent } from '@rero/ng-core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CONFIG, SearchInputComponent } from '@rero/ng-core';
 import { AppStore, ItemStatus, User } from '@rero/shared';
 import { MessageService } from 'primeng/api';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { SelectChangeEvent } from 'primeng/select';
-import { FormsModule } from '@angular/forms';
-import { delay, forkJoin, Subscription, switchMap, tap } from 'rxjs';
-import { LoanFixedDateService } from '../../services/loan-fixed-date.service';
-import { CirculationStatsService } from '../service/circulation-stats.service';
-import { CirculationSettingsService, ICirculationSetting } from './circulation-settings/circulation-settings.service';
-import { CirculationSettingsComponent } from './circulation-settings/circulation-settings.component';
 import { Bind } from 'primeng/bind';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { SelectChangeEvent, SelectModule } from 'primeng/select';
 import { Tag } from 'primeng/tag';
+import { delay, forkJoin, Subscription, switchMap, tap } from 'rxjs';
 import { ItemsListComponent } from '../../items-list/items-list.component';
-import { SelectModule } from 'primeng/select';
+import { CirculationStatsService } from '../service/circulation-stats.service';
+import { CirculationSettingsComponent } from './circulation-settings/circulation-settings.component';
+import { CirculationSettingsService } from './circulation-settings/circulation-settings.service';
 
 @Component({
     selector: 'admin-loan',
     templateUrl: './loan.component.html',
-    providers: [DateTranslatePipe, LoanFixedDateService],
     imports: [
         FormsModule,
         SearchInputComponent,
@@ -47,7 +44,7 @@ import { SelectModule } from 'primeng/select';
         Tag,
         ItemsListComponent,
         TranslatePipe,
-        SelectModule,
+        SelectModule
     ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -86,19 +83,10 @@ export class LoanComponent implements OnInit, OnDestroy {
   /** checkout list sort criteria */
   sortCriteria = '-transaction_date';
 
-  // GETTER & SETTER ================================================
-  /** Return the circulation special settings */
-  get checkoutSettings(): ICirculationSetting[] | null {
-    return this.circulationSettingsService.getSettings();
-  }
+  readonly checkoutSettings = this.circulationSettingsService.settings;
 
-  /**
-   * Get a circulation setting
-   * @param key: the setting key to find
-   * @return the value of the setting. null if key isn't found
-   */
-  private _getCheckoutSetting(key: string): any | null {
-    const setting = this.circulationSettingsService.getSettings().find((element) => element.key === key);
+  private _getCheckoutSetting(key: string): unknown | null {
+    const setting = this.circulationSettingsService.settings().find((element) => element.key === key);
     return setting !== undefined ? setting.value : null;
   }
 
@@ -253,10 +241,10 @@ export class LoanComponent implements OnInit, OnDestroy {
     const observables = [];
     for (const item of items) {
       if (item.currentAction !== ItemAction.no) {
-        const additionalParams = {};
+        const additionalParams: Record<string, unknown> = {};
         if (item.currentAction === ItemAction.checkout) {
           this.circulationSettingsService
-            .getSettings()
+            .settings()
             .map((setting) => (additionalParams[setting.key] = setting.value));
         }
         observables.push(
@@ -453,11 +441,10 @@ export class LoanComponent implements OnInit, OnDestroy {
    * @param item: the item (with loan data included)
    */
   private _displayTransactionEndDateChanged(item: any): void {
-    let settingEndDate = this._getCheckoutSetting('endDate');
-    let loanEndDate = item.loan.end_date || null;
+    const rawEndDate = this._getCheckoutSetting('endDate');
+    const settingEndDate: Date | null = rawEndDate !== null ? new Date(rawEndDate as string) : null;
+    const loanEndDate: Date | null = item.loan.end_date ? new Date(item.loan.end_date) : null;
     if (settingEndDate !== null && loanEndDate !== null) {
-      settingEndDate = new Date(settingEndDate);
-      loanEndDate = new Date(loanEndDate);
       if (
         settingEndDate.getFullYear() !== loanEndDate.getFullYear() ||
         settingEndDate.getMonth() !== loanEndDate.getMonth() ||
