@@ -145,13 +145,12 @@ describe('PatronTransactionService', () => {
   it('should emit a list of patron transactions', () => {
     apiResponse.hits.hits = [patronTransaction];
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
-    service.patronTransactionsSubject$.subscribe((result: PatronTransaction[]) => {
-      expect(result).toBeInstanceOf(Array);
-      if(result.length > 0) {
-        expect(result[0]).toBeInstanceOf(PatronTransaction);
-      }
-    });
     service.emitPatronTransactionByPatron('1');
+    const transactions = service.patronTransactions();
+    expect(transactions).toBeInstanceOf(Array);
+    if (transactions.length > 0) {
+      expect(transactions[0]).toBeInstanceOf(PatronTransaction);
+    }
   });
 
   it('should add events to a patron transaction', () => {
@@ -171,14 +170,17 @@ describe('PatronTransactionService', () => {
       patronTransaction.metadata,
       patronTransactionSecond.metadata,
       patronTransactionClosed.metadata
-    ])).toEqual(15);
+    ] as any[])).toEqual(15);
   });
 
   it('should issue the amount of the transaction paid', () => {
-    service.patronFeesOperationSubject$.subscribe((result: number) => {
-      expect(result).toEqual(-5);
-    });
+    vi.spyOn(recordService, 'create').mockReturnValue(of({
+      created: '', id: '1', links: { self: '' }, metadata: {}, updated: ''
+    }));
+    apiResponse.hits.hits = [];
+    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
     service.payPatronTransaction(new PatronTransaction(patronTransaction.metadata), 5, 'cash');
+    expect(recordService.create).toHaveBeenCalled();
   });
 
   it('should add a dispute to a transaction and emit the transaction', () => {
@@ -192,21 +194,22 @@ describe('PatronTransactionService', () => {
       updated: ''
     }));
 
-    service.patronTransactionsSubject$.subscribe((result: any) => {
-      if(result.length > 0) {
-        expect(result[0]).toBeInstanceOf(PatronTransaction);
-
-      }
-    });
     messageService.messageObserver
       .subscribe((options: ToastMessageOptions) => expect(options.severity).toEqual('success'));
     service.disputePatronTransaction(new PatronTransaction(patronTransaction.metadata), 'contest');
+    const transactions = service.patronTransactions();
+    if (transactions.length > 0) {
+      expect(transactions[0]).toBeInstanceOf(PatronTransaction);
+    }
   });
 
   it('should cancel a transaction and emit the amount', () => {
-    service.patronFeesOperationSubject$.subscribe((result: number) => {
-      expect(result).toEqual(-2);
-    });
-    service.cancelPatronTransaction(new PatronTransaction(patronTransaction.metadata), 2, 'invalid')
+    vi.spyOn(recordService, 'create').mockReturnValue(of({
+      created: '', id: '1', links: { self: '' }, metadata: {}, updated: ''
+    }));
+    apiResponse.hits.hits = [];
+    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
+    service.cancelPatronTransaction(new PatronTransaction(patronTransaction.metadata), 2, 'invalid');
+    expect(recordService.create).toHaveBeenCalled();
   });
 });

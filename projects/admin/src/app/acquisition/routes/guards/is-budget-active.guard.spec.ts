@@ -104,7 +104,7 @@ describe('isBudgetActiveGuard', () => {
 
   it('should return a 403 error if the record does not have the field is_current_budget', async () => {
     const record = cloneDeep(receipt);
-    delete record.is_current_budget;
+    delete (record as any).is_current_budget;
     record.metadata.is_current_budget = false;
     vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
     const navPromise = waitForNavigation();

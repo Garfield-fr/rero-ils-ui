@@ -53,17 +53,22 @@ export class LoanFixedDateService {
    * @param value - Date in string format
    */
   set(value: string): void {
-    console.log('Setting checkout date to:', value);
     this.localeStorageService.set(this._dueDateKey, value);
     this._dueDate.set(value);
   }
 
   /**
-   * Getting the date from the signal (validated on init and on each remove/set)
+   * Get the stored date if it is still valid (today or future), otherwise undefined.
    * @returns The date in string format or undefined
    */
   get(): string | undefined {
-    return this._dueDate();
+    const value = this._dueDate();
+    if (!value) {
+      return undefined;
+    }
+    const endDay = new Date(new Date(value).toDateString()).getTime();
+    const now = new Date(new Date().toDateString()).getTime();
+    return endDay >= now ? value : undefined;
   }
 
   /**

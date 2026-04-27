@@ -120,13 +120,9 @@ describe('ResourcesFilesService', () => {
     const parentWith$ref = {...responseCopy.hits.hits[0], ...parentTransform};
     // console.log('response', response);
     httpClientSpy.get.mockReturnValue(of({...response}));
-    service.currentParentRecord$.subscribe((result: any) => {
-      if (result) {
-        expect(result).toEqual(parentWith$ref);
-      }
-    });
     service.getParentRecord('1')
       .subscribe((result: any) => expect(result).toEqual(parentWith$ref));
+    expect(service.currentParentRecord()).toEqual(parentWith$ref);
   });
 
   it('should create a new parent and return the record.', () => {
@@ -145,13 +141,9 @@ describe('ResourcesFilesService', () => {
     const responseCopy = {...response};
     const parentWith$ref = {...responseCopy.hits.hits[0], ...parentTransform};
     httpClientSpy.post.mockReturnValue(of(parentWith$ref));
-    service.currentParentRecord$.subscribe((result: any) => {
-      if (result) {
-        expect(result).toEqual(parentWith$ref);
-      }
-    });
     service.createParentRecord('1')
       .subscribe((result: any) => expect(result).toEqual(parentWith$ref));
+    expect(service.currentParentRecord()).toEqual(parentWith$ref);
   });
 
   it('should update the parent', () => {
@@ -211,9 +203,7 @@ describe('ResourcesFilesService', () => {
       ]
     }
     httpClientSpy.get.mockReturnValue(of(responseBis));
-    service.currentParentRecord$.subscribe((result: any) => {
-      expect(result).toEqual(null);
-    });
     service.delete('1', 'file_key').subscribe((result: any) => expect(result).toEqual({}));
+    expect(service.currentParentRecord()).toBeNull();
   });
 });
