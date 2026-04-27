@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
@@ -36,6 +36,7 @@ import { fee, overdueFee } from './types';
 })
 export class PatronProfileFeesComponent implements OnInit {
 
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
   private patronApiService: PatronApiService = inject(PatronApiService);
@@ -95,6 +96,7 @@ export class PatronProfileFeesComponent implements OnInit {
         });
         this.records.sort((a, b) => a.createdAt - b.createdAt);
         this.loaded = true;
+        this.cdr.markForCheck();
       }});
   }
 

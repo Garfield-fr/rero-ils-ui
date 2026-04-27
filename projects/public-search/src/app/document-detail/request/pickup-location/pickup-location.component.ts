@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -33,6 +33,7 @@ import { Button } from 'primeng/button';
 })
 export class PickupLocationComponent implements OnInit {
 
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private locationApiService: LocationApiService = inject(LocationApiService);
   private itemApiService: ItemApiService = inject(ItemApiService);
   private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
@@ -110,6 +111,7 @@ export class PickupLocationComponent implements OnInit {
             options
           }
         });
+        this.cdr.markForCheck();
       });
   }
 
@@ -147,12 +149,14 @@ export class PickupLocationComponent implements OnInit {
           success: true,
           message: this.translateService.instant('Your request has been placed.')
         };
+        this.cdr.markForCheck();
       },
       () => {
         this.requestMessage = {
           success: false,
           message: this.translateService.instant('Error on this request.')
         };
+        this.cdr.markForCheck();
       }
     );
   }

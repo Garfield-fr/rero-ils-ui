@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordUiService } from '@rero/ng-core';
 import { RouterLink } from '@angular/router';
@@ -31,6 +31,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class LocationComponent implements OnInit {
 
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private recordUiService: RecordUiService = inject(RecordUiService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
 
@@ -51,7 +52,10 @@ export class LocationComponent implements OnInit {
    */
   ngOnInit() {
     this.recordPermissionService.getPermission('locations', this.location().metadata.pid).subscribe(
-      (permissions) => this.permissions = permissions
+      (permissions) => {
+        this.permissions = permissions;
+        this.cdr.markForCheck();
+      }
     );
   }
 

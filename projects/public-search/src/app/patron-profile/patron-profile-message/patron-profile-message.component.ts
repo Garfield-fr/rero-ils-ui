@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import type { ToastMessageOptions } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
 import { Subscription } from 'rxjs';
@@ -38,6 +38,7 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileMessageComponent implements OnInit, OnDestroy {
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private patronApiService: PatronApiService = inject(PatronApiService);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
 
@@ -66,10 +67,12 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
   private _loanMessage(): void {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     this.patronApiService.getMessages(patronPid).subscribe(
-      (messages: Message[]) =>
-        (this.messages = messages.map((message:Message): ToastMessageOptions => {
-          return { text: message.content, severity: message.type };
-        }))
+      (messages: Message[]) => {
+        this.messages = messages.map((message: Message): ToastMessageOptions => ({
+          text: message.content, severity: message.type
+        }));
+        this.cdr.markForCheck();
+      }
     );
   }
 }
