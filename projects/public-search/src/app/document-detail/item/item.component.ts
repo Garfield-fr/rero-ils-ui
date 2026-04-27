@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AvailabilityComponent, NotesFilterPipe, SafeUrlPipe, AppStore } from '@rero/shared';
 import { Nl2brPipe, RecordData } from '@rero/ng-core';
@@ -32,8 +32,10 @@ import { PickupLocationComponent } from '../request/pickup-location/pickup-locat
 export class ItemComponent {
 
   private translateService = inject(TranslateService);
+  private appStore = inject(AppStore);
   public itemApiService = inject(ItemApiService);
-  public userService = inject(AppStore);
+
+  protected readonly isPatron = computed(() => this.appStore.user()?.isPatron ?? false);
 
   /** Item record */
   item = input<RecordData>();

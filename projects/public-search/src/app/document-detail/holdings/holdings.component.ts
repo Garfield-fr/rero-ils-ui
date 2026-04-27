@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { I18nPluralPipe, NgClass } from '@angular/common';
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { computed, Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { AvailabilityComponent, DescriptionZoneComponent, GetTranslatedLabelPipe, HoldingsNoteType, NotesFilterPipe, AppStore } from '@rero/shared';
 import { Nl2brPipe } from '@rero/ng-core';
@@ -39,10 +39,14 @@ import { MultiSelect } from 'primeng/multiselect';
 export class HoldingsComponent implements OnInit {
 
   protected holdingsApiService = inject(HoldingsApiService);
-  protected translateService = inject(TranslateService);
-  protected userService = inject(AppStore);
+  private translateService = inject(TranslateService);
+  private appStore = inject(AppStore);
 
   protected store = inject(HoldingsStore);
+
+  protected readonly isAuthenticated = computed(() => this.appStore.user()?.isAuthenticated ?? false);
+  protected readonly isPatron = computed(() => this.appStore.user()?.hasRoles(['patron']) ?? false);
+  protected get currentLang() { return this.translateService.currentLang; }
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** View code */

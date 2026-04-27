@@ -103,7 +103,7 @@
         </div>
       }
       <shared-availability class="ui:justify-top ui:text-right" recordType="item" [record]="item()" [apiService]="itemApiService" />
-      @if(userService.user()?.isPatron) {
+      @if(isPatron()) {
         <div class="ui:my-2">
           <public-search-item-request [record]="item()" (request)="showRequestDialog = !showRequestDialog" />
         </div>
@@ -112,7 +112,7 @@
   </div>
 </div>
 
-@if(userService.user()?.isPatron) {
+@if(isPatron()) {
   <div class="ui:mb-2" [hidden]="!showRequestDialog">
     <public-search-pickup-location
       [record]="item()"

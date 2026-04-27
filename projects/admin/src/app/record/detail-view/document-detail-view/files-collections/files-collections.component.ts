@@ -36,9 +36,11 @@ import { Chip } from 'primeng/chip';
 export class FilesCollectionsComponent {
 
   private messageService = inject(MessageService);
-  protected resourcesFilesService = inject(ResourcesFilesService);
+  private resourcesFilesService = inject(ResourcesFilesService);
   private translateService = inject(TranslateService);
   private appStore = inject(AppStore);
+
+  protected readonly currentParentRecord = this.resourcesFilesService.currentParentRecord;
 
   formGroup = new FormGroup({
     collections: new FormControl<string[] | null>(null)
