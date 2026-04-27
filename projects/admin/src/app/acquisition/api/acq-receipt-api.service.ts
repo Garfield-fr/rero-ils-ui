@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import type { EsResult } from '@rero/ng-core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
-import { Observable, of, Subject } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, filter, map } from 'rxjs/operators';
 import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from '../classes/receipt';
 import { AcqResponseReceiptLineStatus, ICreateLineMessage, IResponseReceiptLine } from '../components/receipt/receipt-form/order-receipt';
 
@@ -45,14 +46,15 @@ export class AcqReceiptApiService {
     headers: { Accept: 'application/json'},
     sort: 'receipt_date'
   };
-  /** Subject emitted when an order line is deleted. The order line pid will be emitted */
-  private _deletedReceiptSubject$ = new Subject<IAcqReceipt>();
-  private _deletedReceiptLineSubject$ = new Subject<IAcqReceiptLine>();
+  /** Last deleted receipt/receipt-line (null = no deletion yet) */
+  readonly lastDeletedReceipt = signal<IAcqReceipt | null>(null);
+  readonly lastDeletedReceiptLine = signal<IAcqReceiptLine | null>(null);
 
-  // GETTER AND SETTER ========================================================
-  /** expose _deletedOrderLineSubject$ in 'readonly' mode */
-  get deletedReceiptSubject$(): Observable<IAcqReceipt> { return this._deletedReceiptSubject$.asObservable(); }
-  get deletedReceiptLineSubject$(): Observable<IAcqReceiptLine> { return this._deletedReceiptLineSubject$.asObservable(); }
+  /** Observables emitting on each deletion (backward-compatible) */
+  readonly deletedReceiptSubject$: Observable<IAcqReceipt> =
+    toObservable(this.lastDeletedReceipt).pipe(filter((v): v is IAcqReceipt => v !== null));
+  readonly deletedReceiptLineSubject$: Observable<IAcqReceiptLine> =
+    toObservable(this.lastDeletedReceiptLine).pipe(filter((v): v is IAcqReceiptLine => v !== null));
 
   // READ/LIST FUNCTIONS ======================================================
   /**
@@ -191,7 +193,7 @@ export class AcqReceiptApiService {
       .deleteRecord(this.resourceName, receipt.pid)
       .subscribe((success: boolean) => {
           if (success) {
-            this._deletedReceiptSubject$.next(receipt);
+            this.lastDeletedReceipt.set(receipt);
           }
         }
       );
@@ -207,7 +209,7 @@ export class AcqReceiptApiService {
       .deleteRecord('acq_receipt_lines', receiptLine.pid)
       .subscribe((success: boolean) => {
         if (success) {
-          this._deletedReceiptLineSubject$.next(receiptLine);
+          this.lastDeletedReceiptLine.set(receiptLine);
         }
       });
   }

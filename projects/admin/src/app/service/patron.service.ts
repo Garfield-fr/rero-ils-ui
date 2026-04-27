@@ -15,11 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ApiService, RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
 import { User } from '@rero/shared';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Item } from '../classes/items';
 import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
@@ -33,16 +34,13 @@ export class PatronService {
   private apiService: ApiService = inject(ApiService);
   private recordService: RecordService = inject(RecordService);
 
-  /** Current patron */
-  private currentPatron = new BehaviorSubject<User>(undefined);
+  private readonly _currentPatron = signal<User | undefined>(undefined);
 
-  /**
-   * Get Current Patron
-   * @return Observable
-   */
-  get currentPatron$(): Observable<User> {
-    return this.currentPatron.asObservable();
-  }
+  /** Current patron as readonly signal */
+  readonly currentPatron = this._currentPatron.asReadonly();
+
+  /** Current patron as Observable (backward-compatible) */
+  readonly currentPatron$ = toObservable(this._currentPatron);
 
   /**
    * Get patron by barcode
@@ -57,19 +55,19 @@ export class PatronService {
           const total = this.recordService.totalHits(response.hits.total);
           switch (total) {
             case 0: {
-              this.currentPatron.next(undefined);
+              this._currentPatron.set(undefined);
               break;
             }
             case 1: {
               const patron = response.hits.hits[0].metadata;
-              this.currentPatron.next(patron as any);
+              this._currentPatron.set(patron as unknown as User);
               break;
             }
             default: {
               throw new Error('too much results');
             }
           }
-          return this.currentPatron.asObservable();
+          return of(this._currentPatron());
         })
       );
   }

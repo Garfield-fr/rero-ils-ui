@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
 import type { EsResult } from '@rero/ng-core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { Notification } from '../../classes/notification';
 import {
   AcqAddressRecipient,
@@ -44,12 +45,12 @@ export class AcqOrderApiService extends BaseApi {
 
   // SERVICES ATTRIBUTES ======================================================
 
-  /** Subject emitted when an order line is deleted. The order line pid will be emitted */
-  private _deletedOrderLineSubject$ = new Subject<IAcqOrderLine>();
+  /** Last deleted order line (null = no deletion yet) */
+  readonly lastDeletedOrderLine = signal<IAcqOrderLine | null>(null);
 
-  // GETTER AND SETTER ========================================================
-  /** expose _deletedOrderLineSubject$ in 'readonly' mode */
-  get deletedOrderLineSubject$(): Observable<IAcqOrderLine> { return this._deletedOrderLineSubject$.asObservable(); }
+  /** Observable emitting on each deletion (backward-compatible) */
+  readonly deletedOrderLineSubject$: Observable<IAcqOrderLine> =
+    toObservable(this.lastDeletedOrderLine).pipe(filter((v): v is IAcqOrderLine => v !== null));
 
   // SERVICE PUBLIC FUNCTIONS =================================================
   /**
@@ -125,7 +126,7 @@ export class AcqOrderApiService extends BaseApi {
       .deleteRecord('acq_order_lines', orderLine.pid)
       .subscribe((success: boolean) => {
           if (success) {
-            this._deletedOrderLineSubject$.next(orderLine);
+            this.lastDeletedOrderLine.set(orderLine);
           }
         }
       );

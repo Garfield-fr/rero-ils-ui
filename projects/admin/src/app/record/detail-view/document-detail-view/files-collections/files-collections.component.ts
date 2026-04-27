@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, ChangeDetectionStrategy, signal, effect } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, effect } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
@@ -36,27 +36,17 @@ import { Chip } from 'primeng/chip';
 export class FilesCollectionsComponent {
 
   private messageService = inject(MessageService);
-  private resourcesFilesService = inject(ResourcesFilesService);
+  protected resourcesFilesService = inject(ResourcesFilesService);
   private translateService = inject(TranslateService);
   private appStore = inject(AppStore);
 
-  // current record
-  record = signal<any>(null);
-
-  // form control for the collection editor
   formGroup = new FormGroup({
     collections: new FormControl<string[] | null>(null)
   });
 
   constructor() {
-    // Sync service record changes to local signal
-    this.resourcesFilesService.currentParentRecord$.pipe(
-      takeUntilDestroyed()
-    ).subscribe(record => this.record.set(record));
-
-    // Sync record signal changes to form without emitting valueChanges
     effect(() => {
-      const rec = this.record();
+      const rec = this.resourcesFilesService.currentParentRecord();
       if (rec?.metadata?.collections) {
         this.formGroup.get('collections')!.setValue(rec.metadata.collections, { emitEvent: false });
       } else {
@@ -64,18 +54,11 @@ export class FilesCollectionsComponent {
       }
     });
 
-    // Save on form value changes
     this.formGroup.valueChanges.pipe(
       takeUntilDestroyed()
     ).subscribe(() => this.save());
   }
 
-  /**
-   * Generate the public interface collection search link.
-   *
-   * @param name - the collection name
-   * @returns - url on the public interface
-   */
   getCollectionLink(name: string): string {
     const viewcode = this.appStore.organisation().code;
     return `/${viewcode}/search/documents?q=files.collections.raw:(${name})&simple=0`;
@@ -89,11 +72,8 @@ export class FilesCollectionsComponent {
     return value;
   }
 
-  /**
-   * Save the form and put the new value on the backend.
-   */
   save(): void {
-    const rec = this.record();
+    const rec = this.resourcesFilesService.currentParentRecord();
     if (!rec) return;
     const coll = Array.from(new Set(this.formGroup.get('collections')!.value));
     const metadata = rec.metadata;
@@ -104,7 +84,7 @@ export class FilesCollectionsComponent {
     }
     this.resourcesFilesService
       .updateParentRecordMetadata(rec.id, { metadata })
-      .subscribe(updatedRecord => this.record.set(updatedRecord));
+      .subscribe(updatedRecord => this.resourcesFilesService.currentParentRecord.set(updatedRecord));
     this.formGroup.markAsPristine();
     this.messageService.add({
       severity: 'success',

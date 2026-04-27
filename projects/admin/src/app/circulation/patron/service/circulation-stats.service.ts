@@ -56,22 +56,14 @@ export class CirculationStatsService {
     this.engagedTransactions.set([]);
   }
 
-  updateFees(patronPid: string): Observable<any>{
-            // load overdue transactions
+  updateFees(patronPid: string): Observable<any> {
     return this.patronService.getOverduePreview(patronPid).pipe(
-      // compute the total of the overdue transactions
       tap((overdues) => {
-          let fees = 0;
-          overdues.map((fee: any) => {
-            fees += fee.fees.total;
-          });
-          this.setOverdueFees(fees, overdues);
+        let fees = 0;
+        overdues.map((fee: any) => { fees += fee.fees.total; });
+        this.setOverdueFees(fees, overdues);
       }),
-      // get engaged fees patron transactions
-      tap(() => this.patronTransactionService.emitPatronTransactionByPatron(patronPid, undefined, 'open')),
-      // subscribe to the engaged patron transactions
-      switchMap(() => this.patronTransactionService.patronTransactionsSubject$),
-      // set engaged fees in the shared service
+      switchMap(() => this.patronTransactionService.loadPatronTransactionsByPatron(patronPid, undefined, 'open')),
       tap((transactions) =>
         this.setFeesEngaged(this.patronTransactionService.computeTotalTransactionsAmount(transactions), transactions)
       )

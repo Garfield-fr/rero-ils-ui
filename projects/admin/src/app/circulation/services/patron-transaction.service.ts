@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   PatronTransaction,
   PatronTransactionEvent,
@@ -27,8 +27,8 @@ import type { EsResult } from '@rero/ng-core';
 import { CONFIG, RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -41,10 +41,10 @@ export class PatronTransactionService {
   private translateService: TranslateService = inject(TranslateService);
   private messageService: MessageService = inject(MessageService);
 
-  /** subject containing current loaded PatronTransactions */
-  patronTransactionsSubject$ = new BehaviorSubject<PatronTransaction[]>([]);
-  /** subject emitting accounting transaction about patron fees */
-  patronFeesOperationSubject$ = new Subject<number>();
+  private readonly _patronTransactions = signal<PatronTransaction[]>([]);
+
+  /** Current loaded patron transactions */
+  readonly patronTransactions = this._patronTransactions.asReadonly();
 
   /**
    * Allow to build the query to send through the API to retrieve desired data
@@ -84,7 +84,7 @@ export class PatronTransactionService {
     ).pipe(
       map((data: EsResult) => data.hits as any),
       map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
-      map((hits: any[]) => hits.map( (hit: any) => new PatronTransaction(hit.metadata)))
+      map((hits: any[]) => hits.map((hit: any) => new PatronTransaction(hit.metadata)))
     );
   }
 
@@ -117,15 +117,27 @@ export class PatronTransactionService {
   }
 
   /**
-   * Emit the patronTransactionByPatron subject for a specific patron
+   * Load patron transactions by patron and update the patronTransactions signal.
+   * Returns the Observable so callers can chain further operators.
    * @param patronPid - the patron pid
    * @param type - the patron transaction type to retrieve
    * @param status - the patron transactions status to retrieve
    */
-  emitPatronTransactionByPatron(patronPid: string, type?: string, status?: string) {
-    this.patronTransactionsByPatron$(patronPid, type, status).subscribe(
-      (transactions) => this.patronTransactionsSubject$.next(transactions)
+  loadPatronTransactionsByPatron(patronPid: string, type?: string, status?: string): Observable<PatronTransaction[]> {
+    return this.patronTransactionsByPatron$(patronPid, type, status).pipe(
+      tap(transactions => this._patronTransactions.set(transactions))
     );
+  }
+
+  /**
+   * Fire-and-forget version of loadPatronTransactionsByPatron.
+   * Updates the patronTransactions signal asynchronously.
+   * @param patronPid - the patron pid
+   * @param type - the patron transaction type to retrieve
+   * @param status - the patron transactions status to retrieve
+   */
+  emitPatronTransactionByPatron(patronPid: string, type?: string, status?: string): void {
+    this.loadPatronTransactionsByPatron(patronPid, type, status).subscribe();
   }
 
   /**
@@ -147,13 +159,12 @@ export class PatronTransactionService {
    * @param transactions - the transactions to process
    * @returns total amount of open transactions
    */
-  computeTotalTransactionsAmount(transactions: any[]): number {
+  computeTotalTransactionsAmount(transactions: PatronTransaction[]): number {
     return transactions.reduce((accumulator, transaction) => {
       return (transaction.status === PatronTransactionStatus.OPEN)
         ? parseFloat((accumulator + transaction.total_amount).toFixed(2))
         : accumulator;
     }, 0);
-
   }
 
 
@@ -185,12 +196,11 @@ export class PatronTransactionService {
    * @param amount - the paid amount
    * @param paymentMethod - Method used to pay the patron transaction
    */
-  payPatronTransaction(transaction: PatronTransaction, amount: number, paymentMethod: string) {
+  payPatronTransaction(transaction: PatronTransaction, amount: number, paymentMethod: string): void {
     const record = this._buildTransactionEventsSkeleton(transaction);
     record.type = PatronTransactionEventType.PAYMENT;
     record.subtype = paymentMethod;
     record.amount = amount;
-    this.patronFeesOperationSubject$.next(0 - amount);
     this._createTransactionEvent(record, transaction.patron.pid);
   }
 
@@ -199,7 +209,7 @@ export class PatronTransactionService {
    * @param transaction: PatronTransaction - the parent patron transaction
    * @param reason: The reason of the dispute
    */
-  disputePatronTransaction(transaction: PatronTransaction, reason: string) {
+  disputePatronTransaction(transaction: PatronTransaction, reason: string): void {
     const record = this._buildTransactionEventsSkeleton(transaction);
     record.type = PatronTransactionEventType.DISPUTE;
     record.note = reason;
@@ -212,12 +222,11 @@ export class PatronTransactionService {
    * @param amount - the amount to cancel
    * @param reason - The reason why the transaction is canceled
    */
-  cancelPatronTransaction(transaction: PatronTransaction, amount: number, reason: string) {
+  cancelPatronTransaction(transaction: PatronTransaction, amount: number, reason: string): void {
     const record = this._buildTransactionEventsSkeleton(transaction);
     record.type = PatronTransactionEventType.CANCEL;
     record.amount = amount;
     record.note = reason;
-    this.patronFeesOperationSubject$.next(0 - amount);
     this._createTransactionEvent(record, transaction.patron.pid);
   }
 
@@ -226,7 +235,7 @@ export class PatronTransactionService {
    * @param record - data to send through the API
    * @param affectedPatron - the user pid affected by this new transaction event
    */
-  private _createTransactionEvent(record: any, affectedPatron: string) {
+  private _createTransactionEvent(record: any, affectedPatron: string): void {
     this.recordService.create('patron_transaction_events', record).subscribe({
       next: () => {
         this.emitPatronTransactionByPatron(affectedPatron, undefined, 'open');
@@ -252,6 +261,6 @@ export class PatronTransactionService {
           closable: true
         });
       }
-  });
+    });
   }
 }

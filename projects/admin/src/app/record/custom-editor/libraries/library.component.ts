@@ -125,8 +125,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
       if (loggedUser) {
         this.organisationPid.set(this.appStore.currentOrganisationPid());
       }
-      this.libraryForm.create();
-      this.eventForm = this.libraryForm.getBuildEvent().subscribe((_buildEvent: any) => {
+      this.eventForm = this.libraryForm.create().subscribe((_buildEvent: any) => {
         if (params && params.pid) {
           this.recordService.getRecord('libraries', params.pid).subscribe(record => {
             const lib = new Library(record.metadata as any);
