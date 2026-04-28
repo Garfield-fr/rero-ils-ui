@@ -17,13 +17,12 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import type { EsResult } from '@rero/ng-core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable, of } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from '../classes/receipt';
 import { AcqResponseReceiptLineStatus, ICreateLineMessage, IResponseReceiptLine } from '../components/receipt/receipt-form/order-receipt';
 
@@ -49,12 +48,6 @@ export class AcqReceiptApiService {
   /** Last deleted receipt/receipt-line (null = no deletion yet) */
   readonly lastDeletedReceipt = signal<IAcqReceipt | null>(null);
   readonly lastDeletedReceiptLine = signal<IAcqReceiptLine | null>(null);
-
-  /** Observables emitting on each deletion (backward-compatible) */
-  readonly deletedReceiptSubject$: Observable<IAcqReceipt> =
-    toObservable(this.lastDeletedReceipt).pipe(filter((v): v is IAcqReceipt => v !== null));
-  readonly deletedReceiptLineSubject$: Observable<IAcqReceiptLine> =
-    toObservable(this.lastDeletedReceiptLine).pipe(filter((v): v is IAcqReceiptLine => v !== null));
 
   // READ/LIST FUNCTIONS ======================================================
   /**

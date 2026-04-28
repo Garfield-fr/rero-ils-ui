@@ -136,15 +136,13 @@ describe('AcqReceiptApiService', () => {
       .subscribe((result: any) => expect(result).toEqual(data));
   });
 
-  it('should return the deleted receipt', () => {
-    service.deletedReceiptSubject$
-      .subscribe((result: IAcqReceipt) => expect(result).toEqual(receipt.metadata));
+  it('should update lastDeletedReceipt signal on delete', () => {
     service.delete(receipt.metadata);
+    expect(service.lastDeletedReceipt()).toEqual(receipt.metadata);
   });
 
-  it('should return the deleted receipt line', () => {
-    service.deletedReceiptLineSubject$
-      .subscribe((result: IAcqReceiptLine) => expect(result).toEqual(receiptLine.metadata));
-      service.deleteReceiptLine(receiptLine.metadata);
+  it('should update lastDeletedReceiptLine signal on deleteReceiptLine', () => {
+    service.deleteReceiptLine(receiptLine.metadata);
+    expect(service.lastDeletedReceiptLine()).toEqual(receiptLine.metadata);
   });
 });

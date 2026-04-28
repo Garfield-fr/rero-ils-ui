@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, input, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from '@angular/core';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
-import { AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../classes/order';
-import { IAcqReceipt } from '../../../classes/receipt';
+import { AcqOrderLineStatus, AcqOrderStatus, IAcqOrder } from '../../../classes/order';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
@@ -35,10 +33,10 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
     imports: [TranslateDirective, RouterLink, Bind, Tag, NgTemplateOutlet, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrderSummaryComponent implements OnInit, OnDestroy {
+export class OrderSummaryComponent {
 
-  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
-  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private acqOrderApiService = inject(AcqOrderApiService);
+  private acqReceiptApiService = inject(AcqReceiptApiService);
 
   // COMPONENTS ATTRIBUTES ====================================================
   order = input.required<IAcqOrder>();
@@ -46,38 +44,22 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   /** reference to AcqOrderStatus class */
   acqOrderStatus = AcqOrderStatus;
 
-  /** all component subscription */
-  private subscriptions = new Subscription();
+  constructor() {
+    effect(() => {
+      const orderLine = this.acqOrderApiService.lastDeletedOrderLine();
+      if (orderLine && orderLine.status !== AcqOrderLineStatus.CANCELLED) {
+        const o = untracked(() => this.order());
+        o.account_statement.provisional.total_amount -= orderLine.total_amount;
+        o.account_statement.provisional.quantity -= orderLine.quantity;
+      }
+    });
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    // Subscription when an order line is deleted
-    this.subscriptions.add(
-      this.acqOrderApiService
-        .deletedOrderLineSubject$
-        .subscribe(
-          (orderLine: IAcqOrderLine) => {
-            if (orderLine.status !== AcqOrderLineStatus.CANCELLED) {
-              this.order().account_statement.provisional.total_amount -= orderLine.total_amount;
-              this.order().account_statement.provisional.quantity -= orderLine.quantity;
-            }
-          }
-        )
-    );
-    this.subscriptions.add(
-      this.acqReceiptApiService
-        .deletedReceiptSubject$
-        .subscribe(
-          (receipt: IAcqReceipt) => {
-            this.order().account_statement.expenditure.quantity -= receipt.quantity;
-            // TODO :: reduce the order expenditure amount.
-          }
-        )
-    );
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    effect(() => {
+      const receipt = this.acqReceiptApiService.lastDeletedReceipt();
+      if (receipt) {
+        // TODO :: reduce the order expenditure amount.
+        untracked(() => this.order()).account_statement.expenditure.quantity -= receipt.quantity ?? 0;
+      }
+    });
   }
 }

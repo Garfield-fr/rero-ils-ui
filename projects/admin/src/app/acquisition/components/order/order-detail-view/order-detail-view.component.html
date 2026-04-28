@@ -59,7 +59,7 @@
     }
   </admin-order-summary>
 
-  <p-tabs class="ui:mt-3" [(value)]="tabActiveIndex">
+  <p-tabs class="ui:mt-3" [value]="tabActiveIndex()" (valueChange)="onTabChange($event)">
     <p-tablist>
       <p-tab value="order" translate>Order</p-tab>
       <p-tab value="reception" [disabled]="disabledReceipts()" translate>Reception</p-tab>
@@ -121,20 +121,7 @@
       </p-tabpanel>
       <p-tabpanel value="history">
         @if (tabActiveIndex() === 'history') {
-          <p-timeline [value]="historyVersions()">
-            <ng-template #opposite let-event>
-              @if (event) {
-                <a [routerLink]="['/acquisition', 'records', 'acq_orders', 'detail', event.pid]">{{
-                  event.label
-                }}</a>
-              }
-            </ng-template>
-            <ng-template #content let-event>
-              @if (event) {
-                <small>{{ event.description }}</small>
-              }
-            </ng-template>
-          </p-timeline>
+          <admin-order-history [order]="o" />
         }
       </p-tabpanel>
     </p-tabpanels>

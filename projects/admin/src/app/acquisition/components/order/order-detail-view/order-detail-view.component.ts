@@ -15,90 +15,82 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { APP_BASE_HREF, Location, ViewportScroller, NgClass, I18nPluralPipe } from '@angular/common';
-import { Component, computed, inject, input, model, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { I18nPluralPipe, NgClass, ViewportScroller } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
-import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { extractIdOnRef, Nl2brPipe } from '@rero/ng-core';
 
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { filter, forkJoin, merge, Subscription } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-import {
-  AcqOrderHistoryVersion,
-  AcqOrderStatus,
-  IAcqOrder
-} from '../../../classes/order';
-import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
+import { SharedModule } from 'primeng/api';
+import { Badge } from 'primeng/badge';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
-import { OrderSummaryComponent } from '../order-summary/order-summary.component';
-import { Tag } from 'primeng/tag';
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Message } from 'primeng/message';
 import { Ripple } from 'primeng/ripple';
-import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
-import { OrderLinesComponent } from './order-lines/order-lines.component';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Tag } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
+import { NoteBadgeColorPipe } from '../../../pipes/note-badge-color.pipe';
 import { NotesComponent } from '../../notes/notes.component';
 import { ReceiptListComponent } from '../../receipt/receipt-list/receipt-list.component';
-import { Timeline } from 'primeng/timeline';
-import { NoteBadgeColorPipe } from '../../../pipes/note-badge-color.pipe';
-import { TooltipModule } from 'primeng/tooltip';
-import { Message } from 'primeng/message';
-import { Badge } from 'primeng/badge';
+import { OrderEmailFormComponent } from '../order-email-form/order-email-form.component';
+import { OrderSummaryComponent } from '../order-summary/order-summary.component';
+import { OrderHistoryComponent } from './order-history/order-history.component';
+import { OrderLinesComponent } from './order-lines/order-lines.component';
 
 @Component({
     selector: 'admin-acquisition-order-detail-view',
     templateUrl: './order-detail-view.component.html',
-    imports: [NgClass, Bind, Button, OrderSummaryComponent, TranslateDirective, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Accordion, AccordionPanel, AccordionHeader, RouterLink, AccordionContent, OrderLinesComponent, NotesComponent, ReceiptListComponent, Timeline, I18nPluralPipe, Nl2brPipe, TranslatePipe, NoteBadgeColorPipe, TooltipModule, Message, Badge],
+    imports: [NgClass, Bind, Button, OrderSummaryComponent, TranslateDirective, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Accordion, AccordionPanel, AccordionHeader, RouterLink, AccordionContent, OrderLinesComponent, OrderHistoryComponent, NotesComponent, ReceiptListComponent, I18nPluralPipe, Nl2brPipe, TranslatePipe, NoteBadgeColorPipe, TooltipModule, Message, Badge, SharedModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrderDetailViewComponent implements OnInit, OnDestroy {
-  private dialogService: DialogService = inject(DialogService);
-  private scroller: ViewportScroller = inject(ViewportScroller);
-  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private acqOrderService: AcqOrderApiService = inject(AcqOrderApiService);
-  private permissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
-  private translateService: TranslateService = inject(TranslateService);
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  private location: Location = inject(Location);
-  private baseHref = inject(APP_BASE_HREF);
-  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+export class OrderDetailViewComponent {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly scroller: ViewportScroller = inject(ViewportScroller);
+  private readonly recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
+  private readonly acqOrderService: AcqOrderApiService = inject(AcqOrderApiService);
+  private readonly permissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
+  private readonly translateService: TranslateService = inject(TranslateService);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly router: Router = inject(Router);
+  private readonly acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private readonly dialogService: DialogService = inject(DialogService);
 
   // COMPONENT ATTRIBUTES =====================================================
-  /** Record data */
   readonly record = input<any>();
-  /** Resource type */
   readonly type = input<string>('');
 
-  private readonly _record$ = toObservable(this.record);
-
-  /** the order corresponding to the record */
   order = signal<IAcqOrder | undefined>(undefined);
-  /** Is order notes are collapsed */
   notesCollapsed = true;
-  /** reference to AcqOrderStatus class */
   acqOrderStatus = AcqOrderStatus;
-  /** order permissions */
-  recordPermissions = signal<RecordPermissions | undefined>(undefined);
-
-  /** history versions of this order */
-  historyVersions = signal<AcqOrderHistoryVersion[]>([]);
-
-  /** all component subscription */
-  private subscriptions = new Subscription();
-
   modalRef: DynamicDialogRef | null | undefined;
 
-  tabActiveIndex = model<undefined | string >(undefined);
+  readonly recordPermissions = toSignal(
+    toObservable(this.order).pipe(
+      filter((o): o is IAcqOrder => !!o?.pid),
+      switchMap(o =>
+        this.recordPermissionService.getPermission('acq_orders', o.pid!).pipe(
+          map(p => this.permissionValidator.validate(p, o.library?.pid ?? ''))
+        )
+      )
+    )
+  );
+
+  readonly tabActiveIndex = toSignal(
+    this.route.queryParamMap.pipe(map(params => params.get('tab') || 'order')),
+    { initialValue: 'order' }
+  );
 
   // COMPUTED ==================================================================
-  /** Determine if the order could be "placed/ordered" */
   canPlaceOrder = computed(() => {
     const o = this.order();
     return o?.status === AcqOrderStatus.PENDING && o?.account_statement?.provisional?.total_amount > 0;
@@ -108,7 +100,6 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy {
     this.order()?.status === AcqOrderStatus.PENDING && this.recordPermissions()?.update?.can
   );
 
-  /** Is this order could manage reception */
   disabledReceipts = computed(() =>
     [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some((status) => status === this.order()?.status)
   );
@@ -117,73 +108,51 @@ export class OrderDetailViewComponent implements OnInit, OnDestroy {
     this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.create?.reasons, 'create')
   );
 
-  addTabToUrl(event) {
-    this.location.replaceState(location.pathname.replace(this.baseHref, ''), `tab=${event}`);
-  }
+  constructor() {
+    effect(() => {
+      const r = this.record();
+      if (r?.metadata?.pid) {
+        this.order.set(r.metadata);
+      }
+    });
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.tabActiveIndex.set(this.route.snapshot.queryParamMap.get('tab') || 'order');
-    this.subscriptions.add(this.tabActiveIndex.subscribe(tabName => this.addTabToUrl(tabName)));
-    this.subscriptions.add(
-      this._record$.pipe(
-        filter((record: any) => !!record?.metadata?.pid),
-        tap((record: any) => this.order.set(record.metadata)),
-        switchMap(() => {
-          const obs = [
-            // history
-            this.acqOrderService.getOrderHistory(this.order()!.pid!).pipe(
-              tap((versions) => this.historyVersions.set(versions.filter(Boolean).map((version) => new AcqOrderHistoryVersion(version))))
-            ),
-            // permissions
-            this.recordPermissionService.getPermission('acq_orders', this.order()!.pid!).pipe(
-              map((permissions) => this.permissionValidator.validate(permissions, this.order()?.library?.pid)),
-              tap((permissions) => this.recordPermissions.set(permissions))
-            )
-          ];
-          return forkJoin(obs);
-        }),
-        switchMap(() =>
-          merge(this.acqReceiptApiService.deletedReceiptSubject$, this.acqReceiptApiService.deletedReceiptLineSubject$)
-      ),
-        switchMap(() => this.acqOrderService.getOrder(this.order()!.pid!, 1)),
-        tap((order: any) => this.order.set(order))
-      ).subscribe()
-    );
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    effect((onCleanup) => {
+      this.acqReceiptApiService.lastDeletedReceipt();
+      this.acqReceiptApiService.lastDeletedReceiptLine();
+      const pid = untracked(() => this.order()?.pid);
+      if (!pid) return;
+      const sub = this.acqOrderService.getOrder(pid, 1)
+        .subscribe(order => this.order.set(order));
+      onCleanup(() => sub.unsubscribe());
+    });
   }
 
   // COMPONENT FUNCTIONS =======================================================
 
-  /** Scroll to an anchor
-   *  @param e - the fired event
-   *  @param anchorId - the anchor ID
-   */
+  onTabChange(tab: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
   scrollTo(e: Event, anchorId: string): void {
     e.preventDefault();
     this.scroller.scrollToAnchor(anchorId);
   }
 
-  /**
-   * Open a modal dialog to allow user to validate the order.
-   * If the user submit the form (and submitting is success), then update the order to get the updated data.
-   */
   placeOrderDialog(): void {
     this.modalRef = this.dialogService.open(OrderEmailFormComponent, {
       header: this.translateService.instant('Place order'),
       modal: true,
       focusOnShow: false,
       width: '60vw',
-      data: {
-        order: this.order(),
-      },
+      data: { order: this.order() },
     });
-    this.modalRef.onClose.subscribe((order?: IAcqOrder) => {
-      if (order && this.order()?.pid === order.pid) {
+    this.modalRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((order?: IAcqOrder) => {
+      if (order) {
         if (order.vendor.$ref) {
           order.vendor.pid = extractIdOnRef(order.vendor.$ref);
         }

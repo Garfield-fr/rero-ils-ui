@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
 import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { forkJoin, Observable, of, Subscription, switchMap, tap } from 'rxjs';
+import { forkJoin, Observable, of, switchMap, tap } from 'rxjs';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
@@ -42,7 +42,7 @@ import { ReceptionDatesPipe } from '../../../pipes/reception-dates.pipe';
     imports: [OpenCloseButtonComponent, Bind, Tag, ActionButtonComponent, RouterLink, ReceiptLineComponent, NotesComponent, CurrencyPipe, I18nPluralPipe, TranslatePipe, NoteBadgeColorPipe, ReceptionDatesPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReceiptSummaryComponent implements OnInit, OnDestroy {
+export class ReceiptSummaryComponent {
 
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
@@ -64,8 +64,6 @@ export class ReceiptSummaryComponent implements OnInit, OnDestroy {
   /** Is the detail collapsed */
   isCollapsed = true;
   validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED];
- /** all component subscription */
-  private subscriptions = new Subscription();
 
   constructor() {
     effect(() => {
@@ -74,6 +72,13 @@ export class ReceiptSummaryComponent implements OnInit, OnDestroy {
       }
       if (!this.collapsable()) {
         this.isCollapsed = false;
+      }
+    });
+
+    effect(() => {
+      const line = this.acqReceiptApiService.lastDeletedReceiptLine();
+      if (line?.acq_receipt?.pid === untracked(() => this.receiptPid())) {
+        this.loadReceipt();
       }
     });
   }
@@ -87,21 +92,6 @@ export class ReceiptSummaryComponent implements OnInit, OnDestroy {
     return (!this.recordPermissions()?.delete?.can)
       ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.delete?.reasons, 'delete')
       : '';
-  }
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.subscriptions.add(
-      this.acqReceiptApiService.deletedReceiptLineSubject$.subscribe(
-        (receiptLine: IAcqReceiptLine) => {
-      if(receiptLine.acq_receipt.pid === this.receiptPid()) {
-        this.loadReceipt();
-      }
-    }));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 
   loadReceipt() {
