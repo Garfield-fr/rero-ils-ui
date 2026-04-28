@@ -18,7 +18,7 @@ import { inject, Injectable } from "@angular/core";
 import { AutoCompleteRecordType, NgCoreTranslateService, TruncateTextPipe } from "@rero/ng-core";
 import { MainTitlePipe } from "../../pipe/main-title.pipe";
 import { AppStore } from "../../store/app.store";
-import { Entity } from "../../class/entity";
+import { Entity } from "../../classes/entity";
 
 @Injectable({
   providedIn: null

@@ -19,13 +19,12 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untr
 import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { forkJoin, Observable, of, switchMap, tap } from 'rxjs';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
-import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
-import { OpenCloseButtonComponent, ActionButtonComponent } from '@rero/shared';
+import { validateReceivedOrderPermissions } from '../../../utils/permissions';
+import { AppStore, OpenCloseButtonComponent, ActionButtonComponent } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
 import { RouterLink } from '@angular/router';
@@ -47,8 +46,7 @@ export class ReceiptSummaryComponent {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
   private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
-  private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
-  private receivedOrderPermissionValidator: ReceivedOrderPermissionValidator = inject(ReceivedOrderPermissionValidator);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The receipt pid to load */
@@ -118,8 +116,8 @@ export class ReceiptSummaryComponent {
     return forkJoin([order$, permissions$]).pipe(
       tap(([order, permissions]) => {
         // modify permissions in place
-        this.currentLibraryPermissionValidator.validate(permissions, this.receipt().library.pid);
-        this.recordPermissions.set(this.receivedOrderPermissionValidator.validate(permissions, order));
+        this.appStore.validateLibraryPermissions(permissions, this.receipt()?.library?.pid ?? '');
+        this.recordPermissions.set(validateReceivedOrderPermissions(permissions, order));
       })
     );
   }

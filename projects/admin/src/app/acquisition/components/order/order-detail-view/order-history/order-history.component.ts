@@ -15,13 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { Timeline } from 'primeng/timeline';
-import { filter, map, switchMap } from 'rxjs/operators';
-import { AcqOrderHistoryVersion, IAcqOrder } from '../../../../classes/order';
+import { OrderDetailStore } from '../store/order-detail.store';
 
 @Component({
   selector: 'admin-order-history',
@@ -31,16 +28,6 @@ import { AcqOrderHistoryVersion, IAcqOrder } from '../../../../classes/order';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderHistoryComponent {
-  private readonly acqOrderService = inject(AcqOrderApiService);
-
-  readonly order = input.required<IAcqOrder>();
-
-  readonly versions = toSignal(
-    toObservable(this.order).pipe(
-      filter(o => !!o?.pid),
-      switchMap(o => this.acqOrderService.getOrderHistory(o.pid!)),
-      map(versions => versions.filter(Boolean).map(v => new AcqOrderHistoryVersion(v)))
-    ),
-    { initialValue: [] }
-  );
+  protected readonly store = inject(OrderDetailStore);
+  protected readonly versions = this.store.historyVersions;
 }

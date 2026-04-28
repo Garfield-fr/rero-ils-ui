@@ -17,13 +17,12 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
 import type { EsResult } from '@rero/ng-core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Notification } from '../../classes/notification';
 import {
   AcqAddressRecipient,
@@ -47,10 +46,6 @@ export class AcqOrderApiService extends BaseApi {
 
   /** Last deleted order line (null = no deletion yet) */
   readonly lastDeletedOrderLine = signal<IAcqOrderLine | null>(null);
-
-  /** Observable emitting on each deletion (backward-compatible) */
-  readonly deletedOrderLineSubject$: Observable<IAcqOrderLine> =
-    toObservable(this.lastDeletedOrderLine).pipe(filter((v): v is IAcqOrderLine => v !== null));
 
   // SERVICE PUBLIC FUNCTIONS =================================================
   /**
@@ -117,8 +112,6 @@ export class AcqOrderApiService extends BaseApi {
 
   /**
    * Allow to delete an order line.
-   * If the order line is correctly deleted, this function emit an event :
-   *   * deletedOrderLineSubject$ : to specify which order line has been deleted
    * @param orderLine: the order line to delete
    */
   deleteOrderLine(orderLine: IAcqOrderLine): void {

@@ -22,10 +22,9 @@ import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api
 import { IAcqReceipt, IAcqReceiptLine } from '@app/admin/acquisition/classes/receipt';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { RecordService, GetRecordPipe } from '@rero/ng-core';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
+import { AppStore, DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -48,9 +47,7 @@ import { ReceiptLineTotalAmountPipe } from '../../../pipes/receipt-line-total-am
 })
 export class ReceiptLineComponent {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(
-    CurrentLibraryPermissionValidator
-  );
+  private appStore = inject(AppStore);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
   private recordService: RecordService = inject(RecordService);
 
@@ -97,7 +94,7 @@ export class ReceiptLineComponent {
     }
     return this.recordPermissionService.getPermission('acq_receipt_lines', this.line().pid).pipe(
       map((permissions) => {
-        this.currentLibraryPermissionValidator.validate(permissions, this.receipt().library.pid);
+        this.appStore.validateLibraryPermissions(permissions, this.receipt()?.library?.pid ?? '');
         return permissions;
       })
     );

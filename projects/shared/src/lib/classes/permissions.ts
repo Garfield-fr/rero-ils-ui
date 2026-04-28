@@ -15,20 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { OrderDetailStore } from '../store/order-detail.store';
-import { OrderLineComponent } from '../order-line/order-line.component';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
-@Component({
-    selector: 'admin-order-lines',
-    templateUrl: './order-lines.component.html',
-    imports: [OrderLineComponent, TranslateDirective, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class OrderLinesComponent {
+export type RecordPermission = {
+  can: boolean;
+  reasons?: {
+    links?: any;
+    others?: any;
+  };
+};
 
-  protected readonly store = inject(OrderDetailStore);
-  protected readonly order = this.store.order;
-  protected readonly orderLines = this.store.orderLines;
-}
+export type RecordPermissions = {
+  create: RecordPermission;
+  delete?: RecordPermission;
+  list: RecordPermission;
+  read?: RecordPermission;
+  update?: RecordPermission;
+};

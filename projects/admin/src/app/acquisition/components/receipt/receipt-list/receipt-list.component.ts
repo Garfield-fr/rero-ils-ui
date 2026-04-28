@@ -15,15 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, input, OnDestroy, signal, ChangeDetectionStrategy} from '@angular/core';
-import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
-import { AcqOrderStatus, IAcqOrder } from '../../../classes/order';
-import { IAcqReceipt } from '../../../classes/receipt';
-import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
+import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import { OrderDetailStore } from '../../order/order-detail-view/store/order-detail.store';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -41,78 +34,18 @@ import { Badge } from 'primeng/badge';
     imports: [TranslateDirective, Bind, Button, RouterLink, ReceiptSummaryComponent, I18nPluralPipe, Nl2brPipe, TranslatePipe, TooltipModule, Panel, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReceiptListComponent implements OnDestroy {
+export class ReceiptListComponent {
 
-  private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
-  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
-  private receivedOrderPermissionValidator: ReceivedOrderPermissionValidator = inject(ReceivedOrderPermissionValidator);
+  protected readonly store = inject(OrderDetailStore);
+  protected readonly order = this.store.order;
+  protected readonly receipts = this.store.receipts;
+  protected readonly recordPermissions = this.store.receiptPermissions;
 
-  // COMPONENT ATTRIBUTES =====================================================
-  /** the order for which we want to display receipts */
-  order = input.required<IAcqOrder>();
-  /** AcqReceipt to display */
-  readonly receipts = signal<IAcqReceipt[] | undefined>(undefined);
-
-  readonly recordPermissions = signal<any>(undefined);
-
-  /** all component subscription */
-  private subscriptions = new Subscription();
-
-  constructor() {
-    effect(() => {
-      const order = this.order();
-      if (order) {
-        this.loadPermissions();
-        this._loadReceipts();
-      }
-    });
-  }
-
-  // GETTER & SETTER ==========================================================
-  /**
-   * Get a message containing the reasons why the order line cannot be deleted
-   * @return the message to display into the tooltip box
-   */
-  get createInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.create?.reasons, 'create');
-  }
-
-  canAdd(): boolean {
-    return [AcqOrderStatus.PARTIALLY_RECEIVED, AcqOrderStatus.ORDERED].some(status => status == this.order().status);
-  }
-
-  /**
-   * Get the number of loaded receipts
-   * @return: the number of loaded receipts
-   */
   get numberOfReceipt(): number {
-    return this.receipts()?.length ?? 0;
+    return this.store.receipts().length;
   }
 
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
-  }
-
-  // PRIVATE COMPONENT METHODS ================================================
-  /** load receipts related to an order */
-  private _loadReceipts(): void {
-    this.acqReceiptApiService
-      .getReceiptsForOrder(this.order().pid)
-      .subscribe((receipts: IAcqReceipt[]) => this.receipts.set(receipts));
-  }
-
-  /**
-   * Load and complete permissions related to an order.
-   * Permissions about receipt must be completed regarding the current user library and the order status.
-   */
-  private loadPermissions(): void {
-    this.subscriptions.add(this.recordPermissionService
-      .getPermission('acq_orders', this.order().pid)
-      .pipe(
-        map(permissions => this.currentLibraryPermissionValidator.validate(permissions, this.order().library.pid)),
-        map(permissions => this.receivedOrderPermissionValidator.validate(permissions, this.order()))
-      ).subscribe((permissions: any) => this.recordPermissions.set(permissions)));
+  get createInfoMessage(): string {
+    return this.store.receiptCreateInfoMessage();
   }
 }

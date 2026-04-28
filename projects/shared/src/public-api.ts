@@ -15,13 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 export * from './lib/api/base-api';
+export * from './lib/classes/permissions';
 export * from './lib/api/operation-logs-api.service';
 export * from './lib/api/user-api.service';
-export * from './lib/class/core';
-export * from './lib/class/entity';
-export * from './lib/class/holdings';
-export * from './lib/class/item-status';
-export * from './lib/class/user';
+export * from './lib/classes/core';
+export * from './lib/classes/entity';
+export * from './lib/classes/holdings';
+export * from './lib/classes/item-status';
+export * from './lib/classes/user';
 export * from './lib/component/action-button/action-button.component';
 export * from './lib/component/core/brief-view/brief-view.component';
 export * from './lib/component/documents/document-brief-view/document-brief-view.component';

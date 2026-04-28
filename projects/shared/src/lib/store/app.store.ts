@@ -23,9 +23,10 @@ import { RecordData, RecordService } from '@rero/ng-core';
 import { EMPTY, Observable, pipe } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
-import { Organisation } from '../class/core';
-import { User } from '../class/user';
+import { Organisation } from '../classes/core';
+import { User } from '../classes/user';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '../util/permissions';
+import { RecordPermission, RecordPermissions } from '../classes/permissions';
 import { setError, setFulfilled, setPending, withRequestStatus } from './request-status-feature';
 
 export type ISettings = {
@@ -134,6 +135,19 @@ export const AppStore = signalStore(
 
     canAccessDebugMode(): boolean {
       return store.permissions().includes(PERMISSIONS.DEBUG_MODE);
+    },
+
+    validateLibraryPermissions(permissions: RecordPermissions, ownerLibraryPid: string): RecordPermissions {
+      if (store.currentLibraryPid() !== ownerLibraryPid) {
+        const disabledPermission: RecordPermission = {
+          can: false,
+          reasons: { others: { record_not_in_current_library: '' } }
+        };
+        permissions.create = disabledPermission;
+        permissions.delete = disabledPermission;
+        permissions.update = disabledPermission;
+      }
+      return permissions;
     },
   })),
   withHooks((store) => ({

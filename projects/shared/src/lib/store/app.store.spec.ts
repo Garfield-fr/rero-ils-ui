@@ -18,7 +18,7 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { EMPTY, firstValueFrom, lastValueFrom, of, throwError } from 'rxjs';
 import { UserApiService } from '../api/user-api.service';
-import { User } from '../class/user';
+import { User } from '../classes/user';
 import { testUserLibrarianWithSettings } from '../../tests/user';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '../util/permissions';
 import { AppStore } from './app.store';

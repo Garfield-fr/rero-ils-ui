@@ -18,7 +18,7 @@
 
 import { AfterViewInit, Component, inject, OnInit, ViewChild, ViewContainerRef, input, ChangeDetectionStrategy} from '@angular/core';
 
-import { Entity, EntityType } from '../../../class/entity';
+import { Entity, EntityType } from '../../../classes/entity';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
 import { BriefViewTag, BriefViewComponent } from '../../core/brief-view/brief-view.component';
 import { EntityBriefViewRemoteOrganisationComponent } from './entity-brief-view.organisation';

@@ -50,7 +50,6 @@ import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patro
 import { InputNoLabelWrapperComponent } from './acquisition/formly/wrapper/input-no-label.wrapper';
 import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
 import { UserIdComponent } from './record/editor/wrappers/user-id.component';
-import { ReceivedOrderPermissionValidator } from './acquisition/utils/permissions';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
@@ -64,7 +63,6 @@ import { routes } from './app.routes';
 import { AppConfigService } from './service/app-config.service';
 import { initializeApp } from './service/app-initializer';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
-import { CurrentLibraryPermissionValidator } from './utils/permissions';
 import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { FieldCustomInputTypeComponent } from './record/editor/type/field-custom.type';
@@ -97,8 +95,6 @@ export const appConfig: ApplicationConfig = {
     MainTitlePipe,
     TruncateTextPipe,
     DatePipe,
-    CurrentLibraryPermissionValidator,
-    ReceivedOrderPermissionValidator,
     // TODO: needed for production build, remove this after it is fixed in the @ngneat/hotkeys library
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,

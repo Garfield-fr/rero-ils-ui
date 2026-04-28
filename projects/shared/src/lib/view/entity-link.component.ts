@@ -17,7 +17,7 @@
 import { Component, inject, OnDestroy, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { Entity } from '../class/entity';
+import { Entity } from '../classes/entity';
 import { RouterLink } from '@angular/router';
 
 @Component({

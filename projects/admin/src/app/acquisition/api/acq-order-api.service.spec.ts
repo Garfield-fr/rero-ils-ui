@@ -178,10 +178,9 @@ describe('AcqOrderApiService', () => {
       });
   });
 
-  it('should return to delete a line', () => {
+  it('should update lastDeletedOrderLine signal on deleteOrderLine', () => {
     const orderLine = orderLines[0].metadata;
-    service.deletedOrderLineSubject$
-      .subscribe((result: IAcqOrderLine) => expect(result).toEqual(orderLine));
     service.deleteOrderLine(orderLine);
+    expect(service.lastDeletedOrderLine()).toEqual(orderLine);
   });
 });
