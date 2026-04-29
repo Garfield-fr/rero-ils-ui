@@ -18,9 +18,9 @@
 import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { ComponentCanDeactivateGuard, RecordData, RecordType } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
+import { Bucket, ComponentCanDeactivateGuard, IFilter, RecordData, RecordService, RecordType } from '@rero/ng-core';
+import { AppStore, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { map, Observable, of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -28,7 +28,6 @@ import { DocumentEditorComponent } from '../record/custom-editor/document-editor
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { DocumentRecordSearchComponent } from '../record/search-view/document-record-search/document-record-search.component';
-import { AppStore } from '@rero/shared';
 import { BaseRoute } from './base-route';
 
 export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => {
@@ -89,12 +88,36 @@ export const documentsRoutes: Routes = [
 ];
 
 class DocumentsRoute extends BaseRoute {
+  protected recordService = inject(RecordService);
+
   /** Route name */
   readonly name = 'documents';
 
   /** Record type */
   readonly recordType = 'documents';
-
+  /**
+   * Process bucket or filter name.
+   *
+   * @param bucketOrFilter Bucket or filter.
+   * @return Observable of the name.
+   */
+  private processFilterName(bucketOrFilter: Bucket | IFilter): Observable<string> {
+    if(bucketOrFilter.name) { return of(bucketOrFilter.name);}
+    switch (bucketOrFilter.aggregationKey) {
+      case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucketOrFilter.key}`));
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', bucketOrFilter.key).pipe(map(record => record.metadata.name));
+      case 'organisation': return this.recordService.getRecord<{metadata: {name: string}}>('organisations', bucketOrFilter.key).pipe(map(record => record.metadata.name));
+      case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', bucketOrFilter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(bucketOrFilter.key);
+    }
+  }
+  private processBucketName(bucketOrFilter: Bucket | IFilter): Observable<string> {
+    if(bucketOrFilter.name) { return of(bucketOrFilter.name);}
+    switch (bucketOrFilter.aggregationKey) {
+      case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucketOrFilter.key}`));
+      default: return this.routeToolService.translateService.stream(bucketOrFilter.key);
+    }
+  }
   getTypesForOrg(org: { pid: string }): Partial<RecordType>[] {
     const docType = {
       key: this.name,
@@ -137,6 +160,8 @@ class DocumentsRoute extends BaseRoute {
       ],
       canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.DOC_CREATE), message: '' }),
       permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+      processBucketName: (bucket: Bucket) => this.processBucketName(bucket),
+      processFilterName: (filter: IFilter) => this.processFilterName(filter),
       preprocessRecordEditor: (record: any) => {
         record = this.removeKey(record, '_text');
         record = this.removeKey(record, '_draft');

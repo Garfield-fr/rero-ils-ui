@@ -44,6 +44,7 @@ import { CardModule } from 'primeng/card';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'admin-account-transfer',
@@ -51,7 +52,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
   imports: [
     TranslateDirective, FormsModule, ReactiveFormsModule, RouterLink,
     Bind, Button, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe,
-    SelectModule, CardModule, RadioButtonModule, InputGroupModule, InputGroupAddonModule,
+    SelectModule, CardModule, RadioButtonModule, InputGroupModule, InputGroupAddonModule, InputTextModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

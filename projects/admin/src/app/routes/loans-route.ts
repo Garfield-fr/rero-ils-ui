@@ -14,10 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { ActionStatus, RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
-import { of } from 'rxjs';
+import { ActionStatus, Bucket, IFilter, RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import { map, Observable, of } from 'rxjs';
+import { LibraryApiService } from '../api/library-api.service';
 import { LoanState } from '../classes/loans';
 import { LoansBriefViewComponent } from '../record/brief-view/loans-brief-view/loans-brief-view.component';
 import { BaseRoute } from './base-route';
@@ -34,11 +36,27 @@ export const loansRoutes: Routes = [
 ];
 
 class LoansRoute extends BaseRoute implements RouteDataTypesInterface {
+  protected libraryApiService = inject(LibraryApiService);
   /** Route name */
   readonly name = 'loans';
 
   /** Record type */
   readonly recordType = 'loans';
+
+  /**
+   * Process bucket or filter name.
+   *
+   * @param bucketOrFilter Bucket or filter.
+   * @return Observable of the name.
+   */
+  private processName(bucketOrFilter: Bucket | IFilter): Observable<string> {
+    switch (bucketOrFilter.aggregationKey) {
+      case 'owner_library':
+      case 'pickup_library':
+      case 'transaction_library': return this.libraryApiService.getByPid(bucketOrFilter.key).pipe(map(record => record.name));
+      default: return bucketOrFilter.name ? of(bucketOrFilter.name) : this.routeToolService.translateService.stream(bucketOrFilter.key);
+    }
+  }
 
   getTypes(): Partial<RecordType>[] {
     return [
@@ -47,6 +65,8 @@ class LoansRoute extends BaseRoute implements RouteDataTypesInterface {
         label: _('Loans'),
         component: LoansBriefViewComponent,
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        processBucketName: (bucket: Bucket) => this.processName(bucket),
+        processFilterName: (filter: IFilter) => this.processName(filter),
         canAdd: () => of({ can: false } as ActionStatus),
         canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
         canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),

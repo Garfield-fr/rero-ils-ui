@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { OrderDetailStore } from '../store/order-detail.store';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { OrderLineComponent } from '../order-line/order-line.component';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { OrderDetailStore } from '../store/order-detail.store';
 
 @Component({
     selector: 'admin-order-lines',
     templateUrl: './order-lines.component.html',
-    imports: [OrderLineComponent, TranslateDirective, TranslatePipe],
+    imports: [OrderLineComponent, TranslateDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderLinesComponent {

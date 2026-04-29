@@ -24,7 +24,7 @@ import { RouteToolService } from './route-tool.service';
 
 export class BaseRoute {
 
-  protected routeToolService = inject(RouteToolService);;
+  protected routeToolService = inject(RouteToolService);
   protected location = inject(Location);
 
   /** Disabled action */
