@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { RecordService, DateTranslatePipe } from '@rero/ng-core';
+import { RecordSearchStore, RecordService, DateTranslatePipe } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Inplace } from 'primeng/inplace';
@@ -40,29 +40,25 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   protected toastService: MessageService = inject(MessageService);
   protected recordService: RecordService = inject(RecordService);
   protected translateService: TranslateService = inject(TranslateService);
+  protected searchStore = inject(RecordSearchStore);
 
   record = input<any>();
-
   type = input<string>();
-
   detailUrl = input<{ link: string; external: boolean }>();
 
-  // need a result list refresh
-  refresh = output<boolean>();
-
   // current ILS pid
-  ilsPid = null;
+  ilsPid: string | null = null;
 
   // current candidate
-  currentCandidate = null;
+  currentCandidate: any | null = null;
 
   // current candidate index
-  currentCandidateIndex = null;
+  currentCandidateIndex = -1;
 
   // message logs server
   messages = computed((): { severity: string; detail: string }[] => this.getMessages());
 
-  //** OnInit hook */
+  /** OnInit hook */
   ngOnInit(): void {
     let ilsPid = this.record()?.metadata?.deduplication?.ils_pid;
     // get value from the backend if it exists
@@ -79,11 +75,10 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
 
   /**
    * Get the backend log messages from the record.
-   *
    * @returns list of messages on primeng format
    */
   getMessages(): { severity: string; detail: string }[] {
-    const messages = [];
+    const messages: { severity: string; detail: string }[] = [];
     if (this.record()?.metadata?.deduplication?.logs) {
       ['info', 'warning', 'error'].map((field) => {
         const log = this.record()?.metadata?.deduplication?.logs[field];
@@ -108,14 +103,14 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
    *
    * @param ilsPid - the ILS pid value.
    */
-  updateCurrentCandidate(ilsPid: string): void {
+  updateCurrentCandidate(ilsPid: string | null): void {
     // pid is null thus unselect
     if (ilsPid == null || ilsPid === '') {
       this.currentCandidateIndex = -1;
       this.currentCandidate = null;
       this.ilsPid = null;
     } else {
-      const existingCandidateIndex = this.candidates.findIndex((v) => v?.json?.pid == ilsPid);
+      const existingCandidateIndex = this.candidates.findIndex((v: any) => v?.json?.pid == ilsPid);
       // exists in the current list
       if (existingCandidateIndex > -1) {
         this.currentCandidateIndex = existingCandidateIndex;
@@ -129,7 +124,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
             // add to the candidate list at the first position
             this.record().metadata.deduplication.candidates = [
               { pid: record.pid, json: record },
-              ...this.candidates.filter((c) => c.score),
+              ...this.candidates.filter((c: any) => c.score),
             ];
             this.currentCandidateIndex = 0;
             this.currentCandidate = this.record()?.metadata?.deduplication?.candidates[this.currentCandidateIndex];
@@ -170,6 +165,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   hasPrevious(): boolean {
     return this.currentCandidateIndex > 0;
   }
+
   /**
    * Has the current candidate a next value?
    * @returns true if exists
@@ -178,7 +174,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
     return this.currentCandidateIndex < this.candidates.length - 1;
   }
 
-  /***
+  /**
    * Set the next candidate as the current candidate.
    */
   nextCandidate(): void {
@@ -188,7 +184,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
     }
   }
 
-  /***
+  /**
    * Set the previous candidate as the current candidate.
    */
   previousCandidate(): void {
@@ -202,15 +198,15 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
    * Set the current ILS pid from the input value and set the candidate accordingly.
    * @param event - keyboard event
    */
-  saveIlsPid(event): void {
-    const ilsPid = event.target.value != '' ? event.target.value : null;
+  saveIlsPid(event: KeyboardEvent): void {
+    const ilsPid = (event.target as HTMLInputElement).value !== '' ? (event.target as HTMLInputElement).value : null;
     this.updateCurrentCandidate(ilsPid);
   }
 
   /**
    * Reject the candidates and set the status to "no match".
    */
-  reject() {
+  reject(): void {
     this.ilsPid = null;
     this.save();
   }
@@ -225,10 +221,22 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
         candidates: this.candidates,
       })
       .subscribe((record: any) => {
-        this.refresh.emit(true);
+        const config = this.searchStore.config();
+        this.searchStore.fetchRecords({
+          index: this.searchStore.currentIndex(),
+          query: this.searchStore.queryString(),
+          page: this.searchStore.page(),
+          allowEmptySearch: config.allowEmptySearch,
+          itemsPerPage: this.searchStore.size(),
+          aggregationsFilters: this.searchStore.aggregationsFilters(),
+          preFilters: config.preFilters,
+          sort: this.searchStore.sort(),
+          facets: this.searchStore.facetsParameter(),
+          headers: config.listHeaders,
+        });
         this.toastService.add({
           severity: 'success',
-          summary: `${record.id} ` + this.translateService.instant('has been sucessfully updated.'),
+          summary: `${record.id} ` + this.translateService.instant('has been successfully updated.'),
           detail: this.translateService.instant('The status is now:') + ' ' + this.translateService.instant(record.deduplication.status),
         });
       });
