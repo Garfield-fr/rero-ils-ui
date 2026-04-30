@@ -150,6 +150,9 @@ export class DefaultHoldingItemComponent implements OnInit {
         //   but are not using the same library as item owning library.
         const switchLocation = {can: permissions.update ? permissions.update.can : false };
         const resolved = this.recordPermissionService.membership(this.appStore.currentLibraryPid(), this.editableItem().metadata.library.pid, permissions);
+        // membership() restricts delete to same-library, but delete should be allowed across
+        // libraries within the current organisation — restore the server-side delete permission.
+        resolved.delete = permissions.delete;
         resolved.switchLocation = switchLocation;
         resolved.canRequest = canRequest;
         this.permissions.set(resolved);

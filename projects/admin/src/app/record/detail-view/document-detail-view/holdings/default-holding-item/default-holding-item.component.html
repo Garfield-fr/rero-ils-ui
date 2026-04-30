@@ -27,7 +27,7 @@
               <admin-record-masked [record]="item" />
             }
             <!-- Remove link if not current organisation -->
-            @if (permissions) {
+            @if (permissions()) {
               <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
                 {{ item.metadata.barcode }}
               </a>
