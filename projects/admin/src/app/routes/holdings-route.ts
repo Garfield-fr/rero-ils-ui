@@ -141,12 +141,11 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const user = this.routeToolService.appStore.user();
           const apiService: any = this.routeToolService.apiService;
           const recordService: RecordService = this.routeToolService.recordService as RecordService;
-          const libraryPid = user?.currentLibrary;
+          const libraryPid = this.routeToolService.appStore.currentLibraryPid();
           const query = `library.pid:${libraryPid}`;
-          f.props.options = recordService
+          f.props!.options = recordService
             .getRecords('locations', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
             .pipe(
               map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
