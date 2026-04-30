@@ -18,7 +18,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { TranslateService, _ } from '@ngx-translate/core';
-import { RecordType } from '@rero/ng-core';
+import { Bucket, IFilter, RecordType } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -62,6 +62,8 @@ class ImportDocumentsRoute extends BaseRoute {
     canAdd: () => of(false),
     canUpdate: () => of(false),
     canDelete: () => of(false),
+    processBucketName: (bucket: Bucket) => this.processName(bucket),
+    processFilterName: (filter: IFilter) => this.processName(filter),
     resultsText: (hits: any) => this.getResultsText(hits),
     aggregationsBucketSize: 10,
     aggregationsOrder: ['document_type', 'author', 'language', 'year'],
@@ -107,5 +109,19 @@ class ImportDocumentsRoute extends BaseRoute {
       label: source.label,
     };
     return { ...this._baseTypeConfig, ...sourceConfig };
+  }
+
+  /**
+   * Process bucket or filter name.
+   *
+   * @param bucketOrFilter Bucket or filter.
+   * @return Observable of the name.
+   */
+  private processName(bucketOrFilter: Bucket | IFilter): Observable<string> {
+    if(bucketOrFilter.name) { return of(bucketOrFilter.name); }
+    switch (bucketOrFilter.aggregationKey) {
+      case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucketOrFilter.key}`));
+      default: return this.routeToolService.translateService.stream(bucketOrFilter.key);
+    }
   }
 }

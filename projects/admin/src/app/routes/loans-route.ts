@@ -43,21 +43,6 @@ class LoansRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Record type */
   readonly recordType = 'loans';
 
-  /**
-   * Process bucket or filter name.
-   *
-   * @param bucketOrFilter Bucket or filter.
-   * @return Observable of the name.
-   */
-  private processName(bucketOrFilter: Bucket | IFilter): Observable<string> {
-    switch (bucketOrFilter.aggregationKey) {
-      case 'owner_library':
-      case 'pickup_library':
-      case 'transaction_library': return this.libraryApiService.getByPid(bucketOrFilter.key).pipe(map(record => record.name));
-      default: return bucketOrFilter.name ? of(bucketOrFilter.name) : this.routeToolService.translateService.stream(bucketOrFilter.key);
-    }
-  }
-
   getTypes(): Partial<RecordType>[] {
     return [
       {
@@ -100,5 +85,21 @@ class LoansRoute extends BaseRoute implements RouteDataTypesInterface {
         showFacetsIfNoResults: true,
       },
     ];
+  }
+
+  /**
+   * Process bucket or filter name.
+   *
+   * @param bucketOrFilter Bucket or filter.
+   * @return Observable of the name.
+   */
+  private processName(bucketOrFilter: Bucket | IFilter): Observable<string> {
+    if(bucketOrFilter.name) { return of(bucketOrFilter.name); }
+    switch (bucketOrFilter.aggregationKey) {
+      case 'owner_library':
+      case 'pickup_library':
+      case 'transaction_library': return this.libraryApiService.getByPid(bucketOrFilter.key).pipe(map(record => record.name));
+      default: return bucketOrFilter.name ? of(bucketOrFilter.name) : this.routeToolService.translateService.stream(bucketOrFilter.key);
+    }
   }
 }

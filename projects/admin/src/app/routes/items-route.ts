@@ -14,13 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ItemSwitchLocationComponent } from '@app/admin/components/items/switch-location/item-switch-location/item-switch-location.component';
+import { inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ResolveFn, Routes } from '@angular/router';
-import { _ } from '@ngx-translate/core';
+import { ItemSwitchLocationComponent } from '@app/admin/components/items/switch-location/item-switch-location/item-switch-location.component';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { _ } from '@ngx-translate/core';
 import {
   ComponentCanDeactivateGuard,
   EditorComponent,
+  IFilter,
   JSONSchema7,
   RecordData,
   RecordSearchPageComponent,
@@ -29,9 +32,8 @@ import {
   RouteDataTypesInterface,
 } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { ItemType } from '../classes/items';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
@@ -95,6 +97,8 @@ export const itemsRoutes: Routes = [
 ];
 
 class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
+  protected recordService = inject(RecordService);
+
   /** Route name */
   readonly name = 'items';
 
@@ -123,6 +127,7 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
         canRead: (record: RecordData) => this.canRead(record),
         canAdd: () => of({ can: false, message: '' }),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, false),
+        processFilterName: (filter: IFilter) => this.processFilterName(filter),
         preprocessRecordEditor: (record: any) => {
           // If we found an `holding` parameter into the query string then we need to pre-populated
           // the form with the corresponding holding metadata (see '_populateItemFieldFromHolding' function
@@ -348,5 +353,17 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
         record.holding = { $ref: (this.routeToolService.apiService as any).getRefEndpoint('holdings', holdingPid) };
       }
     );
+  }
+
+  private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'item_type':
+      case 'temporary_item_type': return this.recordService.getRecord<{metadata: {name: string}}>('item_types', filter.key).pipe(map(record => record.metadata.name));
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      case 'location':
+      case 'temporary_location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(filter.key);
+    }
   }
 }

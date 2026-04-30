@@ -14,9 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
+import type { ActionStatus, EsResult, IFilter } from '@rero/ng-core';
 import {
   DetailComponent,
   EditorComponent,
@@ -27,9 +29,8 @@ import {
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
-import type { ActionStatus, EsResult } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
@@ -75,6 +76,8 @@ export const statisticsCfgRoutes: Routes = [
 ];
 
 class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
+  protected recordService = inject(RecordService);
+
   /** Route name */
   readonly name = 'stats_cfg';
 
@@ -109,6 +112,7 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
         canAdd: () =>
           of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.STAT_CFG_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        processFilterName: (filter: IFilter) => this.processFilterName(filter),
         formFieldMap: ((field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
           return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
         }) as any,
@@ -172,5 +176,13 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
       };
     }
     return field;
+  }
+
+  private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(filter.key);
+    }
   }
 }

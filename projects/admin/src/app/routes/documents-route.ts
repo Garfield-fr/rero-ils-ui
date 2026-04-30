@@ -95,29 +95,7 @@ class DocumentsRoute extends BaseRoute {
 
   /** Record type */
   readonly recordType = 'documents';
-  /**
-   * Process bucket or filter name.
-   *
-   * @param bucketOrFilter Bucket or filter.
-   * @return Observable of the name.
-   */
-  private processFilterName(bucketOrFilter: Bucket | IFilter): Observable<string> {
-    if(bucketOrFilter.name) { return of(bucketOrFilter.name);}
-    switch (bucketOrFilter.aggregationKey) {
-      case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucketOrFilter.key}`));
-      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', bucketOrFilter.key).pipe(map(record => record.metadata.name));
-      case 'organisation': return this.recordService.getRecord<{metadata: {name: string}}>('organisations', bucketOrFilter.key).pipe(map(record => record.metadata.name));
-      case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', bucketOrFilter.key).pipe(map(record => record.metadata.name));
-      default: return this.routeToolService.translateService.stream(bucketOrFilter.key);
-    }
-  }
-  private processBucketName(bucketOrFilter: Bucket | IFilter): Observable<string> {
-    if(bucketOrFilter.name) { return of(bucketOrFilter.name);}
-    switch (bucketOrFilter.aggregationKey) {
-      case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucketOrFilter.key}`));
-      default: return this.routeToolService.translateService.stream(bucketOrFilter.key);
-    }
-  }
+
   getTypesForOrg(org: { pid: string }): Partial<RecordType>[] {
     const docType = {
       key: this.name,
@@ -262,5 +240,24 @@ class DocumentsRoute extends BaseRoute {
       types[0]['defaultSearchInputFilters'] = [{ key: 'organisation', values: [org.pid] }];
     }
     return types;
+  }
+
+  private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'language': return of(this.routeToolService.translateService.instant(`lang_${filter.key}`));
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
+      case 'organisation': return this.recordService.getRecord<{metadata: {name: string}}>('organisations', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(filter.key);
+    }
+  }
+
+  private processBucketName(bucket: Bucket): Observable<string> {
+    if(bucket.name) { return of(bucket.name); }
+    switch (bucket.aggregationKey) {
+      case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucket.key}`));
+      default: return this.routeToolService.translateService.stream(bucket.key);
+    }
   }
 }

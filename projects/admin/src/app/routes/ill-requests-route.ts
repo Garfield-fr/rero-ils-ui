@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
@@ -21,13 +22,15 @@ import {
   ComponentCanDeactivateGuard,
   DetailComponent,
   EditorComponent,
+  IFilter,
   RecordData,
   RecordSearchPageComponent,
+  RecordService,
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { map, Observable, of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { IllRequestsBriefViewComponent } from '../record/brief-view/ill-requests-brief-view/ill-requests-brief-view.component';
@@ -80,6 +83,8 @@ export const illRequestsRoutes: Routes = [
 ];
 
 class IllRequestsRoute extends BaseRoute implements RouteDataTypesInterface {
+  protected recordService = inject(RecordService);
+
   /** Route name */
   readonly name = 'ill_requests';
 
@@ -98,6 +103,7 @@ class IllRequestsRoute extends BaseRoute implements RouteDataTypesInterface {
           of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ILL_CREATE) } as ActionStatus),
         canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
         canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
+        processFilterName: (filter: IFilter) => this.processFilterName(filter),
         aggregationsExpand: ['request_status', 'loan_status', 'requester'],
         aggregationsOrder: ['request_status', 'loan_status', 'requester', 'library'],
         listHeaders: {
@@ -106,5 +112,13 @@ class IllRequestsRoute extends BaseRoute implements RouteDataTypesInterface {
         showFacetsIfNoResults: true,
       },
     ];
+  }
+
+  private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(filter.key);
+    }
   }
 }

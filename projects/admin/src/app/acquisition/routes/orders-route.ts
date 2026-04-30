@@ -15,19 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
   ComponentCanDeactivateGuard,
   DetailComponent,
   EditorComponent,
+  IFilter,
   RecordData,
   RecordSearchPageComponent,
+  RecordService,
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { acqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { permissionGuard } from '../../guard/permission.guard';
@@ -90,6 +93,8 @@ export const ordersRoutes: Routes = [
 ];
 
 class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
+  protected recordService = inject(RecordService);
+
   /** Route name */
   readonly name = 'acq_orders';
   /** Record type */
@@ -104,6 +109,7 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
       searchFilters: [this.expertSearchFilter()],
       canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ACOR_CREATE), message: '' }),
       permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
+      processFilterName: (filter: IFilter) => this.processFilterName(filter),
       preCreateRecord: (data: any) => this._addDefaultInformation(data),
       preUpdateRecord: (data: any) => this._cleanRecord(data),
       aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
@@ -186,5 +192,16 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
     // remove dynamic fields
     const fieldsToRemoved = ['is_current_budget', 'status', 'account_statement'];
     return this.fieldsToRemoved(data, fieldsToRemoved);
+  }
+
+  private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'budget': return this.recordService.getRecord<{metadata: {name: string}}>('budgets', filter.key).pipe(map(record => record.metadata.name));
+      case 'account': return this.recordService.getRecord<{metadata: {name: string}}>('acq_accounts', filter.key).pipe(map(record => record.metadata.name));
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      case 'vendor': return this.recordService.getRecord<{metadata: {name: string}}>('vendors', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(filter.key);
+    }
   }
 }

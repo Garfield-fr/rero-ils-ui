@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import { Bucket, IFilter, RecordData, RecordSearchPageComponent, RecordService, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS } from '@rero/shared';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { map, Observable, of } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { permissionGuard } from '../guard/permission.guard';
 import { IssuesBriefViewComponent } from '../record/brief-view/issues-brief-view/issues-brief-view.component';
@@ -40,6 +42,8 @@ export const issuesRoutes: Routes = [
 ];
 
 class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
+  protected recordService = inject(RecordService);
+
   /** Route name */
   readonly name = 'issues';
 
@@ -55,9 +59,10 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
         component: IssuesBriefViewComponent,
         searchFilters: [this.expertSearchFilter()],
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        processBucketName: (bucket: Bucket) => this.processBucketName(bucket),
+        processFilterName: (filter: IFilter) => this.processFilterName(filter),
         preFilters: {
           or_issue_status: [IssueItemStatus.LATE],
-          organisation: null,
         },
         aggregationsBucketSize: 10,
         aggregationsOrder: ['library', 'location', 'item_type', 'vendor', 'claims_count', 'claims_date'],
@@ -85,5 +90,28 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
         }
       });
     return types;
+  }
+
+  private processBucketName(bucket: Bucket): Observable<string> {
+    if(bucket.name) { return of(bucket.name); }
+    switch (bucket.aggregationKey) {
+      case 'claims_count': {
+        const claims_label = Number(bucket.doc_count) < 2 ? _('{{count}} claim') : _('{{count}} claims');
+        return this.routeToolService.translateService.stream(claims_label, {count: bucket.doc_count});
+      };
+      default: return this.routeToolService.translateService.stream(bucket.key);
+    }
+  }
+
+  private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'claims_count': return this.routeToolService.translateService.stream(_('Claim(s)'));
+      case 'item_type': return this.recordService.getRecord<{metadata: {name: string}}>('item_types', filter.key).pipe(map(record => record.metadata.name));
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
+      case 'vendor': return this.recordService.getRecord<{metadata: {name: string}}>('vendors', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(filter.key);
+    }
   }
 }
