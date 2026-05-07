@@ -204,18 +204,18 @@
   <section class="ui:mt-4">
     <p-tabs value="circulation">
       <p-tablist>
-        <p-tab value="circulation" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+        <p-tab value="circulation" class="ui:flex ui:items-center ui:!gap-2">
           <i class="fa fa-exchange"></i>
           <span translate>Circulation</span>
         </p-tab>
         @if (isDisplayLocalFieldsTab) {
-          <p-tab value="field" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+          <p-tab value="field" class="ui:flex ui:items-center ui:!gap-2">
             <i class="fa fa-list-ul ui:mr-1"></i>&nbsp;
             <span translate>Local fields</span>
           </p-tab>
         }
         @if (record()?.metadata?.issue?.claims) {
-          <p-tab value="claim" class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit">
+          <p-tab value="claim" class="ui:flex ui:items-center ui:!gap-2">
             <i class="fa fa-gavel"></i>
             <span [ngPlural]="record()?.metadata.issue.claims.counter">
               <ng-template ngPluralCase="=0">{{ 'Claim' | translate }}</ng-template>

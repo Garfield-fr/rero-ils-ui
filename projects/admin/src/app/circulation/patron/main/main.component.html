@@ -24,7 +24,7 @@
   <p-tabs [value]="activeTab()">
     <p-tablist>
       @for(item of items(); track item.id) {
-        <p-tab class="ui:flex ui:items-center ui:!gap-2 ui:text-inherit" [value]="item.id" [routerLink]="item.routerLink">
+        <p-tab class="ui:flex ui:items-center ui:!gap-2" [value]="item.id" [routerLink]="item.routerLink">
           <span>{{ item.label | translate }}</span>
           @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
             @if (item.tag.withCurrency) {
