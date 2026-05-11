@@ -157,7 +157,6 @@ class DocumentsRoute extends BaseRoute {
         }
         return record;
       },
-      aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
       aggregationsName: {
         online: _('Online resources'),
         not_online: _('Physical resources'),

@@ -69,7 +69,6 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
               key: 'collections',
               component: CollectionBriefComponent,
               label: _('Exhibition/course'),
-              aggregations: (aggregations: any) => this.aggFilter(aggregations),
               aggregationsOrder: ['type', 'teacher', 'library', 'subject'],
               aggregationsExpand: ['type'],
               aggregationsBucketSize: 10,

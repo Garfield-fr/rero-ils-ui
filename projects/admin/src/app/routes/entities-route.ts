@@ -62,8 +62,6 @@ class EntitiesRoute extends BaseRoute implements RouteDataTypesInterface {
           } as ActionStatus),
         canUpdate: (record: RecordData) => this._buildUpdatePermission(record),
         canDelete: (record: RecordData) => this._buildDeletePermission(record),
-        // TODO
-        // aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
         aggregationsName: {
           resource_type: _('Source'),
           type: _('Type'),

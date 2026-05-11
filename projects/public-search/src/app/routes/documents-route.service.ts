@@ -96,7 +96,6 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
               key: 'documents',
               component: DocumentBriefComponent,
               label: _('Documents'),
-              aggregations: (aggregations: any) => this.aggFilter(aggregations),
               aggregationsName: {
                 online: _('Online resources'),
                 not_online: _('Physical resources'),

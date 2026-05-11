@@ -261,38 +261,4 @@ export class RouteToolService {
       ? queryParams[name]
       : defaultValue;
   }
-
-  /**
-   * Aggregation filter
-   * @param aggregations - Object
-   * @return Observable
-   */
-  aggregationFilter(aggregations: object): Observable<Record<string, unknown>> {
-    return new Observable((observer: Subscriber<Record<string, unknown>>): void => {
-      observer.next(this._aggFilter(aggregations));
-      this.translateService.onLangChange.subscribe(() => {
-        observer.next(this._aggFilter(aggregations));
-      });
-    });
-  }
-
-  /**
-   * Aggregation filter
-   * @param aggregations - Object
-   * @return array
-   */
-  private _aggFilter(aggregations: object): Record<string, unknown> {
-    const aggs: Record<string, unknown> = {};
-    Object.keys(aggregations).map((aggregation) => {
-      if (aggregation.indexOf("__") > -1) {
-        const splitted = aggregation.split("__");
-        if (this.translateService.getCurrentLang() === splitted[1]) {
-          aggs[aggregation] = aggregations[aggregation];
-        }
-      } else {
-        aggs[aggregation] = aggregations[aggregation];
-      }
-    });
-    return aggs;
-  }
 }

@@ -112,7 +112,6 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
       processFilterName: (filter: IFilter) => this.processFilterName(filter),
       preCreateRecord: (data: any) => this._addDefaultInformation(data),
       preUpdateRecord: (data: any) => this._cleanRecord(data),
-      aggregations: (aggregations: any) => this.routeToolService.aggregationFilter(aggregations),
       aggregationsExpand: ['library', 'order_date', 'status'],
       aggregationsOrder: ['budget', 'library', 'status', 'account', 'vendor', 'order_date', 'receipt_date'],
       aggregationsBucketSize: 10,
