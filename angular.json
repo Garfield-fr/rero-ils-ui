@@ -100,7 +100,8 @@
               "buildTarget": "admin:build:development",
               "prebundle": {
                 "exclude": [
-                  "@rero/ng-core"
+                  "@rero/ng-core",
+                  "primelocale"
                 ]
               }
             }
@@ -255,7 +256,8 @@
               "buildTarget": "public-holdings-items:build:development",
               "prebundle": {
                 "exclude": [
-                  "@rero/ng-core"
+                  "@rero/ng-core",
+                  "primelocale"
                 ]
               }
             }
@@ -389,7 +391,8 @@
               "buildTarget": "public-search:build:development",
               "prebundle": {
                 "exclude": [
-                  "@rero/ng-core"
+                  "@rero/ng-core",
+                  "primelocale"
                 ]
               }
             }
@@ -534,7 +537,8 @@
               "buildTarget": "search-bar:build:development",
               "prebundle": {
                 "exclude": [
-                  "@rero/ng-core"
+                  "@rero/ng-core",
+                  "primelocale"
                 ]
               }
             }
@@ -717,7 +721,8 @@
               "buildTarget": "public-patron-profile:build:development",
               "prebundle": {
                 "exclude": [
-                  "@rero/ng-core"
+                  "@rero/ng-core",
+                  "primelocale"
                 ]
               }
             }
