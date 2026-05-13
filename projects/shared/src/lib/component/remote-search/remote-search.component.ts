@@ -90,7 +90,6 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
     if (!(typeof query === 'string')) {
       query = query.originalLabel;
     }
-    query = (query as string).replace(/[+\-&|!(){}[\]^"~*?:\\/]/g, '\\$&');
     const internalRoutingBaseURL = this.internalRoutingBaseURL();
     if (internalRoutingBaseURL) {
       this.router.navigate([internalRoutingBaseURL], {
