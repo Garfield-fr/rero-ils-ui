@@ -19,6 +19,7 @@ import {
   importProvidersFrom,
   LOCALE_ID,
   provideAppInitializer,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -71,6 +72,7 @@ import { PasswordGeneratorComponent } from '@rero/ng-core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZonelessChangeDetection(),
     provideRouter(routes, withRouterConfig({ paramsInheritanceStrategy: 'always' })),
     provideAppInitializer(() => initializeApp()),
     {

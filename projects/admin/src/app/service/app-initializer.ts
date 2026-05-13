@@ -62,7 +62,6 @@ export function initializeApp(): Observable<any> {
           ? browserLang
           : appConfigService.defaultLanguage;
       }
-      translateService.initialize();
       return translateService.use(language);
     })
   );

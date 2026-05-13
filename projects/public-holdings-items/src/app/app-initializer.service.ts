@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -27,9 +27,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class AppInitializerService {
 
-  private translateService: TranslateService = inject(TranslateService);
-  private appStore = inject(AppStore);
-  private appConfigService: AppConfigService = inject(AppConfigService);
+  private translateService = inject(TranslateService);
+  private appStore = inject<InstanceType<typeof AppStore>>(AppStore);
+  private appConfigService = inject(AppConfigService);
 
   load(): Observable<any> {
     return this.appStore.load().pipe(

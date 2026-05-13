@@ -15,15 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createApplication } from '@angular/platform-browser';
 import { createCustomElement } from '@angular/elements';
+import { createApplication } from '@angular/platform-browser';
 import { RemoteSearchComponent } from '@rero/shared';
 import { appConfig } from './app/app.config';
 
-createApplication(appConfig).then(appRef => {
-  const injector = appRef.injector;
-  if (!customElements.get('main-search-bar')) {
-    const searchBar = createCustomElement(RemoteSearchComponent, { injector });
+if (!customElements.get('main-search-bar')) {
+  createApplication(appConfig).then(appRef => {
+    const searchBar = createCustomElement(RemoteSearchComponent, { injector: appRef.injector });
     customElements.define('main-search-bar', searchBar);
-  }
-}).catch(err => console.error(err));
+  }).catch(err => console.error(err));
+}

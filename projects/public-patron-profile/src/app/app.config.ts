@@ -16,22 +16,15 @@
  */
 
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { FormlyModule } from '@ngx-formly/core';
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { TranslateLoader as BaseCoreTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideFormlyCore } from '@ngx-formly/core';
+import { provideLoadingBarInterceptor } from '@ngx-loading-bar/http-client';
+import { TranslateService, provideTranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig } from '@rero/ng-core';
-
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { BadgeModule } from 'primeng/badge';
 import { providePrimeNG } from 'primeng/config';
-import { MenuModule } from 'primeng/menu';
-import { MessageModule } from 'primeng/message';
-import { TabsModule } from 'primeng/tabs';
-import { TimelineModule } from 'primeng/timeline';
 import {
   fieldPasswordMatchValidator,
 } from 'projects/public-search/src/app/patron-profile/patron-profile-password/patron-profile-password.component';
@@ -41,26 +34,17 @@ import { AppInitializerService } from './app-initializer.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZonelessChangeDetection(),
     provideRouter(patronProfileRoutes),
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        loader: {
-          provide: BaseCoreTranslateLoader,
-          useClass: CoreTranslateLoader,
-          deps: [CoreConfigService, HttpClient],
-        },
-        isolate: false,
-      }),
-      FormlyModule.forRoot({
-        validators: [{ name: 'passwordMatch', validation: fieldPasswordMatchValidator }],
-      }),
-      LoadingBarHttpClientModule,
-      TabsModule,
-      MessageModule,
-      MenuModule,
-      BadgeModule,
-      TimelineModule
-    ),
+    provideHttpClient(withInterceptorsFromDi()),
+    providePrimeNG(primeNGConfig),
+    provideTranslateService({
+      loader: provideTranslateLoader(CoreTranslateLoader),
+    }),
+    provideFormlyCore({
+      validators: [{ name: 'passwordMatch', validation: fieldPasswordMatchValidator }],
+    }),
+    provideLoadingBarInterceptor(),
     provideAppInitializer(() => {
       const appInitializerService = inject(AppInitializerService);
       return appInitializerService.load();
@@ -74,8 +58,5 @@ export const appConfig: ApplicationConfig = {
     { provide: CoreConfigService, useClass: AppConfigService },
     ConfirmationService,
     MessageService,
-    provideHttpClient(withInterceptorsFromDi()),
-    provideAnimationsAsync(),
-    providePrimeNG(primeNGConfig),
   ],
 };

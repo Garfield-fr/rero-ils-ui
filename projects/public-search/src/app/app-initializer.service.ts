@@ -50,7 +50,6 @@ export class AppInitializerService {
         ? browserLang
         : this.appConfigService.defaultLanguage;
     }
-    this.translateService.initialize();
     return this.translateService.use(language);
   }
 }

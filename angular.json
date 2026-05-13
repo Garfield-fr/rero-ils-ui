@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -24,14 +25,12 @@
               "generate-password-lite",
               "simple-isbn"
             ],
-            "preserveSymlinks": true,
             "outputPath": {
               "base": "build/dist/admin"
             },
             "index": "projects/admin/src/index.html",
-            "polyfills": [
-              "projects/admin/src/polyfills.ts"
-            ],
+            "browser": "projects/admin/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/admin/tsconfig.app.json",
             "assets": [
               "projects/admin/src/assets",
@@ -48,8 +47,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/admin/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -100,7 +98,11 @@
             },
             "development": {
               "buildTarget": "admin:build:development",
-              "prebundle": { "exclude": ["@rero/ng-core" ] }
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core"
+                ]
+              }
             }
           },
           "defaultConfiguration": "development"
@@ -154,6 +156,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -165,9 +168,8 @@
               "base": "build/dist/public-holdings-items"
             },
             "index": "projects/public-holdings-items/src/index.html",
-            "polyfills": [
-              "projects/public-holdings-items/src/polyfills.ts"
-            ],
+            "browser": "projects/public-holdings-items/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/public-holdings-items/tsconfig.app.json",
             "assets": [
               {
@@ -188,8 +190,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/public-holdings-items/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -217,6 +218,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             },
@@ -248,7 +253,11 @@
             },
             "development": {
               "buildTarget": "public-holdings-items:build:development",
-              "prebundle": { "exclude": ["@rero/ng-core" ] }
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core"
+                ]
+              }
             }
           },
           "defaultConfiguration": "development"
@@ -292,6 +301,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -299,14 +309,12 @@
               "generate-password-lite",
               "simple-isbn"
             ],
-            "preserveSymlinks": true,
             "outputPath": {
               "base": "build/dist/public-search"
             },
             "index": "projects/public-search/src/index.html",
-            "polyfills": [
-              "projects/public-search/src/polyfills.ts"
-            ],
+            "browser": "projects/public-search/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/public-search/tsconfig.app.json",
             "assets": [
               "projects/public-search/src/favicon.ico",
@@ -324,8 +332,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/public-search/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -334,9 +341,6 @@
                   "replace": "projects/public-search/src/environments/environment.ts",
                   "with": "projects/public-search/src/environments/environment.prod.ts"
                 }
-              ],
-              "styles": [
-                "projects/public-search/src/app/scss/styles.scss"
               ],
               "optimization": {
                 "styles": {
@@ -348,6 +352,9 @@
               "namedChunks": false,
               "extractLicenses": true,
               "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-search/browser/",
+              "styles": [
+                "projects/public-search/src/app/scss/styles.scss"
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -380,7 +387,11 @@
             },
             "development": {
               "buildTarget": "public-search:build:development",
-              "prebundle": { "exclude": ["@rero/ng-core" ] }
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core"
+                ]
+              }
             }
           },
           "defaultConfiguration": "development"
@@ -416,8 +427,8 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/public-search/**/*.ts",
-              "projects/public-search/**/*.html"
+              "projects/public-search/src/**/*.ts",
+              "projects/public-search/src/**/*.html"
             ]
           }
         }
@@ -433,6 +444,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -444,9 +456,8 @@
               "base": "build/dist/search-bar"
             },
             "index": "projects/search-bar/src/index.html",
-            "polyfills": [
-              "projects/search-bar/src/polyfills.ts"
-            ],
+            "browser": "projects/search-bar/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/search-bar/tsconfig.app.json",
             "assets": [
               {
@@ -467,8 +478,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/search-bar/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -487,6 +497,7 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
+              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/search-bar/browser/",
               "styles": [
                 "projects/public-search/src/app/scss/styles.scss"
               ],
@@ -495,6 +506,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             },
@@ -503,15 +518,6 @@
               "extractLicenses": false,
               "sourceMap": true
             }
-          }
-        },
-        "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "tsConfig": "projects/search-bar/tsconfig.spec.json",
-            "setupFiles": [
-              "projects/search-bar/src/vitest.setup.ts"
-            ]
           }
         },
         "serve": {
@@ -526,7 +532,11 @@
             },
             "development": {
               "buildTarget": "search-bar:build:development",
-              "prebundle": { "exclude": ["@rero/ng-core" ] }
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core"
+                ]
+              }
             }
           },
           "defaultConfiguration": "development"
@@ -606,6 +616,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -613,14 +624,12 @@
               "generate-password-lite",
               "simple-isbn"
             ],
-            "preserveSymlinks": true,
             "outputPath": {
               "base": "build/dist/public-patron-profile"
             },
             "index": "projects/public-patron-profile/src/index.html",
-            "polyfills": [
-              "projects/public-patron-profile/src/polyfills.ts"
-            ],
+            "browser": "projects/public-patron-profile/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/public-patron-profile/tsconfig.app.json",
             "assets": [
               {
@@ -641,8 +650,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/public-patron-profile/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -661,11 +669,10 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
+              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-patron-profile/browser/",
               "styles": [
                 "projects/public-search/src/app/scss/styles.scss"
               ],
-              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-patron-profile/browser/",
-              "baseHref": "",
               "budgets": [
                 {
                   "type": "initial",
@@ -708,7 +715,11 @@
             },
             "development": {
               "buildTarget": "public-patron-profile:build:development",
-              "prebundle": { "exclude": ["@rero/ng-core" ] }
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core"
+                ]
+              }
             }
           },
           "defaultConfiguration": "development"

@@ -15,40 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig, TruncateTextPipe } from '@rero/ng-core';
-import { MainTitlePipe } from '@rero/shared';
+import { TranslateService, provideTranslateLoader, provideTranslateService } from '@ngx-translate/core';
+import { CoreTranslateLoader, NgCoreTranslateService, TruncateTextPipe, primeNGConfig } from '@rero/ng-core';
+import { AppStore, MainTitlePipe } from '@rero/shared';
 import { providePrimeNG } from 'primeng/config';
-import { importProvidersFrom } from '@angular/core';
-import { AppInitializerService } from './app-initializer.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter([]),
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        loader: {
-          provide: BaseTranslateLoader,
-          useClass: CoreTranslateLoader,
-          deps: [CoreConfigService, HttpClient],
-        },
-        isolate: false,
-      }),
-    ),
+    provideZonelessChangeDetection(),
+    provideHttpClient(withInterceptorsFromDi()),
+    providePrimeNG(primeNGConfig),
+    provideTranslateService({
+      loader: provideTranslateLoader(CoreTranslateLoader),
+    }),
     { provide: TranslateService, useClass: NgCoreTranslateService },
     provideAppInitializer(() => {
-      const translateService = inject(NgCoreTranslateService);
-      translateService.initialize();
-      const appInitializerService = inject(AppInitializerService);
-      return appInitializerService.load();
+      return inject(AppStore).load();
     }),
-    provideHttpClient(withInterceptorsFromDi()),
-    provideAnimationsAsync(),
-    providePrimeNG(primeNGConfig),
     MainTitlePipe,
     TruncateTextPipe,
   ],
