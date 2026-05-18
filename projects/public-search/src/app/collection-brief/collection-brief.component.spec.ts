@@ -16,12 +16,13 @@
  */
 
 import { formatDate, registerLocaleData } from '@angular/common';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
+import { SafeUrlPipe } from '@rero/shared';
+import { of } from 'rxjs';
 import { CollectionBriefComponent } from './collection-brief.component';
 import localeEnGb from '@angular/common/locales/en-GB';
 
@@ -29,7 +30,7 @@ registerLocaleData(localeEnGb);
 
 @Pipe({ name: 'dateTranslate', standalone: true })
 class MockDateTranslatePipe implements PipeTransform {
-  transform(value: any, format = 'mediumDate', timezone?: string): string | null {
+  transform(value: string, format = 'mediumDate', timezone?: string): string | null {
     if (value === null || value === undefined) return null;
     try {
       return formatDate(value, format, 'en-GB', timezone);
@@ -44,6 +45,10 @@ class MockNl2brPipe implements PipeTransform {
   transform(value: string): string { return value ?? ''; }
 }
 
+@Pipe({ name: 'safeUrl', standalone: true })
+class MockSafeUrlPipe implements PipeTransform {
+  transform(value: string): string { return value ?? ''; }
+}
 
 describe('CollectionBriefComponent', () => {
   let component: CollectionBriefComponent;
@@ -65,18 +70,20 @@ describe('CollectionBriefComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
+      imports: [
         TranslateModule.forRoot(),
         CollectionBriefComponent
-    ],
-    providers: [
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-})
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: { params: of({ viewcode: 'test' }) }
+        }
+      ]
+    })
     .overrideComponent(CollectionBriefComponent, {
-      remove: { imports: [DateTranslatePipe, Nl2brPipe] },
-      add: { imports: [MockDateTranslatePipe, MockNl2brPipe] }
+      remove: { imports: [DateTranslatePipe, Nl2brPipe, SafeUrlPipe] },
+      add: { imports: [MockDateTranslatePipe, MockNl2brPipe, MockSafeUrlPipe] }
     })
     .compileComponents();
   });
@@ -86,7 +93,7 @@ describe('CollectionBriefComponent', () => {
     component = fixture.componentInstance;
     fixture.componentRef.setInput('record', record);
     fixture.componentRef.setInput('type', 'coll');
-    fixture.componentRef.setInput('detailUrl', { link: '/foo', external: false });
+    fixture.componentRef.setInput('detailUrl', { link: '/test/collections/:pid', external: false });
     fixture.detectChanges();
   });
 
@@ -102,5 +109,4 @@ describe('CollectionBriefComponent', () => {
     expect(div[2].textContent).toContain('description of the collection');
     expect(div[3].textContent).toContain('1 Jan 2025 - 31 Mar 2025');
   });
-
 });

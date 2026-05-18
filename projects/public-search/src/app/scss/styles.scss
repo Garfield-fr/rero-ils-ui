@@ -23,7 +23,7 @@
 
 @layer rero-ils-ui {
   .rero-ils-ui {
-    @import "tailwindcss/preflight.css" layer(base)prefix(ui);
+    @import "tailwindcss/preflight.css" layer(base) prefix(ui);
     @import "@rero/ng-core/assets/scss/theme";
     @import "@rero/ng-core/assets/scss/typography";
     @import "../document-detail/holdings/holdings.component";

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2025 RERO
+ * Copyright (C) 2019-2026 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,10 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy, computed} from '@angular/core';
 import { DocumentApiService } from '../api/document-api.service';
 import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
 import { RecordData } from '@rero/ng-core';
+import { ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+
+type Production = {
+  language: string;
+  value: string;
+  [key: string]: any;
+}
 
 @Component({
     selector: 'public-search-document-brief',
@@ -28,29 +37,34 @@ import { RecordData } from '@rero/ng-core';
 })
 export class DocumentBriefComponent {
 
-  public coverUrl: string;
-  private pathArray = window.location.pathname.split('/');
-  public documentApiService: DocumentApiService = inject(DocumentApiService);
+  protected route = inject(ActivatedRoute);
+  protected documentApiService = inject(DocumentApiService);
 
-  type = input<string>();
+  record = input.required<RecordData>();
+
+  type = input.required<string>();
+
   detailUrl = input<{ link: string, external: boolean }>();
-  viewcode = input(this.pathArray[1]);
-  record = input<RecordData>();
+
+  viewcode = toSignal(this.route.params.pipe(map(p => p['viewcode'])));
+
+  recordDetailUrl = computed(() => this.detailUrl()?.link.replace(':viewcode', this.viewcode()));
 
   /** process provision activity publications */
-  get provisionActivityPublications() {
+  get provisionActivityPublications(): any[] {
     const metadata = this.record()?.metadata as any;
     if (!metadata) {
       return [];
     }
     const { provisionActivity } = metadata;
-    const publications = [];
+    const publications: any[] = [];
     if (undefined === provisionActivity) {
       return publications;
     }
     provisionActivity.map((provision: any) => {
       if (provision.type === 'bf:Publication' && '_text' in provision) {
-        provision._text.map((text: any) => publications.push(text));
+        console.log('TOTO', provision._text);
+        provision._text.map((text: Production) => publications.push(text));
       }
     });
     return publications;

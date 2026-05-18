@@ -17,7 +17,7 @@
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, inject, LOCALE_ID, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { NavigationStart, provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { TranslateLoader as BaseCoreTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig, TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe } from '@rero/shared';
@@ -26,10 +26,6 @@ import { providePrimeNG } from 'primeng/config';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
 import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
-import { CollectionsRouteService } from './routes/collections-route.service';
-import { DocumentsRouteService } from './routes/documents-route.service';
-import { resourceRouteToken } from './routes/route-collection.service';
-import { RouteFactoryService } from './routes/route-factory.service';
 import { APP_ROUTES } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -53,33 +49,10 @@ export const appConfig: ApplicationConfig = {
       const appInitializerService = inject(AppInitializerService);
       return appInitializerService.load();
     }),
-    provideAppInitializer(() => {
-      const router = inject(Router);
-      const routeFactoryService = inject(RouteFactoryService);
-      router.events.subscribe(async routerEvent => {
-        if (routerEvent instanceof NavigationStart) {
-          let url = routerEvent.url;
-          const position = url.indexOf('?');
-          if (position > -1) {
-            url = url.substr(0, position);
-          }
-          const urlParams = url.split('/').filter(param => param);
-          if (urlParams.length === 3) {
-            const view = urlParams[0];
-            const resource = urlParams[2];
-            if (view && resource) {
-              routeFactoryService.createRouteByResourceNameAndView(resource, view);
-            }
-          }
-        }
-      });
-    }),
     { provide: CoreConfigService, useClass: AppConfigService },
     { provide: TranslateService, useClass: NgCoreTranslateService },
     { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.getCurrentLang(), deps: [TranslateService] },
     { provide: HTTP_INTERCEPTORS, useClass: CustomRequestInterceptor, multi: true },
-    { provide: resourceRouteToken, useClass: DocumentsRouteService, multi: true },
-    { provide: resourceRouteToken, useClass: CollectionsRouteService, multi: true },
     MainTitlePipe,
     TruncateTextPipe,
     ConfirmationService,

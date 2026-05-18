@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,19 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { UrlMatcher, UrlSegment } from "@angular/router";
 
-export type ResourceRouteInterface = {
-
-  /**
-   * Create a config route
-   * @param viewcode - string
-   * @return Object or null
-   */
-  create(viewcode: string): null | {};
-
-  /**
-   * Get resources name
-   * @return array of string, name(s) of route
-   */
-  getResources(): string[];
+export function recordTypeMatcher(type: string): UrlMatcher {
+  return (url: UrlSegment[]) => {
+    if (url.length >= 3 && url[1].path === 'search' && url[2].path === type) {
+      return {
+        consumed: url,
+        posParams: { viewcode: url[0], type: new UrlSegment(type, {}) },
+      };
+    }
+    return null;
+  };
 }

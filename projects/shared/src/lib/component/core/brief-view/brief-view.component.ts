@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2025 RERO
+ * Copyright (C) 2019-2026 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,56 +15,68 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterContentInit, Component, ContentChildren, QueryList, TemplateRef, input, ChangeDetectionStrategy} from '@angular/core';
-import { ReroTemplateDirective } from '../../../directive/rero-template.directive';
 import { NgTemplateOutlet } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { AfterContentInit, ChangeDetectionStrategy, Component, computed, ContentChildren, inject, input, QueryList, signal, TemplateRef } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
+import { map } from 'rxjs';
+import { ReroTemplateDirective } from '../../../directive/rero-template.directive';
 
 export type BriefViewTag = {
   label: string
-  [key:string]: any;
+  [key: string]: unknown;
 }
 
 @Component({
-    selector: 'shared-brief-view',
-    templateUrl: './brief-view.component.html',
-    imports: [NgTemplateOutlet, RouterLink, Bind, Tag],
+  selector: 'shared-brief-view',
+  templateUrl: './brief-view.component.html',
+  imports: [NgTemplateOutlet, RouterLink, Bind, Tag],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BriefViewComponent implements AfterContentInit {
 
-  readonly link = input<string | string[]>();
+  protected route = inject(ActivatedRoute);
+
+  readonly link = input<string | string[] | null>();
   readonly title = input<string | undefined>(undefined);
   readonly tags = input<BriefViewTag[]>();
 
-  @ContentChildren(ReroTemplateDirective) templates: QueryList<ReroTemplateDirective> | null;
+  viewcode = toSignal(this.route.params.pipe(map(p => p['viewcode'])));
 
-  iconTemplate: TemplateRef<any> | null;
-  titleTemplate: TemplateRef<any> | null;
-  contentTemplate: TemplateRef<any> | null;
-  tagsTemplate: TemplateRef<any> | null;
+  readonly detailUrl = computed(() => {
+    if (Array.isArray(this.link())) {
+      const link = this.link() as string[];
+      return link.map((v: string) => v.replace(':viewcode', this.viewcode()))
+    }
 
-  isArray(link: string|string[]): boolean {
+    const link = this.link() as string;
+    return link.replace(':viewcode', this.viewcode());
+  });
+
+  @ContentChildren(ReroTemplateDirective) private templates!: QueryList<ReroTemplateDirective>;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  iconTemplate = signal<TemplateRef<any> | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  titleTemplate = signal<TemplateRef<any> | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  contentTemplate = signal<TemplateRef<any> | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tagsTemplate = signal<TemplateRef<any> | null>(null);
+
+  isArray(link: string | string[] | null): boolean {
     return Array.isArray(link);
   }
 
-  ngAfterContentInit() {
+  ngAfterContentInit(): void {
     this.templates.forEach((item) => {
       switch (item.getType()) {
-        case 'icon':
-          this.iconTemplate = item.template;
-          break;
-        case 'title':
-          this.titleTemplate = item.template;
-          break;
-        case 'content':
-          this.contentTemplate = item.template;
-          break;
-        case 'tags':
-          this.tagsTemplate = item.template;
-          break;
+        case 'icon': this.iconTemplate.set(item.template); break;
+        case 'title': this.titleTemplate.set(item.template); break;
+        case 'content': this.contentTemplate.set(item.template); break;
+        case 'tags': this.tagsTemplate.set(item.template); break;
       }
     });
   }

@@ -16,39 +16,38 @@
 */
 
 import { inject, Injectable } from '@angular/core';
+import { InterpolatableTranslationObject } from '@ngx-translate/core';
+import { NgCoreTranslateService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
-import { RouteCollectionService } from './routes/route-collection.service';
-import { NgCoreTranslateService } from '@rero/ng-core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppInitializerService {
 
-  private routeCollectionService: RouteCollectionService = inject(RouteCollectionService);
   private appStore = inject(AppStore);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private appConfigService: AppConfigService = inject(AppConfigService);
 
-  load(): Observable<any> {
+  load(): Observable<InterpolatableTranslationObject> {
     return this.appStore.load().pipe(
-      tap(() => {
-        this.routeCollectionService.load();
-      }),
       switchMap(() => this.initTranslateService())
     );
   }
 
-  private initTranslateService(): Observable<any> {
+  private initTranslateService(): Observable<InterpolatableTranslationObject> {
     let language = this.appStore.settings()?.language;
     if (language == null) {
+      language = this.appConfigService.defaultLanguage;
       const browserLang = this.translateService.getBrowserLang();
-      language = browserLang.match(this.appConfigService.languages.join('|'))
-        ? browserLang
-        : this.appConfigService.defaultLanguage;
+      if (browserLang) {
+        language = browserLang.match(this.appConfigService.languages.join('|'))
+          ? browserLang
+          : this.appConfigService.defaultLanguage;
+      }
     }
     return this.translateService.use(language);
   }
