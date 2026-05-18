@@ -18,7 +18,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
     name: 'loanStatusBadge',
-    standalone: true
 })
 export class LoanStatusBadgePipe implements PipeTransform {
 

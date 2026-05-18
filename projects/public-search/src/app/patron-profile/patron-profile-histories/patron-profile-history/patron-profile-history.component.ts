@@ -25,7 +25,6 @@ import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 @Component({
     selector: 'public-search-patron-profile-history',
     templateUrl: './patron-profile-history.component.html',
-    standalone: true,
     imports: [AsyncPipe, TranslateDirective, DateTranslatePipe, GetRecordPipe, ContributionComponent, TagModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

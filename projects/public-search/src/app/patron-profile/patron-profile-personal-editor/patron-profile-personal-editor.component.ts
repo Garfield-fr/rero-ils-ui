@@ -35,7 +35,6 @@ import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 @Component({
     selector: 'public-search-patron-profile-personal-editor',
     templateUrl: './patron-profile-personal-editor.component.html',
-    standalone: true,
     imports: [ReactiveFormsModule, FormlyModule, FormlyPrimeNGModule, TranslatePipe, LoadingBarModule, ButtonModule, ToastModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

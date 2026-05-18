@@ -33,7 +33,6 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
       />
     }
   `,
-    standalone: true,
     imports: [MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

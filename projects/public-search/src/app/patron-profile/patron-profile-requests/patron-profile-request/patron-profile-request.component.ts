@@ -29,7 +29,6 @@ import { PatronProfileDocumentComponent } from '../../patron-profile-document/pa
 @Component({
     selector: 'public-search-patron-profile-request',
     templateUrl: './patron-profile-request.component.html',
-    standalone: true,
     imports: [NgClass, NgTemplateOutlet, TranslateDirective, TranslatePipe, DateTranslatePipe, OpenCloseButtonComponent, ButtonModule, PatronProfileDocumentComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

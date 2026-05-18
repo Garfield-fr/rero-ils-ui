@@ -32,7 +32,7 @@ import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-f
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-@Component({ selector: 'public-search-patron-profile-fee', standalone: true, template: '' })
+@Component({ selector: 'public-search-patron-profile-fee', template: '' })
 class StubPatronProfileFeeComponent {
   @Input() record: any;
 }

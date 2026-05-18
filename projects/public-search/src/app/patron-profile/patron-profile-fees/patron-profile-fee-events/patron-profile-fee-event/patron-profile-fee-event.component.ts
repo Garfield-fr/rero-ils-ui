@@ -28,7 +28,6 @@ import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
 @Component({
   selector: 'public-search-patron-profile-fee-event',
   templateUrl: './patron-profile-fee-event.component.html',
-  standalone: true,
   imports: [CurrencyPipe, NgClass, TranslateDirective, TranslatePipe, DateTranslatePipe, TagModule, TimelineModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

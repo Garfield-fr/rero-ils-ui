@@ -22,7 +22,6 @@ import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service'
 @Component({
     selector: 'public-search-patron-profile-menu',
     templateUrl: './patron-profile-menu.component.html',
-    standalone: true,
     imports: [FormsModule, SelectModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

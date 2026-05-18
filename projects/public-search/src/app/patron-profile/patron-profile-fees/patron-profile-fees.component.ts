@@ -30,7 +30,6 @@ import { fee, overdueFee } from './types';
 @Component({
     selector: 'public-search-patron-profile-fees',
     templateUrl: './patron-profile-fees.component.html',
-    standalone: true,
     imports: [CurrencyPipe, TranslateDirective, TranslatePipe, PanelModule, PatronProfileFeeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -28,7 +28,7 @@ import localeEnGb from '@angular/common/locales/en-GB';
 
 registerLocaleData(localeEnGb);
 
-@Pipe({ name: 'dateTranslate', standalone: true })
+@Pipe({ name: 'dateTranslate'})
 class MockDateTranslatePipe implements PipeTransform {
   transform(value: string, format = 'mediumDate', timezone?: string): string | null {
     if (value === null || value === undefined) return null;
@@ -40,12 +40,12 @@ class MockDateTranslatePipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: 'nl2br', standalone: true })
+@Pipe({ name: 'nl2br'})
 class MockNl2brPipe implements PipeTransform {
   transform(value: string): string { return value ?? ''; }
 }
 
-@Pipe({ name: 'safeUrl', standalone: true })
+@Pipe({ name: 'safeUrl'})
 class MockSafeUrlPipe implements PipeTransform {
   transform(value: string): string { return value ?? ''; }
 }

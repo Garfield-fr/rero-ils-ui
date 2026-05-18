@@ -48,7 +48,6 @@ export function fieldPasswordMatchValidator(control: AbstractControl) {
 @Component({
     selector: 'public-search-patron-profile-password',
     templateUrl: './patron-profile-password.component.html',
-    standalone: true,
     imports: [ReactiveFormsModule, FormlyModule, FormlyPrimeNGModule, TranslatePipe, LoadingBarModule, ButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

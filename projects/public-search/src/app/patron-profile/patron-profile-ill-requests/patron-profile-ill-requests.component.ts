@@ -28,7 +28,6 @@ import { PatronProfileIllRequestComponent } from './patron-profile-ill-request/p
 @Component({
     selector: 'public-search-patron-profile-ill-requests',
     templateUrl: './patron-profile-ill-requests.component.html',
-    standalone: true,
     imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileIllRequestComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

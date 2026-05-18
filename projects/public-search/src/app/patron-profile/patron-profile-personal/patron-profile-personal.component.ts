@@ -25,7 +25,6 @@ import { ButtonModule } from 'primeng/button';
 @Component({
     selector: 'public-search-patron-profile-personal',
     templateUrl: './patron-profile-personal.component.html',
-    standalone: true,
     imports: [NgClass, RouterLink, TranslateDirective, TranslatePipe, DateTranslatePipe, JoinPipe, ButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

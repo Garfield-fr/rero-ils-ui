@@ -29,7 +29,6 @@ import { PatronProfileLoanComponent } from './patron-profile-loan/patron-profile
 @Component({
     selector: 'public-search-patron-profile-loans',
     templateUrl: './patron-profile-loans.component.html',
-    standalone: true,
     imports: [FormsModule, TranslateDirective, Select, PanelModule, ShowMorePagerComponent, PatronProfileLoanComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

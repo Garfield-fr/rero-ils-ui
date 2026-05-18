@@ -24,7 +24,6 @@ import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
 @Component({
     selector: 'public-search-patron-profile-ill-request',
     templateUrl: './patron-profile-ill-request.component.html',
-    standalone: true,
     imports: [
       TranslateDirective,
       TranslatePipe,

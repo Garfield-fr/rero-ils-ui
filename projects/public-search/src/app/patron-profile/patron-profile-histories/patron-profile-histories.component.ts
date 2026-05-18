@@ -28,7 +28,6 @@ import { PatronProfileHistoryComponent } from './patron-profile-history/patron-p
 @Component({
     selector: 'public-search-patron-profile-histories',
     templateUrl: './patron-profile-histories.component.html',
-    standalone: true,
     imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileHistoryComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

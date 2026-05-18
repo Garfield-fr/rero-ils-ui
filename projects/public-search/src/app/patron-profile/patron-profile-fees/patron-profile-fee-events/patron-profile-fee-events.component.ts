@@ -20,7 +20,6 @@ import { PatronProfileFeeEventComponent } from './patron-profile-fee-event/patro
 @Component({
   selector: 'public-search-patron-profile-fee-events',
   templateUrl: './patron-profile-fee-events.component.html',
-  standalone: true,
   imports: [PatronProfileFeeEventComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

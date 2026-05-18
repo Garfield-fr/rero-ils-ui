@@ -26,7 +26,6 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 @Component({
     selector: 'public-search-patron-profile-document',
     templateUrl: './patron-profile-document.component.html',
-    standalone: true,
     imports: [TranslateDirective, ContributionComponent, MainTitlePipe, TagModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

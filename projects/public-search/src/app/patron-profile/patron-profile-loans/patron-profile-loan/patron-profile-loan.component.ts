@@ -33,7 +33,6 @@ import { PatronProfileDocumentComponent } from '../../patron-profile-document/pa
 @Component({
     selector: 'public-search-patron-profile-loan',
     templateUrl: './patron-profile-loan.component.html',
-    standalone: true,
     imports: [
       NgClass,
       TranslateDirective,

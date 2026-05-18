@@ -30,7 +30,7 @@ import localeEnGb from '@angular/common/locales/en-GB';
 
 registerLocaleData(localeEnGb);
 
-@Pipe({ name: 'dateTranslate', standalone: true })
+@Pipe({ name: 'dateTranslate'})
 class MockDateTranslatePipe implements PipeTransform {
   transform(value: any, format = 'mediumDate', timezone?: string): string | null {
     if (value === null || value === undefined) return null;

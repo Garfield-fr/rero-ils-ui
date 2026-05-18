@@ -65,7 +65,6 @@ type Tabs = {
 @Component({
     selector: 'public-search-patron-profile',
     templateUrl: './patron-profile.component.html',
-    standalone: true,
     imports: [
       CurrencyPipe,
       KeyValuePipe,

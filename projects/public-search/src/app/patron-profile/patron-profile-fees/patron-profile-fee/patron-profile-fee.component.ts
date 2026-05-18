@@ -31,7 +31,6 @@ import { PatronProfileFeeEventsComponent } from '../patron-profile-fee-events/pa
     selector: 'public-search-patron-profile-fee',
     templateUrl: './patron-profile-fee.component.html',
     styleUrl: './patron-profile-fee.component.scss',
-    standalone: true,
     imports: [
       CurrencyPipe,
       TranslateDirective,
