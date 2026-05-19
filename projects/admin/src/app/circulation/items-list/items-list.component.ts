@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, input, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { User, OpenCloseButtonComponent, IdAttributePipe } from '@rero/shared';
 import { ItemAction } from '../../classes/items';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -47,8 +47,7 @@ export class ItemsListComponent {
   /** Item has fees */
   hasFeesEmitter = output<boolean>();
 
-  /** is all items should be collapsed or not */
-  allCollapsed = true;
+  readonly allCollapsed = signal(true);
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor */

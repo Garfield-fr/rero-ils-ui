@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, DestroyRef, effect, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, effect, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
 import { CirculationStore } from '../../store/circulation.store';
@@ -50,13 +50,9 @@ export class CardComponent {
   /** event emitter when the close button are fired */
   clearPatron = output<any>();
 
-  /** Link used on the patron name */
-  patronLink: string;
-  /** it's the birthday of the patron */
-  isBirthday = false;
-  /** Patron age */
-  patronAge: number;
-  /** circulation messages about the loaded patron if exists */
+  readonly patronLink = signal('');
+  readonly isBirthday = signal(false);
+  readonly patronAge = signal(0);
   readonly circulationMessages = this.store.messages;
 
   constructor() {
@@ -64,17 +60,16 @@ export class CardComponent {
     effect(() => {
       const patron = this.patron();
       if (patron) {
-        this.patronLink = (this.linkMode() === 'detail')
-          ? '/records/patrons/detail/' + patron.pid
-          : '/circulation/patron/' + this.barcode() + '/loan';
-
+        this.patronLink.set(
+          (this.linkMode() === 'detail')
+            ? '/records/patrons/detail/' + patron.pid
+            : '/circulation/patron/' + this.barcode() + '/loan'
+        );
         if (patron.birth_date) {
           const today = DateTime.now().toFormat('M-dd');
           const birthDate = DateTime.fromISO(patron.birth_date).toFormat('M-dd');
-          if (today === birthDate) {
-            this.isBirthday = true;
-          }
-          this.patronAge = Math.floor(DateTime.now().diff(DateTime.fromISO(patron.birth_date), 'years').years);
+          this.isBirthday.set(today === birthDate);
+          this.patronAge.set(Math.floor(DateTime.now().diff(DateTime.fromISO(patron.birth_date), 'years').years));
         }
       }
     });

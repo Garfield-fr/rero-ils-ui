@@ -20,12 +20,20 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Loan, LoanOverduePreview, LoanState } from '@app/admin/classes/loans';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { PatronService } from '@app/admin/service/patron.service';
+import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 import { getSeverity } from '@app/admin/utils/utils';
 import { PatronTransactionService } from '../services/patron-transaction.service';
 import { computeTotalTransactionsAmount } from '../utils/transaction.utils';
 import { User } from '@rero/shared';
 import { EMPTY, forkJoin, pipe } from 'rxjs';
 import { catchError, filter, switchMap, tap } from 'rxjs/operators';
+
+export type ICirculationSetting = {
+  key: string;
+  label: string;
+  value: unknown;
+  extra?: { remember?: boolean; severity?: string };
+};
 
 export type CirculationStatistics = {
   feesEngaged: number;
@@ -48,6 +56,7 @@ export type CirculationState = {
   messages: CirculationMessage[];
   overdueTransactions: { fees: LoanOverduePreview; loan: Loan }[];
   openTransactions: PatronTransaction[];
+  settings: ICirculationSetting[];
 };
 
 const DEFAULT_STATISTICS: CirculationStatistics = {
@@ -67,6 +76,7 @@ export const CirculationStore = signalStore(
     messages: [],
     overdueTransactions: [],
     openTransactions: [],
+    settings: [],
   }),
   withComputed((store) => ({
     totalFeesEngaged: () => computeTotalTransactionsAmount(store.openTransactions()),
@@ -76,8 +86,26 @@ export const CirculationStore = signalStore(
     (
       store,
       patronService = inject(PatronService),
-      patronTransactionService = inject(PatronTransactionService)
+      patronTransactionService = inject(PatronTransactionService),
+      loanFixedDateService = inject(LoanFixedDateService)
     ) => ({
+
+      /** Add or replace a checkout setting. Persists endDate if remember is set. */
+      addSetting(setting: ICirculationSetting): void {
+        patchState(store, state => ({ settings: [...state.settings.filter(s => s.key !== setting.key), setting] }));
+        if (setting.key === 'endDate' && setting.extra?.remember && typeof setting.value === 'string') {
+          loanFixedDateService.set(setting.value);
+        }
+      },
+
+      /** Remove a checkout setting by key. Clears persisted endDate if needed. */
+      removeSetting(key: string): void {
+        const setting = store.settings().find(s => s.key === key);
+        if (setting?.key === 'endDate' && setting.extra?.remember) {
+          loanFixedDateService.remove();
+        }
+        patchState(store, state => ({ settings: state.settings.filter(s => s.key !== key) }));
+      },
       /** Load patron by barcode and store in state. */
       loadPatron: rxMethod<string>(
         pipe(
@@ -92,7 +120,7 @@ export const CirculationStore = signalStore(
       ),
 
       /** Load circulation statistics for a patron. */
-      loadStats: rxMethod<string>(
+      loadStats: rxMethod<string | undefined>(
         pipe(
           filter(Boolean),
           switchMap((patronPid) =>
@@ -193,6 +221,7 @@ export const CirculationStore = signalStore(
           messages: [],
           overdueTransactions: [],
           openTransactions: [],
+          settings: [],
         });
       },
 
@@ -205,6 +234,7 @@ export const CirculationStore = signalStore(
   withHooks((store) => ({
     onInit: () => {
       store.loadFees(store.patronPid);
+      store.loadStats(store.patronPid);
     },
   }))
 );

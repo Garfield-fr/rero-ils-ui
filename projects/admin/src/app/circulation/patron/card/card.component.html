@@ -25,7 +25,7 @@
           <div class="ui:flex ui:w-full">
             <div class="ui:w-full">
               <h3>
-                <a [routerLink]="patronLink">
+                <a [routerLink]="patronLink()">
                   <span id="patron-last-name">{{ patron().last_name }}</span>
                   @if (patron().first_name) {
                     <span id="patron-first-name">, {{ patron().first_name }}</span>
@@ -37,8 +37,8 @@
                   <div id="patron-birth-date">
                     @if (patron().birth_date) {
                       {{ patron().birth_date | dateTranslate:'mediumDate' }}
-                      ({{ patronAge }} {{ 'years old' | translate }})
-                      @if (isBirthday) {
+                      ({{ patronAge() }} {{ 'years old' | translate }})
+                      @if (isBirthday()) {
                         &nbsp;
                         <i class="fa fa-birthday-cake text-warning ui:animate-pulse"></i>
                       }

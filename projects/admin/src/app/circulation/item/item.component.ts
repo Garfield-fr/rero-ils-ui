@@ -65,20 +65,13 @@ export class ItemComponent {
   /** Extend loan event emitter */
   extendLoanClicked = output<any[]>();
 
-  /** loan corresponding to the item */
-  loan: Loan;
-  /** Fees related to the item/loan */
-  totalAmountOfFee = 0;
-  /** Notifications related to the current loan */
-  notifications = signal<any[] | null>(null);
-  /** ItemAction reference */
-  itemAction = ItemAction;
-  /** related document */
-  document = undefined;
-  /** ItemStatus class reference */
-  ItemStatus = ItemStatus;
-  /** debug mode is enabled ? */
-  debugMode = false;
+  readonly loan = signal<Loan | null>(null);
+  readonly totalAmountOfFee = signal(0);
+  readonly notifications = signal<any[] | null>(null);
+  readonly itemAction = ItemAction;
+  readonly document = signal<any>(undefined);
+  readonly ItemStatus = ItemStatus;
+  readonly debugMode = signal(false);
 
   // GETTER & SETTER =========================================================
   /**
@@ -100,17 +93,17 @@ export class ItemComponent {
     effect(() => {
       const item = this.item();
       if (item) {
-        this.loan = (item && item.loan) ? new Loan(item.loan) : null;
+        this.loan.set(item.loan ? new Loan(item.loan) : null);
         this.notifications.set(null);
-        if (this.loan) {
+        if (this.loan()) {
           const loanPid = item.loan.pid;
           this.patronTransactionService.patronTransactionsByLoan(loanPid, 'overdue', 'open').subscribe(
             (transactions) => {
-              this.totalAmountOfFee = computeTotalTransactionsAmount(transactions);
-              if (this.totalAmountOfFee > 0) {
+              const amount = computeTotalTransactionsAmount(transactions);
+              this.totalAmountOfFee.set(amount);
+              if (amount > 0) {
                 this.hasFeesEmitter.emit(true);
-                if(this.patron().pid) {
-                  // update patron fees
+                if (this.patron().pid) {
                   this.store.loadFees(this.patron().pid);
                 }
               }
@@ -126,7 +119,7 @@ export class ItemComponent {
           this.recordService.getRecord('documents', item.document.pid, {
             resolve: 1,
             headers: { Accept: 'application/rero+json, application/json' }
-          }).subscribe(document => this.document = document.metadata);
+          }).subscribe(doc => this.document.set(doc.metadata));
         }
       }
     });

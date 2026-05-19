@@ -17,13 +17,13 @@
 -->
 @if (item() && !(item().loading || false)) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-start ui:p-2" [ngClass]="{
-      'callout callout-warning': needCallout(item(), 'warning') || (item().actionDone === itemAction.checkin && totalAmountOfFee > 0) || !item().loan,
+      'callout callout-warning': needCallout(item(), 'warning') || (item().actionDone === itemAction.checkin && totalAmountOfFee() > 0) || !item().loan,
       ' ui:text-muted-color': item().status !== ItemStatus.ON_LOAN
     }"
   >
     <!-- BARCODE -->
     <div name="barcode" class="ui:col-span-3 ui:flex ui:gap-2">
-      @if (!item().actions || item().loan || totalAmountOfFee || item().pending_loans || notifications()) {
+      @if (!item().actions || item().loan || totalAmountOfFee() || item().pending_loans || notifications()) {
         <shared-open-close-button [collapsed]="isCollapsed()" (status)="isCollapsed.set($event)" />
       }
       <div class="ui:flex ui:flex-col ui:gap-2 ui:w-full">
@@ -56,16 +56,16 @@
         @if (item().document?.title) {
           {{ isCollapsed() ? (item().document.title | mainTitle | truncateText: 12) : item().document.title | mainTitle }}
         } @else {
-          @if (document) {
-            {{ document.title[0]._text }}
+          @if (document()) {
+            {{ document().title[0]._text }}
           }
         }
       </a>
       @if (item().enumerationAndChronology && isCollapsed()) {
         <p-tag severity="info" [value]="item().enumerationAndChronology" />
       }
-      @if (document) {
-        <shared-contribution [contributions]="document?.contribution" />
+      @if (document()) {
+        <shared-contribution [contributions]="document()?.contribution" />
       }
     </div>
     <!-- CIRCULATION INFO -->
@@ -77,7 +77,7 @@
               <li>
                 {{ item().status | translate }}
                 <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                <span [class.text-warning]="loan && loan.expired">
+                <span [class.text-warning]="loan() && loan()!.expired">
                   {{ item().loan.dueDate | dateTranslate :'shortDate' }}
                 </span>
               </li>
@@ -121,9 +121,9 @@
                 {{ item().loan.extension_count }} <i class="fa fa-refresh ui:ml-1"></i>
               </p-tag>
             }
-            @if (isCollapsed() && totalAmountOfFee > 0) {
+            @if (isCollapsed() && totalAmountOfFee() > 0) {
               <p-tag [title]="'Fees'|translate" severity="warn" styleClass="ui:mr-1">
-                {{ totalAmountOfFee | currency: organisation.default_currency }}
+                {{ totalAmountOfFee() | currency: organisation.default_currency }}
               </p-tag>
             }
             @if (isCollapsed() && item().pending_loans && item().pending_loans.length) {
@@ -231,11 +231,11 @@
               {{ item().loan.last_end_date | dateTranslate :'shortDate' }}
             </dd>
           }
-          @if (item().loan && totalAmountOfFee > 0) {
+          @if (item().loan && totalAmountOfFee() > 0) {
             <dt translate>Fees</dt>
             <dd>
               <p-tag severity="warn" styleClass="ui:mr-1">
-                {{ totalAmountOfFee | currency: organisation.default_currency }}
+                {{ totalAmountOfFee() | currency: organisation.default_currency }}
               </p-tag>
             </dd>
           }
@@ -298,26 +298,26 @@
     }
     @if (canUseDebugMode && !isCollapsed()) {
       <div class="ui:flex ui:justify-end ui:mt-2 ui:col-span-12">
-        <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warn" (onClick)="debugMode=!debugMode">
+        <p-button [icon]="debugMode() ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warn" (onClick)="debugMode.set(!debugMode())">
           <i class="fa fa-bug"></i>
         </p-button>
       </div>
     }
-    @if (debugMode && !isCollapsed()) {
+    @if (debugMode() && !isCollapsed()) {
       <div class="ui:col-span-12">
         <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
         <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-          @if (loan) {
+          @if (loan()) {
             <div class="ui:lg:col-span-6 ui:col-span-12">
               <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                 <h5 translate>Loan</h5>
                 <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
-                  <pre class="ui:text-sm">{{ loan | json }}</pre>
+                  <pre class="ui:text-sm">{{ loan() | json }}</pre>
                 </p-scrollPanel>
               </div>
             </div>
             <div class="ui:lg:col-span-6 ui:col-span-12">
-              @if (loan | getLoanCipo | async; as cipo) {
+              @if (loan() | getLoanCipo | async; as cipo) {
                 <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                   <h5>
                     {{ 'Circulation policy' | translate }}&nbsp;

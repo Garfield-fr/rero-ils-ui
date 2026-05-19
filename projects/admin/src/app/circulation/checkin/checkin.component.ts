@@ -54,17 +54,14 @@ export class CheckinComponent {
   }
 
   public placeholder = _('Please enter a patron card number or an item barcode.');
-  public searchText = '';
+  searchText = signal('');
   patronInfo = signal<User | undefined>(undefined);
   readonly barcode = signal<string | null>(null);
 
-  items = [];
+  items = signal<any[]>([]);
 
-  /** Focus attribute of the search input */
-  searchInputFocus = true;
-
-  /** Disabled attribute of the search input */
-  searchInputDisabled = false;
+  readonly searchInputFocus = signal(true);
+  readonly searchInputDisabled = signal(false);
 
   /** current called item */
   private item: any;
@@ -76,16 +73,16 @@ export class CheckinComponent {
     if (!searchText) {
       return null;
     }
-    this.searchText = searchText;
-    this.getPatronOrItem(this.searchText);
+    this.searchText.set(searchText);
+    this.getPatronOrItem(this.searchText());
   }
 
   /** Apply check-in and checkout automatically
    * @param itemBarcode: item barcode
    */
   checkin(itemBarcode: string) {
-    this.searchInputFocus = false;
-    this.searchInputDisabled = true;
+    this.searchInputFocus.set(false);
+    this.searchInputDisabled.set(true);
     this.itemsService.checkin(itemBarcode, this.appStore.currentLibraryPid()).subscribe({
       next: (item) => {
         // TODO: remove this when policy will be in place
@@ -157,11 +154,11 @@ export class CheckinComponent {
             }
             break;
         }
-        this.items.unshift(item);
+        this.items.update(current => [item, ...current]);
         this._resetSearchInput();
       },
       error: (error) => {
-        if (this.item && this.items.findIndex(i => i.barcode === this.item.barcode) === -1) {
+        if (this.item && this.items().findIndex((i: Item) => i.barcode === this.item.barcode) === -1) {
           // Reload item to have data up to date.
           this.itemsService.getItem(this.item.barcode).subscribe((item: any) => {
             delete item.actions;
@@ -181,7 +178,7 @@ export class CheckinComponent {
                 type: ItemNoteType.API
               });
             }
-            this.items.unshift(item);
+            this.items.update(current => [item, ...current]);
             // If no action could be done by the '/item/checkin' api, an error will be raised.
             // catch this error to display it as a Toast message.
             this._checkinErrorManagement(error, item);
@@ -282,7 +279,7 @@ export class CheckinComponent {
             this.item = item.hits[0].metadata;
             // Check if the item is already into the item list. If it happens,
             // just notify the user and clear the form.
-            if (this.items.find(it => it.barcode === barcode)) {
+            if (this.items().find((it: Item) => it.barcode === barcode)) {
               this.messageService.add({
                 severity: 'warn',
                 summary: this.translate.instant('Checkin'),
@@ -421,10 +418,10 @@ export class CheckinComponent {
 
   /** Reset search input */
   private _resetSearchInput(): void {
-    this.searchInputDisabled = false;
-    this.searchText = '';
+    this.searchInputDisabled.set(false);
+    this.searchText.set('');
     setTimeout(() => {
-      this.searchInputFocus = true;
+      this.searchInputFocus.set(true);
     });
   }
 }

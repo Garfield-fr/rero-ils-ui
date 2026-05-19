@@ -20,7 +20,8 @@ import { DateTranslatePipe } from '@rero/ng-core';
 import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FixedDateFormComponent } from '../fixed-date-form/fixed-date-form.component';
-import { CirculationSettingsService, ICirculationSetting } from './circulation-settings.service';
+import { CirculationStore, ICirculationSetting } from '../../../store/circulation.store';
+import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 import { Bind } from 'primeng/bind';
 import { Menu } from 'primeng/menu';
 import { Button } from 'primeng/button';
@@ -37,7 +38,8 @@ export class CirculationSettingsComponent {
   private translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
   private dateTranslatePipe: DateTranslatePipe = inject(DateTranslatePipe);
-  private circulationSettingsService: CirculationSettingsService = inject(CirculationSettingsService);
+  private store = inject(CirculationStore);
+  private loanFixedDateService = inject(LoanFixedDateService);
 
   items: MenuItem[] = [
     {
@@ -55,7 +57,7 @@ export class CirculationSettingsComponent {
   dialogRef: DynamicDialogRef | undefined;
 
   constructor() {
-    const fixedDate = this.circulationSettingsService.storedDueDate();
+    const fixedDate = this.loanFixedDateService.get();
     if (fixedDate) {
       this.setCheckoutDateSetting(new Date(fixedDate), true);
     }
@@ -99,7 +101,7 @@ export class CirculationSettingsComponent {
   }
 
   private _setCheckoutSetting(setting: ICirculationSetting): void {
-    this.circulationSettingsService.remove(setting.key);
-    this.circulationSettingsService.add(setting);
+    this.store.removeSetting(setting.key);
+    this.store.addSetting(setting);
   }
 }

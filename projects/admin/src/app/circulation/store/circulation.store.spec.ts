@@ -18,6 +18,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { PatronService } from '@app/admin/service/patron.service';
 import { PatronTransactionService } from '../services/patron-transaction.service';
+import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { CirculationStore } from './circulation.store';
 
@@ -64,6 +65,12 @@ const patronTransactionServiceMock = {
   patronTransactionsByPatron: vi.fn().mockReturnValue(of(OPEN_TRANSACTIONS)),
 };
 
+const loanFixedDateServiceMock = {
+  get: vi.fn().mockReturnValue(undefined),
+  set: vi.fn(),
+  remove: vi.fn(),
+};
+
 // ─── Suite ────────────────────────────────────────────────────────────────────
 
 describe('CirculationStore', () => {
@@ -81,6 +88,7 @@ describe('CirculationStore', () => {
         CirculationStore,
         { provide: PatronService, useValue: patronServiceMock },
         { provide: PatronTransactionService, useValue: patronTransactionServiceMock },
+        { provide: LoanFixedDateService, useValue: loanFixedDateServiceMock },
       ],
     });
     store = TestBed.inject(CirculationStore);

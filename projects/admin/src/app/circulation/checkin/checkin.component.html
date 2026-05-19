@@ -20,9 +20,9 @@
   <div class="ui:flex ui:flex-col ui:gap-4">
     <ng-core-search-input
       [placeholder]="placeholder | translate"
-      [searchText]="searchText"
-      [focus]="searchInputFocus"
-      [disabled]="searchInputDisabled"
+      [searchText]="searchText()"
+      [focus]="searchInputFocus()"
+      [disabled]="searchInputDisabled()"
       (searchQuery)="searchValueUpdated($event)"
     />
     @if(patronInfo()) {
@@ -34,7 +34,7 @@
       />
     }
     <admin-circulation-items-list
-      [checkedInItems]="items"
+      [checkedInItems]="items()"
       (hasFeesEmitter)="hasFees($event)"
     />
   </div>
