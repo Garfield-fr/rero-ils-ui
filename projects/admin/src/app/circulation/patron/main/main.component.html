@@ -14,9 +14,9 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (patron() && items().length) {
+@if (store.patron() && items().length) {
   <admin-circulation-patron-detailed
-    [patron]="patron()"
+    [patron]="store.patron()"
     [barcode]="barcode"
     [displayCirculationMessages]="true"
     (clearPatron)="clearPatron()"

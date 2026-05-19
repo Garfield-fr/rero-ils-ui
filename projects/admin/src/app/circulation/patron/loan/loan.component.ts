@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
 import { ItemsService } from '@app/admin/service/items.service';
@@ -27,9 +28,9 @@ import { Bind } from 'primeng/bind';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SelectChangeEvent, SelectModule } from 'primeng/select';
 import { Tag } from 'primeng/tag';
-import { delay, forkJoin, Subscription, switchMap, tap } from 'rxjs';
+import { delay, filter, forkJoin, tap } from 'rxjs';
 import { ItemsListComponent } from '../../items-list/items-list.component';
-import { CirculationStatsService } from '../service/circulation-stats.service';
+import { CirculationStore } from '../../store/circulation.store';
 import { CirculationSettingsComponent } from './circulation-settings/circulation-settings.component';
 import { CirculationSettingsService } from './circulation-settings/circulation-settings.service';
 
@@ -48,15 +49,16 @@ import { CirculationSettingsService } from './circulation-settings/circulation-s
     ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoanComponent implements OnInit, OnDestroy {
+export class LoanComponent {
   private itemsService: ItemsService = inject(ItemsService);
   private translateService: TranslateService = inject(TranslateService);
   private patronService: PatronService = inject(PatronService);
   private appStore = inject(AppStore);
   private messageService: MessageService = inject(MessageService);
   private circulationSettingsService: CirculationSettingsService = inject(CirculationSettingsService);
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
+  protected store = inject(CirculationStore);
 
   dialogRef: DynamicDialogRef | undefined;
 
@@ -75,8 +77,6 @@ export class LoanComponent implements OnInit, OnDestroy {
   searchInputDisabled = false;
 /** ready to pickup items */
   private pickupItems = [];
-  /** Observable subscription */
-  private subscription = new Subscription();
   /** checkout list sort criteria */
   sortCriteria = '-transaction_date';
 
@@ -91,46 +91,36 @@ export class LoanComponent implements OnInit, OnDestroy {
     this.circulationSettingsService.remove(key);
   }
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.subscription.add(
-      this.patronService.currentPatron$.subscribe((patron: any) => {
-        this.patron = patron;
-        if (patron) {
-          const loanedItems$ = this.patronService.getItems(patron.pid, this.sortCriteria);
-          const pickupItems$ = this.patronService.getItemsPickup(patron.pid);
-          forkJoin([loanedItems$, pickupItems$]).subscribe({
-            next: ([loanedItems, pickupItems]) => {
-              // loanedItems is an array of brief item data (pid, barcode). For each one, we need to
-              // call the detail item service to get full data about it
-              loanedItems.map((item: any) => (item.loading = true));
-              this.checkedOutItems = [...loanedItems];
-              this.pickupItems = pickupItems;
+  constructor() {
+    this.destroyRef.onDestroy(() => this.circulationSettingsService.clear());
+    toObservable(this.store.patron).pipe(
+      takeUntilDestroyed(),
+      filter((patron): patron is User => !!patron?.pid)
+    ).subscribe(patron => {
+      this.patron = patron;
+      const loanedItems$ = this.patronService.getItems(patron.pid!, this.sortCriteria);
+      const pickupItems$ = this.patronService.getItemsPickup(patron.pid!);
+      forkJoin([loanedItems$, pickupItems$]).subscribe({
+        next: ([loanedItems, pickupItems]) => {
+          loanedItems.map((item: { loading: boolean }) => (item.loading = true));
+          this.checkedOutItems = [...loanedItems];
+          this.pickupItems = pickupItems;
+          this.cdr.markForCheck();
+          loanedItems.forEach((data: any, index: number) => {
+            this.patronService.getItem(data.barcode).subscribe((item) => {
+              this.checkedOutItems = [
+                ...this.checkedOutItems.slice(0, index),
+                item,
+                ...this.checkedOutItems.slice(index + 1)
+              ];
               this.cdr.markForCheck();
-              // for each checkedOutElement call the detail item service.
-              loanedItems.forEach((data: any, index: number) => {
-                this.patronService.getItem(data.barcode).subscribe((item) => {
-                  this.checkedOutItems = [
-                    ...this.checkedOutItems.slice(0, index),
-                    item,
-                    ...this.checkedOutItems.slice(index + 1)
-                  ];
-                  this.cdr.markForCheck();
-                });
-              });
-            },
-            error: (_error) => { /* intentional no-op */ },
+            });
           });
-        }
-      })
-    );
+        },
+        error: (_error) => { /* intentional no-op */ },
+      });
+    });
     this.searchInputFocus = true;
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-    this.circulationSettingsService.clear();
   }
 
   // COMPONENT FUNCTIONS ========================================================
@@ -321,7 +311,7 @@ export class LoanComponent implements OnInit, OnDestroy {
           this.cdr.markForCheck();
         }),
         delay(200),
-        switchMap(() => this.circulationStatsService.getStats(this.patron.pid))
+        tap(() => this.store.loadStats(this.patron.pid!))
       )
       .subscribe({
         error: (err) => {

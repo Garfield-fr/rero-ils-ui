@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,13 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { inject, Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
 import { User } from '@rero/shared';
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Item } from '../classes/items';
 import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 
@@ -34,45 +33,22 @@ export class PatronService {
   private apiService: ApiService = inject(ApiService);
   private recordService: RecordService = inject(RecordService);
 
-  private readonly _currentPatron = signal<User | undefined>(undefined);
-
-  /** Current patron as readonly signal */
-  readonly currentPatron = this._currentPatron.asReadonly();
-
-  /** Current patron as Observable (backward-compatible) */
-  readonly currentPatron$ = toObservable(this._currentPatron);
-
-  /** Clear the current patron */
-  clear(): void {
-    this._currentPatron.set(undefined);
-  }
-
   /**
    * Get patron by barcode
    * @param barcode - string
-   * @return Observable
+   * @return Observable<User | undefined>
    */
-  getPatron(barcode: string): Observable<any> {
+  getPatron(barcode: string): Observable<User | undefined> {
     return this.recordService
       .getRecords('patrons', { query: `patron.barcode:${barcode}`, page: 1, itemsPerPage: 1 })
       .pipe(
-        switchMap((response: EsResult) => {
+        map((response: EsResult) => {
           const total = this.recordService.totalHits(response.hits.total);
           switch (total) {
-            case 0: {
-              this._currentPatron.set(undefined);
-              break;
-            }
-            case 1: {
-              const patron = response.hits.hits[0].metadata;
-              this._currentPatron.set(patron as unknown as User);
-              break;
-            }
-            default: {
-              throw new Error('too much results');
-            }
+            case 0: return undefined;
+            case 1: return response.hits.hits[0].metadata as unknown as User;
+            default: throw new Error('too much results');
           }
-          return of(this._currentPatron());
         })
       );
   }
@@ -102,7 +78,7 @@ export class PatronService {
     const url = `${itemApiUrl}/loans/${patronPid}?sort=${sort}`;
     return this.httpClient.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => this.recordService.totalHits(hits.total)  === 0 ? [] : hits.hits),
+      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map((data: any) => this._buildItem(data)))
     );
   }
@@ -215,19 +191,5 @@ export class PatronService {
       map((data: EsResult) => data.hits as any),
       map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
     );
-  }
-
-  /**
-   * Get formatted name of a patron
-   * @param patron: the patron to format
-   * @return the formatted name (name[, firstname])
-   */
-  getFormattedName(patron: any): string {
-    return [
-      patron.last_name || null,
-      patron.first_name || null
-    ].filter(el => el !== null) // remove potential empty values
-     .map(el => el.trim())      // trim all values
-     .join(', ');               // join values
   }
 }

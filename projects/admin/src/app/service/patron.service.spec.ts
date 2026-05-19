@@ -52,8 +52,7 @@ describe('PatronService', () => {
     const response = {...apiResponse};
     recordServiceSpy.getRecords.mockReturnValue(of(response));
     recordServiceSpy.totalHits.mockReturnValue(0);
-    service.currentPatron$.subscribe((result: any) => expect(result).toBeUndefined());
-    service.getPatron('2010023488').subscribe();
+    service.getPatron('2010023488').subscribe((result: any) => expect(result).toBeUndefined());
   });
 
   it('should return a patron', () => {
@@ -61,12 +60,9 @@ describe('PatronService', () => {
     response.hits.hits = [{...testPatron}];
     recordServiceSpy.getRecords.mockReturnValue(of(response));
     recordServiceSpy.totalHits.mockReturnValue(1);
-    service.currentPatron$.subscribe((result: any) => {
-      if (result) {
-        expect(result).toEqual(testPatron.metadata);
-      }
+    service.getPatron('2010023488').subscribe((result: any) => {
+      expect(result).toEqual(testPatron.metadata);
     });
-    service.getPatron('2010023488').subscribe();
   });
 
   it('should return a patron by its pid', () => {
@@ -142,7 +138,4 @@ describe('PatronService', () => {
     });
   });
 
-  it('should return the full name of the patron', () => {
-    expect(service.getFormattedName(testPatron.metadata)).toEqual('Doe, John');
-  });
 });

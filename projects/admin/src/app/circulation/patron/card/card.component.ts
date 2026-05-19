@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, input, OnDestroy, output, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, DestroyRef, effect, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
-import { CirculationStatsService } from '../service/circulation-stats.service';
+import { CirculationStore } from '../../store/circulation.store';
 import { NgClass, AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
@@ -32,9 +32,9 @@ import { MessageModule } from 'primeng/message';
     imports: [NgClass, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe, TranslatePipe, MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent implements OnDestroy {
+export class CardComponent {
 
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+  protected store = inject(CirculationStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the patron */
@@ -57,9 +57,10 @@ export class CardComponent implements OnDestroy {
   /** Patron age */
   patronAge: number;
   /** circulation messages about the loaded patron if exists */
-  circulationMessages: WritableSignal<{severity: string, detail: string}[]> = signal([]);
+  readonly circulationMessages = this.store.messages;
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => this.store.clearMessages());
     effect(() => {
       const patron = this.patron();
       if (patron) {
@@ -75,14 +76,8 @@ export class CardComponent implements OnDestroy {
           }
           this.patronAge = Math.floor(DateTime.now().diff(DateTime.fromISO(patron.birth_date), 'years').years);
         }
-
-        this.circulationMessages = this.circulationStatsService.messages;
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.circulationStatsService.clearMessages();
   }
 
   /** Clear current patron */
@@ -90,7 +85,7 @@ export class CardComponent implements OnDestroy {
     if (this.patron()) {
       this.clearPatron.emit(this.patron());
     }
-    this.circulationStatsService.clearMessages();
+    this.store.clearMessages();
   }
 
   /**

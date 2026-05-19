@@ -18,9 +18,11 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { CirculationStore } from './store/circulation.store';
 
 @Component({
     selector: 'admin-circulation-main',
+    providers: [CirculationStore],
     template: `
     <router-outlet></router-outlet>
     <p-toast>

@@ -25,7 +25,8 @@ import { ItemsService } from '@app/admin/service/items.service';
 import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
 import { AppStore, ItemStatus, OpenCloseButtonComponent, InheritedCallNumberComponent, ContributionComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
 import { map } from 'rxjs/operators';
-import { CirculationStatsService } from '../patron/service/circulation-stats.service';
+import { CirculationStore } from '../store/circulation.store';
+import { computeTotalTransactionsAmount } from '../utils/transaction.utils';
 import { NgClass, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
@@ -47,7 +48,7 @@ export class ItemComponent {
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private itemService: ItemsService = inject(ItemsService);
   private appStore = inject(AppStore);
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+  protected store = inject(CirculationStore);
 
 
   NOTEAPI =  ItemNoteType.API;
@@ -103,14 +104,14 @@ export class ItemComponent {
         this.notifications.set(null);
         if (this.loan) {
           const loanPid = item.loan.pid;
-          this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
+          this.patronTransactionService.patronTransactionsByLoan(loanPid, 'overdue', 'open').subscribe(
             (transactions) => {
-              this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+              this.totalAmountOfFee = computeTotalTransactionsAmount(transactions);
               if (this.totalAmountOfFee > 0) {
                 this.hasFeesEmitter.emit(true);
                 if(this.patron().pid) {
                   // update patron fees
-                  this.circulationStatsService.updateFees(this.patron().pid).subscribe();
+                  this.store.loadFees(this.patron().pid);
                 }
               }
             }

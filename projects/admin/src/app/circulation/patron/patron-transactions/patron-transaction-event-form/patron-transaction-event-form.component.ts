@@ -18,10 +18,12 @@ import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core
 import { UntypedFormGroup, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
+import { CirculationStore } from '@app/admin/circulation/store/circulation.store';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { AppStore, Tools } from '@rero/shared';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { forkJoin, Observable } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
 import { ScrollPanel } from 'primeng/scrollpanel';
@@ -43,6 +45,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private appStore = inject(AppStore);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  private store = inject(CirculationStore);
 
   /** the transactions to perform with this form */
   transactions: PatronTransaction[];
@@ -194,13 +197,14 @@ export class PatronTransactionEventFormComponent implements OnInit {
    */
   onSubmitForm() {
     const formValues = this.form.value;
+    const observables: Observable<void>[] = [];
     if (this.action === 'pay') {
       let residualAmount = formValues.amount as number;
       for (const transaction of this.transactions) {
         const transactionAmount = (residualAmount >= transaction.total_amount)
           ? transaction.total_amount
           : residualAmount;
-        this.patronTransactionService.payPatronTransaction(transaction, transactionAmount, formValues.method);
+        observables.push(this.patronTransactionService.payPatronTransaction(transaction, transactionAmount, formValues.method));
         // DEV NOTES : We use the below syntax to avoid floating-number precision drift.
         //   on each iteration we 'round' the residual amount to a float with 2 decimals precision.
         //   --> with this syntax : (7.8 - 2 - 2 - 2) = 1.8
@@ -212,14 +216,22 @@ export class PatronTransactionEventFormComponent implements OnInit {
       }
     } else if (this.action === 'dispute') {
       for (const transaction of this.transactions) {
-        this.patronTransactionService.disputePatronTransaction(transaction, formValues.comment);
+        observables.push(this.patronTransactionService.disputePatronTransaction(transaction, formValues.comment));
       }
     } else if (this.action === 'cancel') {
       for (const transaction of this.transactions) {
-        this.patronTransactionService.cancelPatronTransaction(transaction, formValues.amount, formValues.comment);
+        observables.push(this.patronTransactionService.cancelPatronTransaction(transaction, formValues.amount, formValues.comment));
       }
     }
-    this.dynamicDialogRef.close();
+    const patronPid = this.transactions[0]?.patron?.pid;
+    forkJoin(observables).subscribe({
+      next: () => {
+        if (patronPid) {
+          this.store.reloadOpenTransactions(patronPid);
+        }
+        this.dynamicDialogRef.close();
+      }
+    });
   }
 }
 

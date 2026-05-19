@@ -71,18 +71,23 @@ Tests must:
 
 ## Zoneless testing
 
-The application runs without Zone.js.
+The application runs without Zone.js. `zone-testing.js` is **not** loaded in the Vitest environment.
+
+Using `fakeAsync` or `tick` from `@angular/core/testing` will throw at runtime:
+
+```
+Error: zone-testing.js is needed for the fakeAsync() test helper but could not be found.
+```
 
 Do not use:
 
-- fakeAsync
-- tick
-- flush
+- `fakeAsync` / `tick` / `flush` from `@angular/core/testing`
+- Any Zone.js test helper
 
 Prefer:
 
-- async/await
-- Promise-based testing
+- Synchronous assertions (synchronous `of(...)` observables complete synchronously — no tick needed)
+- `async/await` with `await vi.advanceTimersByTimeAsync(0)` for effects (see NgRx section below)
 
 ## Migration patterns (Jasmine → Vitest)
 
@@ -144,7 +149,17 @@ const TestStore = signalStore(
 
 ### Mocking dependencies
 
-- Provide the store explicitly in `TestBed.configureTestingModule` — never rely on `providedIn: 'root'`
+- Always add the store class itself to `providers` in `TestBed.configureTestingModule` — this is required whether or not the store is `providedIn: 'root'`, because component-scoped stores are never auto-provided:
+
+```ts
+TestBed.configureTestingModule({
+  providers: [
+    MyStore,                                      // ← required
+    { provide: MyService, useValue: mockService },
+  ],
+});
+```
+
 - Mock injected services with `vi.fn()` objects
 - For `rxMethod` / async methods, use `vi.useFakeTimers()` + `await vi.advanceTimersByTimeAsync(0)`
 

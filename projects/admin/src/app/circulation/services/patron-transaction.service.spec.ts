@@ -20,6 +20,7 @@ import { PatronTransactionService } from "./patron-transaction.service";
 import { RecordService } from "@rero/ng-core";
 import { of } from "rxjs";
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType, PatronTransactionStatus } from "@app/admin/classes/patron-transaction";
+import { computeTotalTransactionsAmount } from "@app/admin/circulation/utils/transaction.utils";
 import { apiResponse } from "projects/shared/src/tests/api";
 import { AppStore } from "@rero/shared";
 import { RouteToolService } from "@app/admin/routes/route-tool.service";
@@ -95,6 +96,7 @@ describe('PatronTransactionService', () => {
     currentLibrary: '1'
   };
   appStoreSpy.user = vi.fn(() => user);
+  appStoreSpy.currentLibraryPid = vi.fn(() => '1');
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -125,7 +127,7 @@ describe('PatronTransactionService', () => {
     apiResponse.hits.hits = [patronTransaction];
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
 
-    service.patronTransactionsByLoan$('1')
+    service.patronTransactionsByLoan('1')
       .subscribe((result: PatronTransaction[]) => {
         expect(result.length).toEqual(1);
         expect(result[0]).toBeInstanceOf(PatronTransaction);
@@ -136,21 +138,10 @@ describe('PatronTransactionService', () => {
   it('should return a list of patron transactions for a patron', () => {
     apiResponse.hits.hits = [patronTransaction];
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
-    service.patronTransactionsByPatron$('1')
+    service.patronTransactionsByPatron('1')
       .subscribe((result: PatronTransaction[]) => {
         expect(result[0]).toBeInstanceOf(PatronTransaction);
       });
-  });
-
-  it('should emit a list of patron transactions', () => {
-    apiResponse.hits.hits = [patronTransaction];
-    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
-    service.emitPatronTransactionByPatron('1');
-    const transactions = service.patronTransactions();
-    expect(transactions).toBeInstanceOf(Array);
-    if (transactions.length > 0) {
-      expect(transactions[0]).toBeInstanceOf(PatronTransaction);
-    }
   });
 
   it('should add events to a patron transaction', () => {
@@ -166,7 +157,7 @@ describe('PatronTransactionService', () => {
   });
 
   it('should return the total of open transactions', () => {
-    expect(service.computeTotalTransactionsAmount([
+    expect(computeTotalTransactionsAmount([
       patronTransaction.metadata,
       patronTransactionSecond.metadata,
       patronTransactionClosed.metadata
@@ -177,39 +168,24 @@ describe('PatronTransactionService', () => {
     vi.spyOn(recordService, 'create').mockReturnValue(of({
       created: '', id: '1', links: { self: '' }, metadata: {}, updated: ''
     }));
-    apiResponse.hits.hits = [];
-    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
-    service.payPatronTransaction(new PatronTransaction(patronTransaction.metadata), 5, 'cash');
+    service.payPatronTransaction(new PatronTransaction(patronTransaction.metadata), 5, 'cash').subscribe();
     expect(recordService.create).toHaveBeenCalled();
   });
 
-  it('should add a dispute to a transaction and emit the transaction', () => {
-    apiResponse.hits.hits = [patronTransaction];
-    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
+  it('should add a dispute to a transaction and emit a success message', () => {
     vi.spyOn(recordService, 'create').mockReturnValue(of({
-      created: '',
-      id: '1',
-      links: { self: '' },
-      metadata: {},
-      updated: ''
+      created: '', id: '1', links: { self: '' }, metadata: {}, updated: ''
     }));
-
     messageService.messageObserver
       .subscribe((options: ToastMessageOptions) => expect(options.severity).toEqual('success'));
-    service.disputePatronTransaction(new PatronTransaction(patronTransaction.metadata), 'contest');
-    const transactions = service.patronTransactions();
-    if (transactions.length > 0) {
-      expect(transactions[0]).toBeInstanceOf(PatronTransaction);
-    }
+    service.disputePatronTransaction(new PatronTransaction(patronTransaction.metadata), 'contest').subscribe();
   });
 
   it('should cancel a transaction and emit the amount', () => {
     vi.spyOn(recordService, 'create').mockReturnValue(of({
       created: '', id: '1', links: { self: '' }, metadata: {}, updated: ''
     }));
-    apiResponse.hits.hits = [];
-    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
-    service.cancelPatronTransaction(new PatronTransaction(patronTransaction.metadata), 2, 'invalid');
+    service.cancelPatronTransaction(new PatronTransaction(patronTransaction.metadata), 2, 'invalid').subscribe();
     expect(recordService.create).toHaveBeenCalled();
   });
 });

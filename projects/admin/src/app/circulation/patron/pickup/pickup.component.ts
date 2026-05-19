@@ -15,9 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { filter, switchMap } from 'rxjs/operators';
 import { PatronService } from '../../../service/patron.service';
-import { CirculationStatsService } from '../service/circulation-stats.service';
+import { CirculationStore } from '../../store/circulation.store';
 import { TranslateDirective } from '@ngx-translate/core';
 import { PickupItemComponent } from './pickup-item/pickup-item.component';
 import { Card } from 'primeng/card';
@@ -28,33 +30,23 @@ import { Card } from 'primeng/card';
     imports: [TranslateDirective, PickupItemComponent, Card],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PickupComponent implements OnInit {
+export class PickupComponent {
 
   private patronService: PatronService = inject(PatronService);
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+  protected store = inject(CirculationStore);
 
   loans = signal<any[] | undefined>(undefined);
-  patron = signal<any>(undefined);
 
-  /** OnInit hook */
-  ngOnInit() {
-    this.patronService.currentPatron$.subscribe((patron: any) => {
-      this.patron.set(patron);
-      if (patron) {
-        this.patronService.getItemsPickup(patron.pid)
-        .subscribe(loans => {
-          this.loans.set(loans);
-        });
-      }
-    });
+  constructor() {
+    toObservable(this.store.patron).pipe(
+      takeUntilDestroyed(),
+      filter(patron => !!patron),
+      switchMap(patron => this.patronService.getItemsPickup(patron.pid))
+    ).subscribe(loans => this.loans.set(loans));
   }
 
-  /**
-   * Remove the canceled request on the loans list.
-   * @param loanId, the canceled loan id
-   */
   cancelRequest(loanId: any): void {
     this.loans.update(loans => (loans ?? []).filter((element: any) => element.id !== loanId));
-    this.circulationStatsService.updateStats(this.patron().pid);
+    this.store.loadStats(this.store.patron()!.pid);
   }
 }

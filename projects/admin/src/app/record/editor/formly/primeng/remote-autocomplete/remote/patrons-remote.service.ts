@@ -19,7 +19,7 @@ import { IRemoteAutocomplete } from './i-remote-autocomplete';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
 import { catchError, map, Observable, of } from 'rxjs';
-import { PatronService } from '@app/admin/service/patron.service';
+import { formatPatronName } from '@app/admin/utils/patron.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,6 @@ import { PatronService } from '@app/admin/service/patron.service';
 export class PatronsRemoteService implements IRemoteAutocomplete {
 
   private recordService: RecordService = inject(RecordService);
-  private patronService: PatronService = inject(PatronService);
   private apiService: ApiService = inject(ApiService);
 
   getName(): string {
@@ -67,14 +66,14 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
       .getRecord(queryOptions.type, pid, { resolve: 1 })
       .pipe(
         map((data: any) =>
-          `<span class="ui:p-2 ui:font-bold">${this.patronService.getFormattedName(data.metadata)}</span>`
+          `<span class="ui:p-2 ui:font-bold">${formatPatronName(data.metadata)}</span>`
         )
       );
   }
 
   private getPatronsRef(metadata: any, _query: string): ISuggestionItem {
     return {
-      label: this.patronService.getFormattedName(metadata),
+      label: formatPatronName(metadata),
       value: this.apiService.getRefEndpoint(this.getName(), metadata.pid)
     };
   }

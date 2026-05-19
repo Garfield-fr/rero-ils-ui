@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RecordService } from '@rero/ng-core';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { OperationLogsApiService } from '@rero/shared';
-import { PatronService } from '../../../service/patron.service';
+import { CirculationStore } from '../../store/circulation.store';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { HistoryLogComponent } from './history-log/history-log.component';
 import { CardModule } from 'primeng/card';
@@ -33,23 +33,17 @@ import { CardModule } from 'primeng/card';
 })
 export class HistoryComponent {
 
-  private patronService: PatronService = inject(PatronService);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
+  private store = inject(CirculationStore);
 
-  /** History logs */
   historyLogs = toSignal(
-    this.patronService.currentPatron$.pipe(
-      switchMap((patron: any) => {
-        return this.operationLogsApiService.getCheckInHistory(
-          patron.pid,
-          1,
-          RecordService.MAX_REST_RESULTS_SIZE
-        ).pipe(
-          map((result: any) => {
-            return result.hits.hits;
-          })
-        );
-      })
+    toObservable(this.store.patron).pipe(
+      filter((patron): patron is any => !!patron),
+      switchMap(patron =>
+        this.operationLogsApiService.getCheckInHistory(patron.pid, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
+          map((result: any) => result.hits.hits)
+        )
+      )
     ),
     { initialValue: null }
   );

@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService, SearchInputComponent } from '@rero/ng-core';
-import { AppStore, ItemStatus } from '@rero/shared';
+import { AppStore, ItemStatus, User } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
@@ -50,12 +50,12 @@ export class CheckinComponent {
   private patronService: PatronService = inject(PatronService);
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => this.patronService.clear());
+    inject(DestroyRef).onDestroy(() => this.patronInfo.set(undefined));
   }
 
   public placeholder = _('Please enter a patron card number or an item barcode.');
   public searchText = '';
-  readonly patronInfo = computed(() => this.patronService.currentPatron());
+  patronInfo = signal<User | undefined>(undefined);
   readonly barcode = signal<string | null>(null);
 
   items = [];
@@ -206,19 +206,18 @@ export class CheckinComponent {
   getPatronInfo(barcode: string) {
     if (barcode) {
       this.barcode.set(barcode);
-      this.patronService
-        .getPatron(barcode)
-        .subscribe({
-          error: (error) => this.messageService.add({
-            severity: 'error',
-            summary: this.translate.instant('Checkin'),
-            detail: error.message,
-            sticky: true,
-            closable: true
-          })
+      this.patronService.getPatron(barcode).subscribe({
+        next: (patron) => this.patronInfo.set(patron),
+        error: (error) => this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('Checkin'),
+          detail: error.message,
+          sticky: true,
+          closable: true
+        })
       });
     } else {
-      this.patronService.clear();
+      this.patronInfo.set(undefined);
       this.barcode.set(null);
     }
   }
