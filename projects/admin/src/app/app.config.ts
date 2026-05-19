@@ -68,9 +68,11 @@ import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patro
 import { AppConfigService } from './service/app-config.service';
 import { initializeApp } from './service/app-initializer';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideAnimationsAsync(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withRouterConfig({ paramsInheritanceStrategy: 'always' })),
     provideAppInitializer(() => initializeApp()),

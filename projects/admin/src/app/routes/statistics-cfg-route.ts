@@ -117,9 +117,8 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
           return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
         }) as any,
         preCreateRecord: (data) => {
-          const user = this.routeToolService.appStore.user();
           data.library = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user?.currentLibrary),
+            $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.routeToolService.appStore.currentLibraryPid()),
           };
           return data;
         },
@@ -143,11 +142,11 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
       field.hooks = {
         ...field.hooks,
         onInit: (field: FormlyFieldConfig): void => {
-          const user = this.routeToolService.appStore.user();
           const baseUrl = this.routeToolService.appStore.settings()?.baseUrl;
           const prefix = this.routeToolService.apiService.getEndpointByType('libraries');
-          if (user?.currentLibrary != null && field.formControl.value == null) {
-            field.formControl.setValue(`${baseUrl}${prefix}/${user.currentLibrary}`);
+          const currentLibraryPid = this.routeToolService.appStore.currentLibraryPid();
+          if (currentLibraryPid != null && field.formControl.value == null) {
+            field.formControl.setValue(`${baseUrl}${prefix}/${currentLibraryPid}`);
           }
         },
         afterContentInit: (f: FormlyFieldConfig) => {

@@ -129,6 +129,11 @@ export class PatronTransactionService {
     );
   }
 
+  /** Reset the patron transactions signal to an empty list. */
+  clear(): void {
+    this._patronTransactions.set([]);
+  }
+
   /**
    * Fire-and-forget version of loadPatronTransactionsByPatron.
    * Updates the patronTransactions signal asynchronously.
@@ -176,16 +181,15 @@ export class PatronTransactionService {
    * @returns An object with `parent`, `operator` and `library` fields fill with current context
    */
   private _buildTransactionEventsSkeleton(transaction: PatronTransaction): any {
-    const currentUser = this.appStore.user();
     return {
       parent: {
         $ref: this.routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid)
       },
       operator: {
-        $ref: this.routeToolService.apiService.getRefEndpoint('patrons', currentUser?.patronLibrarian.pid)
+        $ref: this.routeToolService.apiService.getRefEndpoint('patrons', this.appStore.user().patronLibrarian.pid)
       },
       library: {
-        $ref: this.routeToolService.apiService.getRefEndpoint('libraries', currentUser?.currentLibrary)
+        $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.appStore.currentLibraryPid())
       }
     };
   }

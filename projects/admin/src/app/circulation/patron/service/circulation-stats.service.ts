@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { Loan, LoanOverduePreview, LoanState } from '@app/admin/classes/loans';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { PatronService } from '@app/admin/service/patron.service';
@@ -43,7 +43,7 @@ export class CirculationStatsService {
   statistics: WritableSignal<Record<string, number>> = signal(this.defaultStats);
   messages: WritableSignal<{severity: string, detail: string}[]> = signal([]);
   overdueTransactions: WritableSignal<{fees: LoanOverduePreview, loan: Loan}[]> = signal([]);
-  engagedTransactions: WritableSignal<PatronTransaction[]> = signal([]);
+  engagedTransactions: Signal<PatronTransaction[]> = computed(() => this.patronTransactionService.patronTransactions());
 
   updateStats(patronPid: string): void {
     this.getStats(patronPid).subscribe();
@@ -53,7 +53,7 @@ export class CirculationStatsService {
     this.statistics.set(this.defaultStats);
     this.messages.set([]);
     this.overdueTransactions.set([]);
-    this.engagedTransactions.set([]);
+    this.patronTransactionService.clear();
   }
 
   updateFees(patronPid: string): Observable<any> {
@@ -65,7 +65,7 @@ export class CirculationStatsService {
       }),
       switchMap(() => this.patronTransactionService.loadPatronTransactionsByPatron(patronPid, undefined, 'open')),
       tap((transactions) =>
-        this.setFeesEngaged(this.patronTransactionService.computeTotalTransactionsAmount(transactions), transactions)
+        this.setFeesEngaged(this.patronTransactionService.computeTotalTransactionsAmount(transactions))
       )
     );
   }
@@ -76,8 +76,7 @@ export class CirculationStatsService {
     this.statistics.set({...data, ...{overdueFees, fees: overdueFees + data.feesEngaged } });
   }
 
-  setFeesEngaged(feesEngaged: number, transactions: PatronTransaction[]): void {
-    this.engagedTransactions.set(transactions);
+  setFeesEngaged(feesEngaged: number): void {
     const data = this.statistics();
     this.statistics.set({...data, ...{feesEngaged, fees: data.overdueFees + feesEngaged}});
   }

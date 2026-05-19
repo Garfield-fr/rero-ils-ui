@@ -93,6 +93,7 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._unregisterShortcuts();
     this.subscription.unsubscribe();
+    this.patronService.clear();
   }
 
   // COMPONENT FUNCTIONS ====================================================

@@ -73,10 +73,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   searchInputFocus = false;
   /** Disabled attribute of the search input */
   searchInputDisabled = false;
-  /** Library PID of the logged user */
-  currentLibraryPid: string;
-
-  /** ready to pickup items */
+/** ready to pickup items */
   private pickupItems = [];
   /** Observable subscription */
   private subscription = new Subscription();
@@ -127,7 +124,6 @@ export class LoanComponent implements OnInit, OnDestroy {
         }
       })
     );
-    this.currentLibraryPid = this.appStore.currentLibraryPid();
     this.searchInputFocus = true;
   }
 
@@ -250,7 +246,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         observables.push(
           this.itemsService.doAction(
             item,
-            this.currentLibraryPid,
+            this.appStore.currentLibraryPid(),
             // TODO: user or patron ?
             this.appStore.user()?.patronLibrarian.pid,
             this.patron.pid,

@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService, SearchInputComponent } from '@rero/ng-core';
-import { AppStore, ItemStatus, User } from '@rero/shared';
+import { AppStore, ItemStatus } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
@@ -39,7 +38,7 @@ import { ItemsListComponent } from '../items-list/items-list.component';
     imports: [TranslateDirective, SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CheckinComponent implements OnInit {
+export class CheckinComponent {
 
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
@@ -49,15 +48,15 @@ export class CheckinComponent implements OnInit {
   private router: Router = inject(Router);
   private translate: TranslateService = inject(TranslateService);
   private patronService: PatronService = inject(PatronService);
-  private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.patronService.clear());
+  }
 
   public placeholder = _('Please enter a patron card number or an item barcode.');
   public searchText = '';
-  public patronInfo: User;
-  public barcode: string;
-  currentLibraryPid: string;
-
-  private loggedUser: User;
+  readonly patronInfo = computed(() => this.patronService.currentPatron());
+  readonly barcode = signal<string | null>(null);
 
   items = [];
 
@@ -69,16 +68,6 @@ export class CheckinComponent implements OnInit {
 
   /** current called item */
   private item: any;
-
-  ngOnInit() {
-    this.loggedUser = this.appStore.user();
-    this.patronService.currentPatron$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-      patron => this.patronInfo = patron
-    );
-    this.currentLibraryPid = this.loggedUser.currentLibrary;
-    this.patronInfo = null;
-    this.barcode = null;
-  }
 
   /** Search value with search input
    * @param searchText: value to search for (barcode)
@@ -97,7 +86,7 @@ export class CheckinComponent implements OnInit {
   checkin(itemBarcode: string) {
     this.searchInputFocus = false;
     this.searchInputDisabled = true;
-    this.itemsService.checkin(itemBarcode, this.loggedUser.currentLibrary).subscribe({
+    this.itemsService.checkin(itemBarcode, this.appStore.currentLibraryPid()).subscribe({
       next: (item) => {
         // TODO: remove this when policy will be in place
         if (item === null || item.location.organisation.pid !== this.appStore.currentOrganisationPid()) {
@@ -216,7 +205,7 @@ export class CheckinComponent implements OnInit {
    */
   getPatronInfo(barcode: string) {
     if (barcode) {
-      this.barcode = barcode;
+      this.barcode.set(barcode);
       this.patronService
         .getPatron(barcode)
         .subscribe({
@@ -229,8 +218,8 @@ export class CheckinComponent implements OnInit {
           })
       });
     } else {
-      this.patronInfo = null;
-      this.barcode = null;
+      this.patronService.clear();
+      this.barcode.set(null);
     }
   }
 

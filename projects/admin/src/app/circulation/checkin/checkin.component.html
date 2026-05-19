@@ -25,10 +25,10 @@
       [disabled]="searchInputDisabled"
       (searchQuery)="searchValueUpdated($event)"
     />
-    @if(patronInfo) {
+    @if(patronInfo()) {
       <admin-circulation-patron-detailed
-        [patron]="patronInfo"
-        [barcode]="barcode"
+        [patron]="patronInfo()"
+        [barcode]="barcode()"
         [linkMode]="'circulation'"
         [clearPatronButton]="false"
       />

@@ -42,6 +42,11 @@ export class PatronService {
   /** Current patron as Observable (backward-compatible) */
   readonly currentPatron$ = toObservable(this._currentPatron);
 
+  /** Clear the current patron */
+  clear(): void {
+    this._currentPatron.set(undefined);
+  }
+
   /**
    * Get patron by barcode
    * @param barcode - string

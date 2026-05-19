@@ -111,12 +111,11 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
         aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
         aggregationsExpand: ['type'],
         preprocessRecordEditor: (record: any) => {
-          const user = this.routeToolService.appStore.user();
           if (!record.pid) {
             // set the user's default library at the time of creation
             record.libraries = [];
             record.libraries.push({
-              $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user?.currentLibrary),
+              $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.routeToolService.appStore.currentLibraryPid()),
             });
           }
           return record;

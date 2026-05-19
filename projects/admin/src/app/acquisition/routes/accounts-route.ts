@@ -111,9 +111,8 @@ class AccountsRoute extends BaseRoute implements RouteDataTypesInterface {
    * @return the enrich data
    */
   private _addDefaultInformation(data: any): any {
-    const user = this.routeToolService.appStore.user();
     data.library = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', user?.currentLibrary),
+      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.routeToolService.appStore.currentLibraryPid()),
     };
     data.budget = {
       $ref: this.routeToolService.apiService.getRefEndpoint(
