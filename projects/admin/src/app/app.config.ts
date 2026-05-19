@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -21,54 +23,51 @@ import {
   provideAppInitializer,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withRouterConfig } from '@angular/router';
+import { FORMLY_CONFIG, FormlyModule, provideFormlyCore } from '@ngx-formly/core';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
 import {
   ComponentCanDeactivateGuard,
   CoreConfigService,
+  RecordHandleErrorService as CoreRecordHandleErrorService,
   CoreTranslateLoader,
   NgCoreTranslateService,
+  PasswordGeneratorComponent,
   primeNGConfig,
-  RecordHandleErrorService as CoreRecordHandleErrorService,
   registerNgCoreFormlyExtension,
   RemoteAutocompleteService,
   TruncateTextPipe,
   withNgCoreFormly,
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe } from '@rero/shared';
-import { FORMLY_CONFIG, FormlyModule, provideFormlyCore } from '@ngx-formly/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
 import { providePrimeNG } from 'primeng/config';
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { DialogService } from 'primeng/dynamicdialog';
+import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { registerFormlyExtension } from './acquisition/formly/extension';
 import { OrderLineTypeComponent } from './acquisition/formly/type/field-order-line.type';
 import { ReceiptLinesTypeComponent } from './acquisition/formly/type/receipt-lines.type';
-import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
 import { InputNoLabelWrapperComponent } from './acquisition/formly/wrapper/input-no-label.wrapper';
-import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
-import { UserIdComponent } from './record/editor/wrappers/user-id.component';
+import { routes } from './app.routes';
 import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
 import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
-import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
+import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { remoteAutocompleteToken } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
+import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
 import { DocumentsRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/documents-remote.service';
 import { ItemsRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/items-remote.service';
 import { MefRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/mef-remote.service';
 import { PatronsRemoteService } from './record/editor/formly/primeng/remote-autocomplete/remote/patrons-remote.service';
-import { routes } from './app.routes';
+import { FieldCustomInputTypeComponent } from './record/editor/type/field-custom.type';
+import { RepeatTypeComponent } from './record/editor/type/repeat-section.type';
+import { IdentifiedbyValueComponent } from './record/editor/wrappers/identifiedby-value.component';
+import { UserIdComponent } from './record/editor/wrappers/user-id.component';
+import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patron-type-item-type/cipo-patron-type-item-type.component';
 import { AppConfigService } from './service/app-config.service';
 import { initializeApp } from './service/app-initializer';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
-import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
-import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
-import { FieldCustomInputTypeComponent } from './record/editor/type/field-custom.type';
-import { RepeatTypeComponent } from './record/editor/type/repeat-section.type';
-import { PasswordGeneratorComponent } from '@rero/ng-core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -119,7 +118,6 @@ export const appConfig: ApplicationConfig = {
     ConfirmationService,
     MessageService,
     DialogService,
-    provideAnimationsAsync(),
     providePrimeNG(primeNGConfig),
     provideTranslateService({
       loader: provideTranslateLoader(CoreTranslateLoader),
