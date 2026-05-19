@@ -118,7 +118,6 @@ describe('ResourcesFilesService', () => {
     };
     const responseCopy = {...response};
     const parentWith$ref = {...responseCopy.hits.hits[0], ...parentTransform};
-    // console.log('response', response);
     httpClientSpy.get.mockReturnValue(of({...response}));
     service.getParentRecord('1')
       .subscribe((result: any) => expect(result).toEqual(parentWith$ref));

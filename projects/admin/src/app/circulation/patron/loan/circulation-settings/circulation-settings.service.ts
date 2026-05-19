@@ -55,7 +55,6 @@ export class CirculationSettingsService {
     const idx = this._settings().findIndex(s => s.key === key);
     if (idx >= 0) {
       if (key === 'endDate' && this._settings()[idx].extra?.remember) {
-        console.log('Removing checkout date setting:', this._settings()[idx]);
         this.loanFixedDateService.remove();
       }
       this._settings.update(s => s.filter((_, i) => i !== idx));

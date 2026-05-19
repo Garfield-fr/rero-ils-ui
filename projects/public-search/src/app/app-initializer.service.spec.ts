@@ -23,7 +23,6 @@ import { AppStore, testUserPatronWithSettings, User } from '@rero/shared';
 import { of } from 'rxjs';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
-import { RouteCollectionService } from './routes/route-collection.service';
 
 describe('AppInitializerService', () => {
   const appStoreSpy = {
@@ -36,7 +35,6 @@ describe('AppInitializerService', () => {
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),
       { provide: AppStore, useValue: appStoreSpy },
-      { provide: RouteCollectionService, useValue: { load: vi.fn() } },
       { provide: NgCoreTranslateService, useValue: { getBrowserLang: vi.fn().mockReturnValue('en'), initialize: vi.fn(), use: vi.fn().mockReturnValue(of(null)) } },
       { provide: AppConfigService, useValue: { languages: ['en', 'fr', 'de', 'it'], defaultLanguage: 'en' } }
     ]

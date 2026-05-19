@@ -18,7 +18,9 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { of } from 'rxjs';
 
 import { DocumentBriefComponent } from './document-brief.component';
 
@@ -46,7 +48,8 @@ describe('DocumentBriefComponent', () => {
     ],
     providers: [
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        { provide: ActivatedRoute, useValue: { params: of({ viewcode: 'global' }) } }
     ]
 }).compileComponents();
   });
@@ -55,7 +58,7 @@ describe('DocumentBriefComponent', () => {
     fixture = TestBed.createComponent(DocumentBriefComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('detailUrl', { link: '/foo', external: false });
-    fixture.componentRef.setInput('viewcode', 'global');
+    fixture.componentRef.setInput('type', 'main');
     fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
   });

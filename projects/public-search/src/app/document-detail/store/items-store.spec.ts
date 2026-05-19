@@ -73,7 +73,6 @@ describe('ItemsStore', () => {
     await vi.advanceTimersByTimeAsync(500);
     vi.useRealTimers();
 
-    console.log(store.isFilterEnabled());
     expect(store.pager.page()).toEqual(1);
     expect(store.isFilterEnabled()).toBe(true);
   });

@@ -52,7 +52,6 @@ describe('PatronTransactionsService', () => {
 
     service.getPatronTransaction('1').subscribe((result: any) => {
       expect(result).toBeInstanceOf(PatronTransaction);
-      console.log('result', result);
       expect(result.type).toEqual('overdue');
     });
   });

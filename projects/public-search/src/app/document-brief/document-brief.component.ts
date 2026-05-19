@@ -63,7 +63,6 @@ export class DocumentBriefComponent {
     }
     provisionActivity.map((provision: any) => {
       if (provision.type === 'bf:Publication' && '_text' in provision) {
-        console.log('TOTO', provision._text);
         provision._text.map((text: Production) => publications.push(text));
       }
     });
