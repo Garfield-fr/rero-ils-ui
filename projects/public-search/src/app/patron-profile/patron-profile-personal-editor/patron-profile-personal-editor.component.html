@@ -17,7 +17,7 @@
 @defer (when model()) {
   <ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
   <p-toast />
-  <div>
+  <div class="ui:mt-2">
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="ui:mb-2">
         <formly-form [model]="model()" [fields]="fields" [form]="form" />

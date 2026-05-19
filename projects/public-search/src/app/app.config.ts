@@ -16,17 +16,17 @@
  */
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, inject, LOCALE_ID, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
+import { FormlyModule, provideFormlyCore } from '@ngx-formly/core';
 import { TranslateLoader as BaseCoreTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig, TruncateTextPipe } from '@rero/ng-core';
+import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig, TruncateTextPipe, withNgCoreFormly } from '@rero/ng-core';
 import { MainTitlePipe } from '@rero/shared';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { AppConfigService } from './app-config.service';
 import { AppInitializerService } from './app-initializer.service';
-import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
 import { APP_ROUTES } from './app.routes';
+import { CustomRequestInterceptor } from './interceptor/custom-request.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,7 +43,8 @@ export const appConfig: ApplicationConfig = {
         isolate: false,
       })
     ),
-    provideAnimationsAsync(),
+    provideFormlyCore(withNgCoreFormly() as any),
+    importProvidersFrom(FormlyModule.forChild({})),
     providePrimeNG(primeNGConfig),
     provideAppInitializer(() => {
       const appInitializerService = inject(AppInitializerService);
