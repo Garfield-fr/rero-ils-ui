@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { IPatronPermission, PermissionApiService } from 'projects/admin/src/app/api/permission-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -23,45 +23,37 @@ import { InputText } from 'primeng/inputtext';
 import { PatronPermissionComponent } from './patron-permission/patron-permission.component';
 
 @Component({
-    selector: 'admin-patron-permissions',
-    templateUrl: './patron-permissions.component.html',
-    imports: [TranslateDirective, Bind, InputText, PatronPermissionComponent, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-patron-permissions',
+  templateUrl: './patron-permissions.component.html',
+  imports: [TranslateDirective, Bind, InputText, PatronPermissionComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PatronPermissionsComponent {
 
-  private permissionApiService: PermissionApiService = inject(PermissionApiService);
+  private permissionApiService = inject(PermissionApiService);
 
-  // COMPONENT ATTRIBUTES =====================================================
-  /** Show or hide */
   hidden = input(false);
-  /** Patron pid */
-  pid = input<string>();
+  pid = input.required<string>();
 
-  /** User permissions */
-  permissions: IPatronPermission[] = [];
-  /** User permissions filtered */
-  filteredPermissions: IPatronPermission[] = [];
+  permissions = signal<IPatronPermission[]>([]);
+  filteredPermissions = signal<IPatronPermission[]>([]);
 
   constructor() {
     effect(() => {
-      if (!this.hidden() && this.permissions.length === 0) {
+      if (!this.hidden() && this.permissions().length === 0) {
         this.permissionApiService
           .getUserPermissions(this.pid())
           .subscribe((permissions: IPatronPermission[]) => {
-            this.permissions = permissions;
-            this.filteredPermissions = permissions;
+            this.permissions.set(permissions);
+            this.filteredPermissions.set(permissions);
           });
       }
     });
   }
 
-  // PUBLIC FUNCTIONS =========================================================
-  /**
-   * Filtering of the list according to the user's input in the input field.
-   * @param value - value text
-   */
   filterPermissions(value: string): void {
-    this.filteredPermissions = this.permissions.filter((permission: IPatronPermission) => permission.name.includes(value));
+    this.filteredPermissions.set(
+      this.permissions().filter((permission: IPatronPermission) => permission.name.includes(value))
+    );
   }
 }
