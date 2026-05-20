@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2025 RERO
+ * Copyright (C) 2020-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,8 +31,7 @@ import { DocumentRecordSearchComponent } from '../record/search-view/document-re
 import { BaseRoute } from './base-route';
 
 export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => {
-  const org = inject(AppStore).organisation();
-  return new DocumentsRoute().getTypesForOrg(org);
+  return new DocumentsRoute().getTypesForOrg();
 };
 
 export const documentsRoutes: Routes = [
@@ -89,6 +88,7 @@ export const documentsRoutes: Routes = [
 
 class DocumentsRoute extends BaseRoute {
   protected recordService = inject(RecordService);
+  protected appStore = inject(AppStore);
 
   /** Route name */
   readonly name = 'documents';
@@ -96,7 +96,7 @@ class DocumentsRoute extends BaseRoute {
   /** Record type */
   readonly recordType = 'documents';
 
-  getTypesForOrg(org: { pid: string }): Partial<RecordType>[] {
+  getTypesForOrg(): Partial<RecordType>[] {
     const docType = {
       key: this.name,
       label: _('Documents'),
@@ -233,10 +233,19 @@ class DocumentsRoute extends BaseRoute {
         },
         hideInTabs: true,
       },
+      // Required for saving templates in the document editor
+      {
+        key: 'templates',
+        preCreateRecord: (data) => this._addDefaultValuesForTemplate(data),
+        redirectUrl: (record: RecordData) => {
+          return this.redirectUrl(record.metadata, '/records/templates/detail');
+        },
+      }
     ];
 
-    if (org?.pid) {
-      types[0]['defaultSearchInputFilters'] = [{ key: 'organisation', values: [org.pid] }];
+    const organisationPid = this.appStore.organisation()?.pid;
+    if (organisationPid) {
+      types[0]['defaultSearchInputFilters'] = [{ key: 'organisation', values: [organisationPid] }];
     }
     return types;
   }
@@ -258,5 +267,18 @@ class DocumentsRoute extends BaseRoute {
       case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucket.key}`));
       default: return this.routeToolService.translateService.stream(bucket.key);
     }
+  }
+
+  private _addDefaultValuesForTemplate(data: any) {
+    if (!Object.hasOwn(data, 'visibility')) {
+      data.visibility = 'private';
+    }
+    data.organisation = {
+      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.appStore.currentOrganisationPid()),
+    };
+    data.creator = {
+      $ref: this.routeToolService.apiService.getRefEndpoint('patrons', this.appStore.user().patronLibrarian.pid),
+    };
+    return data;
   }
 }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2025 RERO
+ * Copyright (C) 2020-2026 RERO
  * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
@@ -27,7 +28,7 @@ import {
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { AppStore, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, Subscriber } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
@@ -71,6 +72,9 @@ export const templatesRoutes: Routes = [
 ];
 
 class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
+
+  private appStore = inject(AppStore);
+
   /** Route name */
   readonly name = 'templates';
 
@@ -88,10 +92,6 @@ class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
         canAdd: () => this.routeToolService.canNot(),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         canUse: (record: RecordData) => this._canUse(record),
-        preCreateRecord: (data) => this._addDefaultValuesForTemplate(data),
-        redirectUrl: (record: RecordData) => {
-          return this.redirectUrl(record.metadata, '/records/templates/detail');
-        },
         aggregationsOrder: ['type', 'visibility'],
         aggregationsExpand: ['type', 'visibility'],
         sortOptions: [
@@ -143,23 +143,5 @@ class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
         });
       }
     });
-  }
-
-  /**
-   * Adds default values when user create a template resource
-   * @param data: the initial data
-   */
-  private _addDefaultValuesForTemplate(data: any) {
-    const user = this.routeToolService.appStore.user();
-    if (!Object.hasOwn(data, 'visibility')) {
-      data.visibility = 'private';
-    }
-    data.organisation = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
-    };
-    data.creator = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('patrons', user?.patronLibrarian.pid),
-    };
-    return data;
   }
 }
