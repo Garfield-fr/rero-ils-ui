@@ -15,32 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, input, model, OnDestroy, signal, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, model, signal } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
-import { RecordService, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, RecordService } from '@rero/ng-core';
 
-import { AppStore, IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, InheritedCallNumberComponent, AvailabilityComponent, PermissionsDirective, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
+import { AsyncPipe, CurrencyPipe, JsonPipe, NgClass, NgPlural, NgPluralCase } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AppStore, AvailabilityComponent, InheritedCallNumberComponent, IPermissions, IssueItemStatus, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, OperationLogsService, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective, SafeUrlPipe } from '@rero/shared';
 import { DateTime } from 'luxon';
-import { Subscription } from 'rxjs';
-import { Item, ItemNote } from '../../../classes/items';
-import { HoldingsService } from '../../../service/holdings.service';
-import { OperationLogsService } from '@rero/shared';
+import { Badge } from 'primeng/badge';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
-import { RecordMaskedComponent } from '../record-masked/record-masked.component';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { NgClass, NgPlural, NgPluralCase, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
-import { Tooltip } from 'primeng/tooltip';
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 import { Ripple } from 'primeng/ripple';
-import { CirculationLogsDialogComponent } from '../../circulation-logs/circulation-logs-dialog.component';
-import { ItemTransactionsComponent } from './item-transactions/item-transactions.component';
-import { ItemFeesComponent } from './item-fees/item-fees.component';
-import { LocalFieldComponent } from '../local-field/local-field.component';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Tooltip } from 'primeng/tooltip';
+import { Item, ItemNote } from '../../../classes/items';
 import { ItemInCollectionPipe } from '../../../pipe/item-in-collection.pipe';
-import { Badge } from 'primeng/badge';
+import { HoldingsService } from '../../../service/holdings.service';
+import { CirculationLogsDialogComponent } from '../../circulation-logs/circulation-logs-dialog.component';
+import { LocalFieldComponent } from '../local-field/local-field.component';
+import { RecordMaskedComponent } from '../record-masked/record-masked.component';
+import { ItemFeesComponent } from './item-fees/item-fees.component';
+import { ItemTransactionsComponent } from './item-transactions/item-transactions.component';
 
 @Component({
     selector: 'admin-item-detail-view',
@@ -50,7 +48,7 @@ import { Badge } from 'primeng/badge';
     imports: [Bind, Button, RouterLink, RecordMaskedComponent, TranslateDirective, InheritedCallNumberComponent, AvailabilityComponent, NgClass, Tooltip, Tabs, TabList, Ripple, Tab, NgPlural, NgPluralCase, TabPanels, TabPanel, CirculationLogsDialogComponent, ItemTransactionsComponent, ItemFeesComponent, PermissionsDirective, LocalFieldComponent, AsyncPipe, JsonPipe, CurrencyPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemDetailViewComponent implements OnDestroy {
+export class ItemDetailViewComponent {
 
   public itemApiService: ItemApiService = inject(ItemApiService);
   private recordService: RecordService = inject(RecordService);
@@ -75,9 +73,6 @@ export class ItemDetailViewComponent implements OnDestroy {
   showOperationLogs = false;
   /** reference to ItemIssueStatus */
   issueItemStatus = IssueItemStatus;
-
-  /** Record subscription */
-  private subscription: Subscription = new Subscription();
 
   constructor() {
     effect(() => {
@@ -112,11 +107,6 @@ export class ItemDetailViewComponent implements OnDestroy {
   get claimsDates(): string[] {
     return this.record()?.metadata.issue.claims.dates
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime());
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   /**

@@ -93,15 +93,17 @@
       }
       <!-- ITEM IN COLLECTION -->
       @if (record()?.metadata.pid | itemInCollection | async; as collections) {
-        <dt translate>Exhibition/course</dt>
-        <dd>
-          @for (collection of collections; track $any(collection).metadata.pid; let last=$last) {
-            <a
-              [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]"
-            >{{ $any(collection).metadata.title }}</a>
-            {{ last ? '' : '; ' }}
-          }
-        </dd>
+        @if (collections.length > 0) {
+          <dt translate>Exhibition/course</dt>
+          <dd>
+            @for (collection of collections; track $any(collection).metadata.pid; let last=$last) {
+              <a
+                [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]"
+              >{{ $any(collection).metadata.title }}</a>
+              {{ last ? '' : '; ' }}
+            }
+          </dd>
+        }
       }
       <!-- AVAILABILITY -->
       <dt translate>Availability</dt>
