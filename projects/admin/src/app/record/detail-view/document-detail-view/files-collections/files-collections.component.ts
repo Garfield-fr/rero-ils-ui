@@ -66,13 +66,6 @@ export class FilesCollectionsComponent {
     return `/${viewcode}/search/documents?q=files.collections.raw:(${name})&simple=0`;
   }
 
-  getIndex(collection: string): number {
-    const value = this.formGroup.get('collections')?.value?.indexOf(collection);
-    if (value == null) {
-      return -1;
-    }
-    return value;
-  }
 
   save(): void {
     const rec = this.resourcesFilesService.currentParentRecord();

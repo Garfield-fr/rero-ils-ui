@@ -27,12 +27,8 @@
       [unique]="true"
     >
       <ng-template let-collection pTemplate="selectedItem">
-          <p-chip styleClass="p-autocomplete-chip" [removable]="true" (onRemove)="autocomplete.removeOption($event, getIndex(collection))">
-            <span class="p-autocomplete-chip-icon">
-              <a target="_blank" [href]="getCollectionLink(collection)">{{ collection }}&nbsp;<i class="fa fa-external-link"></i></a>
-            </span>
-        </p-chip>
-     </ng-template>
+        <a target="_blank" [href]="getCollectionLink(collection)">{{ collection }}&nbsp;<i class="fa fa-external-link"></i></a>
+      </ng-template>
     </p-autocomplete>
 </form>
 }
