@@ -84,6 +84,15 @@ export class PatronTransactionService {
   }
 
   /**
+   * Load a single patron transaction by pid
+   */
+  loadTransaction(pid: string): Observable<PatronTransaction> {
+    return this.recordService.getRecord('patron_transactions', pid).pipe(
+      map((data: any) => new PatronTransaction(data.metadata))
+    );
+  }
+
+  /**
    * Load events linked to a patron transaction
    */
   loadTransactionHistory(transaction: PatronTransaction): Observable<any> {

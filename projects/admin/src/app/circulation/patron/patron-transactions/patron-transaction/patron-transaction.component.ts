@@ -18,7 +18,9 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
+import { CirculationStore } from '@app/admin/circulation/store/circulation.store';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
+import { tap } from 'rxjs';
 import {
   PatronTransactionEventFormComponent
 } from '../patron-transaction-event-form/patron-transaction-event-form.component';
@@ -46,6 +48,7 @@ export class PatronTransactionComponent {
 
   private dialogService: DialogService = inject(DialogService);
   private appStore = inject(AppStore);
+  private circulationStore = inject(CirculationStore);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private router: ActivatedRoute = inject(ActivatedRoute);
   private translateService: TranslateService = inject(TranslateService);
@@ -53,13 +56,15 @@ export class PatronTransactionComponent {
 
   // COMPONENT ATTRIBUTES ============================================
   transaction = input<PatronTransaction>();
+  /** Local writable copy — enriched with events after history load */
+  currentTransaction = signal<PatronTransaction | undefined>(undefined);
   isCollapsed = signal(true);
   patronTransactionStatus = PatronTransactionStatus;
   patronTransactionEventType = PatronTransactionEventType;
   menuSelectedAction = signal<MenuItem | undefined>(undefined);
 
   readonly menuItems = computed<MenuItem[]>(() => {
-    const t = this.transaction();
+    const t = this.currentTransaction();
     if (!t) return [];
     return [
       {
@@ -76,7 +81,7 @@ export class PatronTransactionComponent {
   });
 
   readonly transactionAmount = computed<number>(() => {
-    const t = this.transaction();
+    const t = this.currentTransaction();
     if (!t) return 0;
     if (t.status === PatronTransactionStatus.OPEN) {
       return t.total_amount;
@@ -91,13 +96,14 @@ export class PatronTransactionComponent {
   });
 
   constructor() {
+    // Re-run whenever the parent input changes (e.g. after store reload).
     effect(() => {
       const t = this.transaction();
       if (!t) return;
       if (this.router.snapshot.queryParams.event === t.pid) {
         this.isCollapsed.set(false);
       }
-      this.patronTransactionService.loadTransactionHistory(t).subscribe(events => t.events = events);
+      this._loadHistory(t);
     });
   }
 
@@ -106,7 +112,7 @@ export class PatronTransactionComponent {
   }
 
   isDisputed(): boolean {
-    const t = this.transaction();
+    const t = this.currentTransaction();
     return (t?.status === PatronTransactionStatus.OPEN)
       ? t.events.some(e => e.type === PatronTransactionEventType.DISPUTE)
       : false;
@@ -118,14 +124,30 @@ export class PatronTransactionComponent {
   }
 
   patronTransactionAction(action: string, mode?: string): void {
-    this.dialogService.open(PatronTransactionEventFormComponent, {
+    const t = this.currentTransaction();
+    if (!t) return;
+    const ref = this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant(action),
       modal: true,
       focusOnShow: false,
       closable: true,
       width: '40vw',
-      data: { action, mode, transactions: [this.transaction()] }
+      data: { action, mode, transactions: [t] }
     });
+    if (!ref) return;
+    // patronPid is set by the form on successful submit; undefined means cancelled.
+    ref.onClose.subscribe((patronPid: string | undefined) => {
+      if (!patronPid) return;
+      // Reload the whole open-transactions list in the store so that
+      // feesEngaged total and all sibling rows are also up to date.
+      this.circulationStore.reloadOpenTransactions(patronPid);
+    });
+  }
+
+  private _loadHistory(t: PatronTransaction): void {
+    this.patronTransactionService.loadTransactionHistory(t).pipe(
+      tap(events => this.currentTransaction.set(new PatronTransaction({ ...t, events })))
+    ).subscribe();
   }
 
   eventLabel(event: any): string {
