@@ -27,9 +27,10 @@
   </div>
   <div class="ui:my-3">
     @for (message of messages(); track $index) {
-      <p-message styleClass="ui:mb-2" [severity]="message.severity" showTransitionOptions="0ms">
-      {{ message.detail }}
-    </p-message>
+      <p-message styleClass="ui:mb-2" [severity]="message.severity" showTransitionOptions="0ms"
+      >
+        {{ message.detail }}
+      </p-message>
     }
   </div>
   <div class="ui:text-sm ui:grid ui:grid-cols-12 ui:gap-2 data">

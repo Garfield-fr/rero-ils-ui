@@ -54,11 +54,9 @@
       <ng-template #file let-file></ng-template>
       <ng-template #content let-file>
         @if (reachMaxFileLimit()) {
-          <p-message
-            [text]="'The maximum number of files is reached. No additional upload is allowed.' | translate"
-            severity="error"
-            showTransitionOptions="0ms"
-          />
+          <p-message severity="error" showTransitionOptions="0ms">
+            {{ 'The maximum number of files is reached. No additional upload is allowed.' | translate }}
+          </p-message>
         } @else {
         <span translate>Drag and drop files.</span>
         }

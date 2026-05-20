@@ -19,13 +19,7 @@
   @if (requestedBy(); as requestedBy) {
     @if (requestedBy.length > 0) {
       <div class="ui:flex ui:gap-2 ui:my-1 ui:items-start">
-        <p-message
-          class="ui:grow"
-          [text]="requestedBy.length < 2
-              ? requestedBy.length + ' ' + ('request in the queue' | translate)
-              : requestedBy.length + ' ' + ('requests in the queue' | translate)"
-          showTransitionOptions="0ms"
-        />
+        <p-message class="ui:grow" showTransitionOptions="0ms">{{ queueMessage() }}</p-message>
         <p-button
           outlined
           [routerLink]="['/records', 'items', 'detail', recordPid]"
@@ -36,18 +30,14 @@
     }
   }
   @if (patron(); as patron) {
-    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="ui:bg-surface-100 ui:p-3">
+    <p-card [header]="patronHeader()" styleClass="ui:bg-surface-100 ui:p-3">
       <p class="ui:m-0">
         {{ patron.street }}<br>
         {{ patron.postal_code }} {{ patron.city }}<br>
         {{ patron.email }}
       </p>
-      @if (patron | patronBlockedMessage; as message) {
-        <p-message
-          [text]="message"
-          severity="danger"
-          showTransitionOptions="0ms"
-        />
+      @if (patronBlockedMsg(); as message) {
+        <p-message severity="danger" showTransitionOptions="0ms">{{ message }}</p-message>
       }
     </p-card>
   }
@@ -71,7 +61,7 @@
       </div>
     </div>
   </form>
-</div>
+  </div>
 } @placeholder {
   <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
 }

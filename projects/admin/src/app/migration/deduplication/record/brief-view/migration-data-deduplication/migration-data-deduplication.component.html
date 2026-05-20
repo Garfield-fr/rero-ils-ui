@@ -30,7 +30,7 @@
           pInputText
           onFocus="this.setSelectionRange(0, this.value.length)"
           pAutoFocus
-         
+
         />
       </ng-template>
     </p-inplace>
@@ -75,10 +75,11 @@
 @for (message of messages(); track $index) {
   <p-message
     styleClass="ui:my-2"
-    [text]="message.detail"
     [severity]="message.severity"
     showTransitionOptions="0ms"
-  />
+  >
+    {{ message.detail }}
+  </p-message>
 }
 
 <div class="ui:flex ui:justify-between ui:mb-1">

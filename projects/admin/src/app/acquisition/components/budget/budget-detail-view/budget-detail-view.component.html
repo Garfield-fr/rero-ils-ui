@@ -18,11 +18,9 @@
 @if (record(); as record) {
   <!-- ROLLOVER INFO -->
   @if (!record.metadata.is_active) {
-    <p-message
-      [text]="'Fiscal year closed'|translate"
-      severity="warn"
-      showTransitionOptions="0ms"
-    />
+    <p-message severity="warn" showTransitionOptions="0ms">
+      {{ 'Fiscal year closed'|translate }}
+    </p-message>
   }
   <header class="ui:my-3">
     <h1>{{ record.metadata.name }}</h1>

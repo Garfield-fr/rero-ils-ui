@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { AppStore, PatronBlockedMessagePipe } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -33,12 +33,13 @@ import { RouterLink } from '@angular/router';
 import { HoldingsService } from '../../../../service/holdings.service';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
+import { _ } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-item-request',
     templateUrl: './item-request.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, TranslatePipe, PatronBlockedMessagePipe, Message],
+    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, TranslatePipe, Message],
 })
 export class ItemRequestComponent implements OnInit {
 
@@ -54,11 +55,11 @@ export class ItemRequestComponent implements OnInit {
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
 
   /** Record pid */
-  recordPid: any;
+  recordPid!: string;
   /** Record type */
   recordType?: string;
   /** Service */
-  service: any;
+  service!: ItemsService | HoldingsService;
   /** form */
   form: UntypedFormGroup = new UntypedFormGroup({});
   /** form fields */
@@ -66,13 +67,25 @@ export class ItemRequestComponent implements OnInit {
   /** model */
   model = signal<FormModel | undefined>(undefined);
   /** patron record */
-  patron = signal<any>(null);
+  patron = signal<PatronData | null>(null);
+  /** patron display name for card header */
+  patronHeader = computed(() => [this.patron()?.last_name, this.patron()?.first_name].filter(Boolean).join(', '));
+  /** queue message for requested items */
+  queueMessage = computed(() => {
+    const count = this.requestedBy()?.length ?? 0;
+    const key = count < 2 ? _('request in the queue') : _('requests in the queue');
+    return `${count} ${this.translateService.instant(key)}`;
+  });
+  /** blocked message for current patron, null if not blocked */
+  patronBlockedMsg = computed(() => {
+    const p = this.patron() as any;
+    if (!p?.patron?.blocked) return null;
+    return `${this.translateService.instant('This patron is currently blocked.')} ${this.translateService.instant('Reason')}: ${p.patron.blocked_note}`;
+  });
   /** Dynamic message for can_request validator */
   canRequestMessage?: string;
-  /** On submit event */
-  onSubmit = new EventEmitter<any>();
   /** Requested item(s) */
-  requestedBy = signal<any[] | null>(null);
+  requestedBy = signal<Loan[] | null>(null);
   /** Request in progress */
   requestInProgress = signal(false);
 
@@ -101,8 +114,8 @@ export class ItemRequestComponent implements OnInit {
     if (libraryPid && user?.patronLibrarian?.pid) {
       this.requestInProgress.set(true);
       const body: RequestBody = {
-        pickup_location_pid: model.pickup,
-        patron_pid: this.patron().pid,
+        pickup_location_pid: model.pickup!,
+        patron_pid: this.patron()!.pid,
         transaction_library_pid: libraryPid,
         transaction_user_pid: user.patronLibrarian.pid,
         ...(this.recordType === 'item'
@@ -114,7 +127,6 @@ export class ItemRequestComponent implements OnInit {
       .pipe(tap(() => this.requestInProgress.set(false)))
       .subscribe({
         next: () => {
-          this.onSubmit.next(undefined);
           this.closeModal(true);
           this.messageService.add({
             severity: 'success',
@@ -228,7 +240,7 @@ export class ItemRequestComponent implements OnInit {
         this.model.set({
           patronBarcode: null,
           pickup: this.pickupDefaultValue,
-          description: null,
+          description: undefined,
         });
       });
     }
@@ -274,9 +286,9 @@ export class ItemRequestComponent implements OnInit {
  * Interface to define fields on form
  */
 type FormModel = {
-  patronBarcode: string;
-  pickup: string;
-  description?: string;
+  patronBarcode: string | null;
+  pickup: string | undefined;
+  description: string | undefined;
 }
 
 type RequestBody = {
@@ -287,4 +299,20 @@ type RequestBody = {
   item_pid?: string;
   holding_pid?: string;
   description?: string;
+}
+
+type PatronData = {
+  pid: string;
+  last_name?: string;
+  first_name?: string;
+  street?: string;
+  postal_code?: string;
+  city?: string;
+  email?: string;
+}
+
+type Loan = {
+  pid: string;
+  state: string;
+  patron_pid?: string;
 }

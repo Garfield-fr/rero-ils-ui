@@ -18,11 +18,9 @@
 @if (organisation && esRecord(); as account) {
   <!-- ROLLOVER INFO -->
   @if (!account.is_active) {
-    <p-message
-      [text]="'Fiscal year closed' | translate"
-      severity="warn"
-      showTransitionOptions="0ms"
-    />
+    <p-message severity="warn" showTransitionOptions="0ms">
+      {{ 'Fiscal year closed' | translate }}
+    </p-message>
   }
   <h1>{{ account.name }}</h1>
   <!-- Account general information's -->

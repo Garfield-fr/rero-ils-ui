@@ -19,10 +19,11 @@
     @if (recordType() === 'holding' && itemCount() > 0) {
       <p-message
         class="ui:col-span-12"
-        [text]="'Please make sure that your requested issue is not listed above.' | translate"
         severity="warn"
         showTransitionOptions="0ms"
-      />
+      >
+      {{ 'Please make sure that your requested issue is not listed above.' | translate }}
+      </p-message>
     }
     <form class="ui:col-span-12" [formGroup]="form" (ngSubmit)="submit()">
       <div class="ui:mb-2">
@@ -58,9 +59,10 @@
 @if (requested && !showForm) {
   <div class="ui:p-2">
     <p-message
-      [text]="requestMessage()?.message"
       [severity]="requestMessage()?.success ? 'success' : 'error'"
       showTransitionOptions="0ms"
-    />
+    >
+      {{ requestMessage()?.message }}
+    </p-message>
   </div>
 }

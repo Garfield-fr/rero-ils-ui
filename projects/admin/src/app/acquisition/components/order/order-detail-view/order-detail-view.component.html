@@ -19,11 +19,9 @@
 <div [ngClass]="{ 'ui:opacity-50': !o.is_current_budget }">
   <!-- ROLLOVER INFO -->
   @if (!o.is_current_budget) {
-    <p-message
-      [text]="'Fiscal year closed' | translate"
-      severity="warn"
-      showTransitionOptions="0ms"
-    />
+    <p-message severity="warn" showTransitionOptions="0ms">
+      {{ 'Fiscal year closed' | translate }}
+    </p-message>
   }
 
   <!-- Place order button -->

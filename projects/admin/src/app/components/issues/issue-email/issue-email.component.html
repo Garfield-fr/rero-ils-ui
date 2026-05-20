@@ -29,10 +29,11 @@
     <ng-container headerMessage>
       <p-message
         class="ui:my-1"
-        [text]="'You\'re about to send the claim.'|translate"
         severity="warn"
         showTransitionOptions="0ms"
-      />
+      >
+        {{ 'You\'re about to send the claim.' | translate }}
+      </p-message>
     </ng-container>
     <ng-container previewBottomMessage>
       <p translate>Below you can find the preview message that will be sent.</p>

@@ -31,11 +31,9 @@
 @if (store.filteredHoldings().length > 0) {
   @if (!isAuthenticated()) {
     <div class="ui:mb-4">
-      <p-message
-        [text]="'Log in to see request options' | translate"
-        severity="warn"
-        showTransitionOptions="0ms"
-      />
+      <p-message severity="warn" showTransitionOptions="0ms">
+        {{ 'Log in to see request options' | translate }}
+      </p-message>
     </div>
   }
   <p-accordion [multiple]="true" [value]="store.filteredHoldings().length === 1 ? [0] : []">
