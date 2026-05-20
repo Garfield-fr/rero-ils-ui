@@ -15,22 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { NgClass, NgPlural, NgPluralCase } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { AppStore, IssueItemStatus, OpenCloseButtonComponent, InheritedCallNumberComponent } from '@rero/shared';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
+import { AppStore, EsRecord, InheritedCallNumberComponent, IssueItemStatus, OpenCloseButtonComponent } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Tag } from 'primeng/tag';
+import { Tooltip } from 'primeng/tooltip';
 import { Subscription } from 'rxjs';
 import { HoldingsSerialStore } from '../../holdings-serial-store';
-import { NgClass, NgPlural, NgPluralCase } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { Button } from 'primeng/button';
-import { Tooltip } from 'primeng/tooltip';
-import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-received-issue',
@@ -129,8 +129,10 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   openClaimEmailDialog(): void {
     const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.issue());
     this.subscription.add(
-      ref.onClose.subscribe((_: any) => {
-        // Note: cannot reassign signal input; the parent should update the input binding
+      ref.onClose.subscribe((record: EsRecord) => {
+        if (record) {
+          this.store.updateItem(record);
+        }
       })
     );
   }

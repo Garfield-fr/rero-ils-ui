@@ -122,6 +122,14 @@ export const HoldingsSerialStore = signalStore(
         tap(() => patchState(store, { reload: false }))
       ),
     ),
+    updateItem(item: EsRecord) {
+      const current = store.receivedItems();
+      if (current) {
+        patchState(store, {
+          receivedItems: current.map(i => i.metadata.pid === item.metadata.pid ? item : i)
+        });
+      }
+    },
     deleteItem: rxMethod<EsRecord>(
       pipe(
         switchMap((item: EsRecord) => store.recordUiService.deleteRecord('items', item.metadata.pid)),
