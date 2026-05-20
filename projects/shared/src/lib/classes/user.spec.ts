@@ -49,16 +49,16 @@ describe('User', () => {
   });
 
   it('Should return the parameter patronLibrarian', () => {
-    expect(user.patronLibrarian).toEqual(testUserPatronLibrarian.patrons[1]);
+    expect(user.patronLibrarian).toEqual(testUserPatronLibrarian.patrons![1]);
   });
 
   it('Should return the parameter isPatron', () => {
     const user1 = cloneDeep(testUserPatronLibrarian);
     const user2 = cloneDeep(testUserPatronLibrarian);
-    user1.patrons = user1.patrons.splice(0, 1);
+    user1.patrons = user1.patrons!.splice(0, 1);
     user = new User(user1);
     expect(user.isPatron).toBeTruthy();
-    user2.patrons = user2.patrons.splice(1, 1);
+    user2.patrons = user2.patrons!.splice(1, 1);
     user = new User(user2);
     expect(user.isPatron).toBeFalsy();
   });
@@ -86,8 +86,7 @@ describe('User', () => {
   });
 
   it('should return the patron according to the organisation pid', () => {
-    const patron = JSON.stringify(user.getPatronByOrganisationPid('2'));
-    const patronData = JSON.stringify(testUserPatronLibrarian.patrons[0]);
-    expect(patron === patronData).toBeTruthy();
+    expect(user.getPatronByOrganisationPid('2')).toEqual(testUserPatronLibrarian.patrons![0]);
+    expect(user.getPatronByOrganisationPid('unknown')).toBeUndefined();
   });
 });

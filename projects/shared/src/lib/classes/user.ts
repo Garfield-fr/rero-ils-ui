@@ -185,7 +185,7 @@ export class User implements IUser {
    getPatronByOrganisationPid(pid: string): IPatron | undefined {
     if (this.patrons && this.patrons.length > 0) {
       const patrons = this.patrons.filter(
-        (patron: IPatron) => patron.organisation.pid === pid
+        (patron: IPatron) => 'patron' in patron && patron.organisation!.pid === pid
       );
       return (patrons.length === 1) ? patrons[0] : undefined;
     }

@@ -14,51 +14,50 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit, output, signal, computed, ChangeDetectionStrategy} from '@angular/core';
-import { IPatron, AppStore } from '@rero/shared';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import { Observable } from 'rxjs';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { RecordData } from '@rero/ng-core';
-import { ItemApiService } from '../../api/item-api.service';
-import { HoldingsApiService } from '../../api/holdings-api.service';
+import { AppStore, IPatron } from '@rero/shared';
 import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
-import { PickupLocationComponent } from './pickup-location/pickup-location.component';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { HoldingsApiService } from '../../api/holdings-api.service';
+import { ItemApiService } from '../../api/item-api.service';
 import { canRequest } from '../model/can-request-model';
+import { PickupLocationComponent } from './pickup-location/pickup-location.component';
 
 @Component({
-    selector: 'public-search-request',
-    templateUrl: './holdings-request.component.html',
-    imports: [Button, Tooltip, PickupLocationComponent, TranslatePipe],
+  selector: 'public-search-request',
+  templateUrl: './holdings-request.component.html',
+  imports: [Button, Tooltip, PickupLocationComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingsRequestComponent implements OnInit {
 
-  private itemApiService: ItemApiService = inject(ItemApiService);
-  private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
+  private itemApiService = inject(ItemApiService);
+  private holdingsApiService = inject(HoldingsApiService);
   private appStore = inject(AppStore);
-  private translateService: TranslateService = inject(TranslateService);
+  private translateService = inject(TranslateService);
 
-  /** Record: item or holding */
   record = input<RecordData>();
-
-  /** Record type */
   recordType = input<string>();
-
-  /** View code */
   viewcode = input<string>();
-
-  /** Holdings item count */
   holdingsItemsCount = input<number>();
 
-  /** Item Can request with reason(s) */
-  canRequest = signal<canRequest>({ can: false, reasons: {} });
+  requestDialogEvent = output<boolean>();
 
-  reasonsToDisplay = [
-    "patron_type_overdue_items_limit",
-    "patron_type_fee_amount_limit",
-    "patron_type_unpaid_subscription",
-    "patron_type_request_limits"
-  ]
+  canRequest = signal<canRequest>({ can: false, reasons: {} });
+  requestDialog = signal(false);
+
+  private patron = signal<IPatron | null>(null);
+  hasPatron = computed(() => this.patron() !== null);
+
+  private readonly reasonsToDisplay = [
+    'patron_type_overdue_items_limit',
+    'patron_type_fee_amount_limit',
+    'patron_type_unpaid_subscription',
+    'patron_type_request_limits',
+  ];
 
   allReasonsDisplayable = computed(() =>
     this.canRequest().reasons &&
@@ -67,57 +66,44 @@ export class HoldingsRequestComponent implements OnInit {
 
   hiddenRequestButton = computed(() => this.canRequest().can || this.allReasonsDisplayable());
 
-  tooltip = computed(() => Object.values(this.canRequest().reasons || {}).map(
-    (reason: string) => "- " + this.translateService.instant(reason)
-  ).join('\n'));
+  tooltip = computed(() =>
+    Object.values(this.canRequest().reasons || {})
+      .map((reason: string) => '- ' + this.translateService.instant(reason))
+      .join('\n')
+  );
 
-  /** Request dialog */
-  requestDialog = false;
-
-  /** Request dialog event */
-  requestDialogEvent = output<boolean>();
-
-  /** current patron */
-  private _patron: IPatron;
-
-  /** Patron is logged */
-  get patron() {
-    return this._patron !== undefined;
-  }
-
-  /** OnInit hook */
   ngOnInit(): void {
-    let apiRequest = null;
-    switch (this.recordType()) {
-        case 'holding': { apiRequest = this.holdingsApiService; break; }
-        case 'item': { apiRequest = this.itemApiService; break; }
-        default: throw new TypeError(`${this.recordType()} isn't supported`);
-    }
+    const canRequest$: (pid: string, libraryPid: string, barcode: string) => Observable<canRequest> =
+      this.recordType() === 'holding'
+        ? (pid, lib, bc) => this.holdingsApiService.canRequest(pid, lib, bc) as unknown as Observable<canRequest>
+        : this.recordType() === 'item'
+          ? (pid, lib, bc) => this.itemApiService.canRequest(pid, lib, bc)
+          : () => { throw new TypeError(`${this.recordType()} isn't supported`); };
 
-    if (this.appStore.user() && this.record()) {
-      const metadata = this.record()!.metadata as any;
-      this._patron = this.appStore.user()?.getPatronByOrganisationPid(
-        metadata.organisation.pid
-      );
-      if (this._patron?.patron) {
-        apiRequest.canRequest(
-          metadata.pid,
-          metadata.library.pid,
-          this._patron.patron.barcode[0],
-        ).subscribe((can: canRequest) => this.canRequest.set(can));
-      }
+    const user = this.appStore.user();
+    const record = this.record();
+    if (!user || !record) return;
+
+    const metadata = record.metadata as { pid: string; organisation: { pid: string }; library: { pid: string } };
+    const patron = user.getPatronByOrganisationPid(metadata['organisation'].pid) ?? null;
+    this.patron.set(patron);
+
+    if (patron?.patron) {
+      canRequest$(
+        metadata['pid'],
+        metadata['library'].pid,
+        patron.patron.barcode[0],
+      ).subscribe(can => this.canRequest.set(can));
     }
   }
 
-  /** Close request dialog */
   closeDialog(): void {
-    this.requestDialog = false;
-    this.requestDialogEvent.emit(this.requestDialog);
+    this.requestDialog.set(false);
+    this.requestDialogEvent.emit(false);
   }
 
-  /** show Request Dialog */
-  showRequestDialog() {
-    this.requestDialog = true;
-    this.requestDialogEvent.emit(this.requestDialog);
+  showRequestDialog(): void {
+    this.requestDialog.set(true);
+    this.requestDialogEvent.emit(true);
   }
 }
