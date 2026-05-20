@@ -23,8 +23,9 @@ import {
   provideAppInitializer,
   provideZonelessChangeDetection,
 } from '@angular/core';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withRouterConfig } from '@angular/router';
-import { FORMLY_CONFIG, FormlyModule, provideFormlyCore } from '@ngx-formly/core';
+import { FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
 import {
@@ -35,15 +36,12 @@ import {
   NgCoreTranslateService,
   PasswordGeneratorComponent,
   primeNGConfig,
-  registerNgCoreFormlyExtension,
+  provideCore,
   RemoteAutocompleteService,
   TruncateTextPipe,
-  withNgCoreFormly,
 } from '@rero/ng-core';
 import { ItemHoldingsCallNumberPipe, MainTitlePipe } from '@rero/shared';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
-import { DialogService } from 'primeng/dynamicdialog';
 import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { registerFormlyExtension } from './acquisition/formly/extension';
 import { OrderLineTypeComponent } from './acquisition/formly/type/field-order-line.type';
@@ -68,7 +66,6 @@ import { CipoPatronTypeItemTypeComponent } from './record/formly/type/cipo-patro
 import { AppConfigService } from './service/app-config.service';
 import { initializeApp } from './service/app-initializer';
 import { RecordHandleErrorService } from './service/record.handle-error.service';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -103,13 +100,7 @@ export const appConfig: ApplicationConfig = {
     CountryCodeTranslatePipe,
     { provide: CoreRecordHandleErrorService, useClass: RecordHandleErrorService },
     provideHttpClient(withInterceptorsFromDi()),
-    provideFormlyCore(withNgCoreFormly() as any),
-    {
-      provide: FORMLY_CONFIG,
-      multi: true,
-      useFactory: registerNgCoreFormlyExtension,
-      deps: [TranslateService],
-    },
+    provideCore(),
     {
       provide: FORMLY_CONFIG,
       multi: true,
@@ -117,9 +108,6 @@ export const appConfig: ApplicationConfig = {
       deps: [TranslateService],
     },
     ComponentCanDeactivateGuard,
-    ConfirmationService,
-    MessageService,
-    DialogService,
     providePrimeNG(primeNGConfig),
     provideTranslateService({
       loader: provideTranslateLoader(CoreTranslateLoader),
@@ -131,7 +119,6 @@ export const appConfig: ApplicationConfig = {
           { name: 'order-line', component: OrderLineTypeComponent },
           { name: 'cipo-pt-it', component: CipoPatronTypeItemTypeComponent },
           { name: 'account-select', component: SelectAccountEditorWidgetComponent },
-          // TODO: See why you need to add “any” for the component to be recognized
           { name: 'entity-autocomplete', component: EntityAutocompleteComponent as any },
           { name: 'custom-field', component: FieldCustomInputTypeComponent },
           { name: 'repeat', component: RepeatTypeComponent },
