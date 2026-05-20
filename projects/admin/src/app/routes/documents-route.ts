@@ -240,6 +240,7 @@ class DocumentsRoute extends BaseRoute {
         redirectUrl: (record: RecordData) => {
           return this.redirectUrl(record.metadata, '/records/templates/detail');
         },
+        hideInTabs: true,
       }
     ];
 
