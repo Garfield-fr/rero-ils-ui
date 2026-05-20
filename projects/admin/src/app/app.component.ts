@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AfterViewInit, Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { AppStore, User, RemoteSearchComponent } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';

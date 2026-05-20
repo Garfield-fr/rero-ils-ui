@@ -18,14 +18,16 @@ import { Component, computed, effect, inject, input, output, signal, ChangeDetec
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AppStore } from '@rero/shared';
+import { ConfirmationService } from 'primeng/api';
 import { SelectChangeEvent, Select } from 'primeng/select';
 import { map, of, switchMap } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Tooltip } from 'primeng/tooltip';
 import { AsyncPipe } from '@angular/common';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
@@ -33,14 +35,17 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-item-transaction',
     templateUrl: './item-transaction.component.html',
-    imports: [RouterLink, Bind, Select, FormsModule, Button, Tooltip, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    providers: [ConfirmationService],
+    imports: [RouterLink, Bind, Select, FormsModule, Button, ConfirmDialog, Tooltip, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemTransactionComponent {
 
   private appStore = inject(AppStore);
   private itemService: ItemsService = inject(ItemsService);
   private loanService: LoanService = inject(LoanService);
+  private confirmationService = inject(ConfirmationService);
+  private translateService = inject(TranslateService);
 
   readonly transaction = input<any>();
   readonly type = input<string>();
@@ -54,7 +59,7 @@ export class ItemTransactionComponent {
   private readonly _fetchedLocations = toSignal(
     toObservable(this.type).pipe(
       switchMap(type => {
-        if (!this._authorizedTypes.includes(type)) return of(null);
+        if (!type || !this._authorizedTypes.includes(type)) return of(null);
         const currentLibrary = this.appStore.currentLibraryPid();
         return this.itemService.getPickupLocations(this.itemPid()).pipe(
           map(locations => ((locations as any[]) ?? []).map((loc: any) => ({
@@ -89,8 +94,15 @@ export class ItemTransactionComponent {
     return this.loanService.canUpdateRequestPickupLocation(this.transaction());
   }
 
-  showCancelRequestDialog(event: Event): void {
-    this.loanService.cancelRequestDialog(event, () => this.emitCancelRequest());
+  showCancelRequestDialog(): void {
+    this.confirmationService.confirm({
+      header: this.translateService.instant('Cancel request'),
+      message: this.translateService.instant('Do you really want to cancel the request?'),
+      acceptLabel: this.translateService.instant('Yes'),
+      rejectLabel: this.translateService.instant('No'),
+      icon: 'fa fa-exclamation-triangle',
+      accept: () => this.emitCancelRequest(),
+    });
   }
 
   emitCancelRequest(): void {

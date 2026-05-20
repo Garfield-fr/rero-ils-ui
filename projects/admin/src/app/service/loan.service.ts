@@ -17,10 +17,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
-import { Confirmation, ConfirmationService } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CircPolicy } from '../classes/circ-policy';
@@ -34,8 +32,6 @@ export class LoanService {
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private appStore = inject(AppStore);
-  private translateService: TranslateService = inject(TranslateService);
-  private confirmationService: ConfirmationService = inject(ConfirmationService);
 
   // SERVICE CONSTANTS ========================================================
   /** Statuses of a borrow loan */
@@ -142,27 +138,6 @@ export class LoanService {
   getCirculationPolicy(loanPid: string): Observable<CircPolicy> {
     const apiUrl = `/api/loan/${loanPid}/circulation_policy`;
     return this.httpClient.get<CircPolicy>(apiUrl);
-  }
-
-  /**
-   * Cancel request dialog.
-   */
-  cancelRequestDialog(event: Event, accept?: Function, reject?: Function): void {
-    const confirmation: Confirmation = {
-      target: event.target as EventTarget,
-      icon: 'fa fa-exclamation-triangle',
-      header: this.translateService.instant('Cancel request'),
-      message: this.translateService.instant('Do you really want to cancel the request?'),
-      acceptLabel: this.translateService.instant('Yes'),
-      rejectLabel: this.translateService.instant('No')
-    };
-    if (accept) {
-      confirmation.accept = accept;
-    }
-    if (reject) {
-      confirmation.reject = reject;
-    }
-    this.confirmationService.confirm(confirmation);
   }
 
   // PRIVATES SERVICE FUNCTIONS ===============================================

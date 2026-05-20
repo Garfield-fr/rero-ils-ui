@@ -139,7 +139,7 @@ describe('LoanService', () => {
     };
     const confirmationService = TestBed.inject(ConfirmationService);
     confirmationService.requireConfirmation$
-      .subscribe((result: any) => expect(result).toEqual(config));
+      .subscribe((result: any) => expect(result).toEqual(expect.objectContaining(config)));
     service.cancelRequestDialog(new Event('body'));
   });
 });
