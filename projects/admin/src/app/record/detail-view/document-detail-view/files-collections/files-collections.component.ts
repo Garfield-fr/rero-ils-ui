@@ -14,23 +14,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, ChangeDetectionStrategy, effect } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { MessageService, PrimeTemplate } from 'primeng/api';
-import { Bind } from 'primeng/bind';
 import { AutoComplete } from 'primeng/autocomplete';
+import { Bind } from 'primeng/bind';
 import { Tooltip } from 'primeng/tooltip';
-import { Chip } from 'primeng/chip';
 
 @Component({
     selector: 'admin-files-collections',
     templateUrl: './files-collections.component.html',
-    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, AutoComplete, Tooltip, PrimeTemplate, Chip, TranslatePipe],
+    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, AutoComplete, Tooltip, PrimeTemplate, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilesCollectionsComponent {
