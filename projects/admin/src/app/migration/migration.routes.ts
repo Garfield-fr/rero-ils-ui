@@ -55,6 +55,7 @@ export const MIGRATION_ROUTES: Routes = [
     children: [
       {
         path: '',
+        title: _('Migrations'),
         component: RecordSearchPageComponent,
       },
     ],
@@ -115,10 +116,12 @@ export const MIGRATION_ROUTES: Routes = [
     children: [
       {
         path: '',
+        title: _('Migrations Data Conversion'),
         component: RecordSearchPageComponent,
       },
       {
         path: 'detail/:pid',
+        title: _('Migrations Data Conversion'),
         component: MigrationDataDetailComponent,
       },
     ],
@@ -180,10 +183,12 @@ export const MIGRATION_ROUTES: Routes = [
     children: [
       {
         path: '',
+        title: _('Migrations Data Deduplication'),
         component: MigrationSearchPageComponent,
       },
       {
         path: 'detail/:pid',
+        title: _('Migrations Data Deduplication'),
         component: MigrationDataDetailComponent,
       },
     ],
