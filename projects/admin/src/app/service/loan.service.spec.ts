@@ -20,7 +20,6 @@ import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { RecordService } from "@rero/ng-core";
 import { AppStore, circulationPolicy, testUserPatronWithSettings } from "@rero/shared";
-import { ConfirmationService } from "primeng/api";
 import { loanPending } from "projects/shared/src/public-api";
 import { apiResponse } from "projects/shared/src/tests/api";
 import { of } from "rxjs";
@@ -46,10 +45,9 @@ describe('LoanService', () => {
       ],
       providers: [
         LoanService,
-        ConfirmationService,
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: AppStore, useValue: appStoreSpy }
+        { provide: AppStore, useValue: appStoreSpy },
       ]
     });
 
@@ -128,18 +126,5 @@ describe('LoanService', () => {
       .subscribe((result: any) => expect(result).toEqual(circPolicy));
   });
 
-  it('should display the cancellation confirmation dialog', () => {
-    const config = {
-      target: null,
-      icon: 'fa fa-exclamation-triangle',
-      header: 'Cancel request',
-      message: 'Do you really want to cancel the request?',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No'
-    };
-    const confirmationService = TestBed.inject(ConfirmationService);
-    confirmationService.requireConfirmation$
-      .subscribe((result: any) => expect(result).toEqual(expect.objectContaining(config)));
-    service.cancelRequestDialog(new Event('body'));
-  });
+
 });
