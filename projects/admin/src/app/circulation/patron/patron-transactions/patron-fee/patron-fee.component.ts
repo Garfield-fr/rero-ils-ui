@@ -24,7 +24,6 @@ import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-transaction-api.service';
-import { CirculationStore } from '../../../store/circulation.store';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 
@@ -44,7 +43,6 @@ export class PatronFeeComponent implements OnInit {
   private appStore = inject(AppStore);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private apiService: ApiService = inject(ApiService);
-  private store = inject(CirculationStore);
 
   /** form */
   form: FormGroup = new FormGroup({});
@@ -74,7 +72,6 @@ export class PatronFeeComponent implements OnInit {
     }
     this.patronTransactionApiService.addFee(model).subscribe({
       next: () => {
-        this.store.loadStats(this.patron.pid);
         this.closeModal();
         this.messageService.add({
           severity: 'success',

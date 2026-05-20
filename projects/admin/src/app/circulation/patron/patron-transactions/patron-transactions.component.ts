@@ -110,6 +110,8 @@ export class PatronTransactionsComponent {
       width: '50vw',
       closable: true,
       data: { action: 'pay', mode: 'full', transactions: this.store.openTransactions() }
+    })?.onClose.subscribe((pid: string | undefined) => {
+      if (pid) this.store.reloadOpenTransactions(pid);
     });
   }
 
@@ -121,6 +123,8 @@ export class PatronTransactionsComponent {
       width: '50vw',
       closable: true,
       data: { action: 'pay', mode: 'full', transactions: this.myLibraryEngagedFees() }
+    })?.onClose.subscribe((pid: string | undefined) => {
+      if (pid) this.store.reloadOpenTransactions(pid);
     });
   }
 
@@ -135,6 +139,12 @@ export class PatronTransactionsComponent {
       closable: true,
       data: { patron, organisationPid: patron.organisation?.pid }
     });
-    this.dynamicDialogRef.onClose.subscribe(() => this.store.reloadOpenTransactions(this.store.patron()!.pid));
+    this.dynamicDialogRef.onClose.subscribe(() => {
+      const pid = this.store.patron()?.pid;
+      if (pid) {
+        this.store.reloadOpenTransactions(pid);
+        this.store.loadStats(pid);
+      }
+    });
   }
 }

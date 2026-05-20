@@ -18,7 +18,6 @@ import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core
 import { UntypedFormGroup, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
-import { CirculationStore } from '@app/admin/circulation/store/circulation.store';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { AppStore, Tools } from '@rero/shared';
@@ -45,7 +44,6 @@ export class PatronTransactionEventFormComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private appStore = inject(AppStore);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
-  private store = inject(CirculationStore);
 
   /** the transactions to perform with this form */
   transactions: PatronTransaction[];
@@ -225,12 +223,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
     }
     const patronPid = this.transactions[0]?.patron?.pid;
     forkJoin(observables).subscribe({
-      next: () => {
-        if (patronPid) {
-          this.store.reloadOpenTransactions(patronPid);
-        }
-        this.dynamicDialogRef.close();
-      }
+      next: () => this.dynamicDialogRef.close(patronPid)
     });
   }
 }
