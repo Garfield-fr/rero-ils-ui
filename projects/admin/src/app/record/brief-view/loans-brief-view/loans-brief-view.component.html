@@ -46,7 +46,7 @@
       <dt translate>Status</dt>
       <dd>
         <div class="ui:flex ui:gap-x-2">
-          <p-tag class="badge" [severity]="tagSeverity">{{ record().metadata.state | translate }}</p-tag>
+          <p-tag class="badge" [severity]="$any(tagSeverity)">{{ record().metadata.state | translate }}</p-tag>
           @switch(record().metadata.state) {
             <!-- ITEM_ON_LOAN additional information -->
             @case (loanState.ITEM_ON_LOAN) {

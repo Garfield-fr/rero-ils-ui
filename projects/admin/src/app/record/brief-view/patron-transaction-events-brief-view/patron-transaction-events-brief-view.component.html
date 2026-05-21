@@ -21,15 +21,15 @@
     <div class="ui:grow">
       @switch (parent.type) {
         @case ('overdue') {
-          <admin-patron-transaction-event-overdue [parent]="parent" [event]="event" />
+          <admin-patron-transaction-event-overdue [parent]="parent" [event]="event()" />
         }
         @default {
-          <admin-patron-transaction-event-default [parent]="parent" [event]="event" />
+          <admin-patron-transaction-event-default [parent]="parent" [event]="event()" />
         }
       }
     </div>
     <div>
-      <p-tag [severity]="severity()">
+      <p-tag [severity]="$any(severity())">
         @if (event().type !== eventTypes.DISPUTE) {
           {{ event().amount | currency : organisation()?.default_currency }}
         } @else {

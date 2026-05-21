@@ -35,7 +35,7 @@
       @if (store.settings().length > 0) {
         <div class="ui:flex ui:gap-1 ui:mt-2">
           @for (setting of store.settings(); track $index) {
-            <p-tag [severity]="setting.extra?.severity || 'warn'">
+            <p-tag [severity]="$any(setting.extra?.severity || 'warn')">
               {{ setting.label }}
               <i class="fa fa-times-circle ui:ml-2" (click)="removeCheckoutSettings(setting.key)"></i>
             </p-tag>
@@ -76,7 +76,7 @@
     [checkedOutItems]="checkedOutItems()"
     [checkedInItems]="checkedInItems()"
     [patron]="store.patron()"
-    (extendLoanClicked)="applyItems([$event])"
+    (extendLoanClicked)="applyItems($event)"
     (extendAllLoansClicked)="applyItems($event)"
     (hasFeesEmitter)="hasFees($event)"
   />

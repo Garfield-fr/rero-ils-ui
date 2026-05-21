@@ -26,7 +26,7 @@
       }
     </div>
     <div class="ui:flex ui:gap-1">
-      @if (recordPermissions()?.update?.can) {
+      @if ($any(recordPermissions())?.update?.can) {
         <p-button
           icon="fa fa-pencil"
           [label]="'Edit'|translate"
@@ -36,7 +36,7 @@
           size="small"
         />
       }
-      @if (recordPermissions()?.delete?.can) {
+      @if ($any(recordPermissions())?.delete?.can) {
         <p-button
           icon="fa fa-trash"
           [label]="'Delete'|translate"

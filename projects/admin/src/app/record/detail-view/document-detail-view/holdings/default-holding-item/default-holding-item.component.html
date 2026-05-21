@@ -85,7 +85,7 @@
           }
         </dl>
         <!-- (hide if not current organisation) -->
-        @if (permissions) {
+        @if (permissions()) {
           @for (note of item.metadata.notes; track $index) {
             <admin-holding-item-note [note]="note" />
           }

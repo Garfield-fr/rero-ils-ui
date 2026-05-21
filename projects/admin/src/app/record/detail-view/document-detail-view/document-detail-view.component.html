@@ -25,7 +25,7 @@
   <!-- HEADER -->
   <header class="ui:py-2 ui:flex ui:gap-6">
     <div class="ui:hidden ui:md:block">
-      <shared-thumbnail [record]="record()" styleClass="ui:w-40" />
+      <shared-thumbnail [record]="$any(record())" styleClass="ui:w-40" />
     </div>
     <div class="ui:grow ui:flex ui:flex-col ui:gap-1">
       <!-- TITLE -->
@@ -33,7 +33,7 @@
       <h1 id="doc-title">
         <ng-core-read-more
           [text]="title"
-          [unit]="'character'"
+          [unit]="'char'"
           [limit]="150"
           [showMoreLabel]="'Show more' | translate"
           [showLessLabel]="'Show less' | translate"
@@ -50,7 +50,7 @@
 
       <!-- CONTRIBUTION -->
       <shared-contribution
-        [contributions]="record().metadata?.contribution"
+        [contributions]="$any(record().metadata?.contribution)"
         [withRoles]="true"
         [activateLink]="activateLink()"
       />
@@ -179,7 +179,7 @@
           @for (data of sum.label; track $index) {
             <ng-core-read-more
               [text]="data.value"
-              [unit]="'character'"
+              [unit]="'char'"
               [limit]="400"
               [showMoreLabel]="'Show more' | translate"
               [showLessLabel]="'Show less' | translate"
@@ -290,7 +290,7 @@
       <p-tabpanel #tabGet value="get">
         <div class="ui:mb-2">
           @if (tabGet.active()) {
-            <shared-doc-files [documentPid]="record().metadata.pid" [routerPath]="['/','records', 'documents']" />
+            <shared-doc-files [documentPid]="$any(record().metadata.pid)" [routerPath]="['/','records', 'documents']" />
           }
         </div>
         <admin-holdings [document]="record()" />
@@ -305,17 +305,17 @@
       }
       @if (!record().metadata.harvested && record().metadata.pid && showLocalFieldsTab) {
         <p-tabpanel value="local">
-          <admin-local-field [resourceType]="'documents'" [resourcePid]="record().metadata.pid" />
+          <admin-local-field [resourceType]="'documents'" [resourcePid]="$any(record().metadata.pid)" />
         </p-tabpanel>
       }
       @if (!record().metadata.harvested && record().metadata.pid && showFilesTab) {
         <p-tabpanel value="file">
-          <admin-upload-files [pid]="record().metadata.pid" />
+          <admin-upload-files [pid]="$any(record().metadata.pid)" />
         </p-tabpanel>
       }
       @if (marcRecord) {
         <p-tabpanel value="marc">
-          <p-table stripedRows [value]="marcRecord" size="small">
+          <p-table stripedRows [value]="$any(marcRecord)" size="small">
             <ng-template #body let-field>
               <tr>
                 @if (field | marc; as f) {

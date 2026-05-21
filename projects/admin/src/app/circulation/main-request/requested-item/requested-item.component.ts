@@ -47,7 +47,7 @@ export class RequestedItemComponent {
   /** the callout css class to use for this item */
   callout = input<string|undefined>(undefined);
   /** Event emit when a request is validate */
-  requestValidated = output();
+  requestValidated = output<string>();
 
   // Class attributes
   /** reference to LoanState class :: To use LoanState into template */

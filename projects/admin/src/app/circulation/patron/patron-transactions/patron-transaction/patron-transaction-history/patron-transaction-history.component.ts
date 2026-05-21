@@ -35,7 +35,7 @@ export class PatronTransactionHistoryComponent {
   private translateService: TranslateService = inject(TranslateService);
   private appStore = inject(AppStore);
 
-  events = input.required<[]>();
+  events = input.required<any[]>();
 
   patronTransactionEventType = PatronTransactionEventType;
 

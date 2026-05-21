@@ -98,14 +98,14 @@
       <dd>{{ rec.created | dateTranslate : 'medium' }}</dd>
       <dt translate>Request status</dt>
       <dd>
-        <p-tag [severity]="tagSeverity()">
+        <p-tag [severity]="$any(tagSeverity())">
           {{ rec.metadata.status | translate }}
         </p-tag>
       </dd>
       @if (rec.metadata.loan_status) {
         <dt translate>Loan status</dt>
         <dd>
-          <p-tag [severity]="loanTagSeverity()">
+          <p-tag [severity]="$any(loanTagSeverity())">
             {{ rec.metadata.loan_status | translate}}
           </p-tag>
         </dd>

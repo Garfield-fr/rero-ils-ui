@@ -28,7 +28,7 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
       <p-message
         styleClass="ui:mb-2"
         [text]="message.text"
-        [severity]="message.severity"
+        [severity]="$any(message.severity)"
         showTransitionOptions="0ms"
       />
     }

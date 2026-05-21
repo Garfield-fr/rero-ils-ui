@@ -84,7 +84,7 @@
               @for (message of patron().circulation_informations.messages; track $index) {
                 <p-message
                   class="ui:w-full"
-                  severity="getMessageSeverity(message.type)"
+                  [severity]="$any(getMessageSeverity(message.type))"
                   showTransitionOptions="0ms"
                 >
                   {{ message.content }}
@@ -94,8 +94,7 @@
             @for (message of circulationMessages(); track $index) {
               <p-message
                 class="ui:w-full"
-                [severity]="message.severity"
-                severity="info"
+                [severity]="$any(message.severity)"
                 showTransitionOptions="0ms"
               >
               {{ message.detail }}

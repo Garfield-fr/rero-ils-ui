@@ -138,7 +138,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
     }
   }
 
-  saveIlsPid(event: KeyboardEvent): void {
+  saveIlsPid(event: Event): void {
     const { value } = event.target as HTMLInputElement;
     this.updateCurrentCandidate(value !== '' ? value : null);
   }

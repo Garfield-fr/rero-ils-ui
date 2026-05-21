@@ -37,11 +37,11 @@ import { TranslatePipe } from '@ngx-translate/core';
           } @else if (document === null) {
             <span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ documentPid }})</span>
           }
-          <admin-notes class="ui:text-sm" [notes]="orderLine.notes"/>
+          <admin-notes class="ui:text-sm" [notes]="$any(orderLine.notes)"/>
         </div>
         @if(orderLine.priority) {
           <div class="ui:flex">
-            <p-overlaybadge [value]="orderLine.priority" [severity]="severity(orderLine.priority)">
+            <p-overlaybadge [value]="orderLine.priority" [severity]="$any(severity(orderLine.priority))">
               <i class="fa fa-tachometer" style="font-size: 1.2rem"></i>
             </p-overlaybadge>
           </div>

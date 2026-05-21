@@ -80,7 +80,7 @@ export class LibraryDetailViewComponent {
     effect(() => this.locations.set(this._fetchedLocations()));
   }
 
-  deleteLocation(deletedLocationPid: Event): void {
+  deleteLocation(deletedLocationPid: string): void {
     this.locations.update(list => list.filter((location: any) => deletedLocationPid !== location.metadata.pid));
   }
 }

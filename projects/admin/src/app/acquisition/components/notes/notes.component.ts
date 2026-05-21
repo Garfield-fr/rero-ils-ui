@@ -10,5 +10,5 @@ import { Nl2brPipe } from '@rero/ng-core';
 })
 export class NotesComponent {
 
-  notes = input<[{type, content}]>();
+  notes = input<{type: any, content: any}[]>();
 }

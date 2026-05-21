@@ -28,7 +28,7 @@
           {{ title }}
         </a><br/>
       }
-      <shared-contribution [contributions]="document()?.contribution" />
+      <shared-contribution [contributions]="$any(document()?.contribution)" />
     </div>
     <div class="ui:col-span-2">
       <shared-inherited-call-number [item]="item()" />

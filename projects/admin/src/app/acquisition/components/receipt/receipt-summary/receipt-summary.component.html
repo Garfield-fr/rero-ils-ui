@@ -98,7 +98,7 @@
           <!-- RECEIPT NOTES -->
           @if (receipt().notes.length > 0) {
             <div class="ui:col-start-1 ui:col-span-7">
-              <admin-notes [notes]="receipt().notes" />
+              <admin-notes [notes]="$any(receipt().notes)" />
             </div>
           }
         }

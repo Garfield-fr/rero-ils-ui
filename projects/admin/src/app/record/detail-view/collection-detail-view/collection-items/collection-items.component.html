@@ -23,7 +23,7 @@
         <li class="ui:p-2 ui:odd:bg-surface-50 ui:flex ui:gap-6">
           @if ($any(itemData).metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async; as document) {
             <div class="ui:hidden ui:sm:block">
-              <shared-thumbnail [record]="document" />
+              <shared-thumbnail [record]="$any(document)" />
             </div>
             <div class="ui:grow">
               <h5>

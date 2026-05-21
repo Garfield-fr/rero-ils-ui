@@ -146,7 +146,7 @@
                 <dt translate>{{ p.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
                 <dd class="ui:flex ui:gap-1 ui:flex-wrap">
                   @for (role of p.roles; track $index) {
-                    <p-tag [severity]="getRoleTagSeverity(role)" [value]="role | translate" />
+                    <p-tag [severity]="$any(getRoleTagSeverity(role))" [value]="role | translate" />
                   }
                 </dd>
                 <dt translate>Creation date</dt>

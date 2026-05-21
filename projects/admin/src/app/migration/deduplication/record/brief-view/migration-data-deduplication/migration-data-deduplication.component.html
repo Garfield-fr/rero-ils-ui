@@ -81,7 +81,7 @@
 @for (message of messages(); track $index) {
   <p-message
     styleClass="ui:my-2"
-    [severity]="message.severity"
+    [severity]="$any(message.severity)"
     showTransitionOptions="0ms"
   >
     {{ message.detail }}

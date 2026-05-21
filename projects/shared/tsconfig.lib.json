@@ -5,20 +5,13 @@
     "declarationMap": true,
     "declaration": true,
     "inlineSources": true,
+    "preserveSymlinks": true,
     "types": [],
     "paths": {
       "@rero/ng-core": [
         "./node_modules/@rero/ng-core"
       ]
     }
-  },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "preserveSymlinks": true,
-    "enableResourceInlining": true
   },
   "exclude": [
     "src/test.ts",

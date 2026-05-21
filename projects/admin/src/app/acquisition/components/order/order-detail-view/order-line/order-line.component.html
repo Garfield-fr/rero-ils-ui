@@ -49,7 +49,7 @@
               }
               @if (orderLine().priority > 0) {
                 <div class="ui:flex">
-                  <p-overlaybadge [value]="orderLine().priority" [severity]="severity()">
+                  <p-overlaybadge [value]="orderLine().priority" [severity]="$any(severity())">
                     <i class="fa fa-tachometer" style="font-size: 1.2rem"></i>
                   </p-overlaybadge>
                 </div>
@@ -72,7 +72,7 @@
               }
             </dl>
 
-            <admin-notes [notes]="orderLine().notes" />
+            <admin-notes [notes]="$any(orderLine().notes)" />
           </div>
         </div>
       </div>

@@ -21,7 +21,7 @@
       <a [routerLink]="[detailUrl().link]">
         {{ record().metadata.document.title }}
       </a>
-      <p-tag [severity]="tagSeverity()" [value]="record().metadata.status | translate" />
+      <p-tag [severity]="$any(tagSeverity())" [value]="record().metadata.status | translate" />
     </div>
   </h5>
   @if (record().metadata.document.authors) {

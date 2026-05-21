@@ -232,10 +232,10 @@
         <p-tabpanel value="circulation">
           <div class="ui:flex ui:flex-col ui:gap-4">
             <div class="ui:flex ui:justify-end">
-              <admin-circulation-logs-dialog [resourcePid]="record()?.metadata.pid" [resourceType]="'item'" />
+              <admin-circulation-logs-dialog [resourcePid]="$any(record()?.metadata.pid)" [resourceType]="'item'" />
             </div>
-            <admin-item-transactions [itemPid]="record()?.metadata.pid" (requestEvent)="updateItemStatus()" />
-            <admin-item-fees [itemPid]="record()?.metadata.pid" [permissions]="permissions.PTTR_ACCESS" />
+            <admin-item-transactions [itemPid]="$any(record()?.metadata.pid)" (requestEvent)="updateItemStatus()" />
+            <admin-item-fees [itemPid]="$any(record()?.metadata.pid)" [permissions]="permissions.PTTR_ACCESS" />
             @if (record()?.metadata | keyExists:'legacy_checkout_count') {
               <section class="ui:border ui:rounded-border ui:border-surface ui:p-2">
                 <dl class="metadata">
@@ -252,7 +252,7 @@
         </p-tabpanel>
         @if (isDisplayLocalFieldsTab) {
           <p-tabpanel value="field">
-            <admin-local-field [resourceType]="'items'" [resourcePid]="record()?.metadata.pid" />
+            <admin-local-field [resourceType]="'items'" [resourcePid]="$any(record()?.metadata.pid)" />
           </p-tabpanel>
         }
         @if (record()?.metadata?.issue?.claims) {

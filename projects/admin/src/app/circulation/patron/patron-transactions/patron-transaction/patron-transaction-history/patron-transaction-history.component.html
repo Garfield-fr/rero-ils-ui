@@ -34,7 +34,7 @@
           @if (event.type !== patronTransactionEventType.DISPUTE) {
             <p-tag
               [value]="event.amount | currency: organisation.default_currency"
-              [severity]="tagSeverity(event)"
+              [severity]="$any(tagSeverity(event))"
             />
           }
           @if (event.pid) {
@@ -101,7 +101,7 @@
                 @if (event.type !== patronTransactionEventType.DISPUTE) {
                   <p-tag
                     [value]="step.amount | currency: organisation.default_currency"
-                    [severity]="tagSeverity(event)"
+                    [severity]="$any(tagSeverity(event))"
                   />
                 }
               </div>

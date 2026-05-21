@@ -23,6 +23,6 @@ import { PatronProfileFeeEventComponent } from './patron-profile-fee-event/patro
   imports: [PatronProfileFeeEventComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileFeeEventsComponent<T> {
-  events = input<T>();
+export class PatronProfileFeeEventsComponent {
+  events = input<any[]>();
 }

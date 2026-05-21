@@ -35,7 +35,7 @@
       @if (isEnabledOperationLog && record()?.metadata.pid) {
         <shared-operation-logs-dialog
           resourceType="local_entities"
-          [resourcePid]="record()?.metadata.pid"
+          [resourcePid]="$any(record()?.metadata.pid)"
         />
       }
     </ng-container>

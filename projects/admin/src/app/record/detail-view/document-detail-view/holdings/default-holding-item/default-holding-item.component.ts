@@ -58,7 +58,7 @@ export class DefaultHoldingItemComponent implements OnInit {
   /** Item Record (input) */
   item = input<any>(undefined);
   /** Event for delete Item */
-  deleteItem = output();
+  deleteItem = output<any>();
   /** Restrict the functionality of interface */
   isCurrentOrganisation = input(true);
 

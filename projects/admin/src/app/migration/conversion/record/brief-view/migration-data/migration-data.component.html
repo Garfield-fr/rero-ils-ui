@@ -22,7 +22,7 @@
   >
     {{ rec.id }}&nbsp;
     <p-tag
-      [severity]="status() === 'complete' ? 'success' : status()?.endsWith('error') ? 'danger' : 'secondary'"
+      [severity]="$any(status() === 'complete' ? 'success' : status()?.endsWith('error') ? 'danger' : 'secondary')"
       [value]="rec.metadata.conversion.status | translate"
     />
   </a>

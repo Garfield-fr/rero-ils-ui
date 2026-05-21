@@ -17,7 +17,7 @@
 -->
 <article class="ui:flex ui:gap-6">
   <div class="ui:hidden ui:md:block">
-    <shared-thumbnail [record]="record()" />
+    <shared-thumbnail [record]="$any(record())" />
   </div>
   <div class="ui:grow">
     <!-- document title -->
@@ -25,7 +25,7 @@
       <a target="_self" [href]="recordDetailUrl() | safeUrl">{{ record().metadata.title | mainTitle }}</a>
     </h4>
     <!-- contributions -->
-    <shared-contribution [contributions]="record().metadata?.contribution" [view]="viewcode()" />
+    <shared-contribution [contributions]="$any(record().metadata?.contribution)" [view]="viewcode()" />
     <!-- provision activity publications -->
     @if (provisionActivityPublications.length > 0) {
       <ul class="ui:list-none">

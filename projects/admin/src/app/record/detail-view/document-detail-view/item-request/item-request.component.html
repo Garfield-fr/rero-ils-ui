@@ -37,7 +37,7 @@
         {{ patron.email }}
       </p>
       @if (patronBlockedMsg(); as message) {
-        <p-message severity="danger" showTransitionOptions="0ms">{{ message }}</p-message>
+        <p-message severity="error" showTransitionOptions="0ms">{{ message }}</p-message>
       }
     </p-card>
   }
