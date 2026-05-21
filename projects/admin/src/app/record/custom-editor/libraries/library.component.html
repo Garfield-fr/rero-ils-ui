@@ -127,7 +127,7 @@
               [options]="availableCommunicationLanguagesOptions()"
               id="communication_language"
               formControlName="communication_language"
-              styleClass="ui:w-full"
+              class="ui:w-full"
             />
             @if (communicationLanguage.invalid && (communicationLanguage.dirty ||
             communicationLanguage.touched)) {
@@ -456,7 +456,7 @@
               [options]="rolloverAccountTransferOptions()"
               id="account-transfer"
               formControlName="account_transfer"
-              styleClass="ui:w-full"
+              class="ui:w-full"
             ></p-select>
           </div>
         </div>
@@ -580,7 +580,7 @@
             appendTo="body"
             [id]="fieldPrefix + '_country'"
             [options]="countryIsoCodesOptions()"
-            styleClass="ui:w-full"
+            class="ui:w-full"
             [filter]="true"
             [showClear]="true"
             [placeholder]="'Select a country' | translate"

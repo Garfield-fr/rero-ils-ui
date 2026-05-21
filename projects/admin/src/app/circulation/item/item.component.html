@@ -117,17 +117,17 @@
           <!-- RENEWALS, FEES, REQUESTS -->
           <li class="ui:mt-1">
             @if (isCollapsed() && item().loan && item().loan.extension_count && (!item().actionDone || item().actionDone !== itemAction.checkin)) {
-              <p-tag [title]="'Renewals'|translate" severity="secondary" styleClass="ui:mr-1">
+              <p-tag [title]="'Renewals'|translate" severity="secondary" class="ui:mr-1">
                 {{ item().loan.extension_count }} <i class="fa fa-refresh ui:ml-1"></i>
               </p-tag>
             }
             @if (isCollapsed() && totalAmountOfFee() > 0) {
-              <p-tag [title]="'Fees'|translate" severity="warn" styleClass="ui:mr-1">
+              <p-tag [title]="'Fees'|translate" severity="warn" class="ui:mr-1">
                 {{ totalAmountOfFee() | currency: organisation.default_currency }}
               </p-tag>
             }
             @if (isCollapsed() && item().pending_loans && item().pending_loans.length) {
-              <p-tag [title]="'Requests'|translate" severity="secondary" styleClass="ui:mr-1">
+              <p-tag [title]="'Requests'|translate" severity="secondary" class="ui:mr-1">
                 <div class="ui:flex ui:items-start ui:gap-1">
                   <i class="fa fa-shopping-basket ui:mt-1"></i>&nbsp;
                   <a
@@ -219,7 +219,7 @@
           @if (item().loan && item().loan.extension_count) {
             <dt translate>Renewals</dt>
             <dd>
-              <p-tag severity="secondary" styleClass="ui:mr-1">
+              <p-tag severity="secondary" class="ui:mr-1">
                 {{ item().loan.extension_count }}
                 <i class="fa fa-refresh ui:ml-1"></i>
               </p-tag>
@@ -234,7 +234,7 @@
           @if (item().loan && totalAmountOfFee() > 0) {
             <dt translate>Fees</dt>
             <dd>
-              <p-tag severity="warn" styleClass="ui:mr-1">
+              <p-tag severity="warn" class="ui:mr-1">
                 {{ totalAmountOfFee() | currency: organisation.default_currency }}
               </p-tag>
             </dd>
@@ -265,13 +265,13 @@
             <dt translate>Requests</dt>
             <dd>
               @if (item().pending_loans.length > 1) {
-                <p-tag severity="secondary" styleClass="ui:mr-1">
+                <p-tag severity="secondary" class="ui:mr-1">
                   {{ item().pending_loans.length }}
                 </p-tag>
                 <i class="fa fa-long-arrow-right ui:px-2"></i>
               }
               @for (request of item().pending_loans; track request.pid) {
-                <p-tag severity="secondary" styleClass="ui:mr-1">
+                <p-tag severity="secondary" class="ui:mr-1">
                   <i class="fa fa-shopping-basket"></i>&nbsp;
                   <a
                     [title]="request.patron.name"
@@ -311,7 +311,7 @@
             <div class="ui:lg:col-span-6 ui:col-span-12">
               <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                 <h5 translate>Loan</h5>
-                <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
+                <p-scrollPanel class="ui:w-full" [style]="{ height: '500px' }">
                   <pre class="ui:text-sm">{{ loan() | json }}</pre>
                 </p-scrollPanel>
               </div>
@@ -325,7 +325,7 @@
                       <i class="fa fa-external-link"></i>
                     </a>
                   </h5>
-                  <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
+                  <p-scrollPanel class="ui:w-full" [style]="{ height: '500px' }">
                     <pre class="ui:text-sm">{{ cipo | json }}</pre>
                   </p-scrollPanel>
                 </div>
@@ -335,7 +335,7 @@
             <div class="ui:col-span-12">
               <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                 <h5 translate>Item</h5>
-                <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
+                <p-scrollPanel class="ui:w-full" [style]="{ height: '500px' }">
                   <pre class="ui:text-sm">{{ item() | json }}</pre>
                 </p-scrollPanel>
               </div>

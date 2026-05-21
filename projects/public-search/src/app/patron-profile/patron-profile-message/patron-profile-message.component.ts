@@ -27,10 +27,11 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
     @for (message of messages(); track $index) {
       <p-message
         styleClass="ui:mb-2"
-        [text]="message.text"
         [severity]="$any(message.severity)"
         showTransitionOptions="0ms"
-      />
+      >
+        {{ message.text }}
+      </p-message>
     }
   `,
     imports: [MessageModule],

@@ -57,7 +57,7 @@
     <!-- debug information -->
     <div class="ui:col-span-12" [hidden]="!debugMode || isCollapsed">
       <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
-      <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '300px' }">
+      <p-scrollPanel class="ui:w-full" [style]="{ height: '300px' }">
         <pre class="ui:text-sm">{{ record() | json }}</pre>
       </p-scrollPanel>
     </div>

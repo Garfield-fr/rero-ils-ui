@@ -110,7 +110,7 @@
     @if (reminders().length > 0) {
       <section class="ui:mt-4">
         <p-panel [header]="'Reminders'|translate">
-          <p-table styleClass="ui:m-1" stripedRows [value]="reminders()" size="small">
+          <p-table class="ui:m-1" stripedRows [value]="reminders()" size="small">
             <ng-template #header>
               <tr>
                 <th translate>Type</th>
@@ -148,7 +148,7 @@
     @if (overdues().length > 0) {
       <section class="ui:mt-4">
         <p-panel [header]="'Overdue fees'|translate">
-          <p-table styleClass="ui:m-1" stripedRows [value]="overdues()" size="small">
+          <p-table class="ui:m-1" stripedRows [value]="overdues()" size="small">
             <ng-template #header>
               <tr>
                 <th class="ui:pl-2" translate>Interval of days</th>
@@ -180,7 +180,7 @@
     @if (rec.metadata.settings) {
       <section class="ui:mt-4">
         <p-panel [header]="'Application'|translate">
-          <p-table styleClass="ui:m-1" stripedRows [value]="settings() | keyvalue" size="small">
+          <p-table class="ui:m-1" stripedRows [value]="settings() | keyvalue" size="small">
             <ng-template #header>
               <tr>
                 <th rowspan="2" class="ui:align-bottom ui:pl-2" translate>Patron types</th>

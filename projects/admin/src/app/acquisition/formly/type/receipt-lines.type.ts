@@ -23,7 +23,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 @Component({
     selector: 'admin-formly-receipt-lines',
     template: `
-    <p-panel [header]="'Add receipt line(s)' | translate" styleClass="ui:my-3">
+    <p-panel [header]="'Add receipt line(s)' | translate" class="ui:my-3">
       @if (field.fieldGroup.length > 0) {
         <div class="ui:grid ui:grid-cols-12 ui:gap-4  ui:px-4">
           @for (f of field.fieldGroup[0].fieldGroup; track f.id) {

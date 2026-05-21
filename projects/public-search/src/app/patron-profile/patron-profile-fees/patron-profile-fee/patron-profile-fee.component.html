@@ -43,7 +43,7 @@
           <!-- NOTE -->
           @if (record().notes?.length > 0) {
             @let headerTitle = record().notes.length > 1 ? 'Notes' : 'Note';
-            <p-panel styleClass="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="headerTitle | translate">
+            <p-panel class="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="headerTitle | translate">
               <div class="ui:mx-5">
                 <ul>
                   @for (note of record().notes; track $index) {
@@ -55,7 +55,7 @@
           }
           <!-- DOCUMENT METADATA -->
           @if (document()) {
-            <p-panel styleClass="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ document().metadata.pid }}-document">
+            <p-panel class="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ document().metadata.pid }}-document">
               <dl class="metadata ui:mx-5">
                 <!-- TITLE -->
                 <dt translate>Title</dt>
@@ -75,7 +75,7 @@
           }
 
           <!-- TRANSACTIONS HISTORY -->
-          <p-panel styleClass="ui:bg-transparent  ui:pb-2 time-line-30" [header]="'Transactions history' | translate">
+          <p-panel class="ui:bg-transparent  ui:pb-2 time-line-30" [header]="'Transactions history' | translate">
 
           <public-search-patron-profile-fee-events [events]="record().transactions" />
 

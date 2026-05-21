@@ -18,7 +18,6 @@
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { RecordData } from '@rero/ng-core';
 
 
 @Component({

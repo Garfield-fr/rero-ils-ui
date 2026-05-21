@@ -62,7 +62,7 @@
 
 <ng-template #tags>
   @if (record()?.metadata.extension_count && record()?.metadata.extension_count > 0) {
-    <p-tag  styleClass="ui:mt-1" severity="secondary">
+    <p-tag  class="ui:mt-1" severity="secondary">
       {{ record()?.metadata.extension_count }}
       {{ record()?.metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
     </p-tag>
@@ -73,6 +73,6 @@
     </div>
   }
   @if (isDueSoon) {
-    <p-tag styleClass="ui:mt-1" severity="info" translate>approaching due date</p-tag>
+    <p-tag class="ui:mt-1" severity="info" translate>approaching due date</p-tag>
   }
 </ng-template>

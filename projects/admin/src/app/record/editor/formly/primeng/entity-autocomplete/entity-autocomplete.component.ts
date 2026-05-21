@@ -50,8 +50,7 @@ import { TranslatePipe } from '@ngx-translate/core';
         <div class="ui:col-span-8">
           <p-autoComplete
             [fluid]="true"
-            class="props.class"
-            styleClass="props.styleClass"
+            [class]="props['styleClass']"
             [scrollHeight]="props.scrollHeight"
             [minLength]="props.minLength"
             [maxlength]="props.maxLength"
