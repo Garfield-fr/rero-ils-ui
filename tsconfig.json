@@ -1,36 +1,34 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "module": "ES2022",
+    "module": "preserve",
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "typeRoots": [
-      "node_modules/@types"
+      "./node_modules/@types"
     ],
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "paths": {
       "@rero/shared": [
-        "dist/shared"
+        "./dist/shared"
       ],
       "@rero/shared/*": [
-        "dist/shared/*"
+        "./dist/shared/*"
       ],
       "@app/admin/*": [
-        "projects/admin/src/app/*"
+        "./projects/admin/src/app/*"
       ],
       "moment": [
-        "node_modules/moment/min/moment.min.js"
+        "./node_modules/moment/min/moment.min.js"
       ],
       "@rero/prime/*": [
-        "node_modules/@rero/ng-core/lib/record/editor/formly/primeng/*"
+        "./node_modules/@rero/ng-core/lib/record/editor/formly/primeng/*"
       ]
     },
     "useDefineForClassFields": false
