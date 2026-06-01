@@ -20,8 +20,7 @@ import { patchState, signalMethod, signalStore, withComputed, withHooks, withMet
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { EsRecord, nonNullable, Pager, withPaginator } from "@rero/shared";
 import { PaginatorState } from "primeng/paginator";
-import { withViewCode } from "projects/shared/src/lib/store/viewcode-feature";
-import { EsResult } from "projects/shared/src/public-api";
+import { EsResult, withViewCode } from "@rero/shared";
 import { debounceTime, pipe, switchMap, tap } from "rxjs";
 import { ItemApiService } from "../../api/item-api.service";
 

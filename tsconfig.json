@@ -24,6 +24,9 @@
       "@app/admin/*": [
         "./projects/admin/src/app/*"
       ],
+      "@app/public-search/*": [
+        "./projects/public-search/src/app/*"
+      ],
       "moment": [
         "./node_modules/moment/min/moment.min.js"
       ],

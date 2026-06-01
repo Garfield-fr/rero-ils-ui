@@ -27,8 +27,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import {
   fieldPasswordMatchValidator,
-} from 'projects/public-search/src/app/patron-profile/patron-profile-password/patron-profile-password.component';
-import { patronProfileRoutes } from 'projects/public-search/src/app/routes/patron-profile-routes';
+} from '@app/public-search/patron-profile/patron-profile-password/patron-profile-password.component';
+import { patronProfileRoutes } from '@app/public-search/routes/patron-profile-routes';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 import { registerFormlyExtension } from '@app/admin/acquisition/formly/extension';

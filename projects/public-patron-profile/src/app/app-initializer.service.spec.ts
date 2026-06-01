@@ -22,10 +22,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 
-import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
+import { AppConfigService } from '@app/admin/service/app-config.service';
 import { of } from 'rxjs';
 import { AppInitializerService } from './app-initializer.service';
-import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
+import { PatronProfileMenuService } from '@app/public-search/patron-profile/patron-profile-menu.service';
 
 
 describe('AppInitializerService', () => {

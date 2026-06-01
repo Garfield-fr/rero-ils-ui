@@ -30,6 +30,18 @@ Multi-project Angular workspace:
 - `projects/public-holdings-items/` — holdings/items display app
 - `projects/search-bar/` — embeddable search bar
 
+## Workspace tsconfig path aliases
+
+Cross-project imports must use the aliases defined in the root `tsconfig.json`, never raw `projects/...` paths.
+
+| Alias | Target project |
+|---|---|
+| `@rero/shared` | shared library (`dist/shared`) |
+| `@app/admin/*` | `projects/admin/src/app/*` |
+| `@app/public-search/*` | `projects/public-search/src/app/*` |
+
+To add an alias for a new project, add it under `compilerOptions.paths` in `tsconfig.json`.
+
 ## Architecture principles
 
 - Business logic should be isolated from Angular when possible.

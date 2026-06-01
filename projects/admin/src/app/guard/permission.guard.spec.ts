@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppStore, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { patchState } from '@ngrx/signals';
 import { filter, firstValueFrom } from 'rxjs';
-import { ErrorPageComponent } from 'projects/admin/src/app/error/error-page/error-page.component';
+import { ErrorPageComponent } from '@app/admin/error/error-page/error-page.component';
 import { permissionGuard } from './permission.guard';
 
 describe('permissionGuard', () => {

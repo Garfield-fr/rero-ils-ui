@@ -17,7 +17,7 @@
 
 import { createCustomElement } from '@angular/elements';
 import { createApplication } from '@angular/platform-browser';
-import { DocumentDetailViewComponent } from 'projects/public-search/src/app/document-detail/document-detail-view/document-detail-view.component';
+import { DocumentDetailViewComponent } from '@app/public-search/document-detail/document-detail-view/document-detail-view.component';
 import { appConfig } from './app/app.config';
 
 createApplication(appConfig).then(appRef => {

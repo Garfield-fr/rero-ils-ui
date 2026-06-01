@@ -18,7 +18,7 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { EsRecord, EsResult } from '@rero/shared';
-import { withViewCode } from 'projects/shared/src/lib/store/viewcode-feature';
+import { withViewCode } from '@rero/shared';
 import { debounceTime, pipe, switchMap, tap } from 'rxjs';
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { MultiSelectChangeEvent } from 'primeng/multiselect';

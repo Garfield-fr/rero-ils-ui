@@ -18,8 +18,8 @@
 import { inject, Injectable } from '@angular/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
-import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
-import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
+import { AppConfigService } from '@app/admin/service/app-config.service';
+import { PatronProfileMenuService } from '@app/public-search/patron-profile/patron-profile-menu.service';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
@@ -45,7 +45,7 @@ export class AppInitializerService {
   private initTranslateService(): Observable<any> {
     let language = this.appStore.settings()?.language;
     if (language == null) {
-      const browserLang = this.translateService.getBrowserLang();
+      const browserLang = this.translateService.getBrowserLang() ?? '';
       language = browserLang.match(this.appConfigService.languages.join('|'))
         ? browserLang
         : this.appConfigService.defaultLanguage;

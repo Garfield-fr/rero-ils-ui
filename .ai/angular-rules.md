@@ -73,6 +73,36 @@ Do not introduce:
 - New BehaviorSubject stores
 - New custom RxJS state services
 
+## Import paths
+
+Never use raw workspace-relative paths (`projects/...`) in import statements.
+Always use the tsconfig path aliases defined in `tsconfig.json`.
+
+Available aliases:
+
+| Alias | Resolves to |
+|---|---|
+| `@rero/shared` | `dist/shared` (built shared library) |
+| `@app/admin/*` | `projects/admin/src/app/*` |
+| `@app/public-search/*` | `projects/public-search/src/app/*` |
+
+```typescript
+// BAD — causes TS2307 and bundler resolution errors
+import { EsRecord } from 'projects/shared/src/public-api';
+import { MyService } from 'projects/admin/src/app/service/my.service';
+import { MyComponent } from 'projects/public-search/src/app/my/my.component';
+
+// GOOD
+import { EsRecord } from '@rero/shared';
+import { MyService } from '@app/admin/service/my.service';
+import { MyComponent } from '@app/public-search/my/my.component';
+```
+
+Raw `projects/` paths fail at build time when one app bundles code from another project
+(e.g. `public-holdings-items` transitively compiling `public-search` sources).
+
+When adding a new cross-project alias, declare it in the root `tsconfig.json` under `compilerOptions.paths`.
+
 ## Code quality
 
 - Avoid the use of `any`.

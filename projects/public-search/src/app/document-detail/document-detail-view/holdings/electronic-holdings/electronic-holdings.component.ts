@@ -16,7 +16,7 @@
  */
 
 import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
-import { HoldingsApiService } from 'projects/public-search/src/app/api/holdings-api.service';
+import { HoldingsApiService } from '@app/public-search/api/holdings-api.service';
 import { Card } from 'primeng/card';
 import { TranslateDirective } from '@ngx-translate/core';
 import { ButtonDirective } from 'primeng/button';
