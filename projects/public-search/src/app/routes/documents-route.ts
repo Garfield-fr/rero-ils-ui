@@ -17,12 +17,13 @@
  */
 import { inject } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Routes } from '@angular/router';
-import { _ } from '@ngx-translate/core';
-import { capitalize, RecordType } from '@rero/ng-core';
+import { _, TranslateService } from '@ngx-translate/core';
+import { Bucket, capitalize, IFilter, RecordService, RecordType } from '@rero/ng-core';
 import { EntityBriefViewComponent } from '@rero/shared';
 import { AppConfigService } from '../app-config.service';
 import { DocumentBriefComponent } from '../document-brief/document-brief.component';
 import { DocumentRecordSearchComponent } from '../document-record-search/document-record-search.component';
+import { map, Observable, of } from 'rxjs';
 
 export const documentsRouteTitle: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   const title = route.params['type'] === 'documents' ? _('Documents') : _('Authors/Subjects');
@@ -31,9 +32,7 @@ export const documentsRouteTitle: ResolveFn<string> = (route: ActivatedRouteSnap
 
 export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = (route: ActivatedRouteSnapshot) => {
   const viewcode = route.params['viewcode'];
-  const appConfigService = inject(AppConfigService);
-  const activatedRoute = inject(ActivatedRoute);
-  return new DocumentsRoute(appConfigService, activatedRoute).getTypes(viewcode);
+  return new DocumentsRoute(inject(AppConfigService), inject(ActivatedRoute), inject(TranslateService), inject(RecordService)).getTypes(viewcode);
 };
 
 export const documentsRoutes: Routes = [
@@ -48,6 +47,8 @@ class DocumentsRoute {
   constructor(
     private appConfigService: AppConfigService,
     private activatedRoute: ActivatedRoute,
+    private translateService: TranslateService,
+    private recordService: RecordService,
   ) {}
 
   getTypes(viewcode: string): Partial<RecordType>[] {
@@ -104,6 +105,8 @@ class DocumentsRoute {
             ],
           },
         ],
+        processBucketName: (bucket: Bucket) => this.processBucketName(bucket),
+        processFilterName: (filter: IFilter) => this.processFilterName(filter),
         preFilters: {
           view: viewcode,
           simple: '1',
@@ -152,6 +155,24 @@ class DocumentsRoute {
         },
       },
     ];
+  }
+private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'language': return this.translateService.stream(`lang_${filter.key}`);
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
+      case 'organisation': return this.recordService.getRecord<{metadata: {name: string}}>('organisations', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.translateService.stream(filter.key);
+    }
+  }
+
+  private processBucketName(bucket: Bucket): Observable<string> {
+    if(bucket.name) { return of(bucket.name); }
+    switch (bucket.aggregationKey) {
+      case 'language': return this.translateService.stream(`lang_${bucket.key}`);
+      default: return this.translateService.stream(bucket.key);
+    }
   }
 
   private aggregationsOrder(viewcode: string): string[] {

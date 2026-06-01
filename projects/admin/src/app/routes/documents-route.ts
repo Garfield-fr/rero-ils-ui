@@ -254,7 +254,7 @@ class DocumentsRoute extends BaseRoute {
   private processFilterName(filter: IFilter): Observable<string> {
     if(filter.name) { return of(filter.name); }
     switch (filter.aggregationKey) {
-      case 'language': return of(this.routeToolService.translateService.instant(`lang_${filter.key}`));
+      case 'language': return this.routeToolService.translateService.stream(`lang_${filter.key}`);
       case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
       case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
       case 'organisation': return this.recordService.getRecord<{metadata: {name: string}}>('organisations', filter.key).pipe(map(record => record.metadata.name));
@@ -265,7 +265,7 @@ class DocumentsRoute extends BaseRoute {
   private processBucketName(bucket: Bucket): Observable<string> {
     if(bucket.name) { return of(bucket.name); }
     switch (bucket.aggregationKey) {
-      case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucket.key}`));
+      case 'language': return this.routeToolService.translateService.stream(`lang_${bucket.key}`);
       default: return this.routeToolService.translateService.stream(bucket.key);
     }
   }

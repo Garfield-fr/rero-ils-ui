@@ -74,7 +74,7 @@ export class PatronProfileMenuService {
 
   /**
    * Is multiple organisation
-   * @return boolea
+   * @return boolean
    */
   get isMultiOrganisation(): boolean {
     return this._patrons.length > 1;

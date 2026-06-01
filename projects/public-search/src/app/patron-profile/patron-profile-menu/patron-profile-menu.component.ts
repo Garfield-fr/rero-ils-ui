@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service';
@@ -27,34 +27,18 @@ import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service'
 })
 export class PatronProfileMenuComponent {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuService = inject(PatronProfileMenuService);
 
   patronPid = input<string>();
 
-  selectedOrganisation: IMenu;
+  organisations = computed<IMenu[]>(() => this.patronProfileMenuService.menu);
 
-  /**
-   * Is menu visible
-   * @return boolean
-   */
-  get isVisible(): boolean {
-    return this.patronProfileMenuService.isMultiOrganisation;
-  }
+  isVisible = computed(() => this.organisations().length > 1);
 
-  /**
-   * Get menu lines (organisation)
-   * @return array
-   */
-  get organisations(): IMenu[] {
-    const menuSelected = this.patronProfileMenuService.menu
-      .find((menu: any) => menu.value === this.patronPid);
-    if (menuSelected) {
-      this.selectedOrganisation = menuSelected;
-    }
-    return this.patronProfileMenuService.menu;
-  }
+  selectedOrganisation = computed<IMenu | undefined>(() =>
+    this.organisations().find(menu => menu.value === this.patronPid())
+  );
 
-  /** on change */
   onChange(patronPid: string): void {
     this.patronProfileMenuService.change(patronPid);
   }
