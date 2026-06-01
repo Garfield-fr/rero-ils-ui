@@ -23,7 +23,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AppConfigService } from '../service/app-config.service';
 import { ITypeEmail } from '../shared/preview-email/IPreviewInterface';
-import { EsRecord } from 'projects/shared/src/public-api';
+import { EsRecord } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'

@@ -18,7 +18,7 @@ import { Component, computed, effect, inject, input, signal, ChangeDetectionStra
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
-import { EsRecord } from 'projects/shared/src/public-api';
+import { EsRecord } from '@rero/shared';
 import { forkJoin } from 'rxjs';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';

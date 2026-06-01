@@ -23,7 +23,7 @@ import { AppStore, Tools } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-transaction-api.service';
+import { PatronTransactionApiService } from '@app/admin/api/patron-transaction-api.service';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 

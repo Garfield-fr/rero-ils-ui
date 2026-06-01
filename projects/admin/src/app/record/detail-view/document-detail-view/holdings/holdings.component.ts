@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { EsRecord } from 'projects/shared/src/public-api';
+import { EsRecord } from '@rero/shared';
 import { HoldingsStore } from './store/holdings-store';
 import { MenuActionsComponent } from './menu-actions/menu-actions.component';
 import { Bind } from 'primeng/bind';

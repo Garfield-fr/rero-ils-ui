@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, input, ChangeDetectionStrategy} from '@angular/core';
-import { IPatronPermission } from 'projects/admin/src/app/api/permission-api.service';
+import { IPatronPermission } from '@app/admin/api/permission-api.service';
 import { NgClass, KeyValuePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, effect, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
-import { IPatronPermission, PermissionApiService } from 'projects/admin/src/app/api/permission-api.service';
+import { IPatronPermission, PermissionApiService } from '@app/admin/api/permission-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
 import { InputText } from 'primeng/inputtext';

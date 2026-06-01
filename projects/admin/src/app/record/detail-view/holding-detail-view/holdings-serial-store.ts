@@ -26,7 +26,7 @@ import { CONFIG, RecordUiService } from "@rero/ng-core";
 import { AppStore, EsRecord, EsResult, nonNullable, Pager, PERMISSIONS, withPaginator } from "@rero/shared";
 import { MessageService } from "primeng/api";
 import { PaginatorState } from "primeng/paginator";
-import { numberGreatThan } from "projects/shared/src/public-api";
+import { numberGreatThan } from "@rero/shared";
 import { catchError, debounceTime, pipe, switchMap, tap } from "rxjs";
 
 type HoldingsSerialState = {
