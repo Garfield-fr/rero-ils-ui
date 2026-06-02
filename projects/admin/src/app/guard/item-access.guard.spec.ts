@@ -19,7 +19,7 @@ import { TestBed } from "@angular/core/testing";
 import { itemAccessGuard } from "./item-access.guard";
 import { AppStore } from "@rero/shared";
 import { of } from "rxjs";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { RecordService } from "@rero/ng-core";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService, ToastMessageOptions } from "primeng/api";

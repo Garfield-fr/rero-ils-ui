@@ -22,7 +22,7 @@ import { HttpClient } from "@angular/common/http";
 import { of } from "rxjs";
 import { TranslateModule } from "@ngx-translate/core";
 import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from "../classes/receipt";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { ICreateLineMessage } from "../components/receipt/receipt-form/order-receipt";
 
 describe('AcqReceiptApiService', () => {

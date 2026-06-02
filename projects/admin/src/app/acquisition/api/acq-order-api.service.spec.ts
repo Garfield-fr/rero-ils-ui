@@ -22,7 +22,7 @@ import { IPreview } from "@app/admin/shared/preview-email/IPreviewInterface";
 import { TranslateModule } from "@ngx-translate/core";
 import { RecordService, RecordUiService } from "@rero/ng-core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { of } from "rxjs";
 import { AcqOrderHistoryVersionResponseInterface, AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, IAcqOrderLine, orderDefaultData, orderLineDefaultData } from "../classes/order";
 import { AcqOrderApiService } from "./acq-order-api.service";

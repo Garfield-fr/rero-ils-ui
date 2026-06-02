@@ -20,7 +20,7 @@ import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { ApiService, RecordService } from "@rero/ng-core";
 import { AppStore, ItemStatus } from "@rero/shared";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { of } from "rxjs";
 import { Item, ItemAction, ItemNoteType } from "../classes/items";
 import { Loan, LoanState } from "../classes/loans";

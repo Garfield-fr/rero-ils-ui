@@ -18,7 +18,7 @@
 import { TestBed } from "@angular/core/testing";
 import { PatronTransactionsService } from "./patron-transactions.service";
 import { of } from "rxjs";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { patronTransaction } from "@rero/shared";
 import { RecordService } from "@rero/ng-core";
 import { PatronTransaction } from "../classes/patron-transaction";

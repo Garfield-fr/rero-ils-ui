@@ -19,7 +19,7 @@ import { TestBed } from "@angular/core/testing";
 import { LibraryApiService } from "./library-api.service";
 import { RecordService } from "@rero/ng-core";
 import { of } from "rxjs";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 
 describe('LibraryApiService', () => {
   let service: LibraryApiService;

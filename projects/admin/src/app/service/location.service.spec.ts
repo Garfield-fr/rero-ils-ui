@@ -18,7 +18,7 @@
 import { TestBed } from "@angular/core/testing";
 import { LocationService } from "./location.service";
 import { of } from "rxjs";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { RecordService } from "@rero/ng-core";
 import { location } from "@rero/shared";
 

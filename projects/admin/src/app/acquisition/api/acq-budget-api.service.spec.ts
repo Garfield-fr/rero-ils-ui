@@ -19,7 +19,7 @@ import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RecordService } from "@rero/ng-core";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { of } from "rxjs";
 import { accountDefaultData, IAcqAccount } from "../classes/account";
 import { AcqBudget } from "../classes/budget";

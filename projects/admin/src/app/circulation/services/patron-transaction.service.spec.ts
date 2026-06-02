@@ -21,7 +21,7 @@ import { RecordService } from "@rero/ng-core";
 import { of } from "rxjs";
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType, PatronTransactionStatus } from "@app/admin/classes/patron-transaction";
 import { computeTotalTransactionsAmount } from "@app/admin/circulation/utils/transaction.utils";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { AppStore } from "@rero/shared";
 import { RouteToolService } from "@app/admin/routes/route-tool.service";
 import { TranslateModule } from "@ngx-translate/core";
