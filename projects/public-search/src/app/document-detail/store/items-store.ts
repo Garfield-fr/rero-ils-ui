@@ -52,7 +52,7 @@ export const ItemsStore = signalStore(
   withPaginator(initialPagerConfig),
   withViewCode(),
   withComputed((store) => ({
-    isFilterEnabled: computed(() => store.total() > 11 || '' !== store.filter()),
+    isFilterEnabled: computed(() => store.total() > 10 || '' !== store.filter()),
     isPaginatorEnabled: computed(() => store.pager.rows() < store.filterTotal()),
   })),
   withMethods((store, itemApiService = inject(ItemApiService)) => ({
