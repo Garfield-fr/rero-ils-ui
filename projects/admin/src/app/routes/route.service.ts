@@ -20,5 +20,5 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class RouteService {
-  // All routes migrated to app-routing.module.ts
+  // All routes migrated to app.routes.ts
 }
