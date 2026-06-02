@@ -26,8 +26,7 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { finalize } from 'rxjs/operators';
 import { CanExtend, LoanApiService } from '../../../api/loan-api.service';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
-import { PatronProfileService } from '../../patron-profile.service';
+import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileDocumentComponent } from '../../patron-profile-document/patron-profile-document.component';
 
 @Component({
@@ -52,12 +51,10 @@ import { PatronProfileDocumentComponent } from '../../patron-profile-document/pa
 })
 export class PatronProfileLoanComponent implements OnInit {
 
-  private loanApiService: LoanApiService = inject(LoanApiService);
-  private translateService: TranslateService = inject(TranslateService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private patronProfileService: PatronProfileService = inject(PatronProfileService);
-
-  private messageService: MessageService = inject(MessageService);
+  private loanApiService = inject(LoanApiService);
+  private translateService = inject(TranslateService);
+  private store = inject(PatronProfileStore);
+  private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Loan record */
@@ -79,12 +76,12 @@ export class PatronProfileLoanComponent implements OnInit {
   // GETTER & SETTER ==========================================================
   /** Get organisation for current patron */
   get organisation(): IOrganisation {
-    return this.patronProfileMenuService.currentPatron.organisation;
+    return this.store.currentPatron()!.organisation;
   }
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    return this.store.currentPatron()!.organisation.code;
   }
   /** Check if the loan should be returned in very few days */
   get isDueSoon(): boolean {
@@ -109,7 +106,7 @@ export class PatronProfileLoanComponent implements OnInit {
   // COMPONENTS FUNCTIONS =====================================================
   /** Renew the current loan */
   renew(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    const patronPid = this.store.currentPatron()!.pid;
     this.renewInProgress.set(true);
     const metadata = this.record()?.metadata;
     this.loanApiService.renew({

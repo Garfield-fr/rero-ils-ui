@@ -19,7 +19,7 @@ import { inject, Injectable } from '@angular/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { AppConfigService } from '@app/admin/service/app-config.service';
-import { PatronProfileMenuService } from '@app/public-search/patron-profile/patron-profile-menu.service';
+import { PatronProfileStore } from '@app/public-search/patron-profile/store/patron-profile.store';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
@@ -29,14 +29,15 @@ import { switchMap, tap } from 'rxjs/operators';
 export class AppInitializerService {
 
   private appStore = inject(AppStore);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  private appConfigService: AppConfigService = inject(AppConfigService);
+  private store = inject(PatronProfileStore);
+  private translateService = inject(NgCoreTranslateService);
+  private appConfigService = inject(AppConfigService);
 
   load(): Observable<any> {
     return this.appStore.load().pipe(
       tap(() => {
-        this.patronProfileMenuService.init();
+        const user = this.appStore.user();
+        if (user) this.store.init(user);
       }),
       switchMap(() => this.initTranslateService())
     );

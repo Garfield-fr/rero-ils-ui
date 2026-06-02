@@ -23,7 +23,7 @@ import type { EsResult } from '@rero/ng-core';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
 import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
-import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
+import { PatronProfileStore } from '../../../store/patron-profile.store';
 
 @Component({
   selector: 'public-search-patron-profile-fee-event',
@@ -32,15 +32,15 @@ import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileFeeEventComponent implements OnInit {
-    private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);
-    private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+    private patronTransactionEventApiService = inject(PatronTransactionEventApiService);
+    private store = inject(PatronProfileStore);
 
     event = input<RecordData>();
 
     readonly transactionEvents = signal<any[]>([]);
 
     get organisation(): IOrganisation {
-      return this.patronProfileMenuService.currentPatron.organisation;
+      return this.store.currentPatron()!.organisation;
     }
 
     ngOnInit(): void {

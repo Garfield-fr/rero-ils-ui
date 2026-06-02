@@ -20,7 +20,7 @@ import { TranslateDirective } from '@ngx-translate/core';
 import { DateTranslatePipe, GetRecordPipe, RecordData } from '@rero/ng-core';
 import { ContributionComponent } from '@rero/shared';
 import { TagModule } from 'primeng/tag';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileStore } from '../../store/patron-profile.store';
 
 @Component({
     selector: 'public-search-patron-profile-history',
@@ -30,7 +30,7 @@ import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 })
 export class PatronProfileHistoryComponent {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private store = inject(PatronProfileStore);
 
   /** Loan record */
   record = input<RecordData>();
@@ -40,6 +40,6 @@ export class PatronProfileHistoryComponent {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    return this.store.currentPatron()?.organisation.code ?? '';
   }
 }

@@ -24,7 +24,7 @@ import { PanelModule } from 'primeng/panel';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
 import { Observable, Subscription } from 'rxjs';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileFeeEventsComponent } from '../patron-profile-fee-events/patron-profile-fee-events.component';
 
 @Component({
@@ -47,8 +47,8 @@ import { PatronProfileFeeEventsComponent } from '../patron-profile-fee-events/pa
 })
 export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private recordService: RecordService = inject(RecordService);
+  private store = inject(PatronProfileStore);
+  private recordService = inject(RecordService);
 
   /** Fee record */
   record = input<fee>();
@@ -64,7 +64,7 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   subscription = new Subscription();
 
   get organisation(): IOrganisation {
-    return this.patronProfileMenuService.currentPatron.organisation;
+    return this.store.currentPatron()!.organisation;
   }
 
   ngOnInit(): void {

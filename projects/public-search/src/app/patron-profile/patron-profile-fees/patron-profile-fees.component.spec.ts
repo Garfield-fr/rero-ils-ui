@@ -24,8 +24,7 @@ import { AppStore, testUserPatronWithSettings, User, UserApiService } from '@rer
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
-import { PatronProfileService } from '../patron-profile.service';
+import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees.component';
 import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
@@ -40,7 +39,7 @@ class StubPatronProfileFeeComponent {
 describe('PatronProfileFeeComponent', () => {
   let component: PatronProfileFeesComponent;
   let fixture: ComponentFixture<PatronProfileFeesComponent>;
-  let patronProfileMenuService: PatronProfileMenuService;
+  let store: InstanceType<typeof PatronProfileStore>;
 
   const apiResponse = {
     aggregations: {},
@@ -99,8 +98,8 @@ describe('PatronProfileFeeComponent', () => {
     fixture = TestBed.createComponent(PatronProfileFeesComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('feesTotal', 12.50);
-    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
-    patronProfileMenuService.init();
+    store = TestBed.inject(PatronProfileStore);
+    store.init(new User(cloneDeep(testUserPatronWithSettings)));
     fixture.detectChanges();
   });
 

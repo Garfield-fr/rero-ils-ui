@@ -21,7 +21,7 @@ import { RecordService } from '@rero/ng-core';
 import { ContributionComponent, EsRecord, MainTitlePipe } from '@rero/shared';
 import { TagModule } from 'primeng/tag';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileStore } from '../store/patron-profile.store';
 
 @Component({
     selector: 'public-search-patron-profile-document',
@@ -31,8 +31,8 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 })
 export class PatronProfileDocumentComponent {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private recordService: RecordService = inject(RecordService);
+  private store = inject(PatronProfileStore);
+  private recordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =====================================================
   record = input.required<EsRecord>();
@@ -55,7 +55,7 @@ export class PatronProfileDocumentComponent {
   // GETTER & SETTER ==========================================================
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    return this.store.currentPatron()?.organisation.code ?? '';
   }
 
   /** Get the formatted call numbers for the related item */

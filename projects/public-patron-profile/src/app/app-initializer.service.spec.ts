@@ -25,7 +25,7 @@ import { AppStore } from '@rero/shared';
 import { AppConfigService } from '@app/admin/service/app-config.service';
 import { of } from 'rxjs';
 import { AppInitializerService } from './app-initializer.service';
-import { PatronProfileMenuService } from '@app/public-search/patron-profile/patron-profile-menu.service';
+import { PatronProfileStore } from '@app/public-search/patron-profile/store/patron-profile.store';
 
 
 describe('AppInitializerService', () => {
@@ -51,8 +51,8 @@ describe('AppInitializerService', () => {
       providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-        { provide: AppStore, useValue: { load: vi.fn().mockReturnValue(of(null)), settings: vi.fn().mockReturnValue({ language: 'en' }) } },
-        { provide: PatronProfileMenuService, useValue: { init: vi.fn() } },
+        { provide: AppStore, useValue: { load: vi.fn().mockReturnValue(of(null)), settings: vi.fn().mockReturnValue({ language: 'en' }), user: vi.fn().mockReturnValue(null) } },
+        { provide: PatronProfileStore, useValue: { init: vi.fn() } },
         { provide: NgCoreTranslateService, useValue: ngCoreTranslateServiceSpy },
         { provide: AppConfigService, useValue: appConfigServiceSpy }
       ]

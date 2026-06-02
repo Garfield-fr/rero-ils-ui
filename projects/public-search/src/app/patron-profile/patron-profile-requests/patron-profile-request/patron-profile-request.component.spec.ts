@@ -25,13 +25,13 @@ import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { LoanApiService } from '../../../api/loan-api.service';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
 
 describe('PatronProfileRequestComponent', () => {
   let component: PatronProfileRequestComponent;
   let fixture: ComponentFixture<PatronProfileRequestComponent>;
-  let patronProfileMenuService: PatronProfileMenuService;
+  let store: InstanceType<typeof PatronProfileStore>;
 
   const record = {
     metadata: {
@@ -72,8 +72,8 @@ describe('PatronProfileRequestComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PatronProfileRequestComponent);
     component = fixture.componentInstance;
-    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
-    patronProfileMenuService.init();
+    store = TestBed.inject(PatronProfileStore);
+    store.init(new User(cloneDeep(testUserPatronWithSettings)));
     fixture.detectChanges();
   });
 

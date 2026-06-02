@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, signal, ChangeDetectionStrategy, untracked } from '@angular/core';
 import type { ToastMessageOptions } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
-import { Subscription } from 'rxjs';
 import { Message, PatronApiService } from '../../api/patron-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileStore } from '../store/patron-profile.store';
 
 @Component({
     selector: 'public-search-patron-profile-message',
@@ -37,34 +36,22 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
     imports: [MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileMessageComponent implements OnInit, OnDestroy {
-  private patronApiService: PatronApiService = inject(PatronApiService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+export class PatronProfileMessageComponent {
+  private patronApiService = inject(PatronApiService);
+  private store = inject(PatronProfileStore);
 
-  /** Observable subscription */
-  private _subscription = new Subscription();
-
-  /** patron messages */
   readonly messages = signal<ToastMessageOptions[]>([]);
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this._loanMessage();
-    this._subscription.add(
-      this.patronProfileMenuService.onChange$.subscribe(() => {
-        this._loanMessage();
-      })
-    );
+  constructor() {
+    effect(() => {
+      const patron = this.store.currentPatron();
+      if (patron) {
+        untracked(() => this._loanMessage(patron.pid));
+      }
+    });
   }
 
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this._subscription.unsubscribe();
-  }
-
-  /** load message */
-  private _loanMessage(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+  private _loanMessage(patronPid: string): void {
     this.patronApiService.getMessages(patronPid).subscribe(
       (messages: Message[]) => {
         this.messages.set(messages.map((message: Message): ToastMessageOptions => ({

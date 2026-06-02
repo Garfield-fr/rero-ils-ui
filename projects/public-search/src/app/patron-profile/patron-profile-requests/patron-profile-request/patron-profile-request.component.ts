@@ -22,8 +22,7 @@ import { OpenCloseButtonComponent } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { LoanApiService } from '../../../api/loan-api.service';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
-import { PatronProfileService } from '../../patron-profile.service';
+import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileDocumentComponent } from '../../patron-profile-document/patron-profile-document.component';
 
 @Component({
@@ -34,11 +33,10 @@ import { PatronProfileDocumentComponent } from '../../patron-profile-document/pa
 })
 export class PatronProfileRequestComponent {
 
-  private loanApiService: LoanApiService = inject(LoanApiService);
-  private translateService: TranslateService = inject(TranslateService);
-  private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private messageService: MessageService = inject(MessageService);
+  private loanApiService = inject(LoanApiService);
+  private translateService = inject(TranslateService);
+  private store = inject(PatronProfileStore);
+  private messageService = inject(MessageService);
 
   /** Request record */
   record = input<RecordData>();
@@ -57,12 +55,12 @@ export class PatronProfileRequestComponent {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    return this.store.currentPatron()?.organisation.code ?? '';
   }
 
   /** Cancel a request */
   cancel(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    const patronPid = this.store.currentPatron()!.pid;
     this.cancelInProgress.set(true);
     const metadata = this.record()?.metadata as any;
     this.loanApiService.cancel({
@@ -71,7 +69,7 @@ export class PatronProfileRequestComponent {
       transaction_user_pid: patronPid
     }).subscribe((cancelLoan: any) => {
       if (cancelLoan !== undefined) {
-        this.patronProfileService.cancelRequest(metadata?.pid);
+        this.store.cancelRequest(metadata?.pid);
         this.actionDone.set(true);
         this.messageService.add({
           severity: 'success',

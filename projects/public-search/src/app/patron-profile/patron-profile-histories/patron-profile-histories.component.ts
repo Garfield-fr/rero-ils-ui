@@ -14,15 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal, untracked } from '@angular/core';
 import { _, TranslateDirective } from "@ngx-translate/core";
-import type { Error, EsResult } from '@rero/ng-core';
 import { Paginator, ShowMorePagerComponent } from '@rero/shared';
 import { PanelModule } from 'primeng/panel';
-import { Observable, Subscription } from 'rxjs';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
-import { ITabEvent, PatronProfileService } from '../patron-profile.service';
+import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronProfileHistoryComponent } from './patron-profile-history/patron-profile-history.component';
 
 @Component({
@@ -31,87 +28,72 @@ import { PatronProfileHistoryComponent } from './patron-profile-history/patron-p
     imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileHistoryComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileHistoriesComponent implements OnInit, OnDestroy {
+export class PatronProfileHistoriesComponent implements OnInit {
 
-  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
-  private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private operationLogsApiService = inject(OperationLogsApiService);
+  private store = inject(PatronProfileStore);
 
-  /** First call of get record */
   readonly loaded = signal(false);
-
-  /** requests records */
   readonly records = signal<any[]>([]);
 
-  /** Document section is collapsed */
   isCollapsed = true;
 
-  /** Records paginator */
   paginator: Paginator;
 
-  /** Observable subscription */
-  private subscription = new Subscription();
+  constructor() {
+    effect(() => {
+      this.store.currentPatron();
+      untracked(() => this._reset());
+    });
+    effect(() => {
+      if (this.store.activeTab() === 'history') {
+        untracked(() => this._initialLoad());
+      }
+    });
+    effect(() => {
+      const pid = this.store.cancelledRequestPid();
+      if (pid) {
+        untracked(() => {
+          this.records.set([]);
+          if (this.paginator) this.paginator.setRecordsCount(0);
+        });
+      }
+    });
+  }
 
-  /** OnInit hook */
   ngOnInit(): void {
     this.paginator = new Paginator();
-    this.paginator
-      .setHiddenInfo(
-        _('({{ count }} hidden history)'),
-        _('({{ count }} hidden histories)')
-      );
-    this.subscription.add(
-      this.paginator.more$.subscribe((page: number) => {
-        this._historyQuery(page).subscribe((response: EsResult) => {
-          this.records.update(r => [...r, ...response.hits.hits]);
-        });
-      })
+    this.paginator.setHiddenInfo(
+      _('({{ count }} hidden history)'),
+      _('({{ count }} hidden histories)')
     );
-    this.subscription.add(
-      this.patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
-        if (event.name === 'history') {
-          if (event.count === 0) {
-            this.loaded.set(true);
-          } else {
-            this._historyQuery(1).subscribe((response: EsResult) => {
-              this.paginator.setRecordsCount(response.hits.total.value);
-              this.records.set(response.hits.hits);
-              this.loaded.set(true);
-            });
-          }
-        }
-      })
-    );
-    /** Reset content of history tab if cancel request */
-    this.subscription.add(
-      this.patronProfileService.cancelRequestEvent$.subscribe(() => {
-        this.records.set([]);
-        this.paginator.setRecordsCount(0);
-      })
-    );
-    /** Cleaning up after the change of organization */
-    this.subscription.add(
-      this.patronProfileMenuService.onChange$.subscribe(() => {
-        this.paginator.setRecordsCount(0);
-        this.records.set([]);
-        this.loaded.set(false);
-      })
-    );
+    this.paginator.more$.subscribe((page: number) => {
+      this._historyQuery(page).subscribe((response) => {
+        if (!('hits' in response)) return;
+        this.records.update(r => [...r, ...response.hits.hits]);
+      });
+    });
   }
 
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  private _initialLoad(): void {
+    if (!this.paginator) return;
+    this._historyQuery(1).subscribe((response) => {
+      if (!('hits' in response)) return;
+      this.paginator.setRecordsCount(response.hits.total.value);
+      this.records.set(response.hits.hits);
+      this.loaded.set(true);
+    });
   }
 
-  /**
-   * History query
-   * @param page - number
-   * @return Observable
-   */
-  private _historyQuery(page: number): Observable<EsResult | Error> {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
-    return this.operationLogsApiService
-      .getHistory(patronPid, page, this.paginator.getRecordsPerPage());
+  private _reset(): void {
+    if (!this.paginator) return;
+    this.paginator.setRecordsCount(0);
+    this.records.set([]);
+    this.loaded.set(false);
+  }
+
+  private _historyQuery(page: number) {
+    const patronPid = this.store.currentPatron()!.pid;
+    return this.operationLogsApiService.getHistory(patronPid, page, this.paginator.getRecordsPerPage());
   }
 }

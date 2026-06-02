@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
@@ -23,7 +23,7 @@ import { PanelModule } from 'primeng/panel';
 import { forkJoin } from 'rxjs';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
 import { fee, overdueFee } from './types';
 
@@ -35,26 +35,21 @@ import { fee, overdueFee } from './types';
 })
 export class PatronProfileFeesComponent implements OnInit {
 
-  private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private patronApiService: PatronApiService = inject(PatronApiService);
+  private patronTransactionApiService = inject(PatronTransactionApiService);
+  private store = inject(PatronProfileStore);
+  private patronApiService = inject(PatronApiService);
 
-  /** Total of fees */
   feesTotal = input<number>();
 
-  /** First call of get record */
   readonly loaded = signal(false);
-
-  /** requests records */
   readonly records = signal<any[]>([]);
 
   get currency() {
-    return this.patronProfileMenuService.currentPatron.organisation.currency;
+    return this.store.currentPatron()?.organisation.currency;
   }
 
-  /** OnInit hook */
   ngOnInit(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    const patronPid = this.store.currentPatron()!.pid;
     const queryFees = this.patronTransactionApiService.getFees(patronPid, 'open', 1, RecordService.MAX_REST_RESULTS_SIZE);
     const queryOverdue = this.patronApiService.getOverduePreviewByPatronPid(patronPid);
 
@@ -95,7 +90,8 @@ export class PatronProfileFeesComponent implements OnInit {
         records.sort((a, b) => a.createdAt - b.createdAt);
         this.records.set(records);
         this.loaded.set(true);
-      }});
+      }
+    });
   }
 
   private buildFee(record): fee {

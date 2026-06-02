@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
-import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service';
+import { IMenu, PatronProfileStore } from '../store/patron-profile.store';
 
 @Component({
     selector: 'public-search-patron-profile-menu',
@@ -27,19 +27,11 @@ import { IMenu, PatronProfileMenuService } from '../patron-profile-menu.service'
 })
 export class PatronProfileMenuComponent {
 
-  private patronProfileMenuService = inject(PatronProfileMenuService);
+  protected store = inject(PatronProfileStore);
 
-  patronPid = input<string>();
-
-  organisations = computed<IMenu[]>(() => this.patronProfileMenuService.menu);
-
-  isVisible = computed(() => this.organisations().length > 1);
+  patronPid = input.required<string>();
 
   selectedOrganisation = computed<IMenu | undefined>(() =>
-    this.organisations().find(menu => menu.value === this.patronPid())
+    this.store.menu().find(menu => menu.value === this.patronPid())
   );
-
-  onChange(patronPid: string): void {
-    this.patronProfileMenuService.change(patronPid);
-  }
 }
