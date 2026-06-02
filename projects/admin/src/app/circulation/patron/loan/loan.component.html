@@ -76,7 +76,7 @@
     [checkedOutItems]="checkedOutItems()"
     [checkedInItems]="checkedInItems()"
     [patron]="store.patron()"
-    (extendLoanClicked)="applyItems($event)"
+    (extendLoanClicked)="applyItems($any([$event]))"
     (extendAllLoansClicked)="applyItems($event)"
     (hasFeesEmitter)="hasFees($event)"
   />

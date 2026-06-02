@@ -20,23 +20,11 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CirculationStore } from './store/circulation.store';
 
+// Required to shared the store between circulation components, as the main component is not a route component
 @Component({
     selector: 'admin-circulation-main',
     providers: [CirculationStore],
-    template: `
-    <router-outlet></router-outlet>
-    <p-toast>
-      <ng-template #message let-message>
-        <div class="ui:flex ui:flex-col ui:items-start ui:grow">
-          <div class="ui:font-medium ui:text-lg ui:text-surface-900">
-            {{ message.summary }}
-          </div>
-          <p [innerHtml]="message.detail"></p>
-        </div>
-      </ng-template>
-    </p-toast>
-    <p-confirmDialog />
-  `,
+    template: `<router-outlet></router-outlet>`,
     imports: [RouterOutlet, ToastModule, ConfirmDialogModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
