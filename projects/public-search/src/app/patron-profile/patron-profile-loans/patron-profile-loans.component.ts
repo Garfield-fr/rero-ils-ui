@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { _, TranslateDirective } from "@ngx-translate/core";
+import { _, TranslateDirective, TranslateService } from "@ngx-translate/core";
 import type { EsResult } from '@rero/ng-core';
 import { Paginator, ShowMorePagerComponent } from '@rero/shared';
 import { PanelModule } from 'primeng/panel';
@@ -31,32 +31,29 @@ import { PatronProfileLoanComponent } from './patron-profile-loan/patron-profile
     imports: [FormsModule, TranslateDirective, Select, PanelModule, ShowMorePagerComponent, PatronProfileLoanComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileLoansComponent implements OnInit {
+export class PatronProfileLoansComponent {
 
   private loanApiService = inject(LoanApiService);
   private store = inject(PatronProfileStore);
+  private translateService = inject(TranslateService);
 
   readonly loaded = signal(false);
   readonly records = signal<any[]>([]);
 
   sortCriteria = 'duedate';
-  sortOptions = [
-    { value: 'duedate', label: 'Due date (earliest)' },
-    { value: '-duedate', label: 'Due date (latest)' }
-  ];
+
+  get sortOptions() {
+    return [
+      { value: 'duedate', label: this.translateService.instant('Due date (earliest)'), icon: 'fa fa-sort-numeric-asc' },
+      { value: '-duedate', label: this.translateService.instant('Due date (latest)'), icon: 'fa fa-sort-numeric-desc' },
+    ];
+  }
 
   page = 1;
   nRecords = 20;
   paginator: Paginator;
 
   constructor() {
-    effect(() => {
-      this.store.currentPatron();
-      untracked(() => this._resetPaginator());
-    });
-  }
-
-  ngOnInit(): void {
     this.paginator = new Paginator();
     this.paginator
       .setRecordsPerPage(this.nRecords)
@@ -71,7 +68,10 @@ export class PatronProfileLoansComponent implements OnInit {
         this.page = page;
       });
     });
-    this._initialLoad();
+    effect(() => {
+      this.store.currentPatron();
+      untracked(() => this._load());
+    });
   }
 
   selectingSortCriteria(sortCriteria: string): void {
@@ -90,22 +90,12 @@ export class PatronProfileLoansComponent implements OnInit {
     return this.loanApiService.getOnLoan(patronPid, page, this.paginator.getRecordsPerPage(), undefined, this.sortCriteria);
   }
 
-  private _initialLoad(): void {
-    this._loanQuery(1).subscribe((response) => {
-      if (!('hits' in response)) return;
-      this.paginator.setRecordsCount(response.hits.total.value);
-      this.records.set(response.hits.hits);
-      this.loaded.set(true);
-    });
-  }
-
-  private _resetPaginator(): void {
-    if (!this.paginator) return;
+  private _load(): void {
+    this.loaded.set(false);
     this._loanQuery(1).subscribe((response) => {
       if (!('hits' in response)) return;
       this.paginator.setPage(1).setRecordsCount(response.hits.total.value);
       this.records.set(response.hits.hits);
-      this.page = 1;
       this.loaded.set(true);
     });
   }
